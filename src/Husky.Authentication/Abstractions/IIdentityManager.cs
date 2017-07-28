@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Husky.Authentication.Abstractions
+﻿namespace Husky.Authentication.Abstractions
 {
 	public interface IIdentityManager
 	{
-		Identity ReadIdentity();
-		void SaveIdentity(Identity identity);
+		IIdentity ReadIdentity();
+		void SaveIdentity(IIdentity identity);
 		void DeleteIdentity();
 	}
 }

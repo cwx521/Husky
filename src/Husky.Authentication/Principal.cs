@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication
 {
-	public abstract class Principal<T> : Identity, IPrincipal where T : IFormattable, IEquatable<T>
+	public abstract class Principal<T> : Identity, IIdentity, IPrincipal where T : IFormattable, IEquatable<T>
 	{
-		protected Principal(IIdentityManager identityManager, IServiceProvider serviceProvider, IHttpContextAccessor httpAccessor) {
+		protected Principal(IIdentityManager identityManager, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor) {
 			var identity = identityManager.ReadIdentity();
 			if ( identity != null && identity.IsAuthenticated ) {
 				IdString = identity.IdString;
@@ -17,7 +17,7 @@ namespace Husky.Authentication
 
 			this.IdentityManager = identityManager;
 			this.ServiceProvider = serviceProvider;
-			this.HttpContext = httpAccessor.HttpContext;
+			this.HttpContext = httpContextAccessor.HttpContext;
 		}
 
 		public T Id {

@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Authentication
 {
-	public static class ServiceProviderExtensions
+	public static class ServiceInjection
 	{
-		public static IServiceCollection AddHuskyPrincipal<T>(IServiceCollection services, IdentityCarrier carrier, IdentityOptions options)
+		public static IServiceCollection AddHuskyPrincipal<T>(this IServiceCollection services, IdentityCarrier carrier, IdentityOptions options)
 			where T : class, IPrincipal {
 
 			if ( options == null ) {

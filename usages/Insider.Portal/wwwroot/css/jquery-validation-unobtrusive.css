@@ -1,0 +1,32 @@
+﻿/* for MVC Form Validations */
+
+.field-validation-valid {
+	color: #5cb85c;
+}
+
+.field-validation-error,
+.validation-summary-errors {
+	color: #d9534f;
+}
+
+.validation-summary-errors > ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.validation-summary-errors > ul > li {
+	line-height: 160%;
+}
+
+
+.field-validation-error:before,
+.validation-summary-errors > ul > li:before {
+	content: "\f057";
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	margin-right: 5px;
+}

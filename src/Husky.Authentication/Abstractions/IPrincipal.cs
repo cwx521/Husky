@@ -1,13 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Abstractions
 {
-	public interface IPrincipal
+	public interface IPrincipal : IIdentity
 	{
-		string IdString { get; }
-		string DisplayName { get; }
-		bool IsAuthenticated { get; }
-		bool IsAnonymous { get; }
 		IIdentityManager IdentityManager { get; }
+		IServiceProvider ServiceProvider { get; }
+		HttpContext HttpContext { get; }
 	}
 }

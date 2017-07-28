@@ -1,0 +1,60 @@
+﻿@model RegistryModel
+@{
+	Layout = "_Layout";
+	ViewData["Title"] = "注册成为会员";
+}
+
+<h3 class="mb-3">
+	@ViewData["Title"]
+</h3>
+
+<form method="post" asp-action="Register" class="card">
+	<div class="card-block text-muted">
+		您仅可以使用您的<span asp-value-for="AccountNameTypeName"></span>作为注册名，并且设置一个密码；为保护您的个人隐私，密码尽量不要与邮箱密码相同。
+	</div>
+
+	<div class="card-block">
+		<div class="row form-group">
+			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="AccountName" type="text" maxlength="40" required class="form-control" placeholder="用您常用的 邮箱 作为帐号名" autocomplete="off" />
+			</div>
+			<span asp-validation-for="AccountName" class="col-lg-6 col-form-label"></span>
+		</div>
+
+		<div class="row form-group">
+			<label asp-for="Password" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="Password" type="password" maxlength="18" class="form-control" placeholder="密码长度8-18位" />
+			</div>
+			<span asp-validation-for="Password" class="col-lg-6 col-form-label"></span>
+		</div>
+
+		<div class="row form-group">
+			<label asp-for="PasswordConfirm" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="PasswordConfirm" type="password" maxlength="15" class="form-control" placeholder="再次输入密码" />
+			</div>
+			<span asp-validation-for="PasswordConfirm" class="col-lg-6 col-form-label"></span>
+		</div>
+
+		<div class="row mt-4">
+			<div class="col-lg-4 offset-lg-2">
+				<label class="custom-control custom-checkbox">
+					<input type="checkbox" class="custom-control-input" checked disabled />
+					<span class="custom-control-indicator"></span>
+					<span class="custom-control-description">注册即表示您同意本站<a href="/terms" class="card-link">服务条款</a></span>
+				</label>				
+			</div>
+		</div>
+	</div>
+
+	<div class="card-footer">
+		<div class="row">
+			<div class="col-lg-4 offset-lg-2">
+				<button type="submit" class="btn btn-primary">&nbsp; 注册 &nbsp;</button>
+				<a href="/login" class="btn-link card-link pull-right col-form-label">我已经有账号了，去登录</a>
+			</div>
+		</div>
+	</div>
+</form>

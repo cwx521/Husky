@@ -1,0 +1,51 @@
+﻿@model RegistryVerifyModel
+@{
+	Layout = "_Layout";
+	ViewData["Title"] = "完成注册验证";
+}
+
+@section Scripts {
+	<script type="text/javascript" src="~/js/dynamic-code-sender.js" defer></script>
+}
+
+<h3 class="mb-3">
+	@ViewData["Title"]
+</h3>
+
+<form method="post" asp-action="Register" class="card">
+	<input asp-for="Id" type="hidden" />
+
+	<div class="card-block text-muted">
+		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送@(Model == null ? "" : (Model.IsEmail ? "到您邮箱里" : "到您手机上"))，请填入输入框后提交。
+	</div>
+
+	<div class="card-block">
+		<div class="row form-group">
+			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="Account" type="text" class="form-control" disabled />
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<label asp-for="DynamicPassCode" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<div class="input-group">
+					<input asp-for="DynamicPassCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-secondary dynamic-code-sender" data-send-to="@Model?.AccountName" data-hint=".dynamic-code-hint">点击获取</button>
+					</div>
+				</div>
+			</div>
+			<span asp-validation-for="DynamicPassCode" class="col-lg-6 col-form-label dynamic-code-hint"></span>
+		</div>
+	</div>
+
+	<div class="card-footer">
+		<div class="row">
+			<div class="col-lg-4 offset-lg-2">
+				<button type="submit" class="btn btn-primary mr-4">&nbsp; 完成验证 &nbsp;</button>
+			</div>
+		</div>
+	</div>
+</form>

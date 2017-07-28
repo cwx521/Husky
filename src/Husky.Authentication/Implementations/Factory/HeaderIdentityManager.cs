@@ -22,7 +22,7 @@ namespace Husky.Authentication.Implementations
 		HttpContext _httpContext;
 		IdentityOptions _options;
 
-		Identity IIdentityManager.ReadIdentity() {
+		IIdentity IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];
 			if ( string.IsNullOrEmpty(header) ) {
 				return null;
@@ -34,7 +34,7 @@ namespace Husky.Authentication.Implementations
 			return identity;
 		}
 
-		void IIdentityManager.SaveIdentity(Identity identity) {
+		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}

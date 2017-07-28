@@ -1,7 +1,5 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
-using Husky.Authentication.Implementations;
-using Husky.Sugar;
 using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Implementations
@@ -23,7 +21,7 @@ namespace Husky.Authentication.Implementations
 		HttpContext _httpContext;
 		IdentityOptions _options;
 
-		Identity IIdentityManager.ReadIdentity() {
+		IIdentity IIdentityManager.ReadIdentity() {
 			var combined = _httpContext.Session.GetString(_options.Key);
 			if ( !string.IsNullOrEmpty(combined) ) {
 				var i = combined.IndexOf('|');
@@ -37,7 +35,7 @@ namespace Husky.Authentication.Implementations
 			return null;
 		}
 
-		void IIdentityManager.SaveIdentity(Identity identity) {
+		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}

@@ -21,7 +21,7 @@ namespace Husky.Authentication.Implementations
 		HttpContext _httpContext;
 		IdentityOptions _options;
 
-		Identity IIdentityManager.ReadIdentity() {
+		IIdentity IIdentityManager.ReadIdentity() {
 			var cookie = _httpContext.Request.Cookies[_options.Key];
 			if ( string.IsNullOrEmpty(cookie) ) {
 				return null;
@@ -34,7 +34,7 @@ namespace Husky.Authentication.Implementations
 			return identity;
 		}
 
-		void IIdentityManager.SaveIdentity(Identity identity) {
+		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}

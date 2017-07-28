@@ -6,7 +6,7 @@ namespace Husky.Authentication.Implementations
 {
 	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{
-		string IIdentityEncyptor.Encrypt(Identity identity, string token) {
+		string IIdentityEncyptor.Encrypt(IIdentity identity, string token) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
@@ -16,7 +16,7 @@ namespace Husky.Authentication.Implementations
 			return Crypto.Encrypt($"{identity.IdString}|{identity.DisplayName}|{Crypto.SHA1(identity.IdString + identity.DisplayName + token)}", token);
 		}
 
-		Identity IIdentityEncyptor.Decrypt(string encryptedString, string token) {
+		IIdentity IIdentityEncyptor.Decrypt(string encryptedString, string token) {
 			if ( encryptedString == null ) {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
