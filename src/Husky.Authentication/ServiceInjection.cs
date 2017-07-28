@@ -15,7 +15,7 @@ namespace Husky.Authentication
 				throw new ArgumentNullException(nameof(options));
 			}
 			services.AddSingleton(serviceProvider => serviceProvider.CreateIdentityManager(carrier, options));
-			services.AddScoped<T>();
+			services.AddScoped<Principal<Guid>>();
 
 			return services;
 		}

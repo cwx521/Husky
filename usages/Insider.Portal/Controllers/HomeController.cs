@@ -1,4 +1,6 @@
-﻿using Husky.Authentication.Abstractions;
+﻿using System;
+using Husky.Authentication;
+using Husky.Authentication.Abstractions;
 using Husky.Users.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,12 +8,12 @@ namespace Insider.Portal.Controllers
 {
 	public class HomeController : Controller
 	{
-		public HomeController(IPrincipal principal, UserDbContext userDb) {
+		public HomeController(Principal<Guid> principal, UserDbContext userDb) {
 			_my = principal;
 			_userDb = userDb;
 		}
 
-		readonly IPrincipal _my;
+		readonly Principal<Guid> _my;
 		readonly UserDbContext _userDb;
 
 		public IActionResult Index() {

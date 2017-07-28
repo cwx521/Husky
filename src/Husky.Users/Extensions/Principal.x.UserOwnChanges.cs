@@ -19,7 +19,7 @@ namespace Husky.Users.Extensions
 			}
 
 			var isTaken = await _userDb.Users
-				.Where(x => x.Id != _my.Id<Guid>())
+				.Where(x => x.Id != _my.Id)
 				.Where(field, value, Comparison.Equal)
 				.AnyAsync();
 
@@ -27,8 +27,8 @@ namespace Husky.Users.Extensions
 				return new Failure($"“{value}”正在被其他帐号使用。");
 			}
 
-			var entry = _userDb.ChangeTracker.Entries<User>().SingleOrDefault(x => x.Entity.Id == _my.Id<Guid>())
-					 ?? _userDb.Attach(new User { Id = _my.Id<Guid>() });
+			var entry = _userDb.ChangeTracker.Entries<User>().SingleOrDefault(x => x.Entity.Id == _my.Id)
+					 ?? _userDb.Attach(new User { Id = _my.Id });
 
 			entry.Property(field).CurrentValue = value;
 			await _userDb.SaveChangesAsync();

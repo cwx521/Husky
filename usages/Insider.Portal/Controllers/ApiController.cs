@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Husky.Authentication;
 using Husky.Authentication.Abstractions;
 using Husky.Users.Data;
 using Insider.Portal.Models.AccountModels;
@@ -9,12 +11,12 @@ namespace Insider.Portal.Controllers
 {
 	public class ApiController : Controller
 	{
-		public ApiController(IPrincipal principal, UserDbContext userDb) {
+		public ApiController(Principal<Guid> principal, UserDbContext userDb) {
 			_my = principal;
 			_userDb = userDb;
 		}
 
-		readonly IPrincipal _my;
+		readonly Principal<Guid> _my;
 		readonly UserDbContext _userDb;
 
 		[HttpPost("~/api/SendDynamicCode")]

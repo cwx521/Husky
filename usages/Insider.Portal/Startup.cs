@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Husky.Authentication;
+using Husky.Authentication.Abstractions;
 using Husky.Authentication.Implementations;
 using Husky.Users;
 using Husky.Users.Data;
@@ -34,7 +35,7 @@ namespace Insider.Portal
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<IConfiguration>(Configuration);
 
-			services.AddHuskyPrincipal(IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
+			services.AddHuskyPrincipal<Principal<Guid>>(IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
 			services.AddHuskyUserModule(db => db.UseSqlServer(GetConnectionString()));
 		}
 

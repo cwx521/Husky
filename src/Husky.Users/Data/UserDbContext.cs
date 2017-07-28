@@ -6,6 +6,9 @@ namespace Husky.Users.Data
 {
 	public class UserDbContext : DbContext
 	{
+		public UserDbContext(DbContextOptions options) : base(options) {
+		}
+
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserPersonal> UserPersonals { get; set; }
 		public DbSet<UserLoginRecord> UserLoginRecords { get; set; }
@@ -13,7 +16,7 @@ namespace Husky.Users.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<User>(user => {
-				user.HasOne(x => x.Personal).WithOne(x => x.User).HasForeignKey<UserPersonal>(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+				user.HasOne(x => x.Personal).WithOne(x => x.User).HasForeignKey<UserPersonal>(x => x.UserId).IsRequired().OnDelete(DeleteBehavior.Restrict);
 				user.HasMany(x => x.LoginRecords).WithOne(x => x.User).HasForeignKey(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 				user.HasMany(x => x.ChangeRecords).WithOne(x => x.User).HasForeignKey(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 			});

@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Husky.Authentication;
 using Husky.Authentication.Abstractions;
 using Husky.Users;
 using Husky.Users.Data;
-using Husky.Users.Extensions;
 using Insider.Portal.Models.AccountModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,12 @@ namespace Insider.Portal.Controllers
 	[AllowAnonymous]
 	public class AccountController : Controller
 	{
-		public AccountController(IPrincipal principal, UserDbContext userDb) {
+		public AccountController(Principal<Guid> principal, UserDbContext userDb) {
 			_my = principal;
 			_userDb = userDb;
 		}
 
-		readonly IPrincipal _my;
+		readonly Principal<Guid> _my;
 		readonly UserDbContext _userDb;
 
 		[HttpGet("~/register")]
