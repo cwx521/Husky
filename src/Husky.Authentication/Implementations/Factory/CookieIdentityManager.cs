@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Implementations
 {
-	internal sealed class CookieIdentityManager<T> : IIdentityManager<T> where T : IFormattable, IEquatable<T>
+	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions<T> options) {
+		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions options) {
 			if ( options == null ) {
 				throw new ArgumentNullException(nameof(options));
 			}
@@ -19,27 +19,27 @@ namespace Husky.Authentication.Implementations
 		}
 
 		HttpContext _httpContext;
-		IdentityOptions<T> _options;
+		IdentityOptions _options;
 
-		Identity<T> IIdentityManager<T>.ReadIdentity() {
+		Identity IIdentityManager.ReadIdentity() {
 			var cookie = _httpContext.Request.Cookies[_options.Key];
 			if ( string.IsNullOrEmpty(cookie) ) {
 				return null;
 			}
 			var identity = _options.Encryptor.Decrypt(cookie, _options.Token);
-			if ( identity == null || identity.Id.Equals(default(T)) || (_options.SessionMode && IsSessionLost()) ) {
+			if ( identity.IsAnonymous || (_options.SessionMode && IsSessionLost()) ) {
 				_httpContext.Response.Cookies.Delete(_options.Key);
 				return null;
 			}
 			return identity;
 		}
 
-		void IIdentityManager<T>.SaveIdentity(Identity<T> identity) {
+		void IIdentityManager.SaveIdentity(Identity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( !identity.IsAuthenticated ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
+			if ( identity.IsAnonymous ) {
+				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
 			}
 			_httpContext.Response.Cookies.Append(
 				key: _options.Key,
@@ -59,7 +59,7 @@ namespace Husky.Authentication.Implementations
 		void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, string.Empty, new CookieOptions { HttpOnly = true });
 		bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
 
-		void IIdentityManager<T>.DeleteIdentity() {
+		void IIdentityManager.DeleteIdentity() {
 			_httpContext.Response.Cookies.Delete(_options.Key);
 			_httpContext.Response.Cookies.Delete(_sessionKey);
 		}

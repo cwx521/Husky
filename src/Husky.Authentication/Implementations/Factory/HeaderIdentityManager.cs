@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Implementations
 {
-	internal sealed class HeaderIdentityManager<T> : IIdentityManager<T> where T : IFormattable, IEquatable<T>
+	internal sealed class HeaderIdentityManager : IIdentityManager
 	{
-		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions<T> options) {
+		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions options) {
 			if ( options == null ) {
 				throw new ArgumentNullException(nameof(options));
 			}
@@ -20,31 +20,31 @@ namespace Husky.Authentication.Implementations
 		}
 
 		HttpContext _httpContext;
-		IdentityOptions<T> _options;
+		IdentityOptions _options;
 
-		Identity<T> IIdentityManager<T>.ReadIdentity() {
+		Identity IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];
 			if ( string.IsNullOrEmpty(header) ) {
 				return null;
 			}
 			var identity = _options.Encryptor.Decrypt(header, _options.Token);
-			if ( identity == null || !identity.IsAuthenticated ) {
+			if ( identity == null || identity.IsAnonymous ) {
 				return null;
 			}
 			return identity;
 		}
 
-		void IIdentityManager<T>.SaveIdentity(Identity<T> identity) {
+		void IIdentityManager.SaveIdentity(Identity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( !identity.IsAuthenticated ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
+			if ( identity.IsAnonymous ) {
+				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
 			}
 			_httpContext.Response.Headers.Add(_options.Key, _options.Encryptor.Encrypt(identity, _options.Token));
 		}
 
-		void IIdentityManager<T>.DeleteIdentity() {
+		void IIdentityManager.DeleteIdentity() {
 			_httpContext.Response.Headers.Remove(_options.Key);
 		}
 

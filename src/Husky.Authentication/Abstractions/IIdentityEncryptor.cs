@@ -2,9 +2,9 @@
 
 namespace Husky.Authentication.Abstractions
 {
-	public interface IIdentityEncyptor<T> where T : IFormattable, IEquatable<T>
+	public interface IIdentityEncyptor
 	{
-		string Encrypt(Identity<T> identity, string token);
-		Identity<T> Decrypt(string encryptedString, string token);
+		string Encrypt(Identity identity, string token);
+		Identity Decrypt(string encryptedString, string token);
 	}
 }

@@ -2,10 +2,10 @@
 
 namespace Husky.Authentication.Abstractions
 {
-	public interface IIdentityManager<T> where T : IFormattable, IEquatable<T>
+	public interface IIdentityManager
 	{
-		Identity<T> ReadIdentity();
-		void SaveIdentity(Identity<T> identity);
+		Identity ReadIdentity();
+		void SaveIdentity(Identity identity);
 		void DeleteIdentity();
 	}
 }

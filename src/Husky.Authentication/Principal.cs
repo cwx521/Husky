@@ -1,21 +1,31 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
+using Husky.Sugar;
+using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication
 {
-	public abstract class Principal<T> : Identity<T>, IPrincipal<T> where T : IFormattable, IEquatable<T>
+	public abstract class Principal<T> : Identity, IPrincipal where T : IFormattable, IEquatable<T>
 	{
-		protected Principal(IIdentityManager<T> identityManager) {
-			IdentityManager = identityManager;
-			var identity = IdentityManager.ReadIdentity();
-
+		protected Principal(IIdentityManager identityManager, IServiceProvider serviceProvider, IHttpContextAccessor httpAccessor) {
+			var identity = identityManager.ReadIdentity();
 			if ( identity != null && identity.IsAuthenticated ) {
-				Id = identity.Id;
+				IdString = identity.IdString;
 				DisplayName = identity.DisplayName;
 				IdentityManager.SaveIdentity(this);
 			}
+
+			this.IdentityManager = identityManager;
+			this.ServiceProvider = serviceProvider;
+			this.HttpContext = httpAccessor.HttpContext;
 		}
 
-		public IIdentityManager<T> IdentityManager { get; private set; }
+		public T Id {
+			get => IdString.As<T>();
+			set => IdString = value?.ToString();
+		}
+		public IIdentityManager IdentityManager { get; private set; }
+		public IServiceProvider ServiceProvider { get; private set; }
+		public HttpContext HttpContext { get; private set; }
 	}
 }

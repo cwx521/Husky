@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Husky.Sugar;
 
 namespace Husky.Authentication
 {
-	public class Identity<T> where T : IFormattable, IEquatable<T>
+	public class Identity
 	{
-		public T Id { get; set; }
+		public string IdString { get; set; }
 		public string DisplayName { get; set; }
 
-		public virtual bool IsAnonymous => Id == null || Id.Equals(default(T));
+		public virtual bool IsAnonymous => !string.IsNullOrWhiteSpace(IdString);
 		public virtual bool IsAuthenticated => !IsAnonymous;
+
+		public T Id<T>() => IdString.As<T>();
 	}
 }

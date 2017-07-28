@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Implementations
 {
-	internal sealed class SessionIdentityManager<T> : IIdentityManager<T> where T : IFormattable, IEquatable<T>
+	internal sealed class SessionIdentityManager : IIdentityManager
 	{
-		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions<T> options) {
+		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions options) {
 			if ( options == null ) {
 				throw new ArgumentNullException(nameof(options));
 			}
@@ -21,15 +21,15 @@ namespace Husky.Authentication.Implementations
 		}
 
 		HttpContext _httpContext;
-		IdentityOptions<T> _options;
+		IdentityOptions _options;
 
-		Identity<T> IIdentityManager<T>.ReadIdentity() {
+		Identity IIdentityManager.ReadIdentity() {
 			var combined = _httpContext.Session.GetString(_options.Key);
 			if ( !string.IsNullOrEmpty(combined) ) {
 				var i = combined.IndexOf('|');
 				if ( i > 0 ) {
-					return new Identity<T> {
-						Id = combined.Substring(0, i).As<T>(),
+					return new Identity {
+						IdString = combined.Substring(0, i),
 						DisplayName = combined.Substring(i + 1)
 					};
 				}
@@ -37,17 +37,17 @@ namespace Husky.Authentication.Implementations
 			return null;
 		}
 
-		void IIdentityManager<T>.SaveIdentity(Identity<T> identity) {
+		void IIdentityManager.SaveIdentity(Identity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( !identity.IsAuthenticated ) {
-				throw new ArgumentNullException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not a athenticated value.");
+			if ( identity.IsAnonymous ) {
+				throw new ArgumentNullException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not a athenticated value.");
 			}
-			_httpContext.Session.SetString(_options.Key, string.Concat(identity.Id, '|', identity.DisplayName));
+			_httpContext.Session.SetString(_options.Key, string.Concat(identity.IdString, '|', identity.DisplayName));
 		}
 
-		void IIdentityManager<T>.DeleteIdentity() {
+		void IIdentityManager.DeleteIdentity() {
 			_httpContext.Session.Remove(_options.Key);
 		}
 	}

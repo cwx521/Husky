@@ -2,12 +2,12 @@
 
 namespace Husky.Authentication.Abstractions
 {
-	public interface IPrincipal<T> where T : IFormattable, IEquatable<T>
+	public interface IPrincipal
 	{
-		T Id { get; }
+		string IdString { get; }
 		string DisplayName { get; }
 		bool IsAuthenticated { get; }
 		bool IsAnonymous { get; }
-		IIdentityManager<T> IdentityManager { get; }
+		IIdentityManager IdentityManager { get; }
 	}
 }

@@ -4,19 +4,19 @@ using Husky.Sugar;
 
 namespace Husky.Authentication.Implementations
 {
-	public sealed class IdentityEncryptor<T> : IIdentityEncyptor<T> where T : IFormattable, IEquatable<T>
+	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{
-		string IIdentityEncyptor<T>.Encrypt(Identity<T> identity, string token) {
+		string IIdentityEncyptor.Encrypt(Identity identity, string token) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}|{Crypto.SHA1(identity.Id + identity.DisplayName + token)}", token);
+			return Crypto.Encrypt($"{identity.IdString}|{identity.DisplayName}|{Crypto.SHA1(identity.IdString + identity.DisplayName + token)}", token);
 		}
 
-		Identity<T> IIdentityEncyptor<T>.Decrypt(string encryptedString, string token) {
+		Identity IIdentityEncyptor.Decrypt(string encryptedString, string token) {
 			if ( encryptedString == null ) {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
@@ -28,11 +28,11 @@ namespace Husky.Authentication.Implementations
 				var a = str.IndexOf('|');
 				var b = str.LastIndexOf('|');
 				var validation = str.Substring(b + 1);
-				var identity = new Identity<T> {
-					Id = str.Substring(0, a).As<T>(),
+				var identity = new Identity {
+					IdString = str.Substring(0, a),
 					DisplayName = str.Substring(a + 1, b - a - 1)
 				};
-				if ( Crypto.SHA1(identity.Id + identity.DisplayName + token) != validation ) {
+				if ( Crypto.SHA1(identity.IdString + identity.DisplayName + token) != validation ) {
 					return null;
 				}
 				return identity;
