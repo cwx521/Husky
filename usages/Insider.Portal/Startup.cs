@@ -36,7 +36,7 @@ namespace Insider.Portal
 			services.AddSingleton<IConfiguration>(Configuration);
 
 			services.AddHuskyPrincipal<Principal<Guid>>(IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
-			services.AddHuskyUserModule(db => db.UseSqlServer(GetConnectionString()));
+			services.AddHuskyUsersModule(db => db.UseSqlServer(GetConnectionString()));
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {

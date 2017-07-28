@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Authentication
 {
-	public static class ServiceInjection
+	public static class ServiceRegisterAuthentication
 	{
 		public static IServiceCollection AddHuskyPrincipal<T>(this IServiceCollection services, IdentityCarrier carrier, IdentityOptions options)
 			where T : class, IPrincipal {
@@ -15,7 +15,7 @@ namespace Husky.Authentication
 				throw new ArgumentNullException(nameof(options));
 			}
 			services.AddSingleton(serviceProvider => serviceProvider.CreateIdentityManager(carrier, options));
-			services.AddScoped<Principal<Guid>>();
+			services.AddScoped<T>();
 
 			return services;
 		}

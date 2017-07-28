@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Users
 {
-	public static class ServiceInjections
+	public static class ServiceRegisterUsers
 	{
-		public static IServiceCollection AddHuskyUserModule(this IServiceCollection services, Action<DbContextOptionsBuilder> databaseOptions) {
+		public static IServiceCollection AddHuskyUsersModule(this IServiceCollection services, Action<DbContextOptionsBuilder> databaseOptions) {
 			return services
 				.AddDbContext<UserDbContext>(databaseOptions)
 				.AddSingleton<PrincipalUserExtensions>();
