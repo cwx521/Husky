@@ -24,9 +24,12 @@ namespace Husky.MailTo.Data
 		[MaxLength(2000)]
 		public string Cc { get; set; }
 
+		[MaxLength(200)]
+		public string Exception { get; set; }
+
 		public bool IsSuccessful { get; set; }
 
-		[Index(IsUnique = false, IsClustered = true)]
+		[Index(IsClustered = true, IsUnique = false)]
 		public DateTime CreateTime { get; set; } = DateTime.Now;
 
 

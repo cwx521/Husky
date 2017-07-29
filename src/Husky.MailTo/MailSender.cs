@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Husky.MailTo;
 using Husky.MailTo.Abstractions;
 using Husky.MailTo.Data;
+using Husky.Sugar;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace Husky.Smtp
 	{
 		public MailSender(IServiceProvider serviceProvider) {
 			_db = serviceProvider.GetRequiredService<MailDbContext>();
-			_smtp = serviceProvider.GetService<ISmtpProvider>() ?? GetSmtpProvider();
+			_smtp = serviceProvider.GetService<ISmtpProvider>() ?? GetInternalSmtpProvider();
 		}
 
 		readonly MailDbContext _db;
@@ -26,30 +27,41 @@ namespace Husky.Smtp
 		public MailDbContext DbContext => _db;
 
 		public async Task Send(MailMessage mailMessage) => await Send(mailMessage, null);
+
 		public async Task Send(MailMessage mailMessage, Action<MailSendCompletedEventArgs> onCompleted) {
+			if ( mailMessage == null ) {
+				throw new ArgumentNullException(nameof(mailMessage));
+			}
+
 			using ( var client = new SmtpClient() ) {
 				var mailRecord = CreateMailRecord(mailMessage);
+
 				_db.Add(mailRecord);
 				await _db.SaveChangesAsync();
 
-				client.Connect(_smtp.Host, _smtp.Port, false);
-				client.Authenticate(_smtp.CredentialName, _smtp.Password);
-				client.AuthenticationMechanisms.Remove("XOAUTH2");
+				try {
+					client.Connect(_smtp.Host, _smtp.Port, false);
+					client.Authenticate(_smtp.CredentialName, _smtp.Password);
+					client.AuthenticationMechanisms.Remove("XOAUTH2");
 
-				client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+					client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+						mailRecord.IsSuccessful = true;
+						await _db.SaveChangesAsync();
 
-					mailRecord.IsSuccessful = true;
+						await Task.Run(() => {
+							onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
+						});
+					};
+					await client.SendAsync(BuildMimeMessage(mailMessage));
+				}
+				catch ( Exception ex ) {
+					mailRecord.Exception = ex.Message.Left(200);
 					await _db.SaveChangesAsync();
-
-					await Task.Run(() => {
-						onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
-					});
-				};
-				await client.SendAsync(BuildMimeMessage(mailMessage));
+				}
 			}
 		}
 
-		private ISmtpProvider GetSmtpProvider() {
+		private ISmtpProvider GetInternalSmtpProvider() {
 			var haveCount = _db.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( haveCount == 0 ) {
 				throw new ArgumentOutOfRangeException("（邮件发送模块）还没有配置任何SMTP服务。");

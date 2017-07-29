@@ -20,7 +20,7 @@ namespace Husky.MailTo.Data
 		[MaxLength(32)]
 		public string ContentType { get; set; }
 
-		[Index(IsUnique = false, IsClustered = true)]
+		[Index(IsClustered = true, IsUnique = false)]
 		public DateTime CreatedTime { get; set; }
 
 
