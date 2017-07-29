@@ -8,7 +8,7 @@ namespace Husky.Users.Extensions
 {
 	partial class PrincipalUserExtensions
 	{
-		public async Task<Result<User>> SignUp(AccountNameType accountNameType, string accountName, string password, bool verified) {
+		public async Task<Result<User>> SignUp(EmobaileType usingType, string accountName, string password, bool verified) {
 			if ( string.IsNullOrEmpty(accountName) ) {
 				return new Failure<User>("帐号不能为空。".Xslate());
 			}
@@ -19,10 +19,10 @@ namespace Husky.Users.Extensions
 			var isEmail = accountName.IsEmail();
 			var isMobile = accountName.IsMainlandMobile();
 
-			if ( !isEmail && accountNameType == AccountNameType.Email ) {
+			if ( !isEmail && usingType == EmobaileType.Email ) {
 				return new Failure<User>("{0} 必须是有效的邮箱地址。".Xslate(accountName));
 			}
-			if ( !isMobile && accountNameType == AccountNameType.Mobile ) {
+			if ( !isMobile && usingType == EmobaileType.Mobile ) {
 				return new Failure<User>("{0} 必须是有效的手机号。".Xslate(accountName));
 			}
 

@@ -4,7 +4,7 @@ using Husky.Sugar;
 
 namespace Husky.Authentication
 {
-	public class Principal<T> : Identity, IIdentity, IPrincipal where T : IFormattable, IEquatable<T>
+	public class Principal<T> : Identity, IIdentity, IPrincipal where T : struct, IFormattable, IEquatable<T>
 	{
 		public Principal(IIdentityManager identityManager, IServiceProvider serviceProvider) {
 			var identity = identityManager.ReadIdentity();
@@ -18,7 +18,7 @@ namespace Husky.Authentication
 			this.ServiceProvider = serviceProvider;
 		}
 
-		public T Id {
+		public T? Id {
 			get => IdString.As<T>();
 			set => IdString = value?.ToString();
 		}

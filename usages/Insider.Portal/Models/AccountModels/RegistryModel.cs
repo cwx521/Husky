@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Husky.Users.Data;
+using Husky.Sugar;
 using Insider.Portal.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +12,7 @@ namespace Insider.Portal.Models.AccountModels
 
 		const string _typeName = "邮箱";
 		const string _typePattern = _emailPattern;
-		public AccountNameType AccountNameType => AccountNameType.Email;
+		public EmobaileType AccountNameType => EmobaileType.Email;
 
 		[Required(ErrorMessage = "必须填写，请用您的" + _typeName + "作为帐号名。")]
 		[RegularExpression(_typePattern, ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]

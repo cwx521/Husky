@@ -16,7 +16,7 @@
 	<input asp-for="Id" type="hidden" />
 
 	<div class="card-block text-muted">
-		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送@(Model == null ? "" : (Model.IsEmail ? "到您邮箱里" : "到您手机上"))，请填入输入框后提交。
+		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送@(Model == null ? "" : ("到您" + Model?.Emobaile?.Type?.ToLabel()))，请填入输入框后提交。
 	</div>
 
 	<div class="card-block">

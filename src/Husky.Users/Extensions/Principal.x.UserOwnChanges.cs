@@ -38,7 +38,7 @@ namespace Husky.Users.Extensions
 			}
 
 			var entry = _userDb.ChangeTracker.Entries<User>().SingleOrDefault(x => x.Entity.Id == _my.Id<Guid>())
-					 ?? _userDb.Attach(new User { Id = _my.Id<Guid>() });
+					 ?? _userDb.Attach(new User { Id = _my.Id<Guid>().Value });
 
 			entry.Property(field).CurrentValue = value;
 			await _userDb.SaveChangesAsync();

@@ -20,7 +20,7 @@ namespace Husky.Sugar
 		}
 
 		public static int RandomNumber() {
-			return BitConverter.ToInt32(RandomBytes(), 0);
+			return BitConverter.ToInt32(RandomBytes(4), 0);
 		}
 
 		public static string RandomString(int length = 8) {

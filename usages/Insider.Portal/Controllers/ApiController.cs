@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Husky.Authentication;
 using Husky.Authentication.Abstractions;
+using Husky.Sugar;
 using Husky.Users.Data;
 using Insider.Portal.Models.AccountModels;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace Insider.Portal.Controllers
 
 		[HttpPost("~/api/IsAccountApplicable")]
 		public async Task<IActionResult> IsAccountApplicable(RegistryModel model) {
-			return Json(!(model.AccountNameType == AccountNameType.Email
+			return Json(!(model.AccountNameType == EmobaileType.Email
 				? await _userDb.Users.AnyAsync(x => x.Email == model.AccountName)
 				: await _userDb.Users.AnyAsync(x => x.Mobile == model.AccountName)));
 		}

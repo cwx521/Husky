@@ -17,7 +17,6 @@ namespace Insider.Portal.Models.AccountModels
 		public string DynamicPassCode { get; set; }
 
 
-		public bool IsEmail => AccountName.IsEmail();
-		public bool IsMobile => AccountName.IsMainlandMobile();
+		public Emobaile Emobaile => new Emobaile(AccountName);
 	}
 }

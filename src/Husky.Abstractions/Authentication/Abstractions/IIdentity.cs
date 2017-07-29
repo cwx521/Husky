@@ -10,6 +10,6 @@ namespace Husky.Authentication.Abstractions
 		bool IsAuthenticated { get; }
 		bool IsAnonymous { get; }
 
-		T Id<T>() where T : IFormattable, IEquatable<T>;
+		T? Id<T>() where T : struct, IFormattable, IEquatable<T>;
 	}
 }

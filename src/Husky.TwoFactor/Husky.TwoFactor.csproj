@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Husky.Data\Husky.Data.csproj" />
+    <ProjectReference Include="..\Husky.I18N\Husky.I18N.csproj" />
+    <ProjectReference Include="..\Husky.Sugar\Husky.Sugar.csproj" />
+  </ItemGroup>
+
+</Project>
