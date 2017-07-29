@@ -9,6 +9,7 @@ namespace Husky.Authentication
 	public static class ServiceRegisterAuthentication
 	{
 		public static IServiceCollection AddHuskyAuthentication(this IServiceCollection services, IdType idType, IdentityCarrier carrier, IdentityOptions options) => services
+			
 			.AddSingleton<IIdentityManager>(svc => {
 				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				switch ( carrier ) {
@@ -18,6 +19,7 @@ namespace Husky.Authentication
 					case IdentityCarrier.Session: return new SessionIdentityManager(httpContext, options);
 				}
 			})
+
 			.AddScoped<IPrincipal>(svc => {
 				var identityManager = svc.GetRequiredService<IIdentityManager>(); ;
 				switch ( idType ) {

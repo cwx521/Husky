@@ -6,7 +6,7 @@ namespace Husky.Sugar
 {
 	public static class StringTruncate
 	{
-		public static string Strip(this string str, string wordToRemove) {
+		public static string StripWord(this string str, string wordToRemove) {
 			return string.IsNullOrEmpty(str) ? str : str.Replace(wordToRemove, "");
 		}
 
@@ -34,7 +34,7 @@ namespace Husky.Sugar
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
-		public static string Mid(this string str, string afterKeyword, string endAtKeyword) {
+		public static string Mid(this string str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -42,7 +42,10 @@ namespace Husky.Sugar
 				throw new ArgumentNullException(nameof(endAtKeyword));
 			}
 			if ( !string.IsNullOrEmpty(str) ) {
-				var i = str.IndexOf(afterKeyword, StringComparison.Ordinal);
+				var i = useLastFoundAfterKeywordInsteadOfTheFirst
+					? str.LastIndexOf(afterKeyword, StringComparison.Ordinal)
+					: str.IndexOf(afterKeyword, StringComparison.Ordinal);
+
 				if ( i != -1 ) {
 					i += afterKeyword.Length;
 					var j = str.IndexOf(endAtKeyword, i, StringComparison.Ordinal);
@@ -54,27 +57,33 @@ namespace Husky.Sugar
 			return null;
 		}
 
-		public static string Right(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
-			if ( afterKeyword == null ) {
-				throw new ArgumentNullException(nameof(afterKeyword));
-			}
-			if ( !string.IsNullOrEmpty(str) ) {
-				var i = useLastFoundKeywordInsteadOfTheFirst ? str.LastIndexOf(afterKeyword, StringComparison.Ordinal) : str.IndexOf(afterKeyword, StringComparison.Ordinal);
-				if ( i != -1 ) {
-					return str.Substring(i + afterKeyword.Length);
-				}
-			}
-			return null;
-		}
-
 		public static string Left(this string str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( beforeKeyword == null ) {
 				throw new ArgumentNullException(nameof(beforeKeyword));
 			}
 			if ( !string.IsNullOrEmpty(str) ) {
-				var i = useLastFoundKeywordInsteadOfTheFirst ? str.LastIndexOf(beforeKeyword, StringComparison.Ordinal) : str.IndexOf(beforeKeyword, StringComparison.Ordinal);
+				var i = useLastFoundKeywordInsteadOfTheFirst
+					? str.LastIndexOf(beforeKeyword, StringComparison.Ordinal)
+					: str.IndexOf(beforeKeyword, StringComparison.Ordinal);
+
 				if ( i != -1 ) {
 					return str.Substring(0, i);
+				}
+			}
+			return null;
+		}
+
+		public static string Right(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+			if ( afterKeyword == null ) {
+				throw new ArgumentNullException(nameof(afterKeyword));
+			}
+			if ( !string.IsNullOrEmpty(str) ) {
+				var i = useLastFoundKeywordInsteadOfTheFirst
+					? str.LastIndexOf(afterKeyword, StringComparison.Ordinal)
+					: str.IndexOf(afterKeyword, StringComparison.Ordinal);
+
+				if ( i != -1 ) {
+					return str.Substring(i + afterKeyword.Length);
 				}
 			}
 			return null;

@@ -7,7 +7,7 @@ namespace Husky.MailTo
 	{
 		public string Name { get; set; }
 		public string Address { get; set; }
-
+		
 		public static MailAddress Parse(string formattedString) {
 			if ( formattedString == null ) {
 				throw new ArgumentNullException(nameof(formattedString));
@@ -16,13 +16,13 @@ namespace Husky.MailTo
 				return new MailAddress { Address = formattedString };
 			}
 			if ( formattedString.IndexOf('<') != -1 && formattedString.EndsWith(">") ) {
-				var name = formattedString.Left("<", true);
+				var name = formattedString.Left("<", true).Trim();
 				var address = formattedString.Right("<", true).TrimEnd('>');
 				if ( address.IsEmail() ) {
 					return new MailAddress { Name = name, Address = address };
 				}
 			}
-			throw new FormatException(formattedString);
+			throw new FormatException($"'{formattedString}' is an invalid mail box address format. Valid format should be like 'Your Name<youraccount@domain.com>'.");
 		}
 
 		public static bool TryParse(string formattedString, out MailAddress mailAddress) {

@@ -77,6 +77,8 @@ namespace Husky.Sugar
 			var val = Expression.Constant(filterValue, property.Type);
 			switch ( comparison ) {
 				default:
+					throw new ArgumentOutOfRangeException(nameof(comparison));
+
 				case Comparison.Equal:
 					body = Expression.Equal(property, val);
 					break;
