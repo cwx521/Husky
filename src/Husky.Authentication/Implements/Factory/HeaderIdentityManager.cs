@@ -1,9 +1,9 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
-using Husky.Authentication.Implementations;
+using Husky.Authentication.Implements;
 using Microsoft.AspNetCore.Http;
 
-namespace Husky.Authentication.Implementations
+namespace Husky.Authentication.Implements
 {
 	internal sealed class HeaderIdentityManager : IIdentityManager
 	{

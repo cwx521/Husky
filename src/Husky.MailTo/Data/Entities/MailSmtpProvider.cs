@@ -2,31 +2,25 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Husky.MailTo.Abstractions;
 using Husky.Sugar;
 
 namespace Husky.MailTo.Data
 {
-	public partial class MailSmtpProvider
+	public partial class MailSmtpProvider : ISmtpProvider
 	{
-		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
 
-		[Required, MaxLength(80), Column(TypeName = "varchar")]
+		[Key, MaxLength(80), Column(Order = 0, TypeName = "varchar")]
 		public string Host { get; set; }
+
+		[Key, MaxLength(50), Column(Order = 1, TypeName = "varchar")]
+		public string CredentialName { get; set; }
 
 		public int Port { get; set; } = 25;
 
-		[Required, MaxLength(50), Column(TypeName = "varchar")]
-		public string CredentialName { get; set; }
-
 		[Required, MaxLength(64), Column(TypeName = "varchar"), EditorBrowsable(EditorBrowsableState.Never)]
 		public string PasswordEncrypted { get; set; }
-
-		[Required, MaxLength(50), Column(TypeName = "varchar")]
-		public string DisplayMailAddress { get; set; }
-
-		[Required, MaxLength(50)]
-		public string DisplayName { get; set; }
 
 		public bool IsInUse { get; set; }
 

@@ -2,7 +2,7 @@
 using Husky.Authentication.Abstractions;
 using Husky.Sugar;
 
-namespace Husky.Authentication.Implementations
+namespace Husky.Authentication.Implements
 {
 	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{

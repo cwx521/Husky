@@ -11,10 +11,11 @@ namespace Husky.MailTo.Data
 
 		public DbSet<MailSmtpProvider> MailSmtpProviders { get; set; }
 		public DbSet<MailRecord> MailRecords { get; set; }
-		public DbSet<MailAttachment> MailAttachments { get; set; }
+		public DbSet<MailRecordAttachment> MailRecordAttachments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<MailRecord>().HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+			modelBuilder.Entity<MailSmtpProvider>().HasAlternateKey(x => x.Id);
 			modelBuilder.Custom<MailToDbContext>();
 		}
 	}

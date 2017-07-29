@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Husky.Authentication;
 using Husky.Authentication.Abstractions;
-using Husky.Authentication.Implementations;
+using Husky.Authentication.Implements;
 using Husky.Users;
 using Husky.Users.Data;
 using Microsoft.AspNetCore.Builder;

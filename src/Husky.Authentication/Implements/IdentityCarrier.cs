@@ -1,4 +1,4 @@
-﻿namespace Husky.Authentication.Implementations
+﻿namespace Husky.Authentication.Implements
 {
 	public enum IdentityCarrier
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
 
-namespace Husky.Authentication.Implementations
+namespace Husky.Authentication.Implements
 {
 	public sealed class IdentityOptions
 	{

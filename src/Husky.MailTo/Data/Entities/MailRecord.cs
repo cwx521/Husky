@@ -16,6 +16,8 @@ namespace Husky.MailTo.Data
 		[MaxLength(4000)]
 		public string Body { get; set; }
 
+		public bool IsHtml { get; set; }
+
 		[MaxLength(2000)]
 		public string To { get; set; }
 
@@ -28,6 +30,6 @@ namespace Husky.MailTo.Data
 		public DateTime CreateTime { get; set; } = DateTime.Now;
 
 
-		public List<MailAttachment> Attachments { get; set; }
+		public List<MailRecordAttachment> Attachments { get; set; }
 	}
 }

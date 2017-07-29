@@ -1,12 +1,14 @@
-﻿namespace Husky.Smtp.Abstractions
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Husky.MailTo.Abstractions
 {
 	public interface ISmtpProvider
 	{
-		string Host { get; }
-		int Port { get; }
-		string CredentialName { get; }
-		string Password { get; }
-		string DisplayMailAddress { get; }
-		string DisplayName { get; }
+		string Host { get; set; }
+		int Port { get; set; }
+		string CredentialName { get; set; }
+		string Password { get; set; }
 	}
 }

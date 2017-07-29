@@ -1,6 +1,6 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
-using Husky.Authentication.Implementations;
+using Husky.Authentication.Implements;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

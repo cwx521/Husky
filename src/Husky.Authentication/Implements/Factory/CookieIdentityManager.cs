@@ -2,7 +2,7 @@
 using Husky.Authentication.Abstractions;
 using Microsoft.AspNetCore.Http;
 
-namespace Husky.Authentication.Implementations
+namespace Husky.Authentication.Implements
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{

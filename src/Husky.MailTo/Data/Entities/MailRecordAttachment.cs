@@ -5,7 +5,7 @@ using Husky.Data.ModelBuilding.Annotations;
 
 namespace Husky.MailTo.Data
 {
-	public partial class MailAttachment 
+	public partial class MailRecordAttachment
 	{
 		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
@@ -23,7 +23,7 @@ namespace Husky.MailTo.Data
 		[Index(IsUnique = false, IsClustered = true)]
 		public DateTime CreatedTime { get; set; }
 
-		
+
 		public virtual MailRecord Mail { get; set; }
 	}
 }

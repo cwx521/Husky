@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{4D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insider.Portal", "usages\Insider.Portal\Insider.Portal.csproj", "{83BD4C78-61B6-4874-BD60-69F5D352ACD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.MailTo", "src\Husky.MailTo\Husky.MailTo.csproj", "{BDDAA66A-BF50-477E-A2AC-4617B25728E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.MailTo", "src\Husky.MailTo\Husky.MailTo.csproj", "{BDDAA66A-BF50-477E-A2AC-4617B25728E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
