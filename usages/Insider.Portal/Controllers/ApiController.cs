@@ -11,12 +11,12 @@ namespace Insider.Portal.Controllers
 {
 	public class ApiController : Controller
 	{
-		public ApiController(Principal<Guid> principal, UserDbContext userDb) {
+		public ApiController(IPrincipal principal, UserDbContext userDb) {
 			_my = principal;
 			_userDb = userDb;
 		}
 
-		readonly Principal<Guid> _my;
+		readonly IPrincipal _my;
 		readonly UserDbContext _userDb;
 
 		[HttpPost("~/api/SendDynamicCode")]

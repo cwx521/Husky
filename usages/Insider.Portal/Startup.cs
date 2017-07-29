@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Husky.Authentication;
-using Husky.Authentication.Abstractions;
 using Husky.Authentication.Implements;
+using Husky.Data;
+using Husky.Data.Abstractions;
+using Husky.MailTo;
+using Husky.MailTo.Data;
 using Husky.Users;
 using Husky.Users.Data;
 using Microsoft.AspNetCore.Builder;
@@ -28,15 +31,15 @@ namespace Insider.Portal
 
 		public IConfigurationRoot Configuration { get; }
 
-		private string GetConnectionString() => Configuration.GetConnectionString("Default");
-
 		public void ConfigureServices(IServiceCollection services) {
 			services.AddMvc();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<IConfiguration>(Configuration);
 
-			services.AddHuskyPrincipal<Principal<Guid>>(IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
-			services.AddHuskyUsersModule(db => db.UseSqlServer(GetConnectionString()));
+			services.AddSingleton<IDatabaseFinder>(new DatabaseFinder(DatabaseProvider.SqlServer, Configuration.GetConnectionString("Default")));
+			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
+			services.AddHuskyUsersPlugin();
+			services.AddHuskyMailToPlugin();
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
@@ -49,7 +52,8 @@ namespace Insider.Portal
 			app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
 
 			new List<Type> {
-				typeof(UserDbContext)
+				typeof(UserDbContext),
+				typeof(MailDbContext),
 			}.
 			ForEach(x => (app.ApplicationServices.GetRequiredService(x) as DbContext).Database.EnsureCreated());
 		}

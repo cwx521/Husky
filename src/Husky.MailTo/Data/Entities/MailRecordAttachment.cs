@@ -15,7 +15,7 @@ namespace Husky.MailTo.Data
 		[MaxLength(100)]
 		public string Name { get; set; }
 
-		public Stream ContentStream { get; set; }
+		public byte[] ContentStream { get; set; }
 
 		[MaxLength(32)]
 		public string ContentType { get; set; }

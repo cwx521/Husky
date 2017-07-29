@@ -1,6 +1,6 @@
 ﻿namespace Husky.Users.Data
 {
-	public static class UserFacade
+	public static class UserProcedures
 	{
 	}
 }

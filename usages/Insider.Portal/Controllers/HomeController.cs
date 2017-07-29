@@ -8,12 +8,12 @@ namespace Insider.Portal.Controllers
 {
 	public class HomeController : Controller
 	{
-		public HomeController(Principal<Guid> principal, UserDbContext userDb) {
+		public HomeController(IPrincipal principal, UserDbContext userDb) {
 			_my = principal;
 			_userDb = userDb;
 		}
 
-		readonly Principal<Guid> _my;
+		readonly IPrincipal _my;
 		readonly UserDbContext _userDb;
 
 		public IActionResult Index() {

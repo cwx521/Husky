@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.Data.Modeling
+namespace Husky.Sugar
 {
 	[Flags]
 	public enum RowStatus

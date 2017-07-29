@@ -1,12 +1,13 @@
-﻿using Husky.Data.ModelBuilding;
+﻿using Husky.Data;
+using Husky.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Husky.Users.Data
 {
-	public class UserDbContext : DbContext
+	public class UserDbContext : DbContextBase
 	{
-		public UserDbContext(DbContextOptions options) : base(options) {
+		public UserDbContext(IDatabaseFinder connstr) : base(connstr) {
 		}
 
 		public DbSet<User> Users { get; set; }
@@ -20,7 +21,7 @@ namespace Husky.Users.Data
 				user.HasMany(x => x.LoginRecords).WithOne(x => x.User).HasForeignKey(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 				user.HasMany(x => x.ChangeRecords).WithOne(x => x.User).HasForeignKey(x => x.UserId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 			});
-			modelBuilder.Custom<UserDbContext>();
+			base.OnModelCreating(modelBuilder);
 		}
 	}
 }

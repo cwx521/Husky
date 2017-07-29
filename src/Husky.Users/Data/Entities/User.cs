@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Husky.Data.ModelBuilding.Annotations;
-using Husky.Data.Modeling;
+using Husky.Sugar;
 
 namespace Husky.Users.Data
 {

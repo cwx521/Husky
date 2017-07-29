@@ -7,13 +7,6 @@ namespace Husky.Data
 {
 	public static class DbContextExtensions
 	{
-		public static string LocalIntegratedSecurityConnectionString(this DbContext context, string databaseName) {
-			if ( string.IsNullOrWhiteSpace(databaseName) ) {
-				throw new ArgumentNullException(nameof(databaseName));
-			}
-			return $"Data Source=localhost;Initial Catalog={databaseName};Integrated Security=True";
-		}
-
 		public static void Update<TDbContext, TEntity>(this TDbContext context, TEntity entity, params string[] updatingFields)
 			where TDbContext : DbContext
 			where TEntity : class {

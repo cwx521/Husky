@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Husky.Data.Modeling;
 using Husky.Sugar;
 using Husky.Users.Data;
 using Microsoft.EntityFrameworkCore;

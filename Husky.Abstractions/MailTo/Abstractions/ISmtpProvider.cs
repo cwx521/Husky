@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Husky.MailTo.Abstractions
+﻿namespace Husky.MailTo.Abstractions
 {
 	public interface ISmtpProvider
 	{

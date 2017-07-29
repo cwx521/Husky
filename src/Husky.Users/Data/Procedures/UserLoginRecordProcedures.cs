@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Users.Data
 {
-	public static class UserLoginRecordProcedure
+	public static class UserLoginRecordProcedures
 	{
 		public static bool IsSuspendFurtherLoginAttemptionByFailureRecordsAnalysis(this UserDbContext userDb, Guid userId, TimeSpan withinTime, int maxAllowedAttemptionTimes = 5) {
 			var array = userDb.UserLoginRecords

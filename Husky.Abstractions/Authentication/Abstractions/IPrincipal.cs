@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
 
 namespace Husky.Authentication.Abstractions
 {
@@ -7,6 +6,5 @@ namespace Husky.Authentication.Abstractions
 	{
 		IIdentityManager IdentityManager { get; }
 		IServiceProvider ServiceProvider { get; }
-		HttpContext HttpContext { get; }
 	}
 }

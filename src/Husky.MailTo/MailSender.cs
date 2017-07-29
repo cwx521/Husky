@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.MailTo;
@@ -15,14 +16,14 @@ namespace Husky.Smtp
 	public class MailSender : IMailSender
 	{
 		public MailSender(IServiceProvider serviceProvider) {
-			_db = serviceProvider.GetRequiredService<MailToDbContext>();
+			_db = serviceProvider.GetRequiredService<MailDbContext>();
 			_smtp = serviceProvider.GetService<ISmtpProvider>() ?? GetSmtpProvider();
 		}
 
-		readonly MailToDbContext _db;
+		readonly MailDbContext _db;
 		readonly ISmtpProvider _smtp;
 
-		public MailToDbContext DbContext => _db;
+		public MailDbContext DbContext => _db;
 
 		public async Task Send(MailMessage mailMessage) => await Send(mailMessage, null);
 		public async Task Send(MailMessage mailMessage, Action<MailSendCompletedEventArgs> onCompleted) {
@@ -41,7 +42,7 @@ namespace Husky.Smtp
 					await _db.SaveChangesAsync();
 
 					await Task.Run(() => {
-						onCompleted?.Invoke(new MailSendCompletedEventArgs { MailRecord = mailRecord });
+						onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
 					});
 				};
 				await client.SendAsync(BuildMimeMessage(mailMessage));
@@ -68,7 +69,7 @@ namespace Husky.Smtp
 
 				Attachments = mailMessage.Attachments.Select(a => new MailRecordAttachment {
 					Name = a.Name,
-					ContentStream = a.ContentStream,
+					ContentStream = ReadStream(a.ContentStream),
 					ContentType = a.ContentType
 				}).ToList()
 			};
@@ -106,6 +107,13 @@ namespace Husky.Smtp
 				mime.Body = multipart;
 			}
 			return mime;
+		}
+
+		private byte[] ReadStream(Stream stream) {
+			var length = stream.Length;
+			var bytes = new byte[length];
+			stream.Read(bytes, 0, (int)length);
+			return bytes;
 		}
 	}
 }

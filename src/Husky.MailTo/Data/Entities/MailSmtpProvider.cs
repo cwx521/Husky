@@ -11,15 +11,15 @@ namespace Husky.MailTo.Data
 	{
 		public Guid Id { get; set; } = Guid.NewGuid();
 
-		[Key, MaxLength(80), Column(Order = 0, TypeName = "varchar")]
+		[Key, MaxLength(100), Column(Order = 0, TypeName = "varchar(100)")]
 		public string Host { get; set; }
 
-		[Key, MaxLength(50), Column(Order = 1, TypeName = "varchar")]
+		[Key, MaxLength(50), Column(Order = 1, TypeName = "varchar(50)")]
 		public string CredentialName { get; set; }
 
 		public int Port { get; set; } = 25;
 
-		[Required, MaxLength(64), Column(TypeName = "varchar"), EditorBrowsable(EditorBrowsableState.Never)]
+		[Required, MaxLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
 		public string PasswordEncrypted { get; set; }
 
 		public bool IsInUse { get; set; }

@@ -8,13 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Data.ModelBuilding
 {
-	public static class ModelBuilderExtensions
+	public static class ModelBuilderForSqlServerExtensions
 	{
-		public static ModelBuilder Custom<TDbContext>(this ModelBuilder modelBuilder, CustomModelBuilderOptions options = null) where TDbContext : DbContext {
+		public static ModelBuilder ForSqlServer<TDbContext>(this ModelBuilder modelBuilder, CustomModelBuilderOptions options = null)
+			where TDbContext : DbContext {
+			return modelBuilder.ForSqlServer(typeof(TDbContext), options);
+		}
+
+		internal static ModelBuilder ForSqlServer(this ModelBuilder modelBuilder, Type dbContextType, CustomModelBuilderOptions options = null) {
 			options = options ?? new CustomModelBuilderOptions();
 
 			// Try to read all entities types from DbContext
-			var entityTypeSets = typeof(TDbContext).GetProperties();
+			var entityTypeSets = dbContextType.GetProperties();
 			foreach ( var potential in entityTypeSets ) {
 				var entityType = potential.PropertyType.GetGenericArguments().FirstOrDefault();
 				if ( entityType == null || potential.PropertyType.Name != "DbSet`1" ) {
