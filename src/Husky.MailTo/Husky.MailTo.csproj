@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Husky.Abstractions\Husky.Abstractions.csproj" />
+    <ProjectReference Include="..\Husky.Abstractions\Husky.Abstractions.csproj" />
     <ProjectReference Include="..\Husky.Data\Husky.Data.csproj" />
   </ItemGroup>
 

@@ -58,9 +58,10 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Husky.Abstractions\Husky.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Abstractions\Husky.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Husky.Authentication\Husky.Authentication.csproj" />
     <ProjectReference Include="..\..\src\Husky.Data\Husky.Data.csproj" />
+    <ProjectReference Include="..\..\src\Husky.I18N\Husky.I18N.csproj" />
     <ProjectReference Include="..\..\src\Husky.MailTo\Husky.MailTo.csproj" />
     <ProjectReference Include="..\..\src\Husky.Sugar\Husky.Sugar.csproj" />
     <ProjectReference Include="..\..\src\Husky.Users\Husky.Users.csproj" />

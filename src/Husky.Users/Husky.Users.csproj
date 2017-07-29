@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Husky.Authentication\Husky.Authentication.csproj" />
     <ProjectReference Include="..\Husky.Data\Husky.Data.csproj" />
+    <ProjectReference Include="..\Husky.I18N\Husky.I18N.csproj" />
   </ItemGroup>
 
 </Project>

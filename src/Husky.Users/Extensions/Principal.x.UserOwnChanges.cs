@@ -22,10 +22,10 @@ namespace Husky.Users.Extensions
 
 		private async Task<Result> Change(string field, object value, bool allowNull = false) {
 			if ( _my.IsAnonymous ) {
-				return new Failure("您还没有登录。");
+				return new Failure("您还没有登录。".Xslate());
 			}
 			if ( (!allowNull && (value == null || value is string str && string.IsNullOrEmpty(str))) ) {
-				return new Failure("不能空白。");
+				return new Failure("不能空白。".Xslate());
 			}
 
 			var isTaken = await _userDb.Users
@@ -34,7 +34,7 @@ namespace Husky.Users.Extensions
 				.AnyAsync();
 
 			if ( isTaken ) {
-				return new Failure($"“{value}”正在被其他帐号使用。");
+				return new Failure("“{0}”正在被其他帐号使用。".Xslate(value));
 			}
 
 			var entry = _userDb.ChangeTracker.Entries<User>().SingleOrDefault(x => x.Entity.Id == _my.Id<Guid>())

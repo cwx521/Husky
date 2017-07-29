@@ -10,27 +10,27 @@ namespace Husky.Users.Extensions
 	{
 		public async Task<Result<User>> SignUp(AccountNameType accountNameType, string accountName, string password, bool verified) {
 			if ( string.IsNullOrEmpty(accountName) ) {
-				return new Failure<User>("帐号不能为空。");
+				return new Failure<User>("帐号不能为空。".Xslate());
 			}
 			if ( string.IsNullOrEmpty(password) ) {
-				return new Failure<User>("密码不能为空。");
+				return new Failure<User>("密码不能为空。".Xslate());
 			}
 
 			var isEmail = accountName.IsEmail();
 			var isMobile = accountName.IsMainlandMobile();
 
 			if ( !isEmail && accountNameType == AccountNameType.Email ) {
-				return new Failure<User>($"{accountName} 必须是有效的邮箱地址。");
+				return new Failure<User>("{0} 必须是有效的邮箱地址。".Xslate(accountName));
 			}
 			if ( !isMobile && accountNameType == AccountNameType.Mobile ) {
-				return new Failure<User>($"{accountName} 必须是有效的手机号。");
+				return new Failure<User>("{0} 必须是有效的手机号。".Xslate(accountName));
 			}
 
 			var isAccountTaken = isEmail
 					? await _userDb.Users.AnyAsync(x => x.Email == accountName)
 					: await _userDb.Users.AnyAsync(x => x.Mobile == accountName);
 			if ( isAccountTaken ) {
-				return new Failure<User>($"{accountName} 已经被注册了。");
+				return new Failure<User>("{0} 已经被注册了。".Xslate(accountName));
 			}
 
 			var user = new User {
@@ -43,7 +43,7 @@ namespace Husky.Users.Extensions
 			_userDb.Add(user);
 
 			await _userDb.SaveChangesAsync();
-			await AddLoginRecord(user, accountName, null, LoginResult.Success, "新注册。");
+			await AddLoginRecord(user, accountName, null, LoginResult.Success, "新注册。".Xslate());
 			return new Success<User>(user);
 		}
 
@@ -86,7 +86,7 @@ namespace Husky.Users.Extensions
 				LoginResult = result,
 				UserId = user?.Id,
 				InputAccount = inputAccount,
-				SickPassword = sickPassword?.Length > 18 ? "(超出18位)" : sickPassword,
+				SickPassword = sickPassword?.Length > 18 ? "(超出18位)".Xslate() : sickPassword,
 				Description = description,
 				UserAgent = _http.Request.Headers["User-Agent"],
 				Ip = _http.Connection.RemoteIpAddress.ToString()
