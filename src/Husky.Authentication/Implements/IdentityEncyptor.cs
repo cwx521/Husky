@@ -27,19 +27,21 @@ namespace Husky.Authentication.Implements
 				var str = Crypto.Decrypt(encryptedString, token);
 				var a = str.IndexOf('|');
 				var b = str.LastIndexOf('|');
-				var validation = str.Substring(b + 1);
-				var identity = new Identity {
-					IdString = str.Substring(0, a),
-					DisplayName = str.Substring(a + 1, b - a - 1)
-				};
-				if ( Crypto.SHA1(identity.IdString + identity.DisplayName + token) != validation ) {
-					return null;
+
+				if ( a != -1 && b > a ) {
+					var validation = str.Substring(b + 1);
+					var identity = new Identity {
+						IdString = str.Substring(0, a),
+						DisplayName = str.Substring(a + 1, b - a - 1)
+					};
+					if ( Crypto.SHA1(identity.IdString + identity.DisplayName + token) == validation ) {
+						return identity;
+					}
 				}
-				return identity;
 			}
 			catch {
-				return null;
 			}
+			return null;
 		}
 	}
 }
