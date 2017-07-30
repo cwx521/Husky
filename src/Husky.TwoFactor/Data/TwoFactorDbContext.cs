@@ -6,7 +6,7 @@ namespace Husky.TwoFactor.Data
 {
 	public class TwoFactorDbContext : DbContextBase
 	{
-		public TwoFactorDbContext(IDatabaseFinder connstr) : base(connstr) {
+		public TwoFactorDbContext(IDatabaseFinder finder) : base(finder) {
 		}
 
 		public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }

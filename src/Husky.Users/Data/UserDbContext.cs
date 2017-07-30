@@ -7,7 +7,7 @@ namespace Husky.Users.Data
 {
 	public class UserDbContext : DbContextBase
 	{
-		public UserDbContext(IDatabaseFinder connstr) : base(connstr) {
+		public UserDbContext(IDatabaseFinder finder) : base(finder) {
 		}
 
 		public DbSet<User> Users { get; set; }

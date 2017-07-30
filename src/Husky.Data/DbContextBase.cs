@@ -6,8 +6,8 @@ namespace Husky.Data
 {
 	public abstract class DbContextBase : DbContext
 	{
-		public DbContextBase(IDatabaseFinder connstr) {
-			DatabaseFinder = connstr;
+		public DbContextBase(IDatabaseFinder finder) {
+			DatabaseFinder = finder;
 		}
 
 		protected IDatabaseFinder DatabaseFinder { get; private set; }

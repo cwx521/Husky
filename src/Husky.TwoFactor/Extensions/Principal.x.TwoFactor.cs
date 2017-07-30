@@ -6,7 +6,7 @@ using Husky.MailTo.Abstractions;
 using Husky.Sugar;
 using Husky.TwoFactor.Data;
 
-namespace Husky.TwoFactor
+namespace Husky.TwoFactor.Extensions
 {
 	public sealed partial class PrincipalTwoFactorExtensions
 	{

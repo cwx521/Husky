@@ -2,9 +2,7 @@
 using Husky.Authentication.Implements;
 using Husky.Data;
 using Husky.Data.Abstractions;
-using Husky.MailTo;
-using Husky.TwoFactor;
-using Husky.Users;
+using Husky.Injection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

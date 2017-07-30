@@ -19,9 +19,10 @@ namespace Husky.Authentication
 		}
 
 		public T? Id {
-			get => IdString.As<T>();
+			get => Id<T>();
 			set => IdString = value?.ToString();
 		}
+
 		public IIdentityManager IdentityManager { get; private set; }
 		public IServiceProvider ServiceProvider { get; private set; }
 	}

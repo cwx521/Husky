@@ -3,7 +3,7 @@
 	public sealed class CustomModelBuilderOptions
 	{
 		public bool AnnotatedIndices { get; set; } = true;
-		public bool AnnotatedDefaultValueSql { get; set; }
-		public bool AutoDetectedDefaultValueSql { get; set; }
+		public bool AnnotatedDefaultValueSql { get; set; } = true;
+		public bool AutoDetectedDefaultValueSql { get; set; } = true;
 	}
 }

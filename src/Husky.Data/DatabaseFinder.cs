@@ -19,13 +19,13 @@ namespace Husky.Data
 		public DatabaseProvider Provider { get; set; }
 		public string ConnectionString { get; set; }
 
+
 		public static string LocalIntegratedSecurityConnectionString(string databaseName) {
 			if ( string.IsNullOrWhiteSpace(databaseName) ) {
 				throw new ArgumentNullException(nameof(databaseName));
 			}
 			return $"Data Source=localhost;Initial Catalog={databaseName};Integrated Security=True";
 		}
-
 		public static string LocalIntegratedSecurityConnectionString<T>() where T: DbContext {
 			return LocalIntegratedSecurityConnectionString(nameof(T));
 		}

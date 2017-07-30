@@ -7,7 +7,7 @@ namespace Husky.MailTo.Data
 {
 	public class MailDbContext : DbContextBase
 	{
-		public MailDbContext(IDatabaseFinder connstr) : base(connstr) {
+		public MailDbContext(IDatabaseFinder finder) : base(finder) {
 		}
 
 		public DbSet<MailSmtpProvider> MailSmtpProviders { get; set; }

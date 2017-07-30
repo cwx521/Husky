@@ -1,15 +1,16 @@
 ﻿using System;
+using Husky.Authentication;
 using Husky.Authentication.Abstractions;
 using Husky.Authentication.Implements;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.Authentication
+namespace Husky.Injection
 {
-	public static class ServiceRegisterAuthentication
+	public static class RegSvcAuthentication
 	{
 		public static IServiceCollection AddHuskyAuthentication(this IServiceCollection services, IdType idType, IdentityCarrier carrier, IdentityOptions options) => services
-			
+
 			.AddSingleton<IIdentityManager>(svc => {
 				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				switch ( carrier ) {
@@ -21,7 +22,7 @@ namespace Husky.Authentication
 			})
 
 			.AddScoped<IPrincipal>(svc => {
-				var identityManager = svc.GetRequiredService<IIdentityManager>(); ;
+				var identityManager = svc.GetRequiredService<IIdentityManager>();
 				switch ( idType ) {
 					default: throw new ArgumentOutOfRangeException(nameof(idType));
 					case IdType.Guid: return new Principal<Guid>(identityManager, svc);
