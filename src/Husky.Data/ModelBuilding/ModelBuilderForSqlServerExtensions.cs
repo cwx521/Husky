@@ -63,6 +63,13 @@ namespace Husky.Data.ModelBuilding
 									.OrderBy(x => x.GetCustomAttribute<ColumnAttribute>()?.Order)
 									.Select(x => x.Name)
 									.ToArray();
+
+								if ( primaryKeyFieldNames.Length == 0 ) {
+									primaryKeyFieldNames = properties
+										.Where(x => x.Name == "Id" || x.Name == (entityType.Name + "Id"))
+										.Select(x => x.Name)
+										.ToArray();
+								}
 								entityTypeBuilder.HasKey(primaryKeyFieldNames).ForSqlServerIsClustered(false);
 							}
 

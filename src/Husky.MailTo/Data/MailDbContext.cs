@@ -15,9 +15,12 @@ namespace Husky.MailTo.Data
 		public DbSet<MailRecordAttachment> MailRecordAttachments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
+			modelBuilder.Entity<MailSmtpProvider>(smtp => {
+				smtp.HasAlternateKey(x => new { x.Host, x.CredentialName });
+				smtp.HasMany(x => x.SentMails).WithOne(x => x.Smtp).HasForeignKey(x => x.SmtpId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+			});
 			modelBuilder.Entity<MailRecord>().HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-			modelBuilder.Entity<MailSmtpProvider>().HasKey(x => new { x.Host, x.CredentialName });
-			modelBuilder.Entity<MailSmtpProvider>().HasAlternateKey(x => x.Id);
+			
 			base.OnModelCreating(modelBuilder);
 		}
 	}

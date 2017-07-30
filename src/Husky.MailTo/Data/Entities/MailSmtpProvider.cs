@@ -1,34 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Husky.MailTo.Abstractions;
-using Husky.Sugar;
 
 namespace Husky.MailTo.Data
 {
 	public partial class MailSmtpProvider : ISmtpProvider
 	{
+		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
 
-		[Key, MaxLength(100), Column(Order = 0, TypeName = "varchar(100)")]
+		[MaxLength(100), Column(TypeName = "varchar(100)")]
 		public string Host { get; set; }
 
-		[Key, MaxLength(50), Column(Order = 1, TypeName = "varchar(50)")]
+		[MaxLength(50), Column(TypeName = "varchar(50)")]
 		public string CredentialName { get; set; }
 
 		public int Port { get; set; } = 25;
 
+		public bool Ssl { get; set; }
+
 		[Required, MaxLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
 		public string PasswordEncrypted { get; set; }
+
+		[MaxLength(50), Column(TypeName = "varchar(50)")]
+		public string SenderMailAddress { get; set; }
+
+		[MaxLength(50), Column(TypeName = "varchar(50)")]
+		public string SenderDisplayName { get; set; }
 
 		public bool IsInUse { get; set; }
 
 
 		[NotMapped]
 		public string Password {
-			get { return Crypto.Decrypt(PasswordEncrypted, Id.ToString()); }
-			set { Crypto.Encrypt(value, Id.ToString()); }
+			get => PasswordEncrypted;
+			set => PasswordEncrypted = value;
 		}
+
+		public List<MailRecord> SentMails { get; set; }
 	}
 }

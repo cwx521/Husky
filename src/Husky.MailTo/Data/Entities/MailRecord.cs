@@ -10,6 +10,8 @@ namespace Husky.MailTo.Data
 		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
 
+		public Guid? SmtpId { get; set; }
+
 		[MaxLength(200)]
 		public string Subject { get; set; }
 
@@ -24,7 +26,7 @@ namespace Husky.MailTo.Data
 		[MaxLength(2000)]
 		public string Cc { get; set; }
 
-		[MaxLength(200)]
+		[MaxLength(500)]
 		public string Exception { get; set; }
 
 		public bool IsSuccessful { get; set; }
@@ -33,6 +35,7 @@ namespace Husky.MailTo.Data
 		public DateTime CreateTime { get; set; } = DateTime.Now;
 
 
+		public MailSmtpProvider Smtp { get; set; }
 		public List<MailRecordAttachment> Attachments { get; set; }
 	}
 }

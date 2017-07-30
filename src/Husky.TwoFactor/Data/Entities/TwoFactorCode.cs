@@ -9,6 +9,7 @@ namespace Husky.TwoFactor.Data
 {
 	public class TwoFactorCode
 	{
+		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
 
 		public Guid? UserId { get; set; }

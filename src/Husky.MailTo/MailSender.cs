@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,41 +19,55 @@ namespace Husky.Smtp
 	{
 		public MailSender(IServiceProvider serviceProvider) {
 			_db = serviceProvider.GetRequiredService<MailDbContext>();
-			_smtp = serviceProvider.GetService<ISmtpProvider>() ?? GetInternalSmtpProvider();
+			_givenSmtp = serviceProvider.GetService<ISmtpProvider>();
 		}
 
 		readonly MailDbContext _db;
-		readonly ISmtpProvider _smtp;
+		readonly ISmtpProvider _givenSmtp;
 
 		public MailDbContext DbContext => _db;
 
 		public async Task Send(MailMessage mailMessage) => await Send(mailMessage, null);
+
+		public async Task Send(string recipient, string subject, string content) {
+			if ( string.IsNullOrEmpty(recipient) ) {
+				throw new ArgumentNullException(nameof(recipient));
+			}
+			await Send(new MailMessage {
+				Subject = subject,
+				Body = content,
+				IsHtml = true,
+				To = new List<MailAddress> { new MailAddress { Address = recipient } }
+			});
+		}
 
 		public async Task Send(MailMessage mailMessage, Action<MailSendCompletedEventArgs> onCompleted) {
 			if ( mailMessage == null ) {
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
+			var smtp = _givenSmtp ?? GetInternalSmtpProvider();
+			var mailRecord = CreateMailRecord(mailMessage);
+
+			if ( smtp is MailSmtpProvider internalSmtp ) {
+				mailRecord.SmtpId = internalSmtp.Id;
+			}
+
+			_db.Add(mailRecord);
+			await _db.SaveChangesAsync();
+
 			using ( var client = new SmtpClient() ) {
-				var mailRecord = CreateMailRecord(mailMessage);
-
-				_db.Add(mailRecord);
-				await _db.SaveChangesAsync();
-
+				client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+					mailRecord.IsSuccessful = true;
+					await _db.SaveChangesAsync();
+					await Task.Run(() => {
+						onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
+					});
+				};
 				try {
-					client.Connect(_smtp.Host, _smtp.Port, false);
-					client.Authenticate(_smtp.CredentialName, _smtp.Password);
-					client.AuthenticationMechanisms.Remove("XOAUTH2");
-
-					client.MessageSent += async (object sender, MessageSentEventArgs e) => {
-						mailRecord.IsSuccessful = true;
-						await _db.SaveChangesAsync();
-
-						await Task.Run(() => {
-							onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
-						});
-					};
-					await client.SendAsync(BuildMimeMessage(mailMessage));
+					await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
+					await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
+					await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
 				}
 				catch ( Exception ex ) {
 					mailRecord.Exception = ex.Message.Left(200);
@@ -61,10 +76,10 @@ namespace Husky.Smtp
 			}
 		}
 
-		private ISmtpProvider GetInternalSmtpProvider() {
+		private MailSmtpProvider GetInternalSmtpProvider() {
 			var haveCount = _db.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( haveCount == 0 ) {
-				throw new ArgumentOutOfRangeException("（邮件发送模块）还没有配置任何SMTP服务。");
+				throw new Exception("（邮件发送模块）还没有配置任何SMTP服务。".Xslate());
 			}
 			var skip = new Random().Next(0, haveCount);
 			return _db.MailSmtpProviders.Skip(skip).First();
@@ -87,22 +102,24 @@ namespace Husky.Smtp
 			};
 		}
 
-		private MimeMessage BuildMimeMessage(MailMessage mailMessage) {
-			var mime = new MimeMessage();
+		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
+			var mail = new MimeMessage();
 
 			// Subject
-			mime.Subject = mailMessage.Subject;
+			mail.Subject = mailMessage.Subject;
+			// From
+			mail.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
 			// To
-			mailMessage.To.ForEach(to => mime.To.Add(new MailboxAddress(to.Name, to.Address)));
+			mailMessage.To.ForEach(to => mail.To.Add(new MailboxAddress(to.Name, to.Address)));
 			// Cc
-			mailMessage.Cc.ForEach(cc => mime.Cc.Add(new MailboxAddress(cc.Name, cc.Address)));
+			mailMessage.Cc.ForEach(cc => mail.Cc.Add(new MailboxAddress(cc.Name, cc.Address)));
 
 			// Body
 			var body = new TextPart(mailMessage.IsHtml ? TextFormat.Html : TextFormat.Text) {
 				Text = mailMessage.Body
 			};
 			if ( mailMessage.Attachments?.Count == 0 ) {
-				mime.Body = body;
+				mail.Body = body;
 			}
 			// Or: Body + Attachments
 			else {
@@ -116,9 +133,9 @@ namespace Husky.Smtp
 					});
 				});
 				multipart.Add(body);
-				mime.Body = multipart;
+				mail.Body = multipart;
 			}
-			return mime;
+			return mail;
 		}
 
 		private byte[] ReadStream(Stream stream) {

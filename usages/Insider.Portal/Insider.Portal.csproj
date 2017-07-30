@@ -64,6 +64,7 @@
     <ProjectReference Include="..\..\src\Husky.I18N\Husky.I18N.csproj" />
     <ProjectReference Include="..\..\src\Husky.MailTo\Husky.MailTo.csproj" />
     <ProjectReference Include="..\..\src\Husky.Sugar\Husky.Sugar.csproj" />
+    <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />
     <ProjectReference Include="..\..\src\Husky.Users\Husky.Users.csproj" />
   </ItemGroup>
 

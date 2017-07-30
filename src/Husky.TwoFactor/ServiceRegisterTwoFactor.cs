@@ -10,7 +10,7 @@ namespace Husky.TwoFactor
 			.AddDbContext<TwoFactorDbContext>()
 			.AddSingleton<PrincipalTwoFactorExtensions>();
 
-		public static PrincipalTwoFactorExtensions User<T>(this T principal) where T : IPrincipal {
+		public static PrincipalTwoFactorExtensions TwoFactor<T>(this T principal) where T : IPrincipal {
 			return principal.ServiceProvider.GetRequiredService<PrincipalTwoFactorExtensions>();
 		}
 	}

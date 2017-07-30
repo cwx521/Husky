@@ -1,6 +1,7 @@
-﻿using System;
-using Husky.Authentication;
+﻿using System.Threading.Tasks;
 using Husky.Authentication.Abstractions;
+using Husky.TwoFactor;
+using Husky.TwoFactor.Data;
 using Husky.Users.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,8 @@ namespace Insider.Portal.Controllers
 		readonly IPrincipal _my;
 		readonly UserDbContext _userDb;
 
-		public IActionResult Index() {
+		public async Task<IActionResult> Index() {
+			await _my.TwoFactor().SendMeTwoFactorCode("chenwx521@hotmail.com", TwoFactorPurpose.ExistenceCheck);
 			return View();
 		}
 	}

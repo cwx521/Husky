@@ -7,5 +7,6 @@ namespace Husky.MailTo.Abstractions
     {
 		Task Send(MailMessage mailMessage);
 		Task Send(MailMessage mailMessage, Action<MailSendCompletedEventArgs> onCompleted);
+		Task Send(string recipient, string subject, string content);
 	}
 }

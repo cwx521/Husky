@@ -20,6 +20,13 @@ namespace Husky.TwoFactor
 		readonly IMailSender _mailSender;
 		readonly TwoFactorDbContext _twoFactorDb;
 
+		public async Task<Result<TwoFactorCode>> SendMeTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose) {
+			if ( emailOrMobile == null ) {
+				throw new ArgumentNullException(nameof(emailOrMobile));
+			}
+			return await SendMeTwoFactorCode(new Emobaile(emailOrMobile), purpose);
+		}
+
 		public async Task<Result<TwoFactorCode>> SendMeTwoFactorCode(Emobaile emobaile, TwoFactorPurpose purpose) {
 			if ( emobaile == null ) {
 				throw new ArgumentNullException(nameof(emobaile));
@@ -29,7 +36,7 @@ namespace Husky.TwoFactor
 			}
 			var code = new TwoFactorCode {
 				UserId = _my.Id<Guid>(),
-				PassCode = new Random().Next(0, 1000000).ToString(),
+				PassCode = new Random().Next(0, 1000000).ToString().PadLeft(6, '0'),
 				Purpose = purpose,
 				SentTo = emobaile.AccountName,
 				SentThrough = emobaile.Type.Value,
@@ -47,7 +54,14 @@ namespace Husky.TwoFactor
 			return new Success<TwoFactorCode>(code);
 		}
 
-		public bool VerifyTwoFactorCode(Emobaile emobaile, string passCode, int withinMinutes = 20) {
+		public bool VerifyTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
+			if ( emailOrMobile == null ) {
+				throw new ArgumentNullException(nameof(emailOrMobile));
+			}
+			return VerifyTwoFactorCode(new Emobaile(emailOrMobile), purpose, passCode, withinMinutes);
+		}
+
+		public bool VerifyTwoFactorCode(Emobaile emobaile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
 			if ( emobaile == null || !emobaile.IsValid ) {
 				throw new ArgumentException(nameof(emobaile));
 			}
@@ -57,6 +71,7 @@ namespace Husky.TwoFactor
 
 			var query = _twoFactorDb.TwoFactorCodes
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
+				.Where(x => x.Purpose == purpose)
 				.Where(x => x.SentTo == emobaile.AccountName);
 
 			if ( _my.IsAuthenticated ) {
@@ -67,8 +82,9 @@ namespace Husky.TwoFactor
 			return string.Compare(passCode, storedCode, true) == 0;
 		}
 
-		// todo: next work.
-		private Task SendTwoFactorCodeEmail(string accountName, string passCode) => throw new NotImplementedException();
-		private Task SendTwoFactorCodeShortMessage(string accountName, string passCode) => throw new NotImplementedException();
+		private async Task SendTwoFactorCodeEmail(string recipient, string passCode) {
+			await _mailSender.Send(recipient, "验证码".Xslate(), passCode);
+		}
+		private Task SendTwoFactorCodeShortMessage(string mobileNumber, string passCode) => throw new NotImplementedException();
 	}
 }
