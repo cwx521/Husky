@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Husky.Authentication;
+﻿using System.Threading.Tasks;
 using Husky.Authentication.Abstractions;
+using Husky.Injection;
 using Husky.Sugar;
+using Husky.TwoFactor.Data;
 using Husky.Users.Data;
 using Insider.Portal.Models.AccountModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +20,9 @@ namespace Insider.Portal.Controllers
 		readonly IPrincipal _my;
 		readonly UserDbContext _userDb;
 
-		[HttpPost("~/api/SendDynamicCode")]
-		public IActionResult SendDynamicCode(string to) {
-			return new EmptyResult();
+		[HttpPost("~/api/SendTwoFactorCode")]
+		public async Task<IActionResult> SendTwoFactorCode(string to, TwoFactorPurpose purpose) {
+			return Json(await _my.TwoFactor().RequestTwoFactorCode(to, purpose));
 		}
 
 		[HttpPost("~/api/IsAccountApplicable")]

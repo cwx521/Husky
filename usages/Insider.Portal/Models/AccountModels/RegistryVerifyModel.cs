@@ -14,7 +14,7 @@ namespace Insider.Portal.Models.AccountModels
 		[Required(ErrorMessage = "请输入您接收到的验证码。")]
 		[StringLength(6, MinimumLength = 6, ErrorMessage = "请输入正确的验证码，长度6位。")]
 		[Display(Name = "验证码")]
-		public string DynamicPassCode { get; set; }
+		public string TwoFactorCode { get; set; }
 
 
 		public Emobaile Emobaile => new Emobaile(AccountName);

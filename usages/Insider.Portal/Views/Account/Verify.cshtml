@@ -1,11 +1,12 @@
 ﻿@model RegistryVerifyModel
+@using Husky.TwoFactor.Data
 @{
 	Layout = "_Layout";
 	ViewData["Title"] = "完成注册验证";
 }
 
 @section Scripts {
-	<script type="text/javascript" src="~/js/dynamic-code-sender.js" defer></script>
+	<script type="text/javascript" src="~/js/twofactor-code-sender.js" defer></script>
 }
 
 <h3 class="mb-3">
@@ -28,16 +29,16 @@
 		</div>
 
 		<div class="row form-group">
-			<label asp-for="DynamicPassCode" class="col-lg-2 col-form-label"></label>
+			<label asp-for="TwoFactorCode" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
 				<div class="input-group">
-					<input asp-for="DynamicPassCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
+					<input asp-for="TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-secondary dynamic-code-sender" data-send-to="@Model?.AccountName" data-hint=".dynamic-code-hint">点击获取</button>
+						<button type="button" class="btn btn-secondary twofactor-code-sender" data-send-to="@Model?.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">点击获取</button>
 					</div>
 				</div>
 			</div>
-			<span asp-validation-for="DynamicPassCode" class="col-lg-6 col-form-label dynamic-code-hint"></span>
+			<span asp-validation-for="TwoFactorCode" class="col-lg-6 col-form-label twofactor-code-hint"></span>
 		</div>
 	</div>
 

@@ -20,7 +20,7 @@ namespace Husky.TwoFactor.Extensions
 		readonly IMailSender _mailSender;
 		readonly TwoFactorDbContext _twoFactorDb;
 
-		public async Task<Result<TwoFactorCode>> SendMeTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose) {
+		public async Task<Result<TwoFactorCode>> RequestTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}

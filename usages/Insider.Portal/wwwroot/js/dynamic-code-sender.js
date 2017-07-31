@@ -1,7 +1,7 @@
 ﻿$(function () {
 
-	// sending dynamic pass code
-	$(".dynamic-code-sender").click(function () {
+	// sending two-factor pass code
+	$(".twofactor-code-sender").click(function () {
 		var $this = $(this);
 		if ($this.data("sending")) {
 			return;
@@ -22,14 +22,25 @@
 		countDown();
 
 		var to = $this.data("send-to");
+		var purpose = $this.data("purpose");
 		if (to) {
-			$.post("/api/SendDynamicCode", to, function () {
-				$("[data-valmsg-for=DynamicPassCode]")
-					.removeClass("field-validation-error")
-					.addClass("field-validation-valid")
-					.html("已发送到 " + to + "，请注意查收。")
+			$.post("/api/SendTwoFactorCode", { to: to, purpose: purpose }, function (data) {
+				if (data.ok) {
+					$("[data-valmsg-for=TwoFactorCode]")
+						.removeClass("field-validation-error")
+						.addClass("field-validation-valid")
+						.html("已发送到 " + to + "，请注意查收。")
+				}
+				else {
+					$("[data-valmsg-for=TwoFactorCode]")
+						.addClass("field-validation-error")
+						.removeClass("field-validation-valid")
+						.html("发送失败，请重试。")
+
+					$this.removeData("sending").html(label);
+				}
 			});
 		}
-	});
-	$(".dynamic-code-sender").click();
+
+	}).click();
 });

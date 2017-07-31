@@ -15,7 +15,7 @@ namespace Insider.Portal.Controllers
 		readonly IPrincipal _my;
 
 		public async Task<IActionResult> Index() {
-			await _my.TwoFactor().SendMeTwoFactorCode("chenwx521@hotmail.com", TwoFactorPurpose.ExistenceCheck);
+			await _my.TwoFactor().RequestTwoFactorCode("chenwx521@hotmail.com", TwoFactorPurpose.ExistenceCheck);
 			return View();
 		}
 	}
