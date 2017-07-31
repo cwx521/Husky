@@ -54,9 +54,5 @@ namespace Husky.Sugar
 				return defaultValue;
 			}
 		}
-
-		public static string ToYesNo(this bool flag) => flag ? "Yes" : "No";
-		public static string WhenTrue(this bool flag, string strTrue = "Yes") => flag ? strTrue : "";
-		public static string WhenFalse(this bool flag, string strFalse = "No") => flag ? "" : strFalse;
 	}
 }

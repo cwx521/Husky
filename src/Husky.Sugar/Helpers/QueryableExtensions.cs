@@ -20,7 +20,6 @@ namespace Husky.Sugar
 		private static IOrderedQueryable<T> _OrderBy<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderBy(Selector<T, TProp>(propertyPath));
 		private static IOrderedQueryable<T> _OrderByDescending<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderByDescending(Selector<T, TProp>(propertyPath));
 
-
 		#endregion
 
 		#region ThenBy

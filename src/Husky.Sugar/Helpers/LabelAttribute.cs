@@ -2,7 +2,7 @@
 
 namespace Husky.Sugar
 {
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
 	public sealed class LabelAttribute : Attribute
 	{
 		public LabelAttribute(string label, string description = null) {
