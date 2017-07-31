@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using Husky.Data.ModelBuilding.Annotations;
 
 namespace Husky.MailTo.Data

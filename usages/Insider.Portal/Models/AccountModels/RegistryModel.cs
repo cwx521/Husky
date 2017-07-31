@@ -7,15 +7,11 @@ namespace Insider.Portal.Models.AccountModels
 {
 	public class RegistryModel
 	{
-		const string _mobilePattern = @"^1[3578]\d{9}$";
-		const string _emailPattern = @"^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
-
 		const string _typeName = "邮箱";
-		const string _typePattern = _emailPattern;
 		public EmobaileType AccountNameType => EmobaileType.Email;
 
 		[Required(ErrorMessage = "必须填写，请用您的" + _typeName + "作为帐号名。")]
-		[RegularExpression(_typePattern, ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]
+		[EmailAddress(ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]
 		[Remote(nameof(ApiController.IsAccountApplicable), "Api", AdditionalFields = nameof(AccountNameType), HttpMethod = "POST", ErrorMessage = "{0}已经被注册了。")]
 		[Display(Name = _typeName)]
 		public string AccountName { get; set; }

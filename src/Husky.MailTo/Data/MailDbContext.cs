@@ -20,7 +20,7 @@ namespace Husky.MailTo.Data
 				smtp.HasMany(x => x.SentMails).WithOne(x => x.Smtp).HasForeignKey(x => x.SmtpId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 			});
 			modelBuilder.Entity<MailRecord>().HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-			
+
 			base.OnModelCreating(modelBuilder);
 		}
 	}

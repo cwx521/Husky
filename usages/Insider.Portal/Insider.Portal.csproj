@@ -10,6 +10,7 @@
     <Content Include="wwwroot\css\site.css" />
     <Content Include="wwwroot\js\app.js" />
     <Content Include="wwwroot\js\dynamic-code-sender.js" />
+    <Content Include="wwwroot\js\twofactor-code-sender.js" />
     <Content Include="wwwroot\lib\bootstrap\css\bootstrap.css" />
     <Content Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
     <Content Include="wwwroot\lib\bootstrap\css\bootstrap.min.css" />

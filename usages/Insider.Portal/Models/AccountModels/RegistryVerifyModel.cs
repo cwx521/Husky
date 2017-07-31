@@ -16,7 +16,6 @@ namespace Insider.Portal.Models.AccountModels
 		[Display(Name = "验证码")]
 		public string TwoFactorCode { get; set; }
 
-
 		public Emobaile Emobaile => new Emobaile(AccountName);
 	}
 }
