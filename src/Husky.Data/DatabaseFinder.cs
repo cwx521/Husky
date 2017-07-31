@@ -26,7 +26,7 @@ namespace Husky.Data
 			}
 			return $"Data Source=localhost;Initial Catalog={databaseName};Integrated Security=True";
 		}
-		public static string LocalIntegratedSecurityConnectionString<T>() where T: DbContext {
+		public static string LocalIntegratedSecurityConnectionString<T>() where T : DbContext {
 			return LocalIntegratedSecurityConnectionString(nameof(T));
 		}
 	}

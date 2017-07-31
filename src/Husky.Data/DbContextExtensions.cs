@@ -11,7 +11,7 @@ namespace Husky.Data
 		public static EntityEntry<TEntity> AddOrUpdate<TDbContext, TEntity>(this TDbContext context, TEntity entity)
 			where TDbContext : DbContext
 			where TEntity : class {
-			
+
 			if ( context == null ) {
 				throw new ArgumentNullException(nameof(context));
 			}

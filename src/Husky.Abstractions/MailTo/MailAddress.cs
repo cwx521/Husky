@@ -7,7 +7,7 @@ namespace Husky.MailTo
 	{
 		public string Name { get; set; }
 		public string Address { get; set; }
-		
+
 		public static MailAddress Parse(string formattedString) {
 			if ( formattedString == null ) {
 				throw new ArgumentNullException(nameof(formattedString));

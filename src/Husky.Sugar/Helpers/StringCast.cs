@@ -11,7 +11,7 @@ namespace Husky.Sugar
 		}
 
 		public static string EmptyAsNull(this string str) {
-			return  string.IsNullOrEmpty(str) ? null : str;
+			return string.IsNullOrEmpty(str) ? null : str;
 		}
 
 		public static string EmptyOrWhiteSpaceAsNull(this string str) {

@@ -24,12 +24,12 @@ namespace Insider.Portal.Models.AccountModels
 		[StringLength(18, MinimumLength = 8, ErrorMessage = "密码长度须在{2}-{1}位之间。")]
 		[DataType(DataType.Password)]
 		[Display(Name = "密码")]
-		public  string Password { get; set; }
+		public string Password { get; set; }
 
 		[Required(ErrorMessage = "重复输入一遍密码。")]
 		[MaxLength(15), Compare(nameof(Password), ErrorMessage = "两次密码输入不一致。")]
 		[DataType(DataType.Password)]
 		[Display(Name = "密码确认")]
-		public  string PasswordConfirm { get; set; }
+		public string PasswordConfirm { get; set; }
 	}
 }
