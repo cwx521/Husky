@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Husky.Sugar;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Husky.Data
+namespace Microsoft.EntityFrameworkCore
 {
 	public static class DbContextExtensions
 	{
