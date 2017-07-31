@@ -1,4 +1,4 @@
-﻿namespace Husky.Data.Abstractions
+﻿namespace Husky.Data
 {
 	public enum DatabaseProvider
 	{

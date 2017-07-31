@@ -1,6 +1,6 @@
 ﻿namespace Husky.MailTo
 {
-	public class MailSendCompletedEventArgs
+	public sealed class MailSentEventArgs
 	{
 		public MailMessage MailMessage { get; set; }
 	}

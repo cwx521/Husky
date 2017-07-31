@@ -41,7 +41,7 @@ namespace Husky.Smtp
 			});
 		}
 
-		public async Task Send(MailMessage mailMessage, Action<MailSendCompletedEventArgs> onCompleted) {
+		public async Task Send(MailMessage mailMessage, Action<MailSentEventArgs> onCompleted) {
 			if ( mailMessage == null ) {
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
@@ -61,7 +61,7 @@ namespace Husky.Smtp
 					mailRecord.IsSuccessful = true;
 					await _db.SaveChangesAsync();
 					await Task.Run(() => {
-						onCompleted?.Invoke(new MailSendCompletedEventArgs { MailMessage = mailMessage });
+						onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
 					});
 				};
 				try {

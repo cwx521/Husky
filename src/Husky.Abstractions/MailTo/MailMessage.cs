@@ -2,7 +2,7 @@
 
 namespace Husky.MailTo
 {
-	public class MailMessage
+	public sealed class MailMessage
 	{
 		public string Subject { get; set; }
 		public string Body { get; set; }

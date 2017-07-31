@@ -2,7 +2,7 @@
 
 namespace Husky.MailTo
 {
-	public class MailAttachment
+	public sealed class MailAttachment
 	{
 		public string Name { get; set; }
 		public Stream ContentStream { get; set; }

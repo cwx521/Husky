@@ -1,6 +1,4 @@
-﻿using System.Security.Authentication;
-
-namespace Husky.MailTo.Abstractions
+﻿namespace Husky.MailTo.Abstractions
 {
 	public interface ISmtpProvider
 	{
