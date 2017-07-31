@@ -1,6 +1,5 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
-using Husky.Sugar;
 
 namespace Husky.Authentication
 {

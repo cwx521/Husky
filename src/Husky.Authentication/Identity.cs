@@ -12,7 +12,7 @@ namespace Husky.Authentication
 		public virtual bool IsAnonymous => !string.IsNullOrWhiteSpace(IdString);
 		public virtual bool IsAuthenticated => !IsAnonymous;
 
-		public T? Id<T>() where T : struct, IFormattable, IEquatable<T> {
+		public virtual T? Id<T>() where T : struct, IFormattable, IEquatable<T> {
 			if ( string.IsNullOrEmpty(IdString) ) {
 				return null;
 			}
