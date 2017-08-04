@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Husky.MailTo.Migrations
+namespace Husky.Mail.Migrations
 {
     public partial class Init : Migration
     {

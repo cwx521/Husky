@@ -1,4 +1,4 @@
-﻿namespace Husky.MailTo.Abstractions
+﻿namespace Husky.Mail.Abstractions
 {
 	public interface ISmtpProvider
 	{

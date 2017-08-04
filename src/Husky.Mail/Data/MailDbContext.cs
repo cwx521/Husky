@@ -3,7 +3,7 @@ using Husky.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Husky.MailTo.Data
+namespace Husky.Mail.Data
 {
 	public class MailDbContext : DbContextBase
 	{

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Husky.MailTo.Data;
+using Husky.Mail.Data;
 
-namespace Husky.MailTo.Migrations
+namespace Husky.Mail.Migrations
 {
     [DbContext(typeof(MailDbContext))]
     [Migration("20170730094322_Init")]

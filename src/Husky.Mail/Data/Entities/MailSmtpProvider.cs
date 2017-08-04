@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Husky.MailTo.Abstractions;
+using Husky.Mail.Abstractions;
 
-namespace Husky.MailTo.Data
+namespace Husky.Mail.Data
 {
 	public partial class MailSmtpProvider : ISmtpProvider
 	{

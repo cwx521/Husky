@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Husky.MailTo
+namespace Husky.Mail
 {
 	public sealed class MailMessage
 	{

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Husky.MailTo;
-using Husky.MailTo.Abstractions;
-using Husky.MailTo.Data;
+using Husky.Mail.Abstractions;
+using Husky.Mail.Data;
 using Husky.Sugar;
 using MailKit;
 using MailKit.Net.Smtp;
@@ -13,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
 using MimeKit.Text;
 
-namespace Husky.Smtp
+namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{

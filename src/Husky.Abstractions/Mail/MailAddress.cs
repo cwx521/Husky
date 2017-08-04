@@ -1,7 +1,7 @@
 ﻿using System;
 using Husky.Sugar;
 
-namespace Husky.MailTo
+namespace Husky.Mail
 {
 	public sealed class MailAddress
 	{

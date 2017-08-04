@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Husky.MailTo.Abstractions
+namespace Husky.Mail.Abstractions
 {
 	public interface IMailSender
 	{

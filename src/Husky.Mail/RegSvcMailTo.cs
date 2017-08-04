@@ -1,7 +1,7 @@
 ﻿using Husky.Data.Abstractions;
-using Husky.MailTo.Abstractions;
-using Husky.MailTo.Data;
-using Husky.Smtp;
+using Husky.Mail.Abstractions;
+using Husky.Mail.Data;
+using Husky.Mail;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Injection

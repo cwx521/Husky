@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Husky.MailTo
+namespace Husky.Mail
 {
 	public sealed class MailAttachment
 	{

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.Authentication.Abstractions;
-using Husky.MailTo.Abstractions;
+using Husky.Mail.Abstractions;
 using Husky.Sugar;
 using Husky.TwoFactor.Data;
 

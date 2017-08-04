@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Husky.Data.ModelBuilding.Annotations;
 
-namespace Husky.MailTo.Data
+namespace Husky.Mail.Data
 {
 	public partial class MailRecord
 	{

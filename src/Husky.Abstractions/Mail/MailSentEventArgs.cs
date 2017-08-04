@@ -1,4 +1,4 @@
-﻿namespace Husky.MailTo
+﻿namespace Husky.Mail
 {
 	public sealed class MailSentEventArgs
 	{
