@@ -7,7 +7,7 @@ namespace Husky.Data
 {
 	public static class ConnectionStrings
 	{
-		public static string FindConnectionStringBySequence<T>(this IConfiguration configuration) where T : DbContext {
+		public static string GetConnectionStringBySequence<T>(this IConfiguration configuration) where T : DbContext {
 			var lookFor = new[] { "Debugging", typeof(T).Name.Replace("DbContext", ""), "Default" };
 			var connstr = lookFor.Select(x => configuration.GetConnectionString(x)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
 			if ( string.IsNullOrEmpty(connstr) ) {

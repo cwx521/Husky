@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Husky.Authentication.Abstractions;
 using Husky.Injection;
+using Husky.TwoFactor.Data;
 using Insider.Portal.Models.AccountModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace Insider.Portal.Controllers
 			if ( ModelState.IsValid ) {
 				var result = await _my.User().SignUp(model.AccountNameType, model.AccountName, model.Password, verified: false);
 				if ( result.Ok ) {
-					return View(nameof(Verify), new RegistryVerifyModel { AccountName = model.AccountName });
+					return View(nameof(Verify), new RegistryVerifyModel { AccountName = model.AccountName, AutoSend = true });
 				}
 				ModelState.AddModelError(nameof(model.AccountName), result.Message);
 			}
@@ -32,7 +33,14 @@ namespace Insider.Portal.Controllers
 		}
 
 		[HttpPost("~/register/verify")]
-		public IActionResult Verify(RegistryVerifyModel model) {
+		public async Task<IActionResult> Verify(RegistryVerifyModel model) {
+			if ( ModelState.IsValid ) {
+				var result = await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, TwoFactorPurpose.ExistenceCheck, model.TwoFactorCode);
+				if ( result.Ok ) {
+					return Redirect("/");
+				}
+				ModelState.AddModelError(nameof(model.TwoFactorCode), result.Message);
+			}
 			return View(model);
 		}
 	}

@@ -10,8 +10,11 @@ namespace Husky.Injection
 {
 	public static class RegSvcMailTo
 	{
-		public static IServiceCollection AddHuskyMailToPlugin(this IServiceCollection services, string dbConnectionString = null) {
-			services.AddDbContext<MailDbContext>((svc, builder) => builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().FindConnectionStringBySequence<MailDbContext>()));
+		public static IServiceCollection AddHuskyMailPlugin(this IServiceCollection services, string dbConnectionString = null) {
+			services.AddDbContext<MailDbContext>((svc, builder) => {
+				builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().GetConnectionStringBySequence<MailDbContext>());
+				builder.Migrate();
+			});
 			services.AddSingleton<IMailSender>(svc => new MailSender(svc));
 			return services;
 		}

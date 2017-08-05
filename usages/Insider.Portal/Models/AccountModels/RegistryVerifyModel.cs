@@ -14,5 +14,7 @@ namespace Insider.Portal.Models.AccountModels
 		[StringLength(6, MinimumLength = 6, ErrorMessage = "请输入正确的验证码，长度6位。")]
 		[Display(Name = "验证码")]
 		public string TwoFactorCode { get; set; }
+
+		public bool AutoSend { get; set; }
 	}
 }

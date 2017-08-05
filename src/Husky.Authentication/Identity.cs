@@ -9,11 +9,11 @@ namespace Husky.Authentication
 		public virtual string IdString { get; set; }
 		public virtual string DisplayName { get; set; }
 
-		public virtual bool IsAnonymous => !string.IsNullOrWhiteSpace(IdString);
+		public virtual bool IsAnonymous => string.IsNullOrWhiteSpace(IdString);
 		public virtual bool IsAuthenticated => !IsAnonymous;
 
 		public virtual T? Id<T>() where T : struct, IFormattable, IEquatable<T> {
-			if ( string.IsNullOrEmpty(IdString) ) {
+			if ( IsAnonymous ) {
 				return null;
 			}
 			var id = IdString.As<T>();

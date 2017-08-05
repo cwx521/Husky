@@ -20,7 +20,7 @@ namespace Husky.TwoFactor.Extensions
 		readonly IMailSender _mailSender;
 		readonly TwoFactorDbContext _twoFactorDb;
 
-		public async Task<Result<TwoFactorCode>> RequestTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose) {
+		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
@@ -29,7 +29,7 @@ namespace Husky.TwoFactor.Extensions
 			var isMobile = emailOrMobile.IsMainlandMobile();
 
 			if ( !isEmail && !isMobile ) {
-				return new Failure<TwoFactorCode>("发送对象 '{0}' 格式无效。".Xslate(emailOrMobile));
+				return new Failure("发送对象 '{0}' 格式无效。".Xslate(emailOrMobile));
 			}
 			var code = new TwoFactorCode {
 				UserId = _my.Id<Guid>(),
@@ -46,11 +46,10 @@ namespace Husky.TwoFactor.Extensions
 			if ( isMobile ) {
 				await SendTwoFactorCodeShortMessage(emailOrMobile, code.PassCode);
 			}
-
-			return new Success<TwoFactorCode>(code);
+			return new Success();
 		}
 
-		public bool VerifyTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
+		public async Task<Result> VerifyTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
@@ -58,17 +57,23 @@ namespace Husky.TwoFactor.Extensions
 				throw new ArgumentException(nameof(passCode));
 			}
 
-			var query = _twoFactorDb.TwoFactorCodes
+			var record = _twoFactorDb.TwoFactorCodes
+				.Where(x => x.IsUsed == false)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.Purpose == purpose)
-				.Where(x => x.SentTo == emailOrMobile);
+				.Where(x => x.SentTo == emailOrMobile)
+				.Where(x => _my.IsAnonymous || x.Id == _my.Id<Guid>())
+				.OrderByDescending(x => x.CreatedTime)
+				.Take(1)
+				.FirstOrDefault();
 
-			if ( _my.IsAuthenticated ) {
-				query = query.Where(x => x.Id == _my.Id<Guid>());
+			if ( record == null || string.Compare(passCode, record.PassCode, true) != 0 ) {
+				return new Failure("验证码不正确。");
 			}
 
-			var storedCode = query.OrderByDescending(x => x.CreatedTime).Select(x => x.PassCode).FirstOrDefault();
-			return string.Compare(passCode, storedCode, true) == 0;
+			record.IsUsed = true;
+			await _twoFactorDb.SaveChangesAsync();
+			return new Success();
 		}
 
 		private async Task SendTwoFactorCodeEmail(string recipient, string passCode) {

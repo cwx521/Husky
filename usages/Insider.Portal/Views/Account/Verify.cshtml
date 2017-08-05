@@ -13,8 +13,9 @@
 	@ViewData["Title"]
 </h3>
 
-<form method="post" asp-action="Register" class="card">
+<form method="post" asp-action="Verify" class="card">
 	<input asp-for="Id" type="hidden" />
+	<input type="hidden" name="auto" value="False" />
 
 	<div class="card-block text-muted">
 		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送到 @Model.AccountName，填入输入框后提交。
@@ -24,7 +25,7 @@
 		<div class="row form-group">
 			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
-				<input asp-for="AccountName" type="text" class="form-control" disabled />
+				<input asp-for="AccountName" type="text" class="form-control" readonly />
 			</div>
 		</div>
 
@@ -34,7 +35,7 @@
 				<div class="input-group">
 					<input asp-for="TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-secondary twofactor-code-sender" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">点击获取</button>
+						<button type="button" class="btn btn-secondary twofactor-code-sender" data-auto="@Model.AutoSend" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">重新获取</button>
 					</div>
 				</div>
 			</div>

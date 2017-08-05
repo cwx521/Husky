@@ -1,6 +1,8 @@
-﻿using Husky.Authentication;
+﻿using System.Linq;
+using Husky.Authentication;
 using Husky.Authentication.Implements;
 using Husky.Injection;
+using Husky.Mail.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +34,7 @@ namespace Insider.Portal
 
 			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie, new IdentityOptions { Token = secretToken });
 			services.AddHuskyUsersPlugin();
-			services.AddHuskyMailToPlugin();
+			services.AddHuskyMailPlugin();
 			services.AddHuskyTwoFactorPlugin();
 		}
 
@@ -44,6 +46,21 @@ namespace Insider.Portal
 
 			app.UseStaticFiles();
 			app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
+
+			var mailDb = app.ApplicationServices.GetRequiredService<MailDbContext>();
+			if ( !mailDb.MailSmtpProviders.Any() ) {
+				mailDb.Add(new MailSmtpProvider {
+					Host = "smtp.live.com",
+					Port = 587,
+					Ssl = false,
+					CredentialName = "chenwx521@hotmail.com",
+					Password = "",
+					SenderDisplayName = "Weixing Chen",
+					SenderMailAddress = "chenwx521@hotmail.com",
+					IsInUse = true
+				});
+				mailDb.SaveChanges();
+			}
 		}
 	}
 }

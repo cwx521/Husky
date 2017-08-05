@@ -1,7 +1,9 @@
 ﻿$(function () {
 
 	// sending two-factor pass code
-	$(".twofactor-code-sender").click(function () {
+	var triggerBtn = $(".twofactor-code-sender");
+
+	triggerBtn.click(function () {
 		var $this = $(this);
 		if ($this.data("sending")) {
 			return;
@@ -41,6 +43,9 @@
 				}
 			});
 		}
+	});
 
-	}).click();
+	if (triggerBtn.data("auto") === "True") {
+		triggerBtn.click();
+	}
 });
