@@ -44,6 +44,11 @@ namespace Husky.Users.Extensions
 
 			await _userDb.SaveChangesAsync();
 			await AddLoginRecord(user, accountName, null, LoginResult.Success, "新注册。".Xslate());
+
+			_my.IdString = user.Id.ToString();
+			_my.DisplayName = user.DisplayName;
+			_my.IdentityManager.SaveIdentity(_my);
+
 			return new Success<User>(user);
 		}
 

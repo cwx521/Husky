@@ -12,6 +12,7 @@ namespace Insider.Portal.Models.AccountModels
 
 		[Required(ErrorMessage = "必须填写，请用您的" + _typeName + "作为帐号名。")]
 		[EmailAddress(ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]
+		[RegularExpression(StringTest.EmailRegexPattern, ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]
 		[Remote(nameof(ApiController.IsAccountApplicable), "Api", AdditionalFields = nameof(AccountNameType), HttpMethod = "POST", ErrorMessage = "{0}已经被注册了。")]
 		[Display(Name = _typeName)]
 		public string AccountName { get; set; }

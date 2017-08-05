@@ -27,7 +27,7 @@ namespace Husky.Authentication.Implements
 				return null;
 			}
 			var identity = _options.Encryptor.Decrypt(cookie, _options.Token);
-			if ( identity.IsAnonymous || (_options.SessionMode && IsSessionLost()) ) {
+			if ( identity == null || identity.IsAnonymous || (_options.SessionMode && IsSessionLost()) ) {
 				_httpContext.Response.Cookies.Delete(_options.Key);
 				return null;
 			}

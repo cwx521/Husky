@@ -62,7 +62,7 @@ namespace Husky.TwoFactor.Extensions
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.Purpose == purpose)
 				.Where(x => x.SentTo == emailOrMobile)
-				.Where(x => _my.IsAnonymous || x.Id == _my.Id<Guid>())
+				.Where(x => _my.IsAnonymous || x.UserId == _my.Id<Guid>())
 				.OrderByDescending(x => x.CreatedTime)
 				.Take(1)
 				.FirstOrDefault();

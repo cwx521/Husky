@@ -116,7 +116,7 @@ namespace Husky.Sugar
 		public static T Decrypt<T>(string base64String, string key) where T : IFormattable => Decrypt(base64String, key).As<T>();
 
 		private static string Mutate(this string base64String) => base64String.Replace('+', '_').Replace('/', '-').TrimEnd('=', ' ');
-		private static string Restore(this string base64String) => base64String.Replace('_', '+').Replace('-', '/').PadRight(base64String.Length % 4 == 0 ? 0 : 4 - base64String.Length % 4, '=');
+		private static string Restore(this string base64String) => base64String.Replace('_', '+').Replace('-', '/').PadRight(base64String.Length + (base64String.Length % 4 == 0 ? 0 : (4 - base64String.Length % 4)), '=');
 
 		#endregion
 
