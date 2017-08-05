@@ -1,13 +1,12 @@
-﻿using Husky.Data;
-using Husky.Data.Abstractions;
+﻿using Husky.Data.ModelBuilding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Husky.Mail.Data
 {
-	public class MailDbContext : DbContextBase
+	public class MailDbContext : DbContext
 	{
-		public MailDbContext(IDatabaseFinder finder) : base(finder) {
+		public MailDbContext(DbContextOptions<MailDbContext> options) : base(options) {
 		}
 
 		public DbSet<MailSmtpProvider> MailSmtpProviders { get; set; }
@@ -21,7 +20,7 @@ namespace Husky.Mail.Data
 			});
 			modelBuilder.Entity<MailRecord>().HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-			base.OnModelCreating(modelBuilder);
+			modelBuilder.ForSqlServer<MailDbContext>();
 		}
 	}
 }

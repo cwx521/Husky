@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.TwoFactor.Data;
-using Husky.Sugar;
 
 namespace Husky.TwoFactor.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20170730070217_Init")]
+    [Migration("20170805122520_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,15 +22,21 @@ namespace Husky.TwoFactor.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "getdate()");
 
-                    b.Property<bool>("IsUsed");
+                    b.Property<bool>("IsUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.Property<string>("PassCode")
                         .HasColumnType("varchar(8)")
                         .HasMaxLength(24);
 
-                    b.Property<int>("Purpose");
+                    b.Property<int>("Purpose")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.Property<string>("SentTo")
                         .HasColumnType("varchar(50)")

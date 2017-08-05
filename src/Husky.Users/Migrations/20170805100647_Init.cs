@@ -15,14 +15,14 @@ namespace Husky.Users.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     AwaitReactivateTime = table.Column<DateTime>(nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     DisplayName = table.Column<string>(maxLength: 32, nullable: true),
                     Email = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: true),
-                    IsEmailVerified = table.Column<bool>(nullable: false),
-                    IsMobileVerified = table.Column<bool>(nullable: false),
+                    IsEmailVerified = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+                    IsMobileVerified = table.Column<bool>(nullable: false, defaultValueSql: "0"),
                     Mobile = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: true),
                     Password = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: true),
-                    Status = table.Column<int>(nullable: false)
+                    Status = table.Column<int>(nullable: false, defaultValueSql: "0")
                 },
                 constraints: table =>
                 {
@@ -36,10 +36,10 @@ namespace Husky.Users.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreateTime = table.Column<DateTime>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Description = table.Column<string>(maxLength: 100, nullable: true),
                     FieldName = table.Column<string>(maxLength: 50, nullable: true),
-                    IsBySelf = table.Column<bool>(nullable: false),
+                    IsBySelf = table.Column<bool>(nullable: false, defaultValueSql: "0"),
                     NewValue = table.Column<string>(maxLength: 100, nullable: true),
                     OldValue = table.Column<string>(maxLength: 100, nullable: true),
                     UserId = table.Column<Guid>(nullable: true)
@@ -62,11 +62,11 @@ namespace Husky.Users.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreateTime = table.Column<DateTime>(nullable: false),
+                    CreateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Description = table.Column<string>(maxLength: 100, nullable: true),
                     InputAccount = table.Column<string>(maxLength: 50, nullable: true),
                     Ip = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: true),
-                    LoginResult = table.Column<int>(nullable: false),
+                    LoginResult = table.Column<int>(nullable: false, defaultValueSql: "0"),
                     SickPassword = table.Column<string>(maxLength: 18, nullable: true),
                     UserAgent = table.Column<string>(maxLength: 500, nullable: true),
                     UserId = table.Column<Guid>(nullable: true)
@@ -88,15 +88,15 @@ namespace Husky.Users.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     DateOfBirth = table.Column<DateTime>(nullable: true),
-                    GivenName = table.Column<string>(maxLength: 18, nullable: false),
-                    GivenNamePhonetic = table.Column<string>(maxLength: 18, nullable: false),
+                    FirstName = table.Column<string>(maxLength: 18, nullable: false),
+                    FirstNamePhonetic = table.Column<string>(maxLength: 18, nullable: false),
+                    LastName = table.Column<string>(maxLength: 18, nullable: false),
+                    LastNamePhonetic = table.Column<string>(maxLength: 18, nullable: false),
                     Location = table.Column<string>(maxLength: 18, nullable: true),
                     Photo = table.Column<byte[]>(nullable: true),
-                    Sex = table.Column<int>(nullable: false),
-                    Surname = table.Column<string>(maxLength: 18, nullable: false),
-                    SurnamePhonetic = table.Column<string>(maxLength: 18, nullable: false)
+                    Sex = table.Column<int>(nullable: false, defaultValueSql: "0")
                 },
                 constraints: table =>
                 {

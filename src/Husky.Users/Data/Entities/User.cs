@@ -38,7 +38,7 @@ namespace Husky.Users.Data
 
 
 		public UserPersonal Personal { get; set; }
-		public List<UserLoginRecord> LoginRecords { get; set; }
-		public List<UserChangeRecord> ChangeRecords { get; set; }
+		public List<UserLoginRecord> LoginRecords { get; set; } = new List<UserLoginRecord>();
+		public List<UserChangeRecord> ChangeRecords { get; set; } = new List<UserChangeRecord>();
 	}
 }

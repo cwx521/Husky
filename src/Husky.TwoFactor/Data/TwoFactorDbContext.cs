@@ -1,18 +1,17 @@
-﻿using Husky.Data;
-using Husky.Data.Abstractions;
+﻿using Husky.Data.ModelBuilding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor.Data
 {
-	public class TwoFactorDbContext : DbContextBase
+	public class TwoFactorDbContext : DbContext
 	{
-		public TwoFactorDbContext(IDatabaseFinder finder) : base(finder) {
+		public TwoFactorDbContext(DbContextOptions<TwoFactorDbContext> options) : base(options) {
 		}
 
 		public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			base.OnModelCreating(modelBuilder);
+			modelBuilder.ForSqlServer<TwoFactorDbContext>();
 		}
 	}
 }

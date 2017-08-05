@@ -11,16 +11,16 @@ namespace Husky.Users.Data
 		public Guid UserId { get; set; }
 
 		[Required, MaxLength(18)]
-		public string Surname { get; set; }
+		public string FirstName { get; set; }
 
 		[Required, MaxLength(18)]
-		public string GivenName { get; set; }
+		public string LastName { get; set; }
 
 		[Required, MaxLength(18)]
-		public string SurnamePhonetic { get; set; }
+		public string FirstNamePhonetic { get; set; }
 
 		[Required, MaxLength(18)]
-		public string GivenNamePhonetic { get; set; }
+		public string LastNamePhonetic { get; set; }
 
 		public byte[] Photo { get; set; }
 

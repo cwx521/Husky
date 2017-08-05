@@ -9,7 +9,7 @@ using Husky.Sugar;
 namespace Husky.Users.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20170730070126_Init")]
+    [Migration("20170805100647_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,9 @@ namespace Husky.Users.Migrations
 
                     b.Property<DateTime?>("AwaitReactivateTime");
 
-                    b.Property<DateTime>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "getdate()");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(32);
@@ -34,9 +36,13 @@ namespace Husky.Users.Migrations
                         .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
-                    b.Property<bool>("IsEmailVerified");
+                    b.Property<bool>("IsEmailVerified")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
-                    b.Property<bool>("IsMobileVerified");
+                    b.Property<bool>("IsMobileVerified")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.Property<string>("Mobile")
                         .HasColumnType("varchar(15)")
@@ -46,7 +52,9 @@ namespace Husky.Users.Migrations
                         .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
-                    b.Property<int>("Status");
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.HasKey("Id")
                         .HasAnnotation("SqlServer:Clustered", false);
@@ -70,7 +78,9 @@ namespace Husky.Users.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreateTime");
+                    b.Property<DateTime>("CreateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "getdate()");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100);
@@ -78,7 +88,9 @@ namespace Husky.Users.Migrations
                     b.Property<string>("FieldName")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("IsBySelf");
+                    b.Property<bool>("IsBySelf")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.Property<string>("NewValue")
                         .HasMaxLength(100);
@@ -104,7 +116,9 @@ namespace Husky.Users.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreateTime");
+                    b.Property<DateTime>("CreateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "getdate()");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100);
@@ -116,7 +130,9 @@ namespace Husky.Users.Migrations
                         .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
-                    b.Property<int>("LoginResult");
+                    b.Property<int>("LoginResult")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.Property<string>("SickPassword")
                         .HasMaxLength(18);
@@ -141,15 +157,25 @@ namespace Husky.Users.Migrations
                 {
                     b.Property<Guid>("UserId");
 
-                    b.Property<DateTime>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "getdate()");
 
                     b.Property<DateTime?>("DateOfBirth");
 
-                    b.Property<string>("GivenName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(18);
 
-                    b.Property<string>("GivenNamePhonetic")
+                    b.Property<string>("FirstNamePhonetic")
+                        .IsRequired()
+                        .HasMaxLength(18);
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(18);
+
+                    b.Property<string>("LastNamePhonetic")
                         .IsRequired()
                         .HasMaxLength(18);
 
@@ -158,15 +184,9 @@ namespace Husky.Users.Migrations
 
                     b.Property<byte[]>("Photo");
 
-                    b.Property<int>("Sex");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasMaxLength(18);
-
-                    b.Property<string>("SurnamePhonetic")
-                        .IsRequired()
-                        .HasMaxLength(18);
+                    b.Property<int>("Sex")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
                     b.HasKey("UserId")
                         .HasAnnotation("SqlServer:Clustered", false);

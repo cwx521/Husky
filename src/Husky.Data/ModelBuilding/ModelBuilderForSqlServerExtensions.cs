@@ -33,20 +33,19 @@ namespace Husky.Data.ModelBuilding
 
 					if ( options.AnnotatedDefaultValueSql || options.AutoDetectedDefaultValueSql ) {
 						var valueSql = prop.GetCustomAttribute<DefaultValueSqlAttribute>();
-						var propertyBuilder = entityTypeBuilder.Property(prop.PropertyType, prop.Name);
 
 						// Enable sql default values for convenience
 						if ( options.AnnotatedDefaultValueSql && valueSql?.ValueSql != null ) {
-							propertyBuilder.ForSqlServerHasDefaultValueSql(valueSql?.ValueSql);
+							entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql(valueSql?.ValueSql);
 						}
 
 						// Enable default datetime value for nummerics and datetimes
 						if ( options.AutoDetectedDefaultValueSql && valueSql?.ValueSql == null && !prop.IsDefined(typeof(KeyAttribute)) ) {
 							if ( typeof(DateTime) == prop.PropertyType ) {
-								propertyBuilder.ForSqlServerHasDefaultValueSql("getdate()");
+								entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql("getdate()");
 							}
 							else if ( prop.PropertyType.GetTypeInfo().IsEnum || prop.PropertyType.GetTypeInfo().IsPrimitive || prop.PropertyType == typeof(decimal) ) {
-								propertyBuilder.ForSqlServerHasDefaultValueSql("0");
+								entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql("0");
 							}
 						}
 					}

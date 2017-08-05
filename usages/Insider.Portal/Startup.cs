@@ -1,7 +1,5 @@
 ﻿using Husky.Authentication;
 using Husky.Authentication.Implements;
-using Husky.Data;
-using Husky.Data.Abstractions;
 using Husky.Injection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,12 +24,13 @@ namespace Insider.Portal
 		public IConfigurationRoot Configuration { get; }
 
 		public void ConfigureServices(IServiceCollection services) {
+			var secretToken = Configuration.GetValue<string>("SecretToken");
+
 			services.AddMvc();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<IConfiguration>(Configuration);
 
-			services.AddSingleton<IDatabaseFinder>(new DatabaseFinder(DatabaseProvider.SqlServer, Configuration.GetConnectionString("Default")));
-			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie, new IdentityOptions { Token = Configuration.GetValue<string>("SecretToken") });
+			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie, new IdentityOptions { Token = secretToken });
 			services.AddHuskyUsersPlugin();
 			services.AddHuskyMailToPlugin();
 			services.AddHuskyTwoFactorPlugin();
@@ -45,16 +44,6 @@ namespace Insider.Portal
 
 			app.UseStaticFiles();
 			app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
-
-			//new List<Type> {
-			//	typeof(UserDbContext),
-			//	typeof(MailDbContext),
-			//	typeof(TwoFactorDbContext),
-			//}.
-			//ForEach(async x => {
-			//	var database = (app.ApplicationServices.GetRequiredService(x) as DbContext).Database;
-			//	await database.MigrateAsync();
-			//});
 		}
 	}
 }
