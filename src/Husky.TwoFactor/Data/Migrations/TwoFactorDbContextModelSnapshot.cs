@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.TwoFactor.Data;
 
-namespace Husky.TwoFactor.Migrations
+namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
     partial class TwoFactorDbContextModelSnapshot : ModelSnapshot

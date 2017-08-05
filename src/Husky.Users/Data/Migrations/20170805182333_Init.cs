@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Husky.Users.Migrations
+namespace Husky.Users.Data.Migrations
 {
     public partial class Init : Migration
     {
@@ -96,7 +96,8 @@ namespace Husky.Users.Migrations
                     LastNamePhonetic = table.Column<string>(maxLength: 18, nullable: false),
                     Location = table.Column<string>(maxLength: 18, nullable: true),
                     Photo = table.Column<byte[]>(nullable: true),
-                    Sex = table.Column<int>(nullable: false, defaultValueSql: "0")
+                    Sex = table.Column<int>(nullable: false, defaultValueSql: "0"),
+                    SocialNumber = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

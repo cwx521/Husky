@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.Users.Data;
 using Husky.Sugar;
 
-namespace Husky.Users.Migrations
+namespace Husky.Users.Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     partial class UserDbContextModelSnapshot : ModelSnapshot
@@ -186,6 +186,8 @@ namespace Husky.Users.Migrations
                     b.Property<int>("Sex")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:DefaultValueSql", "0");
+
+                    b.Property<string>("SocialNumber");
 
                     b.HasKey("UserId")
                         .HasAnnotation("SqlServer:Clustered", false);

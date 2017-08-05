@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.Mail.Data;
 
-namespace Husky.Mail.Migrations
+namespace Husky.Mail.Data.Migrations
 {
     [DbContext(typeof(MailDbContext))]
     partial class MailDbContextModelSnapshot : ModelSnapshot

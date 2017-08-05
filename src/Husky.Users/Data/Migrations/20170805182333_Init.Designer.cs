@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.Users.Data;
 using Husky.Sugar;
 
-namespace Husky.Users.Migrations
+namespace Husky.Users.Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20170805100647_Init")]
+    [Migration("20170805182333_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,6 +187,8 @@ namespace Husky.Users.Migrations
                     b.Property<int>("Sex")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:DefaultValueSql", "0");
+
+                    b.Property<string>("SocialNumber");
 
                     b.HasKey("UserId")
                         .HasAnnotation("SqlServer:Clustered", false);

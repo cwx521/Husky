@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.Mail.Data;
 
-namespace Husky.Mail.Migrations
+namespace Husky.Mail.Data.Migrations
 {
     [DbContext(typeof(MailDbContext))]
-    [Migration("20170805122505_Init")]
+    [Migration("20170805182408_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

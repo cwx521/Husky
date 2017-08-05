@@ -24,12 +24,14 @@ namespace Husky.Users.Data
 
 		public byte[] Photo { get; set; }
 
+		public string SocialNumber { get; set; }
+
+		public DateTime? DateOfBirth { get; set; }
+
 		public Sex Sex { get; set; } = Sex.Untold;
 
 		[MaxLength(18)]
 		public string Location { get; set; }
-
-		public DateTime? DateOfBirth { get; set; }
 
 		[Index(IsClustered = true, IsUnique = false)]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;

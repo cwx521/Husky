@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Husky.TwoFactor.Data;
 
-namespace Husky.TwoFactor.Migrations
+namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20170805122520_Init")]
+    [Migration("20170805182430_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

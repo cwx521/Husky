@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Husky.TwoFactor.Migrations
+namespace Husky.TwoFactor.Data.Migrations
 {
     public partial class Init : Migration
     {

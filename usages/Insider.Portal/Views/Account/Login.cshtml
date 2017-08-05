@@ -9,8 +9,12 @@
 </h3>
 
 <form method="post" asp-action="Login" class="card">
+	<div class="card-block text-muted">
+		请使用您已在本站注册或绑定的邮箱或手机号作为登录名，输入预设的密码后点击登录。
+	</div>
+
 	<div class="card-block">
-		<div class="row mt-2 form-group">
+		<div class="row form-group">
 			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
 				<input asp-for="AccountName" type="text" maxlength="40" required class="form-control" placeholder="您的 邮箱/手机号" />
