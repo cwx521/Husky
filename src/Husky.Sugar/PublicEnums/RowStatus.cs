@@ -9,7 +9,8 @@ namespace Husky.Sugar
 		Pending = 1,
 		Suspended = 1 << 1,
 		Deleted = 1 << 2,
-		BySelf = 1 << 30,
-		ByAdmin = 1 << 31
+		BySelf = 1 << 20,
+		ByAdmin = 1 << 21,
+		BySystem = 1 << 22
 	}
 }

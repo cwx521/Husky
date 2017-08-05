@@ -64,17 +64,18 @@ namespace Husky.Users.Extensions
 			if ( user == null ) {
 				return await AddLoginRecord(user, accountName, null, LoginResult.AccountNotFound);
 			}
-			if ( user.Password != Crypto.SHA1(password) ) {
-				return await AddLoginRecord(user, accountName, password, LoginResult.ErrorPassword);
-			}
-			if ( user.Status != RowStatus.Active ) {
-				return await AddLoginRecord(user, accountName, null, LoginResult.RejectedAccountInactive);
-			}
 
 			const int withinMinutes = 10;
 			const int allowAttemptTimes = 5;
 			if ( _userDb.IsSuspendFurtherLoginAttemptionByFailureRecordsAnalysis(user.Id, TimeSpan.FromMinutes(withinMinutes), allowAttemptTimes) ) {
 				return await AddLoginRecord(user, accountName, null, LoginResult.RejectedContinuousAttemption);
+			}
+
+			if ( user.Password != Crypto.SHA1(password) ) {
+				return await AddLoginRecord(user, accountName, password, LoginResult.ErrorPassword);
+			}
+			if ( user.Status != RowStatus.Active ) {
+				return await AddLoginRecord(user, accountName, null, LoginResult.RejectedAccountInactive);
 			}
 
 			_my.IdString = user.Id.ToString();

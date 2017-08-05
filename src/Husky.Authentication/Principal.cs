@@ -6,11 +6,12 @@ namespace Husky.Authentication
 	public class Principal<T> : Identity, IIdentity, IPrincipal where T : struct, IFormattable, IEquatable<T>
 	{
 		public Principal(IIdentityManager identityManager, IServiceProvider serviceProvider) {
+
 			var identity = identityManager.ReadIdentity();
 			if ( identity != null && identity.IsAuthenticated ) {
 				IdString = identity.IdString;
 				DisplayName = identity.DisplayName;
-				IdentityManager.SaveIdentity(this);
+				identityManager.SaveIdentity(this);
 			}
 
 			this.IdentityManager = identityManager;

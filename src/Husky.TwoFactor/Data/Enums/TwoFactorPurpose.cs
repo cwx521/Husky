@@ -3,7 +3,7 @@
 	public enum TwoFactorPurpose
     {
 		Unset,
-		ExistenceCheck,
+		Existence,
 		Login,
 		Payment
     }

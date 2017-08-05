@@ -49,7 +49,7 @@ namespace Husky.TwoFactor.Extensions
 			return new Success();
 		}
 
-		public async Task<Result> VerifyTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
+		public async Task<Result> VerifyTwoFactorCode(string emailOrMobile, TwoFactorPurpose purpose, string passCode, bool setAsUsed, int withinMinutes = 20) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
@@ -70,9 +70,10 @@ namespace Husky.TwoFactor.Extensions
 			if ( record == null || string.Compare(passCode, record.PassCode, true) != 0 ) {
 				return new Failure("验证码不正确。");
 			}
-
-			record.IsUsed = true;
-			await _twoFactorDb.SaveChangesAsync();
+			if ( setAsUsed ) {
+				record.IsUsed = true;
+				await _twoFactorDb.SaveChangesAsync();
+			}
 			return new Success();
 		}
 

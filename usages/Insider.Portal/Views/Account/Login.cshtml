@@ -1,0 +1,44 @@
+﻿@model LoginModel
+@{
+	Layout = "_Layout";
+	ViewData["Title"] = "登录";
+}
+
+<h3 class="mb-3">
+	@ViewData["Title"]
+</h3>
+
+<form method="post" asp-action="Login" class="card">
+	<div class="card-block">
+		<div class="row mt-2 form-group">
+			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="AccountName" type="text" maxlength="40" required class="form-control" placeholder="您的 邮箱/手机号" />
+			</div>
+			<span asp-validation-for="AccountName" class="col-lg-6 col-form-label"></span>
+		</div>
+
+		<div class="row form-group">
+			<label asp-for="Password" class="col-lg-2 col-form-label"></label>
+			<div class="col-lg-4">
+				<input asp-for="Password" type="password" maxlength="18" class="form-control" placeholder="帐户密码" />
+			</div>
+			<span asp-validation-for="Password" class="col-lg-6 col-form-label"></span>
+		</div>
+
+		<div class="row">
+			<div asp-validation-summary="ModelOnly" class="col-lg-10 offset-lg-2"></div>
+		</div>
+	</div>
+
+	<div class="card-footer">
+		<div class="row">
+			<div class="col-lg-4 offset-lg-2">
+				<button type="submit" class="btn btn-primary">&nbsp; 登录 &nbsp;</button>
+				<a href="/retreive" class="btn-link card-link pull-right col-form-label">找回密码</a>
+				<span class="text-muted-lighter ml-3 mr-3 pull-right col-form-label">|</span>
+				<a href="/register" class="btn-link card-link pull-right col-form-label">我需要先注册</a>
+			</div>
+		</div>
+	</div>
+</form>

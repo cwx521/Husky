@@ -21,6 +21,13 @@ namespace Insider.Portal.Controllers
 		readonly UserDbContext _userDb;
 
 		[HttpPost]
+		public async Task<IActionResult> SendTwoFactorCode(string to, TwoFactorPurpose purpose) {
+			return Json(await _my.TwoFactor().RequestTwoFactorCode(to, purpose));
+		}
+
+		#region Field Remote Validators
+
+		[HttpPost]
 		public async Task<IActionResult> IsAccountApplicable(RegistryModel model) {
 			return Json(!(model.AccountNameType == AccountNameType.Email
 				? await _userDb.Users.AnyAsync(x => x.Email == model.AccountName)
@@ -28,14 +35,11 @@ namespace Insider.Portal.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> SendTwoFactorCode(string to, TwoFactorPurpose purpose) {
-			return Json(await _my.TwoFactor().RequestTwoFactorCode(to, purpose));
+		public async Task<IActionResult> IsTwoFactorCodeValid(RegistryVerifyModel model) {
+			return Json((await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, model.TwoFactorPurpose, model.TwoFactorCode, false)).Ok);
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> IsTwoFactorCodeValid(RegistryVerifyModel model) {
-			return Json(await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, model.TwoFactorPurpose, model.TwoFactorCode));
-		}
+		#endregion
 	}
 }
 

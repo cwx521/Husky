@@ -38,3 +38,10 @@
 .custom-control-indicator {
 	margin-top: -1px; /* to fix smaller font-size */
 }
+
+.no-gray .custom-control-description {
+	cursor: text !important;
+}
+.no-gray .custom-control-indicator {
+	background-color: #0275d8 !important;
+}

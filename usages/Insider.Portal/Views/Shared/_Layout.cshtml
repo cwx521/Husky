@@ -22,12 +22,23 @@
 				<li class="nav-item">
 					<a class="nav-link" href="/advisors">找讲师</a>
 				</li>
-				<li class="nav-item ml-4 mr-2">
-					<a class="btn btn-primary" href="/login">登录</a>
-				</li>
-				<li class="nav-item">
-					<a class="btn btn-secondary" href="/register">注册</a>
-				</li>
+
+				@if ( _my.IsAnonymous ) {
+					<li class="nav-item ml-5 mr-1">
+						<a class="btn btn-primary" href="/login">登录</a>
+					</li>
+					<li class="nav-item">
+						<a class="btn btn-info" href="/register">注册</a>
+					</li>
+				}
+				else {
+					<li class="nav-item ml-5 mr-2">
+						<a class="nav-link" href="/me">@(string.IsNullOrEmpty(_my.DisplayName) ? "您好" : "您好，" + _my.DisplayName)</a>
+					</li>
+					<li class="nav-item">
+						<a class="btn btn-secondary" href="/logout">退出</a>
+					</li>
+				}
 			</ul>
 		</div>
 	</nav>
