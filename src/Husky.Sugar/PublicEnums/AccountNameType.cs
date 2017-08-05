@@ -1,6 +1,6 @@
 ﻿namespace Husky.Sugar
 {
-	public enum EmobaileType
+	public enum AccountNameType
 	{
 		[Label("邮箱")]
 		Email,

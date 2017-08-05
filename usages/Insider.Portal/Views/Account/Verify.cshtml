@@ -17,7 +17,7 @@
 	<input asp-for="Id" type="hidden" />
 
 	<div class="card-block text-muted">
-		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送@(Model == null ? "" : ("到您" + Model?.Emobaile?.Type?.ToLabel()))，请填入输入框后提交。
+		请完成注册验证。若在倒计时内您仍未收到验证码，请点击获取按钮重新发送到 @Model.AccountName，填入输入框后提交。
 	</div>
 
 	<div class="card-block">
@@ -34,7 +34,7 @@
 				<div class="input-group">
 					<input asp-for="TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-secondary twofactor-code-sender" data-send-to="@Model?.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">点击获取</button>
+						<button type="button" class="btn btn-secondary twofactor-code-sender" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">点击获取</button>
 					</div>
 				</div>
 			</div>

@@ -8,7 +8,7 @@ namespace Insider.Portal.Models.AccountModels
 	public class RegistryModel
 	{
 		const string _typeName = "邮箱";
-		public EmobaileType AccountNameType => EmobaileType.Email;
+		public AccountNameType AccountNameType => AccountNameType.Email;
 
 		[Required(ErrorMessage = "必须填写，请用您的" + _typeName + "作为帐号名。")]
 		[EmailAddress(ErrorMessage = "格式无效，请用您的" + _typeName + "作为帐号名。")]

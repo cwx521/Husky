@@ -32,8 +32,6 @@ namespace Husky.TwoFactor.Migrations
 
                     b.Property<int>("Purpose");
 
-                    b.Property<int>("SentThrough");
-
                     b.Property<string>("SentTo")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);

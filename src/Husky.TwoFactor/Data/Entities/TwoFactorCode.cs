@@ -22,8 +22,6 @@ namespace Husky.TwoFactor.Data
 
 		public TwoFactorPurpose Purpose { get; set; }
 
-		public EmobaileType SentThrough { get; set; }
-
 		public bool IsUsed { get; set; }
 
 		[Index(IsClustered = true, IsUnique = false)]

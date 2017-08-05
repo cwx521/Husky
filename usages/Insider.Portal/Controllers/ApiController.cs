@@ -27,7 +27,7 @@ namespace Insider.Portal.Controllers
 
 		[HttpPost("~/api/IsAccountApplicable")]
 		public async Task<IActionResult> IsAccountApplicable(RegistryModel model) {
-			return Json(!(model.AccountNameType == EmobaileType.Email
+			return Json(!(model.AccountNameType == AccountNameType.Email
 				? await _userDb.Users.AnyAsync(x => x.Email == model.AccountName)
 				: await _userDb.Users.AnyAsync(x => x.Mobile == model.AccountName)));
 		}

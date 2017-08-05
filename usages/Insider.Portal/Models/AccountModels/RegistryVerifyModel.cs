@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Husky.Sugar;
 
 namespace Insider.Portal.Models.AccountModels
 {
@@ -15,7 +14,5 @@ namespace Insider.Portal.Models.AccountModels
 		[StringLength(6, MinimumLength = 6, ErrorMessage = "请输入正确的验证码，长度6位。")]
 		[Display(Name = "验证码")]
 		public string TwoFactorCode { get; set; }
-
-		public Emobaile Emobaile => new Emobaile(AccountName);
 	}
 }

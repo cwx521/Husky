@@ -24,31 +24,27 @@ namespace Husky.TwoFactor.Extensions
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
-			return await SendMeTwoFactorCode(new Emobaile(emailOrMobile), purpose);
-		}
 
-		public async Task<Result<TwoFactorCode>> SendMeTwoFactorCode(Emobaile emobaile, TwoFactorPurpose purpose) {
-			if ( emobaile == null ) {
-				throw new ArgumentNullException(nameof(emobaile));
-			}
-			if ( !emobaile.IsValid ) {
-				return new Failure<TwoFactorCode>("发送对象 '{0}' 格式无效。".Xslate(emobaile.AccountName));
+			var isEmail = emailOrMobile.IsEmail();
+			var isMobile = emailOrMobile.IsMainlandMobile();
+
+			if ( !isEmail && !isMobile ) {
+				return new Failure<TwoFactorCode>("发送对象 '{0}' 格式无效。".Xslate(emailOrMobile));
 			}
 			var code = new TwoFactorCode {
 				UserId = _my.Id<Guid>(),
 				PassCode = new Random().Next(0, 1000000).ToString().PadLeft(6, '0'),
 				Purpose = purpose,
-				SentTo = emobaile.AccountName,
-				SentThrough = emobaile.Type.Value,
+				SentTo = emailOrMobile
 			};
 			_twoFactorDb.Add(code);
 			await _twoFactorDb.SaveChangesAsync();
 
-			if ( emobaile.IsEmail ) {
-				await SendTwoFactorCodeEmail(emobaile.AccountName, code.PassCode);
+			if ( isEmail ) {
+				await SendTwoFactorCodeEmail(emailOrMobile, code.PassCode);
 			}
-			if ( emobaile.IsMobile ) {
-				await SendTwoFactorCodeShortMessage(emobaile.AccountName, code.PassCode);
+			if ( isMobile ) {
+				await SendTwoFactorCodeShortMessage(emailOrMobile, code.PassCode);
 			}
 
 			return new Success<TwoFactorCode>(code);
@@ -58,13 +54,6 @@ namespace Husky.TwoFactor.Extensions
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
-			return VerifyTwoFactorCode(new Emobaile(emailOrMobile), purpose, passCode, withinMinutes);
-		}
-
-		public bool VerifyTwoFactorCode(Emobaile emobaile, TwoFactorPurpose purpose, string passCode, int withinMinutes = 20) {
-			if ( emobaile == null || !emobaile.IsValid ) {
-				throw new ArgumentException(nameof(emobaile));
-			}
 			if ( passCode == null ) {
 				throw new ArgumentException(nameof(passCode));
 			}
@@ -72,7 +61,7 @@ namespace Husky.TwoFactor.Extensions
 			var query = _twoFactorDb.TwoFactorCodes
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.Purpose == purpose)
-				.Where(x => x.SentTo == emobaile.AccountName);
+				.Where(x => x.SentTo == emailOrMobile);
 
 			if ( _my.IsAuthenticated ) {
 				query = query.Where(x => x.Id == _my.Id<Guid>());
