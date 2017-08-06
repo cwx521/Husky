@@ -35,6 +35,6 @@ namespace Husky.Mail.Data
 
 
 		public MailSmtpProvider Smtp { get; set; }
-		public List<MailRecordAttachment> Attachments { get; set; }
+		public List<MailRecordAttachment> Attachments { get; set; } = new List<MailRecordAttachment>();
 	}
 }

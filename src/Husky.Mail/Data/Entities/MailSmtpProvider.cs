@@ -41,6 +41,6 @@ namespace Husky.Mail.Data
 			set => PasswordEncrypted = Crypto.Decrypt(value, Id.ToString());
 		}
 
-		public List<MailRecord> SentMails { get; set; }
+		public List<MailRecord> SentMails { get; set; } = new List<MailRecord>();
 	}
 }
