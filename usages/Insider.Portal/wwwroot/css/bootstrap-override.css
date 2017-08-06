@@ -7,6 +7,12 @@
 	font-family: 'Microsoft YaHei','Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+@media (max-width: 575px) {
+	.container {
+		width: 100% !important;
+	}
+}
+
 .form-control::placeholder {
 	color: #d9d9d9;
 }
@@ -42,6 +48,7 @@
 .no-gray .custom-control-description {
 	cursor: text !important;
 }
+
 .no-gray .custom-control-indicator {
 	background-color: #0275d8 !important;
 }

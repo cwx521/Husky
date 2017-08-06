@@ -3,6 +3,7 @@ using Husky.Authentication;
 using Husky.Authentication.Implements;
 using Husky.Injection;
 using Husky.Mail.Data;
+using Husky.Sugar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,13 +27,13 @@ namespace Insider.Portal
 		public IConfigurationRoot Configuration { get; }
 
 		public void ConfigureServices(IServiceCollection services) {
-			var secretToken = Configuration.GetValue<string>("Site:SecretToken");
+			Crypto.PermanentToken = Configuration.GetValue<string>("AppVariables:PermanentToken");
 
 			services.AddMvc();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<IConfiguration>(Configuration);
 
-			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie, new IdentityOptions { Token = secretToken });
+			services.AddHuskyAuthentication(IdType.Guid, IdentityCarrier.Cookie);
 			services.AddHuskyUsersPlugin();
 			services.AddHuskyMailPlugin();
 			services.AddHuskyTwoFactorPlugin();

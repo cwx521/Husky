@@ -6,16 +6,9 @@ namespace Husky.Authentication.Implements
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions options) {
-			if ( options == null ) {
-				throw new ArgumentNullException(nameof(options));
-			}
-			if ( options.Token == null ) {
-				throw new ArgumentException($"{nameof(options)}.{nameof(options.Token)} has no value assigned.");
-			}
-
+		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-			_options = options.SolveUnassignedOptions(IdentityCarrier.Cookie);
+			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Cookie);
 		}
 
 		HttpContext _httpContext;

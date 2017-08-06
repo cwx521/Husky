@@ -1,5 +1,6 @@
 ﻿using System;
 using Husky.Authentication.Abstractions;
+using Husky.Sugar;
 
 namespace Husky.Authentication.Implements
 {
@@ -14,6 +15,9 @@ namespace Husky.Authentication.Implements
 		internal IdentityOptions SolveUnassignedOptions(IdentityCarrier carrier) {
 			if ( string.IsNullOrEmpty(Key) ) {
 				Key = "WEIXING_AUTH_IDENTITY";
+			}
+			if ( string.IsNullOrEmpty(Token) && carrier != IdentityCarrier.Session ) {
+				Token = Crypto.PermanentToken;
 			}
 			if ( Expires == null && carrier != IdentityCarrier.Header ) {
 				Expires = DateTimeOffset.Now.AddMinutes(30);

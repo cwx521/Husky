@@ -9,7 +9,7 @@ namespace Husky.Injection
 {
 	public static class RegSvcAuthentication
 	{
-		public static IServiceCollection AddHuskyAuthentication(this IServiceCollection services, IdType idType, IdentityCarrier carrier, IdentityOptions options) => services
+		public static IServiceCollection AddHuskyAuthentication(this IServiceCollection services, IdType idType, IdentityCarrier carrier, IdentityOptions options = null) => services
 
 			.AddSingleton<IIdentityManager>(svc => {
 				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;

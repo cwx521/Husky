@@ -16,7 +16,7 @@ namespace Husky.TwoFactor
 		public TwoFactorManager(IServiceProvider serviceProvider) {
 			_db = serviceProvider.GetRequiredService<TwoFactorDbContext>();
 			_my = serviceProvider.GetRequiredService<IPrincipal>();
-			_site = serviceProvider.GetRequiredService<IConfiguration>().GetSection(SiteVariables.ConfigurationSectionName).Get<SiteVariables>();
+			_site = serviceProvider.GetRequiredService<IConfiguration>().GetSection(AppVariables.SectionName).Get<AppVariables>();
 
 			_mailSender = serviceProvider.GetService<IMailSender>();
 			_smsSender = serviceProvider.GetService<ISmsSender>();
@@ -24,7 +24,7 @@ namespace Husky.TwoFactor
 
 		readonly TwoFactorDbContext _db;
 		readonly IPrincipal _my;
-		readonly SiteVariables _site;
+		readonly AppVariables _site;
 
 		readonly IMailSender _mailSender;
 		readonly ISmsSender _smsSender;

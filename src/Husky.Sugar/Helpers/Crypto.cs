@@ -9,6 +9,24 @@ namespace Husky.Sugar
 {
 	public static class Crypto
 	{
+		#region PermanentToken
+
+		static string _permanentToken;
+
+		public static string PermanentToken {
+			get {
+				if ( string.IsNullOrEmpty(_permanentToken) ) {
+					throw new InvalidOperationException($"{nameof(Crypto)}.{nameof(PermanentToken)} has not been assigned yet, it's value is still null or empty.");
+				}
+				return _permanentToken;
+			}
+			set {
+				_permanentToken = value ?? throw new ArgumentNullException(nameof(value));
+			}
+		}
+
+		#endregion
+
 		#region RandomBytes, RandomNumber, RandomString
 
 		public static byte[] RandomBytes(int length = 4) {

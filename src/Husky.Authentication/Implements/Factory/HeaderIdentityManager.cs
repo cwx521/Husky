@@ -6,16 +6,9 @@ namespace Husky.Authentication.Implements
 {
 	internal sealed class HeaderIdentityManager : IIdentityManager
 	{
-		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions options) {
-			if ( options == null ) {
-				throw new ArgumentNullException(nameof(options));
-			}
-			if ( options.Token == null ) {
-				throw new ArgumentException($"{nameof(options)}.{nameof(options.Token)} has no value assigned.");
-			}
-
+		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-			_options = options.SolveUnassignedOptions(IdentityCarrier.Header);
+			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
 		}
 
 		HttpContext _httpContext;
