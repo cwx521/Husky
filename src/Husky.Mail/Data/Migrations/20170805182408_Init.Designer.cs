@@ -22,8 +22,7 @@ namespace Husky.Mail.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Body")
-                        .HasMaxLength(4000);
+					b.Property<string>("Body");
 
                     b.Property<string>("Cc")
                         .HasMaxLength(2000);

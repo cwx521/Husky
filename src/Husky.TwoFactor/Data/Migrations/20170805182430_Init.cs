@@ -15,7 +15,7 @@ namespace Husky.TwoFactor.Data.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     IsUsed = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    PassCode = table.Column<string>(type: "varchar(8)", maxLength: 24, nullable: true),
+                    Code = table.Column<string>(type: "varchar(8)", maxLength: 24, nullable: true),
                     Purpose = table.Column<int>(nullable: false, defaultValueSql: "0"),
                     SentTo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
                     UserId = table.Column<Guid>(nullable: true)

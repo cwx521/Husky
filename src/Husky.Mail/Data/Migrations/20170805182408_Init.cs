@@ -33,7 +33,7 @@ namespace Husky.Mail.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Body = table.Column<string>(maxLength: 4000, nullable: true),
+                    Body = table.Column<string>(nullable: true),
                     Cc = table.Column<string>(maxLength: 2000, nullable: true),
                     CreateTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Exception = table.Column<string>(maxLength: 500, nullable: true),

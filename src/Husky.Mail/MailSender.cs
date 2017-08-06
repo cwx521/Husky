@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Husky.Mail.Data;
 using Husky.Sugar;
 using MailKit;
 using MailKit.Net.Smtp;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
 using MimeKit.Text;
@@ -26,21 +26,21 @@ namespace Husky.Mail
 
 		public MailDbContext DbContext => _db;
 
-		public async Task Send(MailMessage mailMessage) => await Send(mailMessage, null);
-
-		public async Task Send(string recipient, string subject, string content) {
-			if ( string.IsNullOrEmpty(recipient) ) {
-				throw new ArgumentNullException(nameof(recipient));
+		public async Task SendAsync(string subject, string content, params string[] recipients) {
+			if ( recipients == null || recipients.Length == 0 ) {
+				throw new ArgumentNullException(nameof(recipients));
 			}
-			await Send(new MailMessage {
+			await SendAsync(new MailMessage {
 				Subject = subject,
 				Body = content,
 				IsHtml = true,
-				To = new List<MailAddress> { new MailAddress { Address = recipient } }
+				To = recipients.Select(x => new MailAddress { Address = x }).ToList()
 			});
 		}
 
-		public async Task Send(MailMessage mailMessage, Action<MailSentEventArgs> onCompleted) {
+		public async Task SendAsync(MailMessage mailMessage) => await SendAsync(mailMessage, null);
+
+		public async Task SendAsync(MailMessage mailMessage, Action<MailSentEventArgs> onCompleted) {
 			if ( mailMessage == null ) {
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
@@ -75,13 +75,14 @@ namespace Husky.Mail
 			}
 		}
 
+		static int _increment = 0;
 		private MailSmtpProvider GetInternalSmtpProvider() {
 			var haveCount = _db.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( haveCount == 0 ) {
 				throw new Exception("（邮件发送模块）还没有配置任何SMTP服务。".Xslate());
 			}
-			var skip = new Random().Next(0, haveCount);
-			return _db.MailSmtpProviders.Skip(skip).First();
+			var skip = _increment++ % haveCount;
+			return _db.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 		}
 
 		private MailRecord CreateMailRecord(MailMessage mailMessage) {

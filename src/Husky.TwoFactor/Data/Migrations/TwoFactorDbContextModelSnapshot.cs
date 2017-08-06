@@ -29,7 +29,7 @@ namespace Husky.TwoFactor.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:DefaultValueSql", "0");
 
-                    b.Property<string>("PassCode")
+                    b.Property<string>("Code")
                         .HasColumnType("varchar(8)")
                         .HasMaxLength(24);
 

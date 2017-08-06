@@ -37,7 +37,7 @@ namespace Insider.Portal.Controllers
 		[HttpPost("~/register/verify")]
 		public async Task<IActionResult> Verify(RegistryVerifyModel model) {
 			if ( ModelState.IsValid ) {
-				var result = await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, TwoFactorPurpose.Existence, model.TwoFactorCode, true);
+				var result = await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, TwoFactorPurpose.Registry, model.TwoFactorCode, true);
 				if ( result.Ok ) {
 					return Redirect("/");
 				}

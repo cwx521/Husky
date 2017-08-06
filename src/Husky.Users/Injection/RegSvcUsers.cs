@@ -1,7 +1,7 @@
 ﻿using Husky.Authentication.Abstractions;
 using Husky.Data;
+using Husky.Users;
 using Husky.Users.Data;
-using Husky.Users.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +12,7 @@ namespace Husky.Injection
 	{
 		public static IServiceCollection AddHuskyUsersPlugin(this IServiceCollection services, string dbConnectionString = null) {
 			services.AddDbContext<UserDbContext>((svc, builder) => {
-				builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().GetConnectionStringBySequence<UserDbContext>());
+				builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().GetConnectionStringBySeekSequence<UserDbContext>());
 				builder.Migrate();
 			});
 			services.AddSingleton<PrincipalUserExtensions>();

@@ -73,7 +73,7 @@ namespace Husky.Data.ModelBuilding
 							}
 
 							// Add clustered to annotated properties
-							// todo: support a property combination.
+							// todo: support a combination of multiple properties.
 							entityTypeBuilder.HasIndex(prop.Name).IsUnique(indice.IsUnique).ForSqlServerIsClustered(indice.IsClustered);
 						}
 					}

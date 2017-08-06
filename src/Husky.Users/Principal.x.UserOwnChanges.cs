@@ -5,7 +5,7 @@ using Husky.Sugar;
 using Husky.Users.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Husky.Users.Extensions
+namespace Husky.Users
 {
 	partial class PrincipalUserExtensions
 	{

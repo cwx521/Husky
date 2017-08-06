@@ -2,7 +2,7 @@
 using Husky.Users.Data;
 using Microsoft.AspNetCore.Http;
 
-namespace Husky.Users.Extensions
+namespace Husky.Users
 {
 	public sealed partial class PrincipalUserExtensions
 	{

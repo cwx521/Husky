@@ -14,8 +14,7 @@ namespace Husky.Mail.Data
 
 		[MaxLength(200)]
 		public string Subject { get; set; }
-
-		[MaxLength(4000)]
+		
 		public string Body { get; set; }
 
 		public bool IsHtml { get; set; }

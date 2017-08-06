@@ -18,8 +18,9 @@ namespace Husky.Mail.Data
 				smtp.HasAlternateKey(x => new { x.Host, x.CredentialName });
 				smtp.HasMany(x => x.SentMails).WithOne(x => x.Smtp).HasForeignKey(x => x.SmtpId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
 			});
-			modelBuilder.Entity<MailRecord>().HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
+			modelBuilder.Entity<MailRecord>(mailRecord => {
+				mailRecord.HasMany(x => x.Attachments).WithOne(x => x.Mail).HasForeignKey(x => x.MailId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+			});
 			modelBuilder.ForSqlServer<MailDbContext>();
 		}
 	}

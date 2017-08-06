@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Husky.Mail.Abstractions;
+using Husky.Sugar;
 
 namespace Husky.Mail.Data
 {
@@ -36,8 +37,8 @@ namespace Husky.Mail.Data
 
 		[NotMapped]
 		public string Password {
-			get => PasswordEncrypted;
-			set => PasswordEncrypted = value;
+			get => Crypto.Decrypt(PasswordEncrypted, Id.ToString());
+			set => PasswordEncrypted = Crypto.Decrypt(value, Id.ToString());
 		}
 
 		public List<MailRecord> SentMails { get; set; }

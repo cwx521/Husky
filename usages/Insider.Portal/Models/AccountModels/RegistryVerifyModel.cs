@@ -19,6 +19,6 @@ namespace Insider.Portal.Models.AccountModels
 
 		public bool AutoSend { get; set; }
 
-		public TwoFactorPurpose TwoFactorPurpose => TwoFactorPurpose.Existence;
+		public TwoFactorPurpose TwoFactorPurpose => TwoFactorPurpose.Registry;
 	}
 }
