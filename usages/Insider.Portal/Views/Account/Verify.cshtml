@@ -34,7 +34,7 @@
 				<div class="input-group">
 					<input asp-for="TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-secondary twofactor-code-sender" data-auto="@Model.AutoSend" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.ExistenceCheck)" data-hint=".twofactor-code-hint">重新获取</button>
+						<button type="button" class="btn btn-secondary twofactor-code-sender" data-auto="@Model.AutoSend" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.Registry)" data-hint=".twofactor-code-hint">重新获取</button>
 					</div>
 				</div>
 			</div>

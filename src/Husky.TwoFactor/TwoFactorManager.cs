@@ -16,7 +16,7 @@ namespace Husky.TwoFactor
 		public TwoFactorManager(IServiceProvider serviceProvider) {
 			_db = serviceProvider.GetRequiredService<TwoFactorDbContext>();
 			_my = serviceProvider.GetRequiredService<IPrincipal>();
-			_site = serviceProvider.GetRequiredService<IConfiguration>().GetValue<SiteVariables>(SiteVariables.ConfigurationSectionName);
+			_site = serviceProvider.GetRequiredService<IConfiguration>().GetSection(SiteVariables.ConfigurationSectionName).Get<SiteVariables>();
 
 			_mailSender = serviceProvider.GetService<IMailSender>();
 			_smsSender = serviceProvider.GetService<ISmsSender>();
@@ -94,7 +94,7 @@ namespace Husky.TwoFactor
 			if ( _mailSender == null ) {
 				throw new InvalidOperationException("没找到邮件发送服务模块。".Xslate());
 			}
-			await _mailSender.SendAsync(string.Format("【{0}】动态验证码".Xslate(), _site.SiteName), content, emailAddress);
+			await _mailSender.SendAsync("动态验证码".Xslate(), content, emailAddress);
 		}
 
 		private async Task SendViaSms(string content, string mobileNumber) {

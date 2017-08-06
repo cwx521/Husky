@@ -26,7 +26,7 @@ namespace Insider.Portal
 		public IConfigurationRoot Configuration { get; }
 
 		public void ConfigureServices(IServiceCollection services) {
-			var secretToken = Configuration.GetValue<string>("SecretToken");
+			var secretToken = Configuration.GetValue<string>("Site:SecretToken");
 
 			services.AddMvc();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
