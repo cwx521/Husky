@@ -36,16 +36,16 @@ namespace Husky.Data.ModelBuilding
 
 						// Enable sql default values for convenience
 						if ( options.AnnotatedDefaultValueSql && valueSql?.ValueSql != null ) {
-							entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql(valueSql?.ValueSql);
+							entityTypeBuilder.Property(prop.PropertyType, prop.Name).HasDefaultValueSql(valueSql?.ValueSql);
 						}
 
 						// Enable default datetime value for nummerics and datetimes
 						if ( options.AutoDetectedDefaultValueSql && valueSql?.ValueSql == null && !prop.IsDefined(typeof(KeyAttribute)) ) {
 							if ( typeof(DateTime) == prop.PropertyType ) {
-								entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql("getdate()");
+								entityTypeBuilder.Property(prop.PropertyType, prop.Name).HasDefaultValueSql("getdate()");
 							}
 							else if ( prop.PropertyType.GetTypeInfo().IsEnum || prop.PropertyType.GetTypeInfo().IsPrimitive || prop.PropertyType == typeof(decimal) ) {
-								entityTypeBuilder.Property(prop.PropertyType, prop.Name).ForSqlServerHasDefaultValueSql("0");
+								entityTypeBuilder.Property(prop.PropertyType, prop.Name).HasDefaultValueSql("0");
 							}
 						}
 					}
