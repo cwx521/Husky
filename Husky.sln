@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Sugar", "src\Husky.Sugar\Husky.Sugar.csproj", "{39B0735F-89DE-417C-9662-52892C17848C}"
 EndProject
@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.TwoFactor", "src\Husk
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstractions", "Abstractions", "{AD37B534-E221-47A4-BB94-9CE6B58DE480}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insider.Portal", "usages\Insider.Portal\Insider.Portal.csproj", "{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insider.Portal", "usages\Insider.Portal\Insider.Portal.csproj", "{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.PrincipalBaggage", "src\Husky.PrincipalBaggage\Husky.PrincipalBaggage.csproj", "{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{0B781AED-12CD-4571-82BB-72AC6BF66C20} = {1EADF81D-F2D5-479F-9DC8-15C5736B9FA8}
 		{1E5BAAE1-4C2C-4D7E-9621-8D5DC66BC8D6} = {FC6B662D-30BB-4043-8C14-E492744B7D90}
 		{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E} = {4DEFA4AF-9FBB-4209-866E-8C84D9C1023D}
+		{0C5D045E-D2E9-4AF6-8BA1-509172D3F157} = {1EADF81D-F2D5-479F-9DC8-15C5736B9FA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}
