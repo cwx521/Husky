@@ -5,6 +5,7 @@ using Husky.Sugar;
 using Husky.TwoFactor.Data;
 using Husky.Users.Data;
 using Insider.Portal.Models.AccountModels;
+using Insider.Portal.Pages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,7 @@ namespace Insider.Portal.Controllers
 		#region Field Remote Validators
 
 		[HttpPost]
-		public async Task<IActionResult> IsAccountApplicable(RegistryModel model) {
+		public async Task<IActionResult> IsAccountApplicable(RegisterModel model) {
 			return Json(!(model.AccountNameType == AccountNameType.Email
 				? await _userDb.Users.AnyAsync(x => x.Email == model.AccountName)
 				: await _userDb.Users.AnyAsync(x => x.Mobile == model.AccountName)));

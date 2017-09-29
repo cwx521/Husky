@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Sugar", "src\Husky.Sugar\Husky.Sugar.csproj", "{39B0735F-89DE-417C-9662-52892C17848C}"
 EndProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstractions", "Abstraction
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insider.Portal", "usages\Insider.Portal\Insider.Portal.csproj", "{E5D12D96-6BC2-4AE0-88E7-7CC534F7119E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.PrincipalBaggage", "src\Husky.PrincipalBaggage\Husky.PrincipalBaggage.csproj", "{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.PrincipalBaggage", "src\Husky.PrincipalBaggage\Husky.PrincipalBaggage.csproj", "{0C5D045E-D2E9-4AF6-8BA1-509172D3F157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
