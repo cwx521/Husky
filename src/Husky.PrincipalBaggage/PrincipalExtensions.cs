@@ -12,7 +12,7 @@ namespace Husky.PrincipalBaggage
 				return null;
 			}
 			var cache = principal.ServiceProvider.GetService<IMemoryCache>();
-			return new BaggagePool<Baggage>(cache).PickOrPrepare(principal.IdString, new Baggage(principal));
+			return new BaggagePool<Baggage>(cache).PickOrCreate(principal.IdString, new Baggage(principal));
 		}
 	}
 }

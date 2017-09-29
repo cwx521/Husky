@@ -47,7 +47,7 @@ namespace Husky.PrincipalBaggage
 			}
 		}
 
-		internal T PickOrPrepare(string key, T whenNotExists) {
+		internal T PickOrCreate(string key, T whenNotExists) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
