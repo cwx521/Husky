@@ -11,7 +11,7 @@ namespace Husky.Injection
 	public static class RegSvcUsers
 	{
 		public static IServiceCollection AddHuskyUsersPlugin(this IServiceCollection services, string dbConnectionString = null) {
-			services.AddDbContextPool<UserDbContext>((svc, builder) => {
+			services.AddDbContext<UserDbContext>((svc, builder) => {
 				builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().GetConnectionStringBySeekSequence<UserDbContext>());
 				builder.Migrate();
 			});

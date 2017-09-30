@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Husky.Authentication;
+﻿using Husky.Authentication;
 using Husky.Authentication.Implements;
 using Husky.Injection;
-using Husky.Mail.Data;
 using Husky.Sugar;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,22 +40,22 @@ namespace Insider.Portal
 			app.UseStaticFiles();
 			app.UseMvc(routes => routes.MapRoute(name: "default", template: "{controller=Home}/{action=Index}/{id?}"));
 
-			using ( var scope = app.ApplicationServices.CreateScope() ) {
-				var mailDb = scope.ServiceProvider.GetRequiredService<MailDbContext>();
-				if ( !mailDb.MailSmtpProviders.Any() ) {
-					mailDb.Add(new MailSmtpProvider {
-						Host = "smtp.live.com",
-						Port = 587,
-						Ssl = false,
-						CredentialName = "chenwx521@hotmail.com",
-						Password = "",
-						SenderDisplayName = "Weixing Chen",
-						SenderMailAddress = "chenwx521@hotmail.com",
-						IsInUse = true
-					});
-					mailDb.SaveChanges();
-				}
-			}
+			//using ( var scope = app.ApplicationServices.CreateScope() ) {
+			//	var mailDb = scope.ServiceProvider.GetRequiredService<MailDbContext>();
+			//	if ( !mailDb.MailSmtpProviders.Any() ) {
+			//		mailDb.Add(new MailSmtpProvider {
+			//			Host = "smtp.live.com",
+			//			Port = 587,
+			//			Ssl = false,
+			//			CredentialName = "chenwx521@hotmail.com",
+			//			Password = "",
+			//			SenderDisplayName = "Weixing Chen",
+			//			SenderMailAddress = "chenwx521@hotmail.com",
+			//			IsInUse = true
+			//		});
+			//		mailDb.SaveChanges();
+			//	}
+			//}
 		}
 	}
 }
