@@ -11,7 +11,7 @@ namespace Husky.Injection
 	public static class RegSvcTwoFactor
 	{
 		public static IServiceCollection AddHuskyTwoFactorPlugin(this IServiceCollection services, string dbConnectionString = null) {
-			services.AddDbContext<TwoFactorDbContext>((svc, builder) => {
+			services.AddDbContextPool<TwoFactorDbContext>((svc, builder) => {
 				builder.UseSqlServer(dbConnectionString ?? svc.GetRequiredService<IConfiguration>().GetConnectionStringBySeekSequence<TwoFactorDbContext>());
 				builder.Migrate();
 			});
