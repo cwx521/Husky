@@ -2,7 +2,7 @@ using Husky.Authentication.Abstractions;
 using Husky.Injection;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Insider.Portal.Pages
+namespace Insider.Portal.Pages.Account
 {
 	public class LogoutModel : PageModel
 	{

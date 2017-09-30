@@ -1,19 +1,11 @@
-﻿@*@model RegistryVerifyModel
-@using Husky.TwoFactor.Data
-@{
-	Layout = "_Layout";
-	ViewData["Title"] = "完成注册验证";
-}
-
-@section Scripts {
-	<script type="text/javascript" src="~/js/twofactor-code-sender.js" defer></script>
-}
+﻿@page
+@model VerifyModel
 
 <h3 class="mb-3">
-	@ViewData["Title"]
+	@(ViewData["Title"] = "完成注册验证")
 </h3>
 
-<form method="post" asp-action="Verify" class="card">
+<form method="post" asp-page="Verify" class="card">
 	<input type="hidden" name="auto" value="False" />
 
 	<div class="card-block text-muted">
@@ -22,23 +14,23 @@
 
 	<div class="card-block">
 		<div class="row form-group">
-			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
+			<label asp-for="Data.AccountName" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
-				<input asp-for="AccountName" type="text" class="form-control" readonly />
+				<input asp-for="Data.AccountName" type="text" class="form-control" readonly />
 			</div>
 		</div>
 
 		<div class="row form-group">
-			<label asp-for="TwoFactorCode" class="col-lg-2 col-form-label"></label>
+			<label asp-for="Data.TwoFactorCode" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
 				<div class="input-group">
-					<input asp-for="TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
+					<input asp-for="Data.TwoFactorCode" type="text" maxlength="6" class="form-control" placeholder="6位验证码" />
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-secondary twofactor-code-sender" data-auto="@Model.AutoSend" data-send-to="@Model.AccountName" data-purpose="@((int)TwoFactorPurpose.Registry)" data-hint=".twofactor-code-hint">重新获取</button>
 					</div>
 				</div>
 			</div>
-			<span asp-validation-for="TwoFactorCode" class="col-lg-6 col-form-label twofactor-code-hint"></span>
+			<span asp-validation-for="Data.TwoFactorCode" class="col-lg-6 col-form-label twofactor-code-hint"></span>
 		</div>
 	</div>
 
@@ -49,4 +41,8 @@
 			</div>
 		</div>
 	</div>
-</form>*@
+</form>
+
+@section Scripts {
+	<script type="text/javascript" src="~/js/twofactor-code-sender.js" defer></script>
+}

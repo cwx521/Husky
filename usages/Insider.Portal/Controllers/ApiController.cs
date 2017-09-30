@@ -4,8 +4,7 @@ using Husky.Injection;
 using Husky.Sugar;
 using Husky.TwoFactor.Data;
 using Husky.Users.Data;
-using Insider.Portal.Models.AccountModels;
-using Insider.Portal.Pages;
+using Insider.Portal.Pages.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,14 +28,14 @@ namespace Insider.Portal.Controllers
 		#region Field Remote Validators
 
 		[HttpPost]
-		public async Task<IActionResult> IsAccountApplicable(RegisterModel model) {
-			return Json(!(model.AccountNameType == AccountNameType.Email
-				? await _userDb.Users.AnyAsync(x => x.Email == model.AccountName)
-				: await _userDb.Users.AnyAsync(x => x.Mobile == model.AccountName)));
+		public async Task<IActionResult> IsAccountApplicable(RegisterAccountModel model) {
+			return Json(!(model.Type == AccountNameType.Email
+				? await _userDb.Users.AnyAsync(x => x.Email == model.Name)
+				: await _userDb.Users.AnyAsync(x => x.Mobile == model.Name)));
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> IsTwoFactorCodeValid(RegistryVerifyModel model) {
+		public async Task<IActionResult> IsTwoFactorCodeValid(VerifyDataModel model) {
 			return Json((await _my.TwoFactor().VerifyTwoFactorCode(model.AccountName, model.TwoFactorPurpose, model.TwoFactorCode, false)).Ok);
 		}
 

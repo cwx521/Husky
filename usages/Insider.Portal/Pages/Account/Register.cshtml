@@ -1,42 +1,38 @@
 ﻿@page
 @model RegisterModel
-@{
-	Layout = "_Layout";
-	ViewData["Title"] = "注册成为会员";
-}
 
 <h3 class="mb-3">
-	@ViewData["Title"]
+	@(ViewData["Title"] = "注册成为会员")
 </h3>
 
-<form method="post" asp-action="Register" class="card">
+<form method="post" asp-page="Register" class="card">
 	<div class="card-block text-muted">
 		请使用您的邮箱作为注册名，并且设置一个密码；我们不会向任何第三方泄露您的帐号和密码信息；为确保您自己的个人帐户和隐私安全，密码尽量不要与邮箱密码相同。
 	</div>
 
 	<div class="card-block">
 		<div class="row form-group">
-			<label asp-for="AccountName" class="col-lg-2 col-form-label"></label>
+			<label asp-for="Account.Name" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
-				<input asp-for="AccountName" type="text" maxlength="40" required class="form-control" placeholder="用您常用的 邮箱 作为帐号名" autocomplete="off" />
+				<input asp-for="Account.Name" type="text" maxlength="40" required class="form-control" placeholder="用您常用的 邮箱 作为帐号名" autocomplete="off" />
 			</div>
-			<span asp-validation-for="AccountName" class="col-lg-6 col-form-label"></span>
+			<span asp-validation-for="Account.Name" class="col-lg-6 col-form-label"></span>
 		</div>
 
 		<div class="row form-group">
-			<label asp-for="Password" class="col-lg-2 col-form-label"></label>
+			<label asp-for="Account.Password" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
-				<input asp-for="Password" type="password" maxlength="18" class="form-control" placeholder="密码长度8-18位" />
+				<input asp-for="Account.Password" type="password" maxlength="18" class="form-control" placeholder="密码长度8-18位" />
 			</div>
-			<span asp-validation-for="Password" class="col-lg-6 col-form-label"></span>
+			<span asp-validation-for="Account.Password" class="col-lg-6 col-form-label"></span>
 		</div>
 
 		<div class="row form-group">
-			<label asp-for="PasswordConfirm" class="col-lg-2 col-form-label"></label>
+			<label asp-for="Account.PasswordRepeat" class="col-lg-2 col-form-label"></label>
 			<div class="col-lg-4">
-				<input asp-for="PasswordConfirm" type="password" maxlength="15" class="form-control" placeholder="再次输入密码" />
+				<input asp-for="Account.PasswordRepeat" type="password" maxlength="15" class="form-control" placeholder="再次输入密码" />
 			</div>
-			<span asp-validation-for="PasswordConfirm" class="col-lg-6 col-form-label"></span>
+			<span asp-validation-for="Account.PasswordRepeat" class="col-lg-6 col-form-label"></span>
 		</div>
 
 		<div class="row mt-4">
@@ -54,7 +50,7 @@
 		<div class="row">
 			<div class="col-lg-4 offset-lg-2">
 				<button type="submit" class="btn btn-info">&nbsp; 注册 &nbsp;</button>
-				<a href="/login" class="btn-link card-link pull-right col-form-label">我已经有账号了，去登录</a>
+				<a href="/account/login" class="btn-link card-link pull-right col-form-label">我已经有账号了，去登录</a>
 			</div>
 		</div>
 	</div>
