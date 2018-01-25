@@ -24,7 +24,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Husky.Abstractions\Husky.Abstractions.csproj" />
-		<ProjectReference Include="..\Husky.Sugar\Husky.Sugar.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -21,8 +21,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Husky.Sugar\Husky.Sugar.csproj" />
-  </ItemGroup>
-
 </Project>
