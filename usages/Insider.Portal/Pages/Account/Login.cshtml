@@ -1,14 +1,11 @@
-﻿@model LoginModel
-@{
-	Layout = "_Layout";
-	ViewData["Title"] = "登录";
-}
+﻿@page
+@model LoginModel
 
 <h3 class="mb-3">
-	@ViewData["Title"]
+	@(ViewData["Title"] = "登录")
 </h3>
 
-<form method="post" asp-action="Login" class="card">
+<form method="post" asp-page="login" class="card">
 	<div class="card-block text-muted">
 		请使用您已在本站注册或绑定的邮箱或手机号作为登录名，输入预设的密码后点击登录。
 	</div>
@@ -39,9 +36,9 @@
 		<div class="row">
 			<div class="col-lg-4 offset-lg-2">
 				<button type="submit" class="btn btn-primary">&nbsp; 登录 &nbsp;</button>
-				<a href="/retreive" class="btn-link card-link pull-right col-form-label">找回密码</a>
+				<a href="/account/retreive" class="btn-link card-link pull-right col-form-label">找回密码</a>
 				<span class="text-muted-lighter ml-3 mr-3 pull-right col-form-label">|</span>
-				<a href="/register" class="btn-link card-link pull-right col-form-label">我需要先注册</a>
+				<a href="/account/register" class="btn-link card-link pull-right col-form-label">我需要先注册</a>
 			</div>
 		</div>
 	</div>

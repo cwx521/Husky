@@ -8,7 +8,7 @@ namespace Husky.Data
 	public static class ConnectionStrings
 	{
 		public static string GetConnectionStringBySeekSequence<T>(this IConfiguration configuration) where T : DbContext {
-			var lookFor = new[] { "Debugging", typeof(T).Name.Replace("DbContext", ""), "Default" };
+			var lookFor = new[] { "Dev", "Testing", typeof(T).Name.Replace("DbContext", ""), "Default" };
 			var connstr = lookFor.Select(x => configuration.GetConnectionString(x)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
 			if ( string.IsNullOrEmpty(connstr) ) {
 				throw new Exception("Didn't find any applicable ConnectionString in Configuration, these ConnectionString names are searched: " + string.Join(", ", lookFor));

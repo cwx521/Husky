@@ -1,0 +1,121 @@
+﻿using System;
+using System.Collections.Generic;
+using Husky.Authentication.Abstractions;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace Husky.PrincipalData
+{
+	internal class BaggagePool<T> where T : class, IBaggage
+	{
+		public BaggagePool(IMemoryCache cache) {
+			_cache = cache;
+		}
+
+		IMemoryCache _cache;
+
+		static readonly object _lock = new object();
+		static readonly string _cacheKey = "Pool_" + typeof(T).FullName;
+
+		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
+
+		internal T Pick(string key) {
+			if ( key == null ) {
+				throw new ArgumentNullException(nameof(key));
+			}
+			var pool = GetPool();
+			if ( pool != null ) {
+				if ( pool.TryGetValue(key, out var bag) ) {
+					if ( bag.ActiveTime.Add(Timeout) > DateTime.Now ) {
+						lock ( _lock ) {
+							bag.ActiveTime = DateTime.Now;
+						}
+						return bag;
+					}
+					Drop(key);
+				}
+			}
+			return default(T);
+		}
+
+		internal void Put(T bag) {
+			DropTimeout(Timeout);
+
+			bag.ActiveTime = DateTime.Now;
+			var pool = EnsurePool();
+			lock ( _lock ) {
+				pool[bag.Key] = bag;
+			}
+		}
+
+		internal T PickOrPrepare(string key, T whenNotExists) {
+			if ( key == null ) {
+				throw new ArgumentNullException(nameof(key));
+			}
+			if ( whenNotExists == null ) {
+				throw new ArgumentNullException(nameof(whenNotExists));
+			}
+			if ( key != whenNotExists.Key ) {
+				throw new ArgumentException($"The Key value of {nameof(whenNotExists)} must equal to the first given parameter.", nameof(whenNotExists));
+			}
+
+			var pool = EnsurePool();
+
+			if ( pool.TryGetValue(key, out var bag) && bag.ActiveTime.Add(Timeout) > DateTime.Now ) {
+				lock ( _lock ) {
+					bag.ActiveTime = DateTime.Now;
+				}
+				return bag;
+			}
+
+			whenNotExists.ActiveTime = DateTime.Now;
+			lock ( _lock ) {
+				pool[key] = whenNotExists;
+			}
+			return whenNotExists;
+		}
+
+		internal void Drop(string key) {
+			if ( key == null ) {
+				throw new ArgumentNullException(nameof(key));
+			}
+			lock ( _lock ) {
+				GetPool()?.Remove(key);
+			}
+		}
+
+		internal void DropAll() {
+			_cache.Remove(_cacheKey);
+		}
+
+		internal void DropTimeout(int timeoutMinutes) {
+			DropTimeout(TimeSpan.FromMinutes(timeoutMinutes));
+		}
+
+		internal void DropTimeout(TimeSpan timeout) {
+			var pool = GetPool();
+			if ( pool != null ) {
+				var keys = new string[pool.Count];
+				pool.Keys.CopyTo(keys, 0);
+
+				foreach ( var i in keys ) {
+					if ( pool.ContainsKey(i) && pool[i].ActiveTime.Add(timeout) < DateTime.Now ) {
+						lock ( _lock ) {
+							pool.Remove(i);
+						}
+					}
+				}
+			}
+		}
+
+		Dictionary<string, T> GetPool() {
+			return _cache.Get<Dictionary<string, T>>(_cacheKey);
+		}
+
+		Dictionary<string, T> EnsurePool() {
+			return _cache.GetOrCreate(_cacheKey, x => {
+				x.SetSlidingExpiration(Timeout);
+				return new Dictionary<string, T>();
+			});
+		}
+	}
+}

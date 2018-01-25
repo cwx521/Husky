@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Injection
 {
-	public static class RegSvcMailTo
+	public static class RegSvcMail
 	{
 		public static IServiceCollection AddHuskyMailPlugin(this IServiceCollection services, string dbConnectionString = null) {
 			services.AddDbContext<MailDbContext>((svc, builder) => {
