@@ -1,9 +1,9 @@
-﻿using Husky.AspNetCore.Diagnostics;
+﻿using Husky.AspNetCore.Diagnostics.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.AspNetCore
+namespace Husky.AspNetCore.DependencyInjection
 {
 	public static class DI
 	{

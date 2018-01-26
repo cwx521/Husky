@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 
-namespace Husky.AspNetCore.DataAudit
+namespace Husky.AspNetCore.DataAudit.Data
 {
 	public sealed class AuditDbContext : DbContext
 	{

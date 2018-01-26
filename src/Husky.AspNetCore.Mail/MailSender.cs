@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Husky.AspNetCore.Mail.Abstractions;
 using Husky.AspNetCore.Mail.Data;
 using MailKit;
 using MailKit.Net.Smtp;

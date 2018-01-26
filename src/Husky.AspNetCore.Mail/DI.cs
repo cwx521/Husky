@@ -1,11 +1,10 @@
 ﻿using Husky.AspNetCore.Mail;
-using Husky.AspNetCore.Mail.Abstractions;
 using Husky.AspNetCore.Mail.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.AspNetCore
+namespace Husky.AspNetCore.DependencyInjection
 {
 	public static class DI
 	{

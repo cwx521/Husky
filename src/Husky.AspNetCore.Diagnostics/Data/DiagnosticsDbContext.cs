@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Husky.AspNetCore.Diagnostics
+namespace Husky.AspNetCore.Diagnostics.Data
 {
 	public class DiagnosticsDbContext : DbContext
 	{

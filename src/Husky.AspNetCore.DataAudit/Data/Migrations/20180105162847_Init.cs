@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace Husky.AspNetCore.DataAudit.Migrations
+namespace Husky.AspNetCore.DataAudit.Data.Migrations
 {
     public partial class Init : Migration
     {

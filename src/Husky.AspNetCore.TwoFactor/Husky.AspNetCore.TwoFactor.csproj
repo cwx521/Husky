@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Huky.AspNetCore.AliyunSms\Huky.AspNetCore.AliyunSms.csproj" />
+    <ProjectReference Include="..\Huky.AspNetCore.AliyunSms\Husky.AspNetCore.AliyunSms.csproj" />
     <ProjectReference Include="..\Husky.AspNetCore.Mail\Husky.AspNetCore.Mail.csproj" />
     <ProjectReference Include="..\Husky.AspNetCore.Principal\Husky.AspNetCore.Principal.csproj" />
   </ItemGroup>

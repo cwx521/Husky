@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace Husky.AspNetCore.Diagnostics
+namespace Husky.AspNetCore.Diagnostics.Data
 {
 	public class ExceptionLog
 	{

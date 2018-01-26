@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Husky.AspNetCore.Diagnostics;
 using System;
 
-namespace Husky.AspNetCore.Diagnostics.Migrations
+namespace Husky.AspNetCore.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
     partial class DiagnosticsDbContextModelSnapshot : ModelSnapshot

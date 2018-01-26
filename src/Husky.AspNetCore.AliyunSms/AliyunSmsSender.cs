@@ -8,15 +8,15 @@ namespace Husky.AspNetCore.AliyunSms
 {
 	public class AliyunSmsSender
 	{
-		public async Task SendAsync(AliyunSmsConfig aliyunSmsModel, AliyunSmsArgument argument, params string[] phoneNumbers) {
+		public async Task SendAsync(AliyunSmsConfig config, AliyunSmsArgument argument, params string[] phoneNumbers) {
 			if ( phoneNumbers == null || phoneNumbers.Length == 0 ) {
 				return;
 			}
 
 			var request = new SendSmsRequest {
 				PhoneNumbers = string.Join(",", phoneNumbers),
-				SignName = aliyunSmsModel.SignName,
-				TemplateCode = aliyunSmsModel.TemplateCode,
+				SignName = config.SignName,
+				TemplateCode = config.TemplateCode,
 				TemplateParam = JsonConvert.SerializeObject(argument)
 			};
 
@@ -24,7 +24,7 @@ namespace Husky.AspNetCore.AliyunSms
 			DefaultProfile.AddEndpoint(endPointRegion, endPointRegion, "Dysmsapi", "dysmsapi.aliyuncs.com");
 
 			await Task.Run(() => {
-				var profile = DefaultProfile.GetProfile(endPointRegion, aliyunSmsModel.AccessKeyId, aliyunSmsModel.AccessKeySecret);
+				var profile = DefaultProfile.GetProfile(endPointRegion, config.AccessKeyId, config.AccessKeySecret);
 				new DefaultAcsClient(profile).GetAcsResponse(request);
 			});
 		}

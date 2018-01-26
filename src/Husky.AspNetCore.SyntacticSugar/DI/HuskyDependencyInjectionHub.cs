@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.AspNetCore
+namespace Husky.AspNetCore.DependencyInjection
 {
 	public class HuskyDependencyInjectionHub
 	{

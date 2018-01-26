@@ -1,4 +1,4 @@
-﻿namespace Husky.AspNetCore.Mail.Abstractions
+﻿namespace Husky.AspNetCore.Mail
 {
 	public interface ISmtpProvider
 	{

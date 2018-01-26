@@ -4,7 +4,7 @@ using Husky.AspNetCore.Principal.Implements;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.AspNetCore
+namespace Husky.AspNetCore.DependencyInjection
 {
 	public static class DI
 	{

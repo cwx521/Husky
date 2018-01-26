@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Husky.AspNetCore.Diagnostics;
 using System;
 
-namespace Husky.AspNetCore.Diagnostics.Migrations
+namespace Husky.AspNetCore.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
     [Migration("20171220113405_Init")]

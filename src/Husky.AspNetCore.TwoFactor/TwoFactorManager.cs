@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.AspNetCore.AliyunSms;
-using Husky.AspNetCore.Mail.Abstractions;
+using Husky.AspNetCore.Mail;
 using Husky.AspNetCore.Principal;
 using Husky.AspNetCore.TwoFactor.Data;
 using Microsoft.Extensions.Configuration;

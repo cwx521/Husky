@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Husky.AspNetCore.Principal.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.AspNetCore.Principal.Implements
+namespace Husky.AspNetCore.Principal
 {
 	public sealed class SessionDataContainer : ConcurrentDictionary<string, object>, ISessionDataContainer
 	{

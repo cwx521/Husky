@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Principal"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Principal.SessionData", "src\Husky.AspNetCore.Principal.SessionData\Husky.AspNetCore.Principal.SessionData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.AspNetCore.DataAudit", "src\Husky.AspNetCore.DataAudit\Husky.AspNetCore.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.DataAudit", "src\Husky.AspNetCore.DataAudit\Husky.AspNetCore.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.AspNetCore.Diagnostics", "src\Husky.AspNetCore.Diagnostics\Husky.AspNetCore.Diagnostics.csproj", "{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Diagnostics", "src\Husky.AspNetCore.Diagnostics\Husky.AspNetCore.Diagnostics.csproj", "{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.AspNetCore.TwoFactor", "src\Husky.AspNetCore.TwoFactor\Husky.AspNetCore.TwoFactor.csproj", "{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.TwoFactor", "src\Husky.AspNetCore.TwoFactor\Husky.AspNetCore.TwoFactor.csproj", "{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.AspNetCore.Mail", "src\Husky.AspNetCore.Mail\Husky.AspNetCore.Mail.csproj", "{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Mail", "src\Husky.AspNetCore.Mail\Husky.AspNetCore.Mail.csproj", "{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Huky.AspNetCore.AliyunSms", "src\Huky.AspNetCore.AliyunSms\Huky.AspNetCore.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.AliyunSms", "src\Husky.AspNetCore.AliyunSms\Husky.AspNetCore.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

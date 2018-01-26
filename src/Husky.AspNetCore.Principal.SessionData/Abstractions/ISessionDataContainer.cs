@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.AspNetCore.Principal.Abstractions
+namespace Husky.AspNetCore.Principal
 {
 	public interface ISessionDataContainer
 	{

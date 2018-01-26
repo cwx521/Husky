@@ -1,5 +1,4 @@
-﻿using Husky.AspNetCore.Principal.Implements;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.AspNetCore.Principal

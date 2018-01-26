@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Husky.AspNetCore.Mail.Abstractions
+namespace Husky.AspNetCore.Mail
 {
 	public interface IMailSender
 	{

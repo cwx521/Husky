@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Husky.AspNetCore.Diagnostics.Data;
 using Husky.AspNetCore.Principal;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;

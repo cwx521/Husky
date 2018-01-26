@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Husky.AspNetCore.NaturalSyntactic
+namespace Husky.AspNetCore.Syntactic.Natural
 {
 	public static class ValueTypeHelper
 	{

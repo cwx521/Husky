@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Husky.AspNetCore.Principal.Abstractions;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Husky.AspNetCore.Principal.Implements
+namespace Husky.AspNetCore.Principal
 {
 	internal class SessionDataPool<T> where T : class, ISessionDataContainer
 	{

@@ -9,7 +9,7 @@ using Husky.AspNetCore.DataAudit;
 using System;
 using Z.EntityFramework.Plus;
 
-namespace Husky.AspNetCore.DataAudit.Migrations
+namespace Husky.AspNetCore.DataAudit.Data.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
     partial class AuditDbContextModelSnapshot : ModelSnapshot
