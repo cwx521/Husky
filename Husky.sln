@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.SyntacticSugar", "src\Husky.AspNetCore.SyntacticSugar\Husky.AspNetCore.SyntacticSugar.csproj", "{AD6318C8-B2B0-4739-A96F-EEB8A97A2769}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Helpers", "src\Husky.Helpers\Husky.Helpers.csproj", "{AD6318C8-B2B0-4739-A96F-EEB8A97A2769}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Principal", "src\Husky.AspNetCore.Principal\Husky.AspNetCore.Principal.csproj", "{A64B3FE1-25F0-4860-8925-108C7F00E5FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal", "src\Husky.Principal\Husky.Principal.csproj", "{A64B3FE1-25F0-4860-8925-108C7F00E5FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Principal.SessionData", "src\Husky.AspNetCore.Principal.SessionData\Husky.AspNetCore.Principal.SessionData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.SessionData", "src\Husky.Principal.SessionData\Husky.Principal.SessionData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.DataAudit", "src\Husky.AspNetCore.DataAudit\Husky.AspNetCore.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.DataAudit", "src\Husky.DataAudit\Husky.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Diagnostics", "src\Husky.AspNetCore.Diagnostics\Husky.AspNetCore.Diagnostics.csproj", "{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Diagnostics", "src\Husky.Diagnostics\Husky.Diagnostics.csproj", "{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.TwoFactor", "src\Husky.AspNetCore.TwoFactor\Husky.AspNetCore.TwoFactor.csproj", "{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.TwoFactor", "src\Husky.TwoFactor\Husky.TwoFactor.csproj", "{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.Mail", "src\Husky.AspNetCore.Mail\Husky.AspNetCore.Mail.csproj", "{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Mail", "src\Husky.Mail\Husky.Mail.csproj", "{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AspNetCore.AliyunSms", "src\Husky.AspNetCore.AliyunSms\Husky.AspNetCore.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms", "src\Husky.AliyunSms\Husky.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
