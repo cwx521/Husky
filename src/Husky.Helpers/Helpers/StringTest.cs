@@ -6,7 +6,7 @@ namespace Husky
 {
 	public static class StringTest
 	{
-		public const string EmailRegexPattern = @"^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
+		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
 		public const string MainlandMobileRegexPattern = @"^1[3578]\d{9}$";
 
 		public static bool IsInt32(this string str) => int.TryParse(str, out var i);
@@ -27,6 +27,9 @@ namespace Husky
 		}
 		public static bool IsMainlandMobile(this string str) {
 			return (str == null || str.Length != 11) ? false : Regex.IsMatch(str, MainlandMobileRegexPattern);
+		}
+		public static bool IsCardNumber(this string str) {
+			return (str == null || (str.Length != 16 && str.Length != 19)) ? false : Regex.IsMatch(str, @"^\d+$");
 		}
 	}
 }

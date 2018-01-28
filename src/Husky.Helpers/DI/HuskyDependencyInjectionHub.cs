@@ -5,9 +5,9 @@ namespace Husky.DependencyInjection
 	public class HuskyDependencyInjectionHub
 	{
 		internal HuskyDependencyInjectionHub(IServiceCollection serviceColleciton) {
-			this.ServiceCollection = serviceColleciton;
+			this.Services = serviceColleciton;
 		}
-		public IServiceCollection ServiceCollection { get; private set; }
+		public IServiceCollection Services { get; private set; }
 	}
 
 	public static class HuskyDependencyInjectionHelper

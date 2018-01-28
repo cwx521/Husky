@@ -8,15 +8,25 @@ namespace Husky.AliyunSms
 {
 	public class AliyunSmsSender
 	{
-		public async Task SendAsync(AliyunSmsConfig config, AliyunSmsArgument argument, params string[] phoneNumbers) {
-			if ( phoneNumbers == null || phoneNumbers.Length == 0 ) {
+		public AliyunSmsSender(AliyunSmsSettings aliyunSmsSettings) {
+			_settings = aliyunSmsSettings;
+		}
+
+		readonly AliyunSmsSettings _settings;
+
+		public async Task SendAsync(string twoFactorCode, params string[] mobileNumbers) {
+			await SendAsync(new AliyunSmsArgument { code = twoFactorCode }, mobileNumbers);
+		}
+
+		public async Task SendAsync(AliyunSmsArgument argument, params string[] mobileNumbers) {
+			if ( mobileNumbers == null || mobileNumbers.Length == 0 ) {
 				return;
 			}
 
 			var request = new SendSmsRequest {
-				PhoneNumbers = string.Join(",", phoneNumbers),
-				SignName = config.SignName,
-				TemplateCode = config.TemplateCode,
+				PhoneNumbers = string.Join(",", mobileNumbers),
+				SignName = _settings.SignName,
+				TemplateCode = _settings.TemplateCode,
 				TemplateParam = JsonConvert.SerializeObject(argument)
 			};
 
@@ -24,8 +34,11 @@ namespace Husky.AliyunSms
 			DefaultProfile.AddEndpoint(endPointRegion, endPointRegion, "Dysmsapi", "dysmsapi.aliyuncs.com");
 
 			await Task.Run(() => {
-				var profile = DefaultProfile.GetProfile(endPointRegion, config.AccessKeyId, config.AccessKeySecret);
-				new DefaultAcsClient(profile).GetAcsResponse(request);
+				try {
+					var profile = DefaultProfile.GetProfile(endPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
+					new DefaultAcsClient(profile).GetAcsResponse(request);
+				}
+				catch { }
 			});
 		}
 	}

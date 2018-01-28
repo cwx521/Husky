@@ -53,5 +53,22 @@ namespace Husky
 				return defaultValue;
 			}
 		}
+
+		public static string Mask(this string str) {
+			if ( string.IsNullOrWhiteSpace(str) ) {
+				return str;
+			}
+			if ( str.IsMainlandMobile() ) {
+				return $"{str.Substring(0, 3)}****{str.Substring(7)}";
+			}
+			if ( str.IsEmail() ) {
+				var at = str.IndexOf('@');
+				return $"{str.Substring(0, 1)}{new string('*', str.Length - 1 - at)}{str.Substring(at)}";
+			}
+			if ( str.IsCardNumber() ) {
+				return $"{new string('*', str.Length - 4)}{str.Substring(str.Length - 4)}";
+			}
+			return str;
+		}
 	}
 }

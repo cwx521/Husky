@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.DependencyInjection
 {
-	public static class DI
+	public static class DependencyInjection
 	{
 		public static HuskyDependencyInjectionHub AddPrincipal(this HuskyDependencyInjectionHub husky, IdType idType, IdentityCarrier carrier, IdentityOptions options = null) {
 			var key = typeof(IPrincipalUser).FullName;
 
-			husky.ServiceCollection
-				.AddSingleton<IIdentityManager>(svc => {
+			husky.Services
+				.AddScoped<IIdentityManager>(svc => {
 					var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 					switch ( carrier ) {
 						default: throw new ArgumentOutOfRangeException(nameof(carrier));
@@ -21,12 +21,14 @@ namespace Husky.DependencyInjection
 						case IdentityCarrier.Session: return new SessionIdentityManager(httpContext, options);
 					}
 				})
-				.AddScoped(svc => {
+				.AddScoped<IPrincipalUser>(svc => {
 					var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
-					if ( !http.Items.ContainsKey(key) ) {
-						http.Items.Add(key, svc.CreatePrincipalInstance(idType));
+					var p = http.Items[key] as IPrincipalUser;
+					if ( p == null ) {
+						p = svc.CreatePrincipalInstance(idType);
+						http.Items.Add(key, p);
 					}
-					return http.Items[key] as IPrincipalUser;
+					return p;
 				});
 
 			return husky;

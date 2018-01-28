@@ -1,9 +1,7 @@
 ﻿namespace Husky.AliyunSms
 {
-	public class AliyunSmsConfig
+	public class AliyunSmsSettings
 	{
-		public const string SectionName = "AliyunSms";
-
 		public string AccessKeyId { get; set; }
 		public string AccessKeySecret { get; set; }
 		public string SignName { get; set; }

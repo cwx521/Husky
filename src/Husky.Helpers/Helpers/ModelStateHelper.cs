@@ -22,9 +22,5 @@ namespace Husky
 				Message = errors.FirstOrDefault()
 			};
 		}
-
-		public static IActionResult ToJsonResult(this ModelStateDictionary modelState) {
-			return modelState.ToResult().ToJsonResult();
-		}
 	}
 }

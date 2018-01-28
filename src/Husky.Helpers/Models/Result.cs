@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Husky
 {
 	#region Result,  Result<T>
 
-	public class Result
+	public class Result : IActionResult
 	{
 		public Result(bool ok = false, string message = null) {
 			Ok = ok;
@@ -18,8 +19,8 @@ namespace Husky
 			return JsonConvert.SerializeObject(this);
 		}
 
-		public JsonResult ToJsonResult() {
-			return new JsonResult(this);
+		public async Task ExecuteResultAsync(ActionContext context) {
+			await new JsonResult(this).ExecuteResultAsync(context);
 		}
 	}
 

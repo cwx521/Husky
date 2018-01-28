@@ -33,24 +33,23 @@ namespace Husky.Principal.Implements
 			if ( identity.IsAnonymous ) {
 				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
 			}
-			if ( _httpContext.Response.HasStarted ) {
-				return;
-			}
-			_httpContext.Response.Cookies.Append(
-				key: _options.Key,
-				value: _options.Encryptor.Encrypt(identity, _options.Token),
-				options: new CookieOptions {
-					Expires = _options.Expires
+			if ( !_httpContext.Response.HasStarted ) {
+				_httpContext.Response.Cookies.Append(
+					key: _options.Key,
+					value: _options.Encryptor.Encrypt(identity, _options.Token),
+					options: new CookieOptions {
+						Expires = _options.Expires
+					}
+				);
+				if ( _options.SessionMode ) {
+					SetSession();
 				}
-			);
-			if ( _options.SessionMode ) {
-				SetSession();
 			}
 		}
 
 		string _sessionKey = "WEIXING_AUTH_SESSION_";
 
-		void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, string.Empty, new CookieOptions { HttpOnly = true });
+		void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
 		bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
 
 		void IIdentityManager.DeleteIdentity() {

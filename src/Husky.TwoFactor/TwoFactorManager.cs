@@ -5,30 +5,25 @@ using Husky.AliyunSms;
 using Husky.Mail;
 using Husky.Principal;
 using Husky.TwoFactor.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.TwoFactor
 {
 	public sealed partial class TwoFactorManager
 	{
-		public TwoFactorManager(IServiceProvider serviceProvider) {
-			_db = serviceProvider.GetRequiredService<TwoFactorDbContext>();
-			_config = serviceProvider.GetRequiredService<IConfiguration>();
-			_my = serviceProvider.GetRequiredService<IPrincipalUser>();
-
-			_mailSender = serviceProvider.GetRequiredService<IMailSender>();
-			_aliyunSmsSender = serviceProvider.GetRequiredService<AliyunSmsSender>();
+		public TwoFactorManager(IPrincipalUser principal, TwoFactorDbContext twoFactorDb, IMailSender mailSender, AliyunSmsSender aliyunSmsSender) {
+			_my = principal;
+			_twoFactorDb = twoFactorDb;
+			_mailSender = mailSender;
+			_aliyunSmsSender = aliyunSmsSender;
 		}
 
-		readonly TwoFactorDbContext _db;
-		readonly IConfiguration _config;
+		readonly TwoFactorDbContext _twoFactorDb;
 		readonly IPrincipalUser _my;
 
 		readonly IMailSender _mailSender;
 		readonly AliyunSmsSender _aliyunSmsSender;
 
-		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string messageTemplateArg0IsTheCode = null) {
+		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string messageTemplateWithCodeAsArg0 = null) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
@@ -37,7 +32,7 @@ namespace Husky.TwoFactor
 			var isMobile = emailOrMobile.IsMainlandMobile();
 
 			if ( !isEmail && !isMobile ) {
-				return new Failure($"无法发送到 '{emailOrMobile}' 。");
+				return new Failure($"无法发送到 '{emailOrMobile}' ");
 			}
 
 			var code = new TwoFactorCode {
@@ -45,45 +40,39 @@ namespace Husky.TwoFactor
 				Code = new Random().Next(0, 1000000).ToString().PadLeft(6, '0'),
 				SentTo = emailOrMobile
 			};
-			_db.Add(code);
-			await _db.SaveChangesAsync();
+			_twoFactorDb.Add(code);
+			await _twoFactorDb.SaveChangesAsync();
 
 			if ( isEmail ) {
-				var template = messageTemplateArg0IsTheCode ?? string.Format("【{0}】动态验证码：{{0}}", _config.GetValue<string>("AppVariables:SiteName"));
-				var content = string.Format(template, code.Code);
+				var content = string.Format(messageTemplateWithCodeAsArg0, code.Code);
 				await _mailSender.SendAsync("动态验证码", content, emailOrMobile);
 			}
 			else if ( isMobile ) {
-				var smsConfig = _config.GetSection(AliyunSmsConfig.SectionName).Get<AliyunSmsConfig>();
-				var smsArgument = new AliyunSmsArgument { code = code.Code };
-				await _aliyunSmsSender.SendAsync(smsConfig, smsArgument, emailOrMobile);
+				await _aliyunSmsSender.SendAsync(code.Code, emailOrMobile);
 			}
 			return new Success();
 		}
 
-		public async Task<Result> VerifyTwoFactorCode(string emailOrMobile, string code, bool setIntoUsedAfterVerifying, int codeWithinMinutes = 20) {
-			if ( emailOrMobile == null ) {
-				throw new ArgumentNullException(nameof(emailOrMobile));
-			}
-			if ( code == null ) {
-				throw new ArgumentException(nameof(code));
+		public async Task<Result> VerifyTwoFactorCode(TwoFactorModel model, bool setIntoUsedAfterVerifying, int codeWithinMinutes = 15) {
+			if ( model == null ) {
+				throw new ArgumentNullException(nameof(model));
 			}
 
-			var record = _db.TwoFactorCodes
+			var record = _twoFactorDb.TwoFactorCodes
 				.Where(x => x.IsUsed == false)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - codeWithinMinutes))
-				.Where(x => x.SentTo == emailOrMobile)
+				.Where(x => x.SentTo == model.SendTo)
 				.Where(x => _my.IsAnonymous || x.UserIdString == _my.IdString)
 				.OrderByDescending(x => x.Id)
 				.Take(1)
 				.FirstOrDefault();
 
-			if ( record == null || string.Compare(code, record.Code, true) != 0 ) {
-				return new Failure("验证码不正确或已经过期，请重试。");
+			if ( record == null || string.Compare(model.Code, record.Code, true) != 0 ) {
+				return new Failure("验证码输入错误");
 			}
 			if ( setIntoUsedAfterVerifying ) {
 				record.IsUsed = true;
-				await _db.SaveChangesAsync();
+				await _twoFactorDb.SaveChangesAsync();
 			}
 			return new Success();
 		}
