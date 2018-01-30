@@ -14,7 +14,7 @@ namespace Husky.Diagnostics
 			try {
 				var db = context.HttpContext.RequestServices.GetRequiredService<DiagnosticsDbContext>();
 				var principal = context.HttpContext.RequestServices.GetService<IPrincipalUser>();
-				var userName = principal?.DisplayName ?? context.HttpContext.User?.Identity?.Name;
+				var userName = principal?.DisplayName ?? principal?.IdString ?? context.HttpContext.User?.Identity?.Name;
 
 				var log = new ExceptionLog {
 					HttpMethod = context.HttpContext.Request.Method,

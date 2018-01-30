@@ -58,6 +58,9 @@ namespace Husky
 			if ( string.IsNullOrWhiteSpace(str) ) {
 				return str;
 			}
+			if ( str.Length == 2 || str.Length == 3 ) {
+				return $"{str[0]}{new string('*', str.Length - 1)}";
+			}
 			if ( str.IsMainlandMobile() ) {
 				return $"{str.Substring(0, 3)}****{str.Substring(7)}";
 			}
@@ -66,7 +69,10 @@ namespace Husky
 				return $"{str.Substring(0, 1)}{new string('*', str.Length - 1 - at)}{str.Substring(at)}";
 			}
 			if ( str.IsCardNumber() ) {
-				return $"{new string('*', str.Length - 4)}{str.Substring(str.Length - 4)}";
+				return $"{str.Substring(0, 4)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
+			}
+			if ( str.IsMainlandSocialNumber() ) {
+				return $"{str.Substring(0, 6)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
 			return str;
 		}

@@ -25,11 +25,24 @@ namespace Husky
 		public static bool IsEmail(this string str) {
 			return (str == null || str.Length < 6) ? false : Regex.IsMatch(str, EmailRegexPattern);
 		}
+		public static bool IsCardNumber(this string str) {
+			return (str == null || (str.Length != 16 && str.Length != 19)) ? false : Regex.IsMatch(str, @"^\d+$");
+		}
 		public static bool IsMainlandMobile(this string str) {
 			return (str == null || str.Length != 11) ? false : Regex.IsMatch(str, MainlandMobileRegexPattern);
 		}
-		public static bool IsCardNumber(this string str) {
-			return (str == null || (str.Length != 16 && str.Length != 19)) ? false : Regex.IsMatch(str, @"^\d+$");
+
+		internal static bool IsMainlandSocialNumber(this string str) {
+			return str.Length == 18 && Regex.IsMatch(str, @"^\d{18}$");
+		}
+		public static bool IsMainlandSocialNumber(this string str, Sex sex) {
+			if ( str == null || str.Length != 18 ) return false;
+			if ( sex == Sex.Male && (str[16] - '0') % 2 == 0 ) return false;
+			if ( sex == Sex.Female && (str[16] - '0') % 2 == 1 ) return false;
+			var times = new[] { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+			var n = 0;
+			for ( int i = 0; i < 17; n += (str[i] - '0') * times[i++] ) ;
+			return new[] { '1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2' }[n % 11] == str[17];
 		}
 	}
 }
