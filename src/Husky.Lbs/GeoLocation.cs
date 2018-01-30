@@ -3,8 +3,8 @@
 	public class GeoLocation
 	{
 		public string Ip { get; set; }
-		public decimal Lat { get; set; }
-		public decimal Lon { get; set; }
+		public decimal? Lat { get; set; }
+		public decimal? Lon { get; set; }
 
 		public string Nation { get; set; }
 		public string Province { get; set; }

@@ -9,5 +9,10 @@ namespace Husky.DependencyInjection
 			husky.Services.AddSingleton<ILbs>(new QQLbs(key));
 			return husky;
 		}
+
+		public static HuskyDependencyInjectionHub AddQQLbs(this HuskyDependencyInjectionHub husky, QQLbsSettings settings) {
+			husky.Services.AddSingleton<ILbs>(new QQLbs(settings));
+			return husky;
+		}
 	}
 }

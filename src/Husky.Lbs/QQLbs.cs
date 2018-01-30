@@ -14,6 +14,13 @@ namespace Husky.Lbs
 			_key = key;
 		}
 
+		public QQLbs(QQLbsSettings settings) {
+			if ( settings == null ) {
+				throw new ArgumentNullException(nameof(settings));
+			}
+			_key = settings.Key;
+		}
+
 		readonly string _key;
 
 		public async Task<GeoLocation> Query(IPAddress ip) {
@@ -26,19 +33,19 @@ namespace Husky.Lbs
 					return null;
 				}
 
-				dynamic d = JsonConvert.DeserializeObject(json);
-				if ( d.status != 0 ) {
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				if ( d == null || d.status != 0 || d.message != "query ok" ) {
 					return null;
 				}
 
 				return new GeoLocation {
-					Ip = ipString,
-					Lon = d.location.lng,
-					Lat = d.location.lat,
-					Nation = d.ad_info.nation,
-					Province = d.ad_info.province,
-					City = d.ad_info.city,
-					District = d.ad_info.district,
+					Ip = d.result.ip,
+					Lon = d.result.location.lng,
+					Lat = d.result.location.lat,
+					Nation = d.result.ad_info.nation,
+					Province = d.result.ad_info.province,
+					City = d.result.ad_info.city,
+					District = d.result.ad_info.district,
 				};
 			}
 		}
