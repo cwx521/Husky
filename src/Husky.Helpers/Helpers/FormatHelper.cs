@@ -4,8 +4,8 @@ namespace Husky
 {
 	public static class FormatHelper
 	{
-		public static string DateFormat { get; set; } = "dd/MMM/yyyy";
-		public static string DateTimeFormat { get; set; } = "dd/MMM/yyyy H:mm:ss";
+		public static string DateFormat { get; set; } = "yyyy年M月d日";
+		public static string DateTimeFormat { get; set; } = "yyyy年M月d日 H:mm";
 
 		public static string ToString(this DateTime? nullableDateTime, string format) => nullableDateTime.HasValue ? nullableDateTime.Value.ToString(format) : string.Empty;
 		public static string ToString(this decimal? nullableValue, string format) => nullableValue.HasValue ? nullableValue.Value.ToString(format) : string.Empty;

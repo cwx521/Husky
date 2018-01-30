@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Helpers", "src\Husky.Helpers\Husky.Helpers.csproj", "{AD6318C8-B2B0-4739-A96F-EEB8A97A2769}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Mail", "src\Husky.Mail\Husky.Mail.csproj", "{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms", "src\Husky.AliyunSms\Husky.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Lbs", "Husky.Lbs\Husky.Lbs.csproj", "{BEE39CF0-7FDD-4584-8769-127C04CB9749}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{74F75227-8128-4CB8-A3A6-FD2156EA61D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74F75227-8128-4CB8-A3A6-FD2156EA61D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74F75227-8128-4CB8-A3A6-FD2156EA61D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
