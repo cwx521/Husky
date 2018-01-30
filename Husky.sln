@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Mail", "src\Husky.Mai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms", "src\Husky.AliyunSms\Husky.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Lbs", "Husky.Lbs\Husky.Lbs.csproj", "{BEE39CF0-7FDD-4584-8769-127C04CB9749}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Lbs", "src\Husky.Lbs\Husky.Lbs.csproj", "{BEE39CF0-7FDD-4584-8769-127C04CB9749}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
