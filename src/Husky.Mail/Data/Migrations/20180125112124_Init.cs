@@ -36,7 +36,7 @@ namespace Husky.Mail.Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Body = table.Column<string>(nullable: true),
                     Cc = table.Column<string>(maxLength: 2000, nullable: true),
-                    CreateTime = table.Column<DateTime>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false),
                     Exception = table.Column<string>(maxLength: 500, nullable: true),
                     IsHtml = table.Column<bool>(nullable: false),
                     IsSuccessful = table.Column<bool>(nullable: false),

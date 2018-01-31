@@ -39,7 +39,7 @@ namespace Husky.Razor
 			var tag = new TagBuilder("button");
 
 			tag.Attributes.Add("type", "submit");
-			tag.Attributes.Add("class", "btn btn-lg btn-primary");
+			tag.Attributes.Add("class", "btn btn-lg btn-warning");
 			tag.InnerHtml.AppendHtml("确认");
 
 			if ( buttonState == SaveButtonState.Disabled ) {

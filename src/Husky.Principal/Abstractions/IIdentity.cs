@@ -10,6 +10,6 @@ namespace Husky.Principal
 		bool IsAuthenticated { get; }
 		bool IsAnonymous { get; }
 
-		T? Id<T>() where T : struct, IFormattable, IEquatable<T>;
+		T Id<T>() where T : struct, IFormattable, IEquatable<T>;
 	}
 }

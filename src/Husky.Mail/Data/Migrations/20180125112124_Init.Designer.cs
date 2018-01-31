@@ -31,7 +31,7 @@ namespace Husky.Mail.Data.Migrations
                     b.Property<string>("Cc")
                         .HasMaxLength(2000);
 
-                    b.Property<DateTime>("CreateTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("Exception")
                         .HasMaxLength(500);

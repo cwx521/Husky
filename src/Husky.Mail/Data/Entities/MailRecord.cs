@@ -29,7 +29,7 @@ namespace Husky.Mail.Data
 
 		public bool IsSuccessful { get; set; }
 
-		public DateTime CreateTime { get; set; } = DateTime.Now;
+		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 
 		public MailSmtpProvider Smtp { get; set; }

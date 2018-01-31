@@ -14,15 +14,14 @@ namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender(IServiceProvider serviceProvider) {
-			_db = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MailDbContext>();
-			_givenSmtp = serviceProvider.GetService<ISmtpProvider>();
+		public MailSender(IServiceProvider serviceProvider, ISmtpProvider givenSmtp) {
+			_givenSmtp = givenSmtp;
 		}
 
-		readonly MailDbContext _db;
+		readonly IServiceProvider _svc;
 		readonly ISmtpProvider _givenSmtp;
 
-		public MailDbContext DbContext => _db;
+		public MailDbContext Db => _svc.GetService<MailDbContext>();
 
 		public async Task SendAsync(string subject, string content, params string[] recipients) {
 			if ( recipients == null || recipients.Length == 0 ) {
@@ -50,43 +49,51 @@ namespace Husky.Mail
 				mailRecord.SmtpId = internalSmtp.Id;
 			}
 
-			_db.Add(mailRecord);
-			await _db.SaveChangesAsync();
+			using ( var scope = _svc.CreateScope() ) {
+				var db = scope.ServiceProvider.GetRequiredService<MailDbContext>();
 
-			using ( var client = new SmtpClient() ) {
-				client.MessageSent += async (object sender, MessageSentEventArgs e) => {
-					mailRecord.IsSuccessful = true;
-					await _db.SaveChangesAsync();
-					await Task.Run(() => {
-						onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
-					});
-				};
-				try {
-					await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
+				db.Add(mailRecord);
+				await db.SaveChangesAsync();
 
-					if ( !string.IsNullOrEmpty(smtp.CredentialName) ) {
-						await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
+				using ( var client = new SmtpClient() ) {
+					client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+						mailRecord.IsSuccessful = true;
+						await db.SaveChangesAsync();
+						await Task.Run(() => {
+							onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
+						});
+					};
+					try {
+						await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
+
+						if ( !string.IsNullOrEmpty(smtp.CredentialName) ) {
+							await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
+						}
+						await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
 					}
-					await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
-				}
-				catch ( Exception ex ) {
-					mailRecord.Exception = ex.Message.Left(200);
-					await _db.SaveChangesAsync();
+					catch ( Exception ex ) {
+						mailRecord.Exception = ex.Message.Left(200);
+						await db.SaveChangesAsync();
+					}
 				}
 			}
 		}
 
 		static int _increment = 0;
-		private MailSmtpProvider GetInternalSmtpProvider() {
-			var haveCount = _db.MailSmtpProviders.Count(x => x.IsInUse);
-			if ( haveCount == 0 ) {
-				throw new Exception("SMTP account is not configured yet.");
+		MailSmtpProvider GetInternalSmtpProvider() {
+			using ( var scope = _svc.CreateScope() ) {
+				var db = scope.ServiceProvider.GetRequiredService<MailDbContext>();
+
+				var haveCount = db.MailSmtpProviders.Count(x => x.IsInUse);
+				if ( haveCount == 0 ) {
+					throw new Exception("SMTP account is not configured yet.");
+				}
+				var skip = _increment++ % haveCount;
+				return db.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 			}
-			var skip = _increment++ % haveCount;
-			return _db.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 		}
 
-		private MailRecord CreateMailRecord(MailMessage mailMessage) {
+		MailRecord CreateMailRecord(MailMessage mailMessage) {
 			return new MailRecord {
 				Subject = mailMessage.Subject,
 				Body = mailMessage.Body,
@@ -103,7 +110,7 @@ namespace Husky.Mail
 			};
 		}
 
-		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
+		MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
 			var mail = new MimeMessage();
 
 			// Subject
@@ -139,7 +146,7 @@ namespace Husky.Mail
 			return mail;
 		}
 
-		private byte[] ReadStream(Stream stream) {
+		byte[] ReadStream(Stream stream) {
 			var length = stream.Length;
 			var bytes = new byte[length];
 			stream.Read(bytes, 0, (int)length);

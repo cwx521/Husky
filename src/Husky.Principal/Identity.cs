@@ -1,5 +1,4 @@
 ﻿using System;
-using Husky;
 
 namespace Husky.Principal
 {
@@ -11,15 +10,11 @@ namespace Husky.Principal
 		public virtual bool IsAnonymous => string.IsNullOrWhiteSpace(IdString);
 		public virtual bool IsAuthenticated => !IsAnonymous;
 
-		public virtual T? Id<T>() where T : struct, IFormattable, IEquatable<T> {
+		public virtual T Id<T>() where T : struct, IFormattable, IEquatable<T> {
 			if ( IsAnonymous ) {
-				return null;
+				return default(T);
 			}
-			var id = IdString.As<T>();
-			if ( id.Equals(default(T)) ) {
-				return null;
-			}
-			return id;
+			return IdString.As<T>();
 		}
 	}
 }
