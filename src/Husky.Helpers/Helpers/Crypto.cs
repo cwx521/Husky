@@ -100,12 +100,11 @@ namespace Husky
 
 		public static byte[] IV { get; set; } = { 0x6E, 0x70, 0x69, 0x64, 0x65, 0x78, 0x72, 0x65, 0x65, 0x50, 0x67, 0x6F, 0x77, 0x42, 0x79, 0x57 };
 
-		public static string Encrypt(string str, string key) {
+		public static string Encrypt(string str, string key = null) {
 			if ( str == null ) throw new ArgumentNullException(nameof(str));
-			if ( key == null ) throw new ArgumentNullException(nameof(key));
 
 			using ( var aes = Aes.Create() ) {
-				aes.Key = ComputeKey(key);
+				aes.Key = ComputeKey(key ?? PermanentToken);
 				aes.IV = IV;
 				using ( var encryptor = aes.CreateEncryptor() ) {
 					byte[] original = Encoding.UTF8.GetBytes(str);
@@ -115,12 +114,11 @@ namespace Husky
 			}
 		}
 
-		public static string Decrypt(string base64String, string key) {
+		public static string Decrypt(string base64String, string key = null) {
 			if ( base64String == null ) throw new ArgumentNullException(nameof(base64String));
-			if ( key == null ) throw new ArgumentNullException(nameof(key));
 
 			using ( var aes = Aes.Create() ) {
-				aes.Key = ComputeKey(key);
+				aes.Key = ComputeKey(key ?? PermanentToken);
 				aes.IV = IV;
 				using ( var decryptor = aes.CreateDecryptor() ) {
 					byte[] base64 = Convert.FromBase64String(base64String.Restore());

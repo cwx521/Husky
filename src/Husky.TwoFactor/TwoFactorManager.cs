@@ -11,14 +11,14 @@ namespace Husky.TwoFactor
 	public sealed partial class TwoFactorManager
 	{
 		public TwoFactorManager(IPrincipalUser principal, TwoFactorDbContext twoFactorDb, IMailSender mailSender, AliyunSmsSender aliyunSmsSender) {
-			_my = principal;
+			_me = principal;
 			_twoFactorDb = twoFactorDb;
 			_mailSender = mailSender;
 			_aliyunSmsSender = aliyunSmsSender;
 		}
 
 		readonly TwoFactorDbContext _twoFactorDb;
-		readonly IPrincipalUser _my;
+		readonly IPrincipalUser _me;
 
 		readonly IMailSender _mailSender;
 		readonly AliyunSmsSender _aliyunSmsSender;
@@ -36,7 +36,7 @@ namespace Husky.TwoFactor
 			}
 
 			var code = new TwoFactorCode {
-				UserIdString = _my.IdString,
+				UserIdString = _me.IdString,
 				Code = new Random().Next(0, 1000000).ToString().PadLeft(6, '0'),
 				SentTo = emailOrMobile
 			};
@@ -62,7 +62,7 @@ namespace Husky.TwoFactor
 				.Where(x => x.IsUsed == false)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - codeWithinMinutes))
 				.Where(x => x.SentTo == model.SendTo)
-				.Where(x => _my.IsAnonymous || x.UserIdString == _my.IdString)
+				.Where(x => _me.IsAnonymous || x.UserIdString == _me.IdString)
 				.OrderByDescending(x => x.Id)
 				.Take(1)
 				.FirstOrDefault();
