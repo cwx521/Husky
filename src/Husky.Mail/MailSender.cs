@@ -15,6 +15,7 @@ namespace Husky.Mail
 	public class MailSender : IMailSender
 	{
 		public MailSender(IServiceProvider serviceProvider, ISmtpProvider givenSmtp) {
+			_svc = serviceProvider;
 			_givenSmtp = givenSmtp;
 		}
 
