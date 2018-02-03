@@ -13,14 +13,14 @@ namespace Husky.Razor
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent ModalFooter(this IHtmlHelper helper, SaveButtonState saveButton = SaveButtonState.NotHave, string saveButtonText = "确认") {
+		public static IHtmlContent ModalFooter(this IHtmlHelper helper, SaveButtonState saveButton = SaveButtonState.NotHave, string buttonText = "确认", string buttonScheme = "btn-warning") {
 			var result = new HtmlContentBuilder();
 
-			result.AppendHtml("<div class='modal-footer overflow-hidden'>");
+			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden'>");
 			result.AppendHtml("	<div class='modal-footer-button-container'>");
 
 			if ( saveButton != SaveButtonState.NotHave ) {
-				result.AppendHtml(CreateSaveButton(saveButton, saveButtonText));
+				result.AppendHtml(CreateSaveButton(saveButton, buttonText, buttonScheme));
 			}
 			result.AppendHtml("<button type='button' class='btn btn-lg btn-secondary btn-close' data-dismiss='modal'>关闭</button>");
 
@@ -31,7 +31,7 @@ namespace Husky.Razor
 			return result;
 		}
 
-		private static IHtmlContent CreateSaveButton(SaveButtonState buttonState, string saveButtonText) {
+		private static IHtmlContent CreateSaveButton(SaveButtonState buttonState, string buttonText, string buttonScheme) {
 			if ( buttonState == SaveButtonState.NotHave ) {
 				return null;
 			}
@@ -39,8 +39,8 @@ namespace Husky.Razor
 			var tag = new TagBuilder("button");
 
 			tag.Attributes.Add("type", "submit");
-			tag.Attributes.Add("class", "btn btn-lg btn-warning");
-			tag.InnerHtml.AppendHtml(saveButtonText);
+			tag.Attributes.Add("class", $"btn btn-lg {buttonScheme}");
+			tag.InnerHtml.AppendHtml(buttonText);
 
 			if ( buttonState == SaveButtonState.Disabled ) {
 				tag.Attributes.Add("disabled", "disabled");
