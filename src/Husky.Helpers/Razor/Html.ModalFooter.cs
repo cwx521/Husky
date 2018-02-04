@@ -17,6 +17,7 @@ namespace Husky.Razor
 			var result = new HtmlContentBuilder();
 
 			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden'>");
+			result.AppendHtml("	<div class='modal-footer-state-container'><span class='modal-footer-state'></span></div>");
 			result.AppendHtml("	<div class='modal-footer-button-container'>");
 
 			if ( saveButton != SaveButtonState.NotHave ) {
@@ -25,7 +26,6 @@ namespace Husky.Razor
 			result.AppendHtml("<button type='button' class='btn btn-lg btn-secondary btn-close' data-dismiss='modal'>关闭</button>");
 
 			result.AppendHtml("	</div>");
-			result.AppendHtml("	<div class='modal-footer-state-container'><span class='modal-footer-state'></span></div>");
 			result.AppendHtml("</div>");
 
 			return result;

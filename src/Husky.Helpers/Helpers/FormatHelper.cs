@@ -14,7 +14,7 @@ namespace Husky
 
 		public static string ToDateString(this DateTime datetime, string format = null) => datetime.ToString(format ?? DateFormat);
 		public static string ToDateString(this DateTime? nullableDateTime, string format = null) => nullableDateTime.ToString(format ?? DateFormat);
-		public static string ToDateTimeString(this DateTime datetime, string format = null) => datetime.ToString(format ?? ShortDateTimeFormat);
-		public static string ToDateTimeString(this DateTime? nullableDateTime, string format = null) => nullableDateTime.ToString(format ?? ShortDateTimeFormat);
+		public static string ToDateTimeString(this DateTime datetime, string format = null) => datetime.ToString(format ?? DateTimeFormat);
+		public static string ToDateTimeString(this DateTime? nullableDateTime, string format = null) => nullableDateTime.ToString(format ?? DateTimeFormat);
 	}
 }
