@@ -49,6 +49,10 @@ namespace Husky
 			return builder.ToString();
 		}
 
+		public static Random Random() {
+			return new Random(RandomNumber());
+		}
+
 		#endregion
 
 		#region MD5, SHA1
