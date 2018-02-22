@@ -12,6 +12,10 @@ namespace Husky
 			return request.Path + request.QueryString.Value;
 		}
 
+		public static string UrlBase(this HttpRequest request) {
+			return (request.IsHttps ? "https://" : "http://") + request.Host;
+		}
+
 		public static string UserAgent(this HttpRequest request) {
 			return request.Headers["User-Agent"];
 		}

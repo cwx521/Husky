@@ -7,12 +7,18 @@ namespace Husky.DependencyInjection
 {
 	public static class DependencyInjection
 	{
+		static bool migrated = false;
+
 		public static HuskyDependencyInjectionHub AddDiagnostics(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
 			husky.Services.AddDbContext<DiagnosticsDbContext>((svc, builder) => {
 				var config = svc.GetRequiredService<IConfiguration>();
 				var connstr = config.SeekConnectionStringSequence<DiagnosticsDbContext>(nameOfConnectionString);
 				builder.UseSqlServer(connstr);
-				builder.Migrate();
+
+				if ( !migrated ) {
+					builder.Migrate();
+					migrated = true;
+				}
 			});
 			return husky;
 		}
