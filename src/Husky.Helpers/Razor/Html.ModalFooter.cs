@@ -23,7 +23,7 @@ namespace Husky.Razor
 			if ( saveButton != SaveButtonState.NotHave ) {
 				result.AppendHtml(CreateSaveButton(saveButton, buttonText, buttonScheme));
 			}
-			result.AppendHtml("<button type='button' class='btn btn-lg btn-secondary btn-close' data-dismiss='modal'>关闭</button>");
+			result.AppendHtml("<button type='button' class='btn btn-lg btn-light border btn-close' data-dismiss='modal'>关闭</button>");
 
 			result.AppendHtml("	</div>");
 			result.AppendHtml("</div>");

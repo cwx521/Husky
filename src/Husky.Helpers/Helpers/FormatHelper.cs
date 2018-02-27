@@ -7,6 +7,7 @@ namespace Husky
 		public static string DateFormat { get; set; } = "yyyy年M月d日";
 		public static string TimeFormat { get; set; } = "HH点mm分";
 		public static string DateTimeFormat { get; set; } = "yyyy年M月d日 HH点mm分";
+		public static string ShortDateFormat { get; set; } = "M月d日";
 		public static string ShortTimeFormat { get; set; } = "HH:mm";
 		public static string ShortDateTimeFormat { get; set; } = "M月d日 HH:mm";
 
