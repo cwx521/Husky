@@ -2,9 +2,9 @@
 {
 	public enum Sex
 	{
-		[Label("帅哥")]
+		[Label("男")]
 		Male,
-		[Label("萌妹")]
+		[Label("女")]
 		Female
 	}
 }
