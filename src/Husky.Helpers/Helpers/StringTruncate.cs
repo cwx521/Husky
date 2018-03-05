@@ -110,7 +110,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string Left(this string str, int neededCount, bool endWithEllipsis = true) {
+		public static string Left(this string str, int neededCount, bool endWithEllipsis = false) {
 			return str == null || str.Length <= neededCount || neededCount < 3
 				? str
 				: endWithEllipsis

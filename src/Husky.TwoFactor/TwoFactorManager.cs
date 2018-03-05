@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.AliyunSms;
-using Husky.Mail;
 using Husky.Principal;
 using Husky.TwoFactor.Data;
 
@@ -10,17 +9,18 @@ namespace Husky.TwoFactor
 {
 	public sealed partial class TwoFactorManager
 	{
-		public TwoFactorManager(IPrincipalUser principal, TwoFactorDbContext twoFactorDb, IMailSender mailSender, AliyunSmsSender aliyunSmsSender) {
+		//IMailSender mailSender, 
+		public TwoFactorManager(IPrincipalUser principal, TwoFactorDbContext twoFactorDb, AliyunSmsSender aliyunSmsSender) {
 			_me = principal;
 			_twoFactorDb = twoFactorDb;
-			_mailSender = mailSender;
+			//_mailSender = mailSender;
 			_aliyunSmsSender = aliyunSmsSender;
 		}
 
 		readonly TwoFactorDbContext _twoFactorDb;
 		readonly IPrincipalUser _me;
 
-		readonly IMailSender _mailSender;
+		//readonly IMailSender _mailSender;
 		readonly AliyunSmsSender _aliyunSmsSender;
 
 		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string messageTemplateWithCodeAsArg0 = null) {
@@ -44,8 +44,8 @@ namespace Husky.TwoFactor
 			await _twoFactorDb.SaveChangesAsync();
 
 			if ( isEmail ) {
-				var content = string.Format(messageTemplateWithCodeAsArg0, code.Code);
-				await _mailSender.SendAsync("动态验证码", content, emailOrMobile);
+				//var content = string.Format(messageTemplateWithCodeAsArg0, code.Code);
+				//await _mailSender.SendAsync("动态验证码", content, emailOrMobile);
 			}
 			else if ( isMobile ) {
 				await _aliyunSmsSender.SendAsync(code.Code, emailOrMobile);
