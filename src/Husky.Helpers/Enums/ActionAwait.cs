@@ -4,6 +4,6 @@
 	{
 		NoNeed,
 		Suggested,
-		Required,
+		Forced,
 	}
 }
