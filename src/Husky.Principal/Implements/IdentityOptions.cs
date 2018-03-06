@@ -17,9 +17,9 @@ namespace Husky.Principal.Implements
 			if ( string.IsNullOrEmpty(Token) && carrier != IdentityCarrier.Session ) {
 				Token = Crypto.PermanentToken;
 			}
-			if ( Expires == null && carrier != IdentityCarrier.Header ) {
-				Expires = DateTimeOffset.Now.AddMinutes(30);
-			}
+			//if ( Expires == null && carrier != IdentityCarrier.Header ) {
+			//	Expires = DateTimeOffset.Now.AddMinutes(30);
+			//}
 			if ( Encryptor == null && carrier != IdentityCarrier.Session ) {
 				Encryptor = new IdentityEncryptor();
 			}
