@@ -13,7 +13,7 @@ namespace Husky.Razor
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent ModalFooter(this IHtmlHelper helper, SaveButtonState saveButton = SaveButtonState.NotHave, string buttonText = "确认", string buttonScheme = "btn-warning") {
+		public static IHtmlContent ModalFooter(this IHtmlHelper helper, SaveButtonState saveButton = SaveButtonState.NotHave, string saveButtonText = "确认", string buttonScheme = "btn-warning") {
 			var result = new HtmlContentBuilder();
 
 			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden'>");
@@ -21,7 +21,7 @@ namespace Husky.Razor
 			result.AppendHtml("	<div class='modal-footer-button-container'>");
 
 			if ( saveButton != SaveButtonState.NotHave ) {
-				result.AppendHtml(CreateSaveButton(saveButton, buttonText, buttonScheme));
+				result.AppendHtml(CreateSaveButton(saveButton, saveButtonText, buttonScheme));
 			}
 			result.AppendHtml("<button type='button' class='btn btn-lg btn-light border btn-close' data-dismiss='modal'>关闭</button>");
 
