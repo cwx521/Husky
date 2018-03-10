@@ -8,7 +8,9 @@ namespace Husky
 
 		public int PageIndex {
 			get {
-				_p = Math.Min(_p, PageCount);
+				if ( RecordCount > 0 ) {
+					_p = Math.Min(_p, PageCount);
+				}
 				_p = Math.Max(_p, 1);
 				return _p;
 			}
