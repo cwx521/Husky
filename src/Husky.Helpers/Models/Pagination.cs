@@ -22,7 +22,7 @@ namespace Husky
 		public int PageSize { get; set; } = 20;
 		public int RecordCount { get; set; }
 
-		public int SkipOffset => (Math.Max(1, PageIndex) - 1) * PageSize;
+		public int SkipOffset => (PageIndex - 1) * PageSize;
 		public int PageCount => RecordCount / PageSize + (RecordCount % PageSize == 0 ? 0 : 1);
 	}
 }
