@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Husky
@@ -52,6 +53,37 @@ namespace Husky
 			catch {
 				return defaultValue;
 			}
+		}
+
+		public static double HexToDouble(this string hex) {
+			if ( string.IsNullOrEmpty(hex) ) {
+				throw new ArgumentNullException(nameof(hex));
+			}
+
+			hex = hex.ToLower();
+			if ( hex.StartsWith("0x") ) {
+				hex = hex.Substring(2);
+			}
+
+			double dbl = 0;
+			var charArray = hex.Reverse().ToArray();
+
+			for ( int i = 0; i < charArray.Count(); i++ ) {
+				var num = 0;
+				var c = charArray[i];
+
+				if ( c >= 'a' && c <= 'f' ) {
+					num = 10 + (c - 'a');
+				}
+				else if ( c >= '0' && c <= '9' ) {
+					num = (c - '0');
+				}
+				else {
+					throw new FormatException($"{hex} is not a valid hex number string.");
+				}
+				dbl += num * Math.Pow(16, i);
+			}
+			return dbl;
 		}
 
 		public static string Mask(this string str) {
