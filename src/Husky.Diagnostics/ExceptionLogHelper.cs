@@ -24,31 +24,33 @@ namespace Husky.Diagnostics
 		}
 
 		public static async Task LogAsync(this IServiceProvider serviceProvider, Exception e) {
-			var db = serviceProvider.GetRequiredService<DiagnosticsDbContext>();
-			var principal = serviceProvider.GetService<IPrincipalUser>();
-			var request = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.Request;
+			using ( var scope = serviceProvider.CreateScope() ) {
+				var db = scope.ServiceProvider.GetRequiredService<DiagnosticsDbContext>();
+				var principal = scope.ServiceProvider.GetService<IPrincipalUser>();
+				var request = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.Request;
 
-			var log = new ExceptionLog {
-				HttpMethod = request?.Method,
-				ExceptionType = e.GetType().FullName,
-				Message = e.Message,
-				Source = e.Source,
-				StackTrace = e.StackTrace,
-				Url = request?.GetDisplayUrl(),
-				UserName = principal?.DisplayName,
-				UserAgent = request?.UserAgent()
-			};
-			log.ComputeMd5Comparison();
+				var log = new ExceptionLog {
+					HttpMethod = request?.Method,
+					ExceptionType = e.GetType().FullName,
+					Message = e.Message,
+					Source = e.Source,
+					StackTrace = e.StackTrace,
+					Url = request?.GetDisplayUrl(),
+					UserName = principal?.DisplayName,
+					UserAgent = request?.UserAgent()
+				};
+				log.ComputeMd5Comparison();
 
-			var existedRow = db.ExceptionLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison);
-			if ( existedRow == null ) {
-				db.Add(log);
+				var existedRow = db.ExceptionLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison);
+				if ( existedRow == null ) {
+					db.Add(log);
+				}
+				else {
+					existedRow.Count++;
+					existedRow.LastTime = DateTime.Now;
+				}
+				await db.SaveChangesAsync();
 			}
-			else {
-				existedRow.Count++;
-				existedRow.LastTime = DateTime.Now;
-			}
-			await db.SaveChangesAsync();
 		}
 	}
 }
