@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Husky.Diagnostics.Data;
 using Husky.Principal;
 using Microsoft.AspNetCore.Http;
@@ -12,32 +11,29 @@ namespace Husky.Diagnostics
 	public static class ExceptionLogHelper
 	{
 		public static void Log(this IServiceProvider serviceProvider, Exception e) {
-			serviceProvider.LogAsync(e).Wait();
-		}
-
-		public static void Log(this Exception e, IServiceProvider serviceProvider) {
-			serviceProvider.LogAsync(e).Wait();
-		}
-
-		public static async Task LogAsync(this Exception e, IServiceProvider serviceProvider) {
-			await serviceProvider.LogAsync(e);
-		}
-
-		public static async Task LogAsync(this IServiceProvider serviceProvider, Exception e) {
 			using ( var scope = serviceProvider.CreateScope() ) {
 				var db = scope.ServiceProvider.GetRequiredService<DiagnosticsDbContext>();
-				var principal = scope.ServiceProvider.GetService<IPrincipalUser>();
-				var request = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.Request;
+
+				HttpContext http = null;
+				IPrincipalUser principal = null;
+
+				try {
+					http = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
+					principal = scope.ServiceProvider.GetService<IPrincipalUser>();
+				}
+				catch { }
 
 				var log = new ExceptionLog {
-					HttpMethod = request?.Method,
+					HttpMethod = http?.Request?.Method,
 					ExceptionType = e.GetType().FullName,
 					Message = e.Message,
 					Source = e.Source,
 					StackTrace = e.StackTrace,
-					Url = request?.GetDisplayUrl(),
+					Url = http?.Request?.GetDisplayUrl(),
+					UserIdString = principal?.IdString,
 					UserName = principal?.DisplayName,
-					UserAgent = request?.UserAgent()
+					UserAgent = http?.Request?.UserAgent(),
+					UserIp = http?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString()
 				};
 				log.ComputeMd5Comparison();
 
@@ -49,7 +45,7 @@ namespace Husky.Diagnostics
 					existedRow.Count++;
 					existedRow.LastTime = DateTime.Now;
 				}
-				await db.SaveChangesAsync();
+				db.SaveChanges();
 			}
 		}
 	}

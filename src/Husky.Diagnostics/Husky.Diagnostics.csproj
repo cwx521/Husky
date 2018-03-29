@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.0.5.20325</Version>
-    <AssemblyVersion>1.0.5.20325</AssemblyVersion>
-    <FileVersion>1.0.5.20325</FileVersion>
+    <Version>1.0.6.20329</Version>
+    <AssemblyVersion>1.0.6.20329</AssemblyVersion>
+    <FileVersion>1.0.6.20329</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>

@@ -11,9 +11,9 @@ using System;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20171220113405_Init")]
-    partial class Init
-    {
+    [Migration("20171220113405_Init_Diagnostics")]
+    partial class Init_Diagnostics
+	{
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
@@ -29,17 +29,20 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<int>("Count");
 
                     b.Property<string>("ExceptionType")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+						.HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("FirstTime");
 
                     b.Property<string>("HttpMethod")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+						.HasColumnType("varchar(10)");
 
                     b.Property<DateTime>("LastTime");
 
                     b.Property<string>("Md5Comparison")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+						.HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
                         .HasMaxLength(1000);
@@ -49,15 +52,25 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("StackTrace");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(4000)
+						.HasColumnType("varchar(4000)");
 
                     b.Property<string>("UserAgent")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+						.HasColumnType("varchar(1000)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(100);
 
-                    b.HasKey("Id");
+					b.Property<string>("UserIdString")
+						.HasMaxLength(36)
+						.HasColumnType("varchar(36)");
+
+					b.Property<string>("UserIp")
+						.HasMaxLength(39)
+						.HasColumnType("varchar(39)");
+
+					b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
                         .HasAnnotation("SqlServer:Clustered", false);

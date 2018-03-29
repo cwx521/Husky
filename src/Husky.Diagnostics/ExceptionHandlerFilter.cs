@@ -14,7 +14,9 @@ namespace Husky.Diagnostics
 			try {
 				var db = context.HttpContext.RequestServices.GetRequiredService<DiagnosticsDbContext>();
 				var principal = context.HttpContext.RequestServices.GetService<IPrincipalUser>();
+				var userIdString = principal?.IdString;
 				var userName = principal?.DisplayName ?? principal?.IdString ?? context.HttpContext.User?.Identity?.Name;
+				var userIp = context.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
 				var log = new ExceptionLog {
 					HttpMethod = context.HttpContext.Request.Method,
@@ -23,8 +25,10 @@ namespace Husky.Diagnostics
 					Source = context.Exception.Source,
 					StackTrace = context.Exception.StackTrace,
 					Url = context.HttpContext.Request.GetDisplayUrl(),
+					UserIdString = userIdString,
 					UserName = userName,
-					UserAgent = context.HttpContext.Request.UserAgent()
+					UserAgent = context.HttpContext.Request.UserAgent(),
+					UserIp = userIp
 				};
 				log.ComputeMd5Comparison();
 
