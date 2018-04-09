@@ -33,7 +33,7 @@ namespace Husky
 		}
 
 		internal static bool IsMainlandSocialNumber(this string str) {
-			return str.Length == 18 && Regex.IsMatch(str, @"^\d{18}$");
+			return str.Length == 18 && Regex.IsMatch(str, @"^\d{17}[0123456789X]$", RegexOptions.IgnoreCase);
 		}
 		public static bool IsMainlandSocialNumber(this string str, Sex sex) {
 			if ( str == null || str.Length != 18 ) return false;
