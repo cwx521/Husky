@@ -7,7 +7,7 @@ namespace Husky
 	public static class StringTest
 	{
 		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
-		public const string MainlandMobileRegexPattern = @"^1[3578]\d{9}$";
+		public const string MainlandMobileRegexPattern = @"^1[35678]\d{9}$";
 
 		public static bool IsInt32(this string str) => int.TryParse(str, out var i);
 		public static bool IsInt64(this string str) => long.TryParse(str, out var i);
