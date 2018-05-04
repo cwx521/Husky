@@ -74,11 +74,26 @@ namespace Husky
 				property = Expression.Property(property ?? arg, propertyName);
 			}
 
-			var val = (property.Type.IsEnum || typeof(IConvertible).IsAssignableFrom(property.Type) && filterValue is string)
-				? Expression.Constant(TypeDescriptor.GetConverter(property.Type).ConvertFrom(filterValue), property.Type)
-				: ((property.Type == typeof(Guid) || property.Type == typeof(Guid?)) && filterValue is string str)
-					? Expression.Constant(Guid.Parse(str), property.Type)
-					: Expression.Constant(filterValue, property.Type);
+			var nonNullableType = property.Type;
+			if ( nonNullableType.IsGenericType ) {
+				nonNullableType = nonNullableType.GenericTypeArguments[0];
+			}
+
+			//hack: kendo datetime format.
+			if ( nonNullableType == typeof(DateTime) ) {
+				var datestr = filterValue as string;
+				if ( datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
+					filterValue = datestr.Substring(4, 11);
+				}
+			}
+
+			var val = nonNullableType == typeof(string)
+				? Expression.Constant(filterValue as string, property.Type)
+				: (nonNullableType.IsEnum || typeof(IConvertible).IsAssignableFrom(nonNullableType))
+					? Expression.Constant(TypeDescriptor.GetConverter(nonNullableType).ConvertFrom(filterValue), property.Type)
+					: (nonNullableType == typeof(Guid) && filterValue is string str)
+						? Expression.Constant(Guid.Parse(str), typeof(Guid))
+						: Expression.Constant(Convert.ChangeType(filterValue, nonNullableType), property.Type);
 
 			switch ( comparison ) {
 				default:
