@@ -59,7 +59,7 @@ namespace Husky.Razor
 			if ( showFooter ) {
 				result.AppendHtml("   <div class='modal-footer'>");
 				if ( showConfirmButton ) {
-					result.AppendHtml(" <button type='button' class='btn btn-danger btn-confirm btn-submit' data-dismiss='modal'><i class='fa fa-check mr-1'></i>Confirm</button>");
+					result.AppendHtml(" <button type='button' class='btn btn-danger btn-confirm btn-submit' data-dismiss='modal'><i class='fa fa-check mr-1'></i>确认</button>");
 				}
 				result.AppendHtml("     <button type='button' class='btn btn-secondary btn-close' data-dismiss='modal'><i class='fa fa-ban mr-1'></i>关闭</button>");
 				result.AppendHtml("   </div>");
