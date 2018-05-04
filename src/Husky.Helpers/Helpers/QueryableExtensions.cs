@@ -87,13 +87,15 @@ namespace Husky
 				}
 			}
 
-			var val = nonNullableType == typeof(string)
-				? Expression.Constant(filterValue as string, property.Type)
-				: (nonNullableType.IsEnum || typeof(IConvertible).IsAssignableFrom(nonNullableType))
-					? Expression.Constant(TypeDescriptor.GetConverter(nonNullableType).ConvertFrom(filterValue), property.Type)
-					: (nonNullableType == typeof(Guid) && filterValue is string str)
-						? Expression.Constant(Guid.Parse(str), typeof(Guid))
-						: Expression.Constant(Convert.ChangeType(filterValue, nonNullableType), property.Type);
+			var val = nonNullableType == filterValue.GetType()
+				? Expression.Constant(filterValue, property.Type)
+				: nonNullableType == typeof(string)
+					? Expression.Constant(filterValue.ToString(), property.Type)
+					: (nonNullableType.IsEnum || typeof(IConvertible).IsAssignableFrom(nonNullableType))
+						? Expression.Constant(TypeDescriptor.GetConverter(nonNullableType).ConvertFrom(filterValue), property.Type)
+						: (nonNullableType == typeof(Guid) && filterValue is string str)
+							? Expression.Constant(Guid.Parse(str), typeof(Guid))
+							: Expression.Constant(Convert.ChangeType(filterValue, nonNullableType), property.Type);
 
 			switch ( comparison ) {
 				default:
