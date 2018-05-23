@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.0.2.20307</Version>
-    <AssemblyVersion>1.0.2.20307</AssemblyVersion>
-    <FileVersion>1.0.2.20307</FileVersion>
+    <Version>1.0.3.20524</Version>
+    <AssemblyVersion>1.0.3.20524</AssemblyVersion>
+    <FileVersion>1.0.3.20524</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>
