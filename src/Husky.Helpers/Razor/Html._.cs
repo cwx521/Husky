@@ -20,7 +20,7 @@ namespace Husky.Razor
 
 		private static string BeautifyCheckBoxOrRadioButton(TagBuilder inputTag, string label, string addtionalCssClass = null) {
 			return inputTag == null ? null :
-				$@"<div class='custom-control custom-{(inputTag.Attributes.Any(x => x.Key.Equals("checkbox", StringComparison.OrdinalIgnoreCase)) ? "checkbox" : "radio")} {addtionalCssClass}'>
+				$@"<div class='custom-control custom-{(inputTag.Attributes.GetValueOrDefault("type") ?? "checkbox").ToLower()} {addtionalCssClass}'>
 					{inputTag.ToHtml()}
 					<label class='custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
 				</div>";
@@ -56,6 +56,7 @@ namespace Husky.Razor
 				};
 				inputTag.AddCssClass("custom-control-input");
 				inputTag.Attributes.Add("type", boxType.ToLabel());
+				inputTag.Attributes.Add("id", "_" + Crypto.RandomString());
 				inputTag.Attributes.Add("name", expression.Body.ToString().Right("."));
 				inputTag.Attributes.Add("value", item.Value);
 				if ( item.Selected ) {
