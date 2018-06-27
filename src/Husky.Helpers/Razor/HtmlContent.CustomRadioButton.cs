@@ -9,7 +9,7 @@ namespace Husky.Razor
 		public static IHtmlContent CustomRadioButton(this IHtmlContent radioButton, string label) {
 			if ( radioButton is TagBuilder tb ) {
 				tb.AddCssClass("custom-control-input");
-				return new HtmlString(BeautifyCheckBoxOrRadioButton(tb.ToHtml(), label));
+				return new HtmlString(BeautifyCheckBoxOrRadioButton(tb, label));
 			}
 			throw new InvalidCastException($"The type of the parameter is not TagBuilder.");
 		}

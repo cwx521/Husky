@@ -9,7 +9,7 @@ namespace Husky.Razor
 		public static IHtmlContent CustomCheckBox(this IHtmlContent checkbox, string label) {
 			if ( checkbox is TagBuilder tb ) {
 				tb.AddCssClass("custom-control-input");
-				return new HtmlString(BeautifyCheckBoxOrRadioButton(tb.ToHtml(), label));
+				return new HtmlString(BeautifyCheckBoxOrRadioButton(tb, label));
 			}
 			throw new InvalidCastException($"The type of the parameter is not TagBuilder.");
 		}

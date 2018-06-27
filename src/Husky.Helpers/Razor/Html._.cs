@@ -18,13 +18,12 @@ namespace Husky.Razor
 			}
 		}
 
-		private static string BeautifyCheckBoxOrRadioButton(string html, string label, string addtionalCssClass = null) {
-			return html == null ? null :
-				$@"<label class='custom-control custom-{(html.Contains("checkbox") ? "checkbox" : "radio")} {addtionalCssClass}'>
-					{html}
-					<span class='custom-control-indicator'></span>
-					<span class='custom-control-description'>{label}</span>
-				</label>";
+		private static string BeautifyCheckBoxOrRadioButton(TagBuilder inputTag, string label, string addtionalCssClass = null) {
+			return inputTag == null ? null :
+				$@"<div class='custom-control custom-{(inputTag.Attributes.Any(x => x.Key.Equals("checkbox", StringComparison.OrdinalIgnoreCase)) ? "checkbox" : "radio")} {addtionalCssClass}'>
+					{inputTag.ToHtml()}
+					<label class='custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
+				</div>";
 		}
 
 		private static void BeautifyTextBoxOrDropDown(this TagBuilder tagBuilder) {
@@ -70,7 +69,7 @@ namespace Husky.Razor
 				}
 
 				// as custom-checkbox (bootstrap)
-				var str = BeautifyCheckBoxOrRadioButton(inputTag.ToHtml(), item.Text.JudgeWords(), addtionalCssClass: "list-box-item");
+				var str = BeautifyCheckBoxOrRadioButton(inputTag, item.Text.JudgeWords(), addtionalCssClass: "list-box-item");
 				result.AppendHtml(layoutDirection == LayoutDirection.Vertical ? $"<div>{str}</div>" : str);
 			}
 			return result;
