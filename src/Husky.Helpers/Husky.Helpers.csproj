@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Husky</RootNamespace>
-    <Version>1.0.13.20627</Version>
-    <AssemblyVersion>1.0.13.20627</AssemblyVersion>
-    <FileVersion>1.0.13.20627</FileVersion>
+    <Version>2.1.13.20819</Version>
+    <AssemblyVersion>2.1.13.20819</AssemblyVersion>
+    <FileVersion>2.1.13.20819</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.2" />
   </ItemGroup>
 
 </Project>
