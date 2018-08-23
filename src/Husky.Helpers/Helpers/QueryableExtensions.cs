@@ -40,9 +40,7 @@ namespace Husky
 
 		#region Where
 
-		public static IQueryable<T> Where<T>(this IQueryable<T> query, string propertyPath, object filterValue, Comparison comparison = Comparison.Equal) {
-			return query.Where(Predicate<T>(propertyPath, filterValue, comparison));
-		}
+		public static IQueryable<T> Where<T>(this IQueryable<T> query, string propertyPath, object filterValue, Comparison comparison = Comparison.Equal) => query.Where(Predicate<T>(propertyPath, filterValue, comparison));
 
 		#endregion
 
@@ -108,7 +106,7 @@ namespace Husky
 					body = Expression.NotEqual(property, val);
 					break;
 				case Comparison.HasKeyword:
-					body = Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains)), val);
+					body = Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) }), val);
 					break;
 				case Comparison.GreaterThan:
 					body = Expression.GreaterThan(property, val);
