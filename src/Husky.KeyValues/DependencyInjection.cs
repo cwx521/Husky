@@ -9,7 +9,7 @@ namespace Husky.DependencyInjection
 	{
 		private static bool migrated = false;
 
-		public static HuskyDependencyInjectionHub AddConfiguration(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
+		public static HuskyDependencyInjectionHub KeyValueManager(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
 			husky.Services.AddDbContext<KeyValueDbContext>((svc, builder) => {
 				var config = svc.GetRequiredService<IConfiguration>();
 				var connstr = config.SeekConnectionStringSequence<KeyValueDbContext>(nameOfConnectionString);
