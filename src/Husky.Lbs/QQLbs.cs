@@ -21,7 +21,7 @@ namespace Husky.Lbs
 			_key = settings.Key;
 		}
 
-		readonly string _key;
+		private readonly string _key;
 
 		public async Task<GeoLocation> Query(IPAddress ip) {
 			using ( var client = new WebClient() ) {

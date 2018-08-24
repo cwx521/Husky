@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
 {
@@ -11,7 +9,7 @@ namespace Husky.Principal
 			_principal = principal;
 		}
 
-		IPrincipalUser _principal;
+		private IPrincipalUser _principal;
 
 		string ISessionDataContainer.Key => _principal.IdString;
 		DateTime ISessionDataContainer.ActiveTime { get; set; }

@@ -12,9 +12,9 @@ using Z.EntityFramework.Plus;
 namespace Husky.DataAudit.Data.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20180105162847_Init")]
-    partial class Init
-    {
+    [Migration("20180105162847_Init_DataAudit")]
+    partial class Init_DataAudit
+	{
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

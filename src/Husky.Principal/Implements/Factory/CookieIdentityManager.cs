@@ -10,8 +10,8 @@ namespace Husky.Principal.Implements
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Cookie);
 		}
 
-		HttpContext _httpContext;
-		IdentityOptions _options;
+		private HttpContext _httpContext;
+		private IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var cookie);
@@ -47,10 +47,10 @@ namespace Husky.Principal.Implements
 			}
 		}
 
-		string _sessionKey = "WEIXING_AUTH_SESSION_";
+		private readonly string _sessionKey = "WEIXING_AUTH_SESSION_";
 
-		void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
-		bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
+		private void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
+		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
 
 		void IIdentityManager.DeleteIdentity() {
 			_httpContext.Response.Cookies.Delete(_options.Key);

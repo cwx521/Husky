@@ -11,7 +11,7 @@ namespace Husky
 	{
 		#region PermanentToken
 
-		static string _permanentToken;
+		private static string _permanentToken;
 
 		public static string PermanentToken {
 			get {
@@ -20,9 +20,7 @@ namespace Husky
 				}
 				return _permanentToken;
 			}
-			set {
-				_permanentToken = value ?? throw new ArgumentNullException(nameof(value));
-			}
+			set => _permanentToken = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
 		#endregion
@@ -31,27 +29,26 @@ namespace Husky
 
 		public static byte[] RandomBytes(int length = 4) {
 			using ( var rng = RandomNumberGenerator.Create() ) {
-				byte[] salt = new byte[length];
+				var salt = new byte[length];
 				rng.GetBytes(salt);
 				return salt;
 			}
 		}
 
-		public static int RandomNumber() {
-			return BitConverter.ToInt32(RandomBytes(4), 0);
-		}
+		public static int RandomNumber() => BitConverter.ToInt32(RandomBytes(4), 0);
 
 		public static string RandomString(int length = 8) {
 			const string chars = "0123456789abcdefghijklmkopqrstuvwxyzABCDEFGHIJKLMKOPQRSTUVWXYZ";
 			var salt = RandomBytes(length);
 			var builder = new StringBuilder();
-			for ( int i = 0; i < length; builder.Append(chars[salt[i++] % chars.Length]) ) ;
+			for ( var i = 0; i < length; builder.Append(chars[salt[i++] % chars.Length]) ) {
+				;
+			}
+
 			return builder.ToString();
 		}
 
-		public static Random Random() {
-			return new Random(RandomNumber());
-		}
+		public static Random Random() => new Random(RandomNumber());
 
 		#endregion
 
@@ -62,8 +59,8 @@ namespace Husky
 				throw new ArgumentNullException(nameof(str));
 			}
 			using ( var algorithm = MD5Algorithm.Create() ) {
-				byte[] original = Encoding.UTF8.GetBytes(str);
-				byte[] encoded = algorithm.ComputeHash(original);
+				var original = Encoding.UTF8.GetBytes(str);
+				var encoded = algorithm.ComputeHash(original);
 				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
 			}
 		}
@@ -73,8 +70,8 @@ namespace Husky
 				throw new ArgumentNullException(nameof(str));
 			}
 			using ( var algorithm = SHA1Algorithm.Create() ) {
-				byte[] original = Encoding.UTF8.GetBytes(str);
-				byte[] encoded = algorithm.ComputeHash(original);
+				var original = Encoding.UTF8.GetBytes(str);
+				var encoded = algorithm.ComputeHash(original);
 				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
 			}
 		}
@@ -84,13 +81,18 @@ namespace Husky
 		#region HmacMD5, HmacSHA1
 
 		public static string Hmac<TAlgorithm>(this string str, string key) where TAlgorithm : HMAC, new() {
-			if ( str == null ) throw new ArgumentNullException(nameof(str));
-			if ( key == null ) throw new ArgumentNullException(nameof(key));
+			if ( str == null ) {
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if ( key == null ) {
+				throw new ArgumentNullException(nameof(key));
+			}
 
 			using ( var hmac = new TAlgorithm() ) {
 				hmac.Key = ComputeKey(key);
-				byte[] original = Encoding.UTF8.GetBytes(str);
-				byte[] encoded = hmac.ComputeHash(original);
+				var original = Encoding.UTF8.GetBytes(str);
+				var encoded = hmac.ComputeHash(original);
 				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
 			}
 		}
@@ -105,28 +107,32 @@ namespace Husky
 		public static byte[] IV { get; set; } = { 0x6E, 0x70, 0x69, 0x64, 0x65, 0x78, 0x72, 0x65, 0x65, 0x50, 0x67, 0x6F, 0x77, 0x42, 0x79, 0x57 };
 
 		public static string Encrypt(string str, string key = null) {
-			if ( str == null ) throw new ArgumentNullException(nameof(str));
+			if ( str == null ) {
+				throw new ArgumentNullException(nameof(str));
+			}
 
 			using ( var aes = Aes.Create() ) {
 				aes.Key = ComputeKey(key ?? PermanentToken);
 				aes.IV = IV;
 				using ( var encryptor = aes.CreateEncryptor() ) {
-					byte[] original = Encoding.UTF8.GetBytes(str);
-					byte[] encrypted = encryptor.TransformFinalBlock(original, 0, original.Length);
+					var original = Encoding.UTF8.GetBytes(str);
+					var encrypted = encryptor.TransformFinalBlock(original, 0, original.Length);
 					return Convert.ToBase64String(encrypted).Mutate();
 				}
 			}
 		}
 
 		public static string Decrypt(string base64String, string key = null) {
-			if ( base64String == null ) throw new ArgumentNullException(nameof(base64String));
+			if ( base64String == null ) {
+				throw new ArgumentNullException(nameof(base64String));
+			}
 
 			using ( var aes = Aes.Create() ) {
 				aes.Key = ComputeKey(key ?? PermanentToken);
 				aes.IV = IV;
 				using ( var decryptor = aes.CreateDecryptor() ) {
-					byte[] base64 = Convert.FromBase64String(base64String.Restore());
-					byte[] decrypted = decryptor.TransformFinalBlock(base64, 0, base64.Length);
+					var base64 = Convert.FromBase64String(base64String.Restore());
+					var decrypted = decryptor.TransformFinalBlock(base64, 0, base64.Length);
 					return Encoding.UTF8.GetString(decrypted);
 				}
 			}

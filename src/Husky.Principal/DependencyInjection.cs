@@ -34,7 +34,7 @@ namespace Husky.DependencyInjection
 			return husky;
 		}
 
-		static IPrincipalUser CreatePrincipalInstance(this IServiceProvider svc, IdType idType) {
+		private static IPrincipalUser CreatePrincipalInstance(this IServiceProvider svc, IdType idType) {
 			var identityManager = svc.GetRequiredService<IIdentityManager>();
 			switch ( idType ) {
 				default: throw new ArgumentOutOfRangeException(nameof(idType));

@@ -10,10 +10,9 @@ namespace Husky.Principal
 			_cache = cache;
 		}
 
-		IMemoryCache _cache;
-
-		static readonly object _lock = new object();
-		static readonly string _cacheKey = "Pool_" + typeof(T).FullName;
+		private IMemoryCache _cache;
+		private static readonly object _lock = new object();
+		private static readonly string _cacheKey = "Pool_" + typeof(T).FullName;
 
 		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
 
@@ -82,13 +81,9 @@ namespace Husky.Principal
 			}
 		}
 
-		internal void DropAll() {
-			_cache.Remove(_cacheKey);
-		}
+		internal void DropAll() => _cache.Remove(_cacheKey);
 
-		internal void DropTimeout(int timeoutMinutes) {
-			DropTimeout(TimeSpan.FromMinutes(timeoutMinutes));
-		}
+		internal void DropTimeout(int timeoutMinutes) => DropTimeout(TimeSpan.FromMinutes(timeoutMinutes));
 
 		internal void DropTimeout(TimeSpan timeout) {
 			var pool = GetPool();
@@ -106,11 +101,9 @@ namespace Husky.Principal
 			}
 		}
 
-		Dictionary<string, T> GetPool() {
-			return _cache.Get<Dictionary<string, T>>(_cacheKey);
-		}
+		private Dictionary<string, T> GetPool() => _cache.Get<Dictionary<string, T>>(_cacheKey);
 
-		Dictionary<string, T> EnsureGetPool() {
+		private Dictionary<string, T> EnsureGetPool() {
 			return _cache.GetOrCreate(_cacheKey, x => {
 				x.SetSlidingExpiration(Timeout);
 				return new Dictionary<string, T>();

@@ -77,7 +77,7 @@ namespace Husky.KeyValues
 			}
 		}
 
-		public void Refresh() => _cache.Remove(_cacheKey);
+		public void Reload() => _cache.Remove(_cacheKey);
 
 		public void SaveChanges() {
 			using ( var scope = _svc.CreateScope() ) {
@@ -87,7 +87,7 @@ namespace Husky.KeyValues
 
 				fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
 				fromDb.ForEach(x => x.Value = GetString(x.Key));
-				db.KeyValues.AddRange(added);
+				db.AddRange(added);
 
 				db.SaveChanges();
 			}

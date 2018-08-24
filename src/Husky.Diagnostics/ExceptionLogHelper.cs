@@ -12,8 +12,6 @@ namespace Husky.Diagnostics
 	{
 		public static void Log(this IServiceProvider serviceProvider, Exception e) {
 			using ( var scope = serviceProvider.CreateScope() ) {
-				var db = scope.ServiceProvider.GetRequiredService<DiagnosticsDbContext>();
-
 				HttpContext http = null;
 				IPrincipalUser principal = null;
 
@@ -23,6 +21,7 @@ namespace Husky.Diagnostics
 				}
 				catch { }
 
+				var db = scope.ServiceProvider.GetRequiredService<DiagnosticsDbContext>();
 				var log = new ExceptionLog {
 					HttpMethod = http?.Request?.Method,
 					ExceptionType = e.GetType().FullName,

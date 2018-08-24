@@ -13,15 +13,14 @@ namespace Husky.TwoFactor
 		public TwoFactorManager(IPrincipalUser principal, TwoFactorDbContext twoFactorDb, AliyunSmsSender aliyunSmsSender) {
 			_me = principal;
 			_twoFactorDb = twoFactorDb;
-			//_mailSender = mailSender;
 			_aliyunSmsSender = aliyunSmsSender;
+			//_mailSender = mailSender;
 		}
 
-		readonly TwoFactorDbContext _twoFactorDb;
-		readonly IPrincipalUser _me;
-
-		//readonly IMailSender _mailSender;
-		readonly AliyunSmsSender _aliyunSmsSender;
+		private readonly TwoFactorDbContext _twoFactorDb;
+		private readonly IPrincipalUser _me;
+		private readonly AliyunSmsSender _aliyunSmsSender;
+		//private readonly IMailSender _mailSender;
 
 		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string messageTemplateWithCodeAsArg0 = null) {
 			if ( emailOrMobile == null ) {

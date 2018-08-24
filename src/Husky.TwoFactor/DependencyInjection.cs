@@ -8,13 +8,13 @@ namespace Husky.DependencyInjection
 {
 	public static class DependencyInjection
 	{
-		static bool migrated = false;
+		private static bool migrated = false;
 
 		public static HuskyDependencyInjectionHub AddTwoFactor(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
 			husky.Services
-				.AddDbContext<TwoFactorDbContext>((svc, builder) => {
+				.AddDbContextPool<TwoFactorDbContext>((svc, builder) => {
 					var config = svc.GetRequiredService<IConfiguration>();
-					var connstr = config.SeekConnectionStringSequence<TwoFactorDbContext>(nameOfConnectionString);
+					var connstr = config.SeekConnectionString<TwoFactorDbContext>(nameOfConnectionString);
 					builder.UseSqlServer(connstr);
 
 					if ( !migrated ) {

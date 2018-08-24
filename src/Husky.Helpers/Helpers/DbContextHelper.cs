@@ -1,7 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
-namespace Husky
+namespace Microsoft.EntityFrameworkCore
 {
 	public static class DbContextHelper
 	{

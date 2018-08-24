@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Husky.TwoFactor.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class Init_TwoFactor : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

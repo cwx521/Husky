@@ -11,9 +11,9 @@ using System;
 namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20180125112249_Init")]
-    partial class Init
-    {
+    [Migration("20180125112249_Init_TwoFactor")]
+    partial class Init_TwoFactor
+	{
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

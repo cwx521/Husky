@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Husky.DataAudit.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class Init_DataAudit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

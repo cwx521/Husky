@@ -19,8 +19,8 @@ namespace Husky.Mail
 			_givenSmtp = givenSmtp;
 		}
 
-		readonly IServiceProvider _svc;
-		readonly ISmtpProvider _givenSmtp;
+		private readonly IServiceProvider _svc;
+		private readonly ISmtpProvider _givenSmtp;
 
 		public MailDbContext Db => _svc.GetService<MailDbContext>();
 
@@ -80,8 +80,9 @@ namespace Husky.Mail
 			}
 		}
 
-		static int _increment = 0;
-		MailSmtpProvider GetInternalSmtpProvider() {
+		private static int _increment = 0;
+
+		private MailSmtpProvider GetInternalSmtpProvider() {
 			using ( var scope = _svc.CreateScope() ) {
 				var db = scope.ServiceProvider.GetRequiredService<MailDbContext>();
 
@@ -94,7 +95,7 @@ namespace Husky.Mail
 			}
 		}
 
-		MailRecord CreateMailRecord(MailMessage mailMessage) {
+		private MailRecord CreateMailRecord(MailMessage mailMessage) {
 			return new MailRecord {
 				Subject = mailMessage.Subject,
 				Body = mailMessage.Body,
@@ -111,11 +112,12 @@ namespace Husky.Mail
 			};
 		}
 
-		MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
-			var mail = new MimeMessage();
+		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
+			var mail = new MimeMessage {
 
-			// Subject
-			mail.Subject = mailMessage.Subject;
+				// Subject
+				Subject = mailMessage.Subject
+			};
 			// From
 			mail.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
 			// To
@@ -147,7 +149,7 @@ namespace Husky.Mail
 			return mail;
 		}
 
-		byte[] ReadStream(Stream stream) {
+		private byte[] ReadStream(Stream stream) {
 			var length = stream.Length;
 			var bytes = new byte[length];
 			stream.Read(bytes, 0, (int)length);

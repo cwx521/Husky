@@ -13,8 +13,8 @@ namespace Husky.Principal
 				identityManager.SaveIdentity(this);
 			}
 
-			this.IdentityManager = identityManager;
-			this.ServiceProvider = serviceProvider;
+			IdentityManager = identityManager;
+			ServiceProvider = serviceProvider;
 		}
 
 		public T? Id {

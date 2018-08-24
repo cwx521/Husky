@@ -10,8 +10,8 @@ namespace Husky.Principal.Implements
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
 		}
 
-		HttpContext _httpContext;
-		IdentityOptions _options;
+		private HttpContext _httpContext;
+		private IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];
@@ -35,9 +35,7 @@ namespace Husky.Principal.Implements
 			_httpContext.Response.Headers.Add(_options.Key, _options.Encryptor.Encrypt(identity, _options.Token));
 		}
 
-		void IIdentityManager.DeleteIdentity() {
-			_httpContext.Response.Headers.Remove(_options.Key);
-		}
+		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.Key);
 
 		public string GetEncryptedIdentityHeaderValue() => _httpContext.Request.Headers[_options.Key];
 	}

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Husky
@@ -8,7 +7,7 @@ namespace Husky
 	public static class ModelStateHelper
 	{
 		public static List<string> GetAllErrorMessages(this ModelStateDictionary modelState) {
-			List<string> errors = new List<string>();
+			var errors = new List<string>();
 			modelState.Values.Where(x => x.Errors.Any()).ToList().ForEach(state => {
 				errors.AddRange(state.Errors.Select(x => x.ErrorMessage));
 			});

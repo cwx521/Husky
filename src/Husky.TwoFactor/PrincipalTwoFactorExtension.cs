@@ -5,8 +5,6 @@ namespace Husky.TwoFactor
 {
 	public static class PrincipalTwoFactorExtension
 	{
-		public static TwoFactorManager TwoFactor(this IPrincipalUser principal) {
-			return principal.ServiceProvider.GetRequiredService<TwoFactorManager>();
-		}
+		public static TwoFactorManager TwoFactor(this IPrincipalUser principal) => principal.ServiceProvider.GetRequiredService<TwoFactorManager>();
 	}
 }

@@ -10,8 +10,8 @@ namespace Husky.Principal.Implements
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Session);
 		}
 
-		HttpContext _httpContext;
-		IdentityOptions _options;
+		private HttpContext _httpContext;
+		private IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			var combined = _httpContext.Session.GetString(_options.Key);
@@ -37,8 +37,6 @@ namespace Husky.Principal.Implements
 			_httpContext.Session.SetString(_options.Key, string.Concat(identity.IdString, '|', identity.DisplayName));
 		}
 
-		void IIdentityManager.DeleteIdentity() {
-			_httpContext.Session.Remove(_options.Key);
-		}
+		void IIdentityManager.DeleteIdentity() => _httpContext.Session.Remove(_options.Key);
 	}
 }

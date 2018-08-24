@@ -4,7 +4,7 @@ namespace Husky
 {
 	public class Pagination
 	{
-		int _p = 1;
+		private int _p = 1;
 
 		public int PageIndex {
 			get {
@@ -14,9 +14,7 @@ namespace Husky
 				_p = Math.Max(_p, 1);
 				return _p;
 			}
-			set {
-				_p = value;
-			}
+			set => _p = value;
 		}
 
 		public int PageSize { get; set; } = 20;

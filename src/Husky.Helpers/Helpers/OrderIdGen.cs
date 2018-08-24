@@ -26,26 +26,24 @@ namespace Husky
 			);
 			return DateTime.TryParse(makeup, out datetime);
 		}
-
 		public static bool IsValid(string orderId) => TryParse(orderId, out var dt);
 
+		private static int _seed;
+		private static string Salt => new Random(Crypto.RandomNumber()).Next(0, 1000).ToString("D3");
+		private static char Year => (char)('0' + (DateTime.Now.Year - 2011));
+		private static char Month => (char)('A' + DateTime.Now.Month - 1);
+		private static char Day => (char)(DateTime.Now.Day + (DateTime.Now.Day < 10 ? '0' : 'A' - 10));
+		private static char Hour => (char)('Z' - DateTime.Now.Hour);
+		private static string Time => string.Join("", _Time());
+		private static int Validation(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
 
-		static int _seed;
-
-		static string Salt => new Random(Crypto.RandomNumber()).Next(0, 1000).ToString("D3");
-		static char Year => (char)('0' + (DateTime.Now.Year - 2011));
-		static char Month => (char)('A' + DateTime.Now.Month - 1);
-		static char Day => (char)(DateTime.Now.Day + (DateTime.Now.Day < 10 ? '0' : 'A' - 10));
-		static char Hour => (char)('Z' - DateTime.Now.Hour);
-		static string Time => string.Join("", _Time());
-
-		static IEnumerable<char> _Time() {
+		private static IEnumerable<char> _Time() {
 			var add = _seed++ >= 1000 ? (_seed = 0) : _seed;
 			var str = (DateTime.Now.ToString("mmssfff").AsInt() + add).ToString("D7");
 			var ordering = new[] { 7, 4, 1, 5, 2, 6, 3 };
-			foreach ( var i in ordering ) yield return str[i - 1];
+			foreach ( var i in ordering ) {
+				yield return str[i - 1];
+			}
 		}
-
-		static int Validation(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
 	}
 }
