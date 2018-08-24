@@ -10,7 +10,7 @@ namespace Husky.DependencyInjection
 	{
 		private static bool migrated = false;
 
-		public static HuskyDependencyInjectionHub KeyValueManager(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
+		public static HuskyDependencyInjectionHub AddKeyValueManager(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
 			husky.Services
 				.AddDbContextPool<KeyValueDbContext>((svc, builder) => {
 					var config = svc.GetRequiredService<IConfiguration>();
