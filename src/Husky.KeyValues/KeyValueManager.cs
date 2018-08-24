@@ -34,15 +34,16 @@ namespace Husky.KeyValues
 
 		public string GetString(string key) => Find(key)?.Value;
 		public T Get<T>(string key, T defaultValue = default(T)) => GetString(key).As(defaultValue);
+		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) => (T)GetOrAdd(key, defaultValueIfNotExist, typeof(T));
 
-		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) {
+		public object GetOrAdd(string key, object defaultValueIfNotExist, Type defaultValueType) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
 
 			var item = Find(key);
 			if ( item != null ) {
-				return item.Value.As<T>();
+				return Convert.ChangeType(item.Value, defaultValueType);
 			}
 
 			item = new KeyValue {
