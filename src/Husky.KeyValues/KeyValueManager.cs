@@ -4,23 +4,29 @@ using System.Linq;
 using Husky.KeyValues.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.KeyValues
 {
 	public class KeyValueManager
 	{
-		protected KeyValueManager(KeyValueDbContext configurationDb, IMemoryCache cache) {
-			_configurationDb = configurationDb;
+		public KeyValueManager(IServiceProvider svc, IMemoryCache cache) {
+			_svc = svc;
 			_cache = cache;
 		}
 
 		private static readonly object _lock = new object();
 		private readonly string _cacheKey = nameof(KeyValueManager) + nameof(Items);
 
-		private readonly KeyValueDbContext _configurationDb;
+		private readonly IServiceProvider _svc;
 		private readonly IMemoryCache _cache;
 
-		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => _configurationDb.KeyValues.AsNoTracking().ToList());
+		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
+			using ( var scope = _svc.CreateScope() ) {
+				var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+				return db.KeyValues.AsNoTracking().ToList();
+			}
+		});
 		private KeyValue Find(string key) => Items.Find(x => x.Key == key);
 
 		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
@@ -49,19 +55,13 @@ namespace Husky.KeyValues
 			return defaultValueIfNotExist;
 		}
 
-		public void Update<T>(string key, T value) => Set(key, value, false);
-		public void AddOrUpdate<T>(string key, T value) => Set(key, value, true);
-
-		private void Set<T>(string key, T value, bool allowAdd) {
+		private void AddOrUpdate<T>(string key, T value) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
 
 			var item = Find(key);
 			if ( item == null ) {
-				if ( !allowAdd ) {
-					return;
-				}
 				item = new KeyValue {
 					Key = key,
 					Value = value?.ToString()
@@ -80,14 +80,17 @@ namespace Husky.KeyValues
 		public void Refresh() => _cache.Remove(_cacheKey);
 
 		public void SaveChanges() {
-			var fromDb = _configurationDb.KeyValues.ToList();
-			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
+			using ( var scope = _svc.CreateScope() ) {
+				var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+				var fromDb = db.KeyValues.ToList();
+				var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
-			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
-			fromDb.ForEach(x => x.Value = GetString(x.Key));
-			fromDb.AddRange(added);
+				fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
+				fromDb.ForEach(x => x.Value = GetString(x.Key));
+				db.KeyValues.AddRange(added);
 
-			_configurationDb.SaveChanges();
+				db.SaveChanges();
+			}
 		}
 	}
 }

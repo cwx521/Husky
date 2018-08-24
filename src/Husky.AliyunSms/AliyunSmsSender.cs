@@ -8,14 +8,17 @@ namespace Husky.AliyunSms
 {
 	public class AliyunSmsSender
 	{
-		public AliyunSmsSender(AliyunSmsSettings aliyunSmsSettings) {
-			_settings = aliyunSmsSettings;
+		public AliyunSmsSender(AliyunSmsSettings settings) {
+			_settings = settings;
 		}
 
-		readonly AliyunSmsSettings _settings;
+		private readonly AliyunSmsSettings _settings;
 
 		public async Task SendAsync(string twoFactorCode, params string[] mobileNumbers) {
-			await SendAsync(new AliyunSmsArgument { code = twoFactorCode }, mobileNumbers);
+			await SendAsync(
+				new AliyunSmsArgument { code = twoFactorCode },
+				mobileNumbers
+			);
 		}
 
 		public async Task SendAsync(AliyunSmsArgument argument, params string[] mobileNumbers) {

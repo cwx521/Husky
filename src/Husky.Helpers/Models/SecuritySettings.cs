@@ -4,6 +4,5 @@
 	{
 		public string PermanentToken { get; set; }
 		public string RerollableToken { get; set; }
-		public string SuperCode { get; set; }
 	}
 }
