@@ -12,6 +12,10 @@ namespace Husky.Diagnostics
 	{
 		public void OnException(ExceptionContext context) {
 			try {
+				if ( context.HttpContext == null ) {
+					return;
+				}
+
 				var db = context.HttpContext.RequestServices.GetRequiredService<DiagnosticsDbContext>();
 				var principal = context.HttpContext.RequestServices.GetService<IPrincipalUser>();
 				var userIdString = principal?.IdString;

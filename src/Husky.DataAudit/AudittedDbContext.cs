@@ -6,9 +6,9 @@ using Z.EntityFramework.Plus;
 
 namespace Husky.DataAudit
 {
-	public abstract class AudittedDbContext : DbContext
+	public abstract class AuditEnabledDbContext : DbContext
 	{
-		protected AudittedDbContext(DbContextOptions options, AuditDbContext auditDb) : base(options) {
+		protected AuditEnabledDbContext(DbContextOptions options, AuditDbContext auditDb) : base(options) {
 			_auditDb = auditDb;
 		}
 

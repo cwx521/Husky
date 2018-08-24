@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Mail", "src\Husky.Mai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms", "src\Husky.AliyunSms\Husky.AliyunSms.csproj", "{74F75227-8128-4CB8-A3A6-FD2156EA61D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Lbs", "src\Husky.Lbs\Husky.Lbs.csproj", "{BEE39CF0-7FDD-4584-8769-127C04CB9749}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Lbs", "src\Husky.Lbs\Husky.Lbs.csproj", "{BEE39CF0-7FDD-4584-8769-127C04CB9749}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.KeyValues", "src\Husky.KeyValues\Husky.KeyValues.csproj", "{DF32760A-2326-40AA-935E-17E377A690DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEE39CF0-7FDD-4584-8769-127C04CB9749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF32760A-2326-40AA-935E-17E377A690DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF32760A-2326-40AA-935E-17E377A690DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF32760A-2326-40AA-935E-17E377A690DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF32760A-2326-40AA-935E-17E377A690DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
