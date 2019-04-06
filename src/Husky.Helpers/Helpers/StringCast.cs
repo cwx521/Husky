@@ -69,7 +69,7 @@ namespace Husky
 			var charArray = hex.Reverse().ToArray();
 
 			for ( int i = 0; i < charArray.Count(); i++ ) {
-				var num = 0;
+				int num;
 				var c = charArray[i];
 
 				if ( c >= 'a' && c <= 'f' ) {

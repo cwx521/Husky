@@ -79,7 +79,7 @@ namespace Husky
 
 			//hack: kendo datetime format.
 			if ( nonNullableType == typeof(DateTime) ) {
-				var datestr = filterValue as string;
+				var datestr = filterValue as string ?? filterValue?.ToString();
 				if ( datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
 					filterValue = datestr.Substring(4, 11);
 				}

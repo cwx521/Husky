@@ -41,10 +41,7 @@ namespace Husky
 			const string chars = "0123456789abcdefghijklmkopqrstuvwxyzABCDEFGHIJKLMKOPQRSTUVWXYZ";
 			var salt = RandomBytes(length);
 			var builder = new StringBuilder();
-			for ( var i = 0; i < length; builder.Append(chars[salt[i++] % chars.Length]) ) {
-				;
-			}
-
+			for ( var i = 0; i < length; builder.Append(chars[salt[i++] % chars.Length]) ) ;
 			return builder.ToString();
 		}
 
