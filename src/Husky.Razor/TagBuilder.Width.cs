@@ -16,8 +16,8 @@ namespace Husky.Razor
 			return tagBuilder.AddCssClass("form-control-short");
 		}
 
-		public static IHtmlContent Shortest(this IHtmlContent tagBuilder) {
-			return tagBuilder.AddCssClass("form-control-shortest");
+		public static IHtmlContent Shorter(this IHtmlContent tagBuilder) {
+			return tagBuilder.AddCssClass("form-control-shorter");
 		}
 	}
 }

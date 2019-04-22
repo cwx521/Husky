@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Lbs", "src\Husky.Lbs\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.KeyValues", "src\Husky.KeyValues\Husky.KeyValues.csproj", "{DF32760A-2326-40AA-935E-17E377A690DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.GridQuery", "src\Husky.GridQuery\Husky.GridQuery.csproj", "{22A627A8-F715-4189-9A29-986A108B0AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.GridQuery", "src\Husky.GridQuery\Husky.GridQuery.csproj", "{22A627A8-F715-4189-9A29-986A108B0AC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Razor", "src\Husky.Razor\Husky.Razor.csproj", "{26B38E9E-F9CE-43DD-BA39-716AF092551C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{22A627A8-F715-4189-9A29-986A108B0AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A627A8-F715-4189-9A29-986A108B0AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A627A8-F715-4189-9A29-986A108B0AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26B38E9E-F9CE-43DD-BA39-716AF092551C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26B38E9E-F9CE-43DD-BA39-716AF092551C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26B38E9E-F9CE-43DD-BA39-716AF092551C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26B38E9E-F9CE-43DD-BA39-716AF092551C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

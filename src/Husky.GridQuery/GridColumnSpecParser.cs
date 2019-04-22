@@ -79,7 +79,7 @@ namespace Husky.GridQuery
 		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute attr) {
 			var column = new GridColumnSpec {
 				field = property?.Name,
-				title = attr?.Title ?? property?.Name?.JudgeWords(),
+				title = attr?.Title ?? property?.Name?.SplitWords(),
 				type = property?.GetMappedJsType(),
 				group = attr?.Group,
 				width = (attr != null && attr.Width != 0) ? attr.Width : GridColumnDefaultWidth,

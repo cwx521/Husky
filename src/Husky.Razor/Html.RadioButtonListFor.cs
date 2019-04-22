@@ -19,7 +19,7 @@ namespace Husky.Razor
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.RadioButton, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.Radio, selectListItems, layoutDirection, htmlAttributes);
 		}
 
 		public static IHtmlContent RadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, Type enumType, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object htmlAttributes = null) {
@@ -29,7 +29,7 @@ namespace Husky.Razor
 
 			var selectListItems = helper.GetEnumSelectList(enumType);
 
-			//hack the specific enum type 'YesNo', want to put Yes before No. 
+			//hack: for the specific enum type 'YesNo', display Yes No instead of No Yes. 
 			if ( enumType == typeof(YesNo) ) {
 				selectListItems = selectListItems.Reverse();
 			}
@@ -46,7 +46,7 @@ namespace Husky.Razor
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.RadioButton, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.Radio, selectListItems, layoutDirection, htmlAttributes);
 		}
 	}
 }

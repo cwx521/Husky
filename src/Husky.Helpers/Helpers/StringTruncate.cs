@@ -7,7 +7,7 @@ namespace Husky
 {
 	public static class StringTruncate
 	{
-		public static string JudgeWords(this string str) {
+		public static string SplitWords(this string str) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return str;
 			}

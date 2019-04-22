@@ -29,8 +29,8 @@ namespace Husky.Razor
 
 		private static IHtmlContent ModalForConfirmation(this IHtmlHelper helper, string id, string message = null) {
 			var result = new HtmlContentBuilder();
-			result.AppendHtml(helper.BeginModal(id, "Confirmation", ModalSize.Default));
-			result.AppendHtml($"<div class='mt-1 mb-3'>{message ?? "This action can not be restored, are you sure to proceed?"}</div>");
+			result.AppendHtml(helper.BeginModal(id, "确认", ModalSize.Default));
+			result.AppendHtml($"<div class='mt-1 mb-3'>{message ?? "该操作不可恢复，确定要执行吗？"}</div>");
 			result.AppendHtml(helper.EndModal(true, showConfirmButton: true));
 			return result;
 		}

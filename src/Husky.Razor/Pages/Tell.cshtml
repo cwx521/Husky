@@ -1,0 +1,28 @@
+﻿<h3 class="title mb-3">
+	提示
+</h3>
+<div class="mb-3 tell-messages @ViewData["Scheme"]">
+	@foreach ( var i in (IEnumerable<string>)ViewData["TellMessages"] ) {
+		<p class="mb-1">
+			@switch ( (BulletIcon)ViewData["BulletIcon"] ) {
+				default:
+				case BulletIcon.None:
+					break;
+				case BulletIcon.Caret:
+					<i class="fa fa-caret-right mr-2"></i>
+					break;
+				case BulletIcon.Ok:
+					<i class="fa fa-check mr-2"></i>
+					break;
+				case BulletIcon.Error:
+					<i class="fa fa-times-circle mr-2"></i>
+					break;
+			}
+			@Html.Raw(i)
+		</p>
+	}
+</div>
+
+@if ( (bool)ViewData["ModalDismissButton"] ) {
+	@Html.ModalFooter(SaveButtonState.NotHave)
+}

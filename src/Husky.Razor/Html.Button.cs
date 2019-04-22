@@ -12,9 +12,9 @@ namespace Husky.Razor
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent Button(this IHtmlHelper helper, ButtonType type, string buttonFace, object htmlAttributes = null) {
+		public static IHtmlContent Button(this IHtmlHelper helper, ButtonType buttonType, string buttonFace, object htmlAttributes = null) {
 			var button = new TagBuilder("button");
-			button.Attributes.Add("type", type.ToLower());
+			button.Attributes.Add("type", buttonType.ToLower());
 
 			if ( htmlAttributes != null ) {
 				var props = htmlAttributes.GetType().GetProperties();
