@@ -57,7 +57,7 @@ namespace Husky.Razor
 				inputTag.AddCssClass("custom-control-input");
 				inputTag.Attributes.Add("type", boxType.ToLabel());
 				inputTag.Attributes.Add("id", "_" + Crypto.RandomString());
-				inputTag.Attributes.Add("name", expression.Body.ToString().Right("."));
+				inputTag.Attributes.Add("name", helper.NameFor(expression));
 				inputTag.Attributes.Add("value", item.Value);
 				if ( item.Selected ) {
 					inputTag.Attributes.Add("checked", "checked");
