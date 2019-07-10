@@ -14,13 +14,6 @@ namespace Husky.AliyunSms
 
 		private readonly AliyunSmsSettings _settings;
 
-		public async Task SendAsync(string twoFactorCode, params string[] mobileNumbers) {
-			await SendAsync(
-				new AliyunSmsArgument { code = twoFactorCode },
-				mobileNumbers
-			);
-		}
-
 		public async Task SendAsync(AliyunSmsArgument argument, params string[] mobileNumbers) {
 			if ( mobileNumbers == null || mobileNumbers.Length == 0 ) {
 				return;
@@ -28,9 +21,9 @@ namespace Husky.AliyunSms
 
 			var request = new SendSmsRequest {
 				PhoneNumbers = string.Join(",", mobileNumbers),
-				SignName = _settings.SignName,
-				TemplateCode = _settings.TemplateCode,
-				TemplateParam = JsonConvert.SerializeObject(argument)
+				SignName = argument.SignName ?? _settings.DefaultSignName,
+				TemplateCode = argument.TemplateCode ?? _settings.DefaultTemplateCode,
+				TemplateParam = JsonConvert.SerializeObject(argument.Parameters)
 			};
 
 			var endPointRegion = "cn-hangzhou";

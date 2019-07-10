@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.AliyunSms;
@@ -22,7 +23,7 @@ namespace Husky.TwoFactor
 		private readonly AliyunSmsSender _aliyunSmsSender;
 		//private readonly IMailSender _mailSender;
 
-		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string messageTemplateWithCodeAsArg0 = null) {
+		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string templateCode = null, string signName = null, string messageTemplateWithCodeAsArg0 = null) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}
@@ -47,7 +48,14 @@ namespace Husky.TwoFactor
 				//await _mailSender.SendAsync("动态验证码", content, emailOrMobile);
 			}
 			else if ( isMobile ) {
-				await _aliyunSmsSender.SendAsync(code.Code, emailOrMobile);
+				var argument = new AliyunSmsArgument {
+					SignName = signName,
+					TemplateCode = templateCode,
+					Parameters = new Dictionary<string, string> {
+						{ "code", code.Code }
+					}
+				};
+				await _aliyunSmsSender.SendAsync(argument, emailOrMobile);
 			}
 			return new Success();
 		}
