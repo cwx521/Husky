@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Husky.AliyunSms;
 using Husky.Principal;
 using Husky.TwoFactor.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor
 {
@@ -33,6 +34,18 @@ namespace Husky.TwoFactor
 
 			if ( !isEmail && !isMobile ) {
 				return new Failure($"无法发送到 '{emailOrMobile}' ");
+			}
+
+			if ( isMobile ) {
+				var sentWithinMinute = _twoFactorDb.TwoFactorCodes
+					.AsNoTracking()
+					.Where(x => x.SentTo == emailOrMobile)
+					.Select(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
+					.Any();
+
+				if ( sentWithinMinute ) {
+					return new Failure("请求过于频繁");
+				}
 			}
 
 			var code = new TwoFactorCode {
