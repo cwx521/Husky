@@ -23,7 +23,7 @@ namespace Husky
 		}
 
 		private static string[] GetMultipleLabels(this Enum value, bool useDescription) {
-			var fieldNames = value.ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			var fieldNames = value.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			var results = new List<string>();
 
 			foreach ( var i in fieldNames ) {
