@@ -9,18 +9,12 @@
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Z.EntityFramework.Plus.Audit.EFCore" Version="1.8.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
+    <ProjectReference Include="..\Husky.Principal\Husky.Principal.csproj" />
   </ItemGroup>
 
 </Project>

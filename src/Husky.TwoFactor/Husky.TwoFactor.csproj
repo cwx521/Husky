@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>2.1.6.30811</Version>
-    <AssemblyVersion>2.1.6.30811</AssemblyVersion>
-    <FileVersion>2.1.6.30811</FileVersion>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Version>2.2.7.30811</Version>
+    <AssemblyVersion>2.2.7.30811</AssemblyVersion>
+    <FileVersion>2.2.7.30811</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>
@@ -13,6 +13,10 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Husky.AliyunSms\Husky.AliyunSms.csproj" />

@@ -56,7 +56,7 @@ namespace Husky.KeyValues
 			return defaultValueIfNotExist;
 		}
 
-		private void AddOrUpdate<T>(string key, T value) {
+		public void AddOrUpdate<T>(string key, T value) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}

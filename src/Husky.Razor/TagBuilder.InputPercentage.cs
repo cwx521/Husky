@@ -23,7 +23,9 @@ namespace Husky.Razor
 				var result = new HtmlContentBuilder();
 				result.AppendHtml("<div class='input-group input-group-percentage'>");
 				result.AppendHtml(ctl);
-				result.AppendHtml("  <div class='input-group-addon'>%</div>");
+				result.AppendHtml("  <div class='input-group-append'>");
+				result.AppendHtml("		<div class='input-group-text'>%</div>");
+				result.AppendHtml("  </div>");
 				result.AppendHtml("</div>");
 				result.AppendHtml(hidden);
 

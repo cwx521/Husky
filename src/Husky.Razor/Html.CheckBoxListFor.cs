@@ -33,11 +33,6 @@ namespace Husky.Razor
 			}
 			var selectListItems = helper.GetEnumSelectList(enumType);
 
-			//hack the specific enum type 'YesNo', want to put Yes before No. 
-			if ( enumType == typeof(YesNo) ) {
-				selectListItems = selectListItems.Reverse();
-			}
-
 			if ( helper.ViewData.Model != null ) {
 				try {
 					var value = expression.Compile().Invoke(helper.ViewData.Model);

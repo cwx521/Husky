@@ -6,18 +6,18 @@ namespace Husky.Razor
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent Prop(this IHtmlContent tagBuilder, string tagPropName, object tagPropValue) {
+		public static IHtmlContent Prop(this IHtmlContent tagBuilder, string propName, object propValue) {
 			if ( tagBuilder == null ) {
 				return null;
 			}
 			if ( tagBuilder is TagBuilder ctl ) {
 				ctl.BeautifyTextBoxOrDropDown();
 
-				if ( tagPropValue == null ) {
-					ctl.Attributes.Remove(tagPropName);
+				if ( propValue == null ) {
+					ctl.Attributes.Remove(propName);
 				}
 				else {
-					ctl.MergeAttribute(tagPropName, tagPropValue?.ToString());
+					ctl.MergeAttribute(propName, propValue?.ToString());
 				}
 				return ctl;
 			}

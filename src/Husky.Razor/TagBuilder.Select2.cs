@@ -16,7 +16,7 @@ namespace Husky.Razor
 			return enableMultiple ? tagBuilder.Prop("data-multiple", "true") : tagBuilder;
 		}
 
-		public static IHtmlContent DeferFilter(this IHtmlContent tagBuilder, string dataSourceUrl) {
+		public static IHtmlContent DeferLoadFrom(this IHtmlContent tagBuilder, string dataSourceUrl) {
 			return tagBuilder.Prop("data-src", dataSourceUrl);
 		}
 	}

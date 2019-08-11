@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Version>2.2.23.30517</Version>
+    <AssemblyVersion>2.2.23.30517</AssemblyVersion>
+    <FileVersion>2.2.23.30517</FileVersion>
+    <Company></Company>
+    <Authors>chenwx521@hotmail.com</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
+  </ItemGroup>
+
+</Project>
