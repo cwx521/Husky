@@ -66,7 +66,12 @@ namespace Husky.TwoFactor
 				.Take(1)
 				.FirstOrDefault();
 
-			if ( record == null || string.Compare(model.Code, record.Code, true) != 0 ) {
+			if ( record == null ) {
+				return new Failure("验证码输入错误");
+			}
+			if ( record.ErrorTimes > 10 || string.Compare(model.Code, record.Code, true) != 0 ) {
+				record.ErrorTimes++;
+				await _twoFactorDb.SaveChangesAsync();
 				return new Failure("验证码输入错误");
 			}
 			if ( setIntoUsedAfterVerifying ) {

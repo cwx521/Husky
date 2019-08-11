@@ -11,7 +11,7 @@ using System;
 namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20180125112249_Init_TwoFactor")]
+    [Migration("20190811112249_Init_TwoFactor")]
     partial class Init_TwoFactor
 	{
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,9 @@ namespace Husky.TwoFactor.Data.Migrations
 
                     b.Property<DateTime>("CreatedTime");
 
-                    b.Property<bool>("IsUsed");
+					b.Property<int>("ErrorTimes");
+
+					b.Property<bool>("IsUsed");
 
                     b.Property<string>("SentTo")
                         .HasColumnType("varchar(50)");

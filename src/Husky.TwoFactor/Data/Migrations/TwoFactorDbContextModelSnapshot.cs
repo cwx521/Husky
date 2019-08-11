@@ -30,6 +30,8 @@ namespace Husky.TwoFactor.Data.Migrations
 
                     b.Property<DateTime>("CreatedTime");
 
+					b.Property<int>("ErrorTimes");
+
                     b.Property<bool>("IsUsed");
 
                     b.Property<string>("SentTo")
