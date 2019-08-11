@@ -18,6 +18,8 @@ namespace Husky.TwoFactor.Data
 		[Column(TypeName = "varchar(8)")]
 		public string Code { get; set; }
 
+		public int ErrorTimes { get; set; }
+
 		public bool IsUsed { get; set; }
 
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
