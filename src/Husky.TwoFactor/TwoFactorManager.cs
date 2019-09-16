@@ -40,7 +40,7 @@ namespace Husky.TwoFactor
 				var sentWithinMinute = _twoFactorDb.TwoFactorCodes
 					.AsNoTracking()
 					.Where(x => x.SentTo == emailOrMobile)
-					.Select(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
+					.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
 					.Any();
 
 				if ( sentWithinMinute ) {
