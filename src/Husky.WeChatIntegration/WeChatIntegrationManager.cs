@@ -73,7 +73,7 @@ namespace Husky.WeChatIntegration
 			return GetUserInfo(token.OpenId, token.AccessToken);
 		}
 		public WeChatUserInfo GetUserInfo(string openId, string accessToken) {
-			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}";
+			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
