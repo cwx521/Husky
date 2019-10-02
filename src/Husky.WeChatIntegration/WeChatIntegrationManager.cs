@@ -22,15 +22,17 @@ namespace Husky.WeChatIntegration
 			var html = @"<div id='" + targetElementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
 				<script type='text/javascript'>
-					var obj = new WxLogin({
-						self_redirect: true,
-						scope: 'snsapi_login',
-						id: '" + targetElementId + @"',
-						appid: '" + _settings.AppId + @"',
-						redirect_uri: '" + redirectUri + @"',
-						state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
-						href: '" + styleSheetUrl + @"',
-						style: ''
+					$(function () {
+						var obj = new WxLogin({
+							self_redirect: true,
+							scope: 'snsapi_login',
+							id: '" + targetElementId + @"',
+							appid: '" + _settings.AppId + @"',
+							redirect_uri: '" + redirectUri + @"',
+							state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
+							href: '" + styleSheetUrl + @"',
+							style: ''
+						});
 					});
 				</script>";
 			return new HtmlString(html);
