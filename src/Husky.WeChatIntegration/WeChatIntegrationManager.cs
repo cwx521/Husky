@@ -14,26 +14,31 @@ namespace Husky.WeChatIntegration
 			_http = http.HttpContext;
 		}
 
-		private WeChatOpenPlatformSettings _settings;
-		private HttpContext _http;
+		private readonly WeChatOpenPlatformSettings _settings;
+		private readonly HttpContext _http;
 
 		public HtmlString RenderLoginQrCode(string redirectUri, string styleSheetUrl) {
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
 				<script type='text/javascript'>
-					$(function () {
-						var obj = new WxLogin({
-							self_redirect: true,
-							scope: 'snsapi_login',
-							id: '" + targetElementId + @"',
-							appid: '" + _settings.AppId + @"',
-							redirect_uri: '" + redirectUri + @"',
-							state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
-							href: '" + styleSheetUrl + @"',
-							style: ''
-						});
-					});
+					(function loadWxLogin() {
+						if (typeof WxLogin !== 'function') {			
+							setTimeout(loadWxLogin, 50);	
+						}
+						else {
+							var obj = new WxLogin({
+								self_redirect: false,
+								scope: 'snsapi_login',
+								id: '" + targetElementId + @"',
+								appid: '" + _settings.AppId + @"',
+								redirect_uri: '" + redirectUri + @"',
+								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
+								href: '" + styleSheetUrl + @"',
+								style: ''
+							});
+						}		
+					})();
 				</script>";
 			return new HtmlString(html);
 		}
