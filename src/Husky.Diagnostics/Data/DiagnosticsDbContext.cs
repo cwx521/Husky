@@ -10,7 +10,7 @@ namespace Husky.Diagnostics.Data
 		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).ForSqlServerIsClustered(false);
+			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).IsClustered(false);
 		}
 	}
 }
