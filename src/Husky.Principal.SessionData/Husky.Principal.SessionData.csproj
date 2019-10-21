@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <RootNamespace>Husky.Principal</RootNamespace>
-    <Version>2.2.6.30423</Version>
-    <AssemblyVersion>2.2.6.30423</AssemblyVersion>
-    <FileVersion>2.2.6.30423</FileVersion>
+    <Version>3.0.7.31021</Version>
+    <AssemblyVersion>3.0.7.31021</AssemblyVersion>
+    <FileVersion>3.0.7.31021</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>
@@ -14,10 +14,6 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Husky.Principal\Husky.Principal.csproj" />

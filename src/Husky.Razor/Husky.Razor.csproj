@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <Version>2.2.23.30517</Version>
-    <AssemblyVersion>2.2.23.30517</AssemblyVersion>
-    <FileVersion>2.2.23.30517</FileVersion>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Version>3.0.24.31021</Version>
+    <AssemblyVersion>3.0.24.31021</AssemblyVersion>
+    <FileVersion>3.0.24.31021</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +16,7 @@ namespace Husky.WeChatIntegration
 		private readonly WeChatOpenPlatformSettings _settings;
 		private readonly HttpContext _http;
 
-		public HtmlString RenderLoginQrCode(string redirectUri, string styleSheetUrl) {
+		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl) {
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
@@ -40,7 +39,7 @@ namespace Husky.WeChatIntegration
 						}		
 					})();
 				</script>";
-			return new HtmlString(html);
+			return html;
 		}
 
 		public WeChatAccessToken GetAccessToken(string code) {
