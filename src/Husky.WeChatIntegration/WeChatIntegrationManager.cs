@@ -44,14 +44,14 @@ namespace Husky.WeChatIntegration
 			return html;
 		}
 
-		public string CreateMpAutoLoginWrappedUrl(string redirectUrl, WeChatOpenPlatformSettings overrideSettings = null) {
+		public string CreateMpAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatOpenPlatformSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
 				   $"?appid={settings.AppId}" +
 				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
 				   $"&response_type=code" +
-				   $"&scope=SCOPE" +
-				   $"&state=STATE" +
+				   $"&scope={scope}" +
+				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"))}" +
 				   $"#wechat_redirect";
 		}
 
