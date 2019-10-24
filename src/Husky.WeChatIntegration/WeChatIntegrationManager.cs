@@ -98,7 +98,7 @@ namespace Husky.WeChatIntegration
 					OpenId = d.openid,
 					UnionId = d.unionid,
 					NickName = d.nickname,
-					Sex = d.sex == 2 ? Sex.Male : Sex.Female,
+					Sex = d.sex == 2 ? Sex.Female : Sex.Male,
 					Province = d.province,
 					City = d.city,
 					Country = d.country,
