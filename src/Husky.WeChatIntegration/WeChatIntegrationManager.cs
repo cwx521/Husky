@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -9,14 +10,15 @@ namespace Husky.WeChatIntegration
 	public class WeChatIntegrationManager
 	{
 		public WeChatIntegrationManager(WeChatOpenPlatformSettings settings, IHttpContextAccessor http) {
-			_settings = settings;
 			_http = http.HttpContext;
+			Settings = settings;
 		}
 
-		private readonly WeChatOpenPlatformSettings _settings;
 		private readonly HttpContext _http;
+		public WeChatOpenPlatformSettings Settings { get; private set; }
 
-		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl) {
+		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatOpenPlatformSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
@@ -30,7 +32,7 @@ namespace Husky.WeChatIntegration
 								self_redirect: false,
 								scope: 'snsapi_login',
 								id: '" + targetElementId + @"',
-								appid: '" + _settings.AppId + @"',
+								appid: '" + Settings.AppId + @"',
 								redirect_uri: '" + redirectUri + @"',
 								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
 								href: '" + styleSheetUrl + @"',
@@ -42,14 +44,27 @@ namespace Husky.WeChatIntegration
 			return html;
 		}
 
-		public WeChatAccessToken GetAccessToken(string code) {
+		public string CreateMpAutoLoginWrappedUrl(string redirectUrl, WeChatOpenPlatformSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
+				   $"?appid={settings.AppId}" +
+				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
+				   $"&response_type=code" +
+				   $"&scope=SCOPE" +
+				   $"&state=STATE" +
+				   $"#wechat_redirect";
+		}
+
+		public WeChatAccessToken GetAccessToken(string code, WeChatOpenPlatformSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
-					  $"?appid={_settings.AppId}&secret={_settings.AppSecret}&code={code}&grant_type=authorization_code";
+					  $"?appid={settings.AppId}&secret={settings.AppSecret}&code={code}&grant_type=authorization_code";
 			return GetAccessTokenFromResolvedUrl(url);
 		}
-		public WeChatAccessToken RefreshAccessToken(string refreshToken) {
+		public WeChatAccessToken RefreshAccessToken(string refreshToken, WeChatOpenPlatformSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
-					  $"?appid={_settings.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
+					  $"?appid={settings.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
 			return GetAccessTokenFromResolvedUrl(url);
 		}
 		private WeChatAccessToken GetAccessTokenFromResolvedUrl(string url) {
