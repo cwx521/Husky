@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace Husky.WeChatIntegration
 {
 	public class WeChatIntegrationManager
 	{
-		public WeChatIntegrationManager(WeChatOpenPlatformSettings settings, IHttpContextAccessor http) {
-			_http = http.HttpContext;
+		public WeChatIntegrationManager(WeChatAppSettings settings, IHttpContextAccessor http, IMemoryCache cache) {
 			Settings = settings;
+			_http = http.HttpContext;
+			_cache = cache;
 		}
 
 		private readonly HttpContext _http;
-		public WeChatOpenPlatformSettings Settings { get; private set; }
+		private readonly IMemoryCache _cache;
 
-		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatOpenPlatformSettings overrideSettings = null) {
+		public WeChatAppSettings Settings { get; private set; }
+
+		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
@@ -44,7 +49,7 @@ namespace Husky.WeChatIntegration
 			return html;
 		}
 
-		public string CreateMpAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatOpenPlatformSettings overrideSettings = null) {
+		public string CreateMpAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
 				   $"?appid={settings.AppId}" +
@@ -55,19 +60,19 @@ namespace Husky.WeChatIntegration
 				   $"#wechat_redirect";
 		}
 
-		public WeChatAccessToken GetAccessToken(string code, WeChatOpenPlatformSettings overrideSettings = null) {
+		public WeChatUserAccessToken GetUserAccessToken(string code, WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
 					  $"?appid={settings.AppId}&secret={settings.AppSecret}&code={code}&grant_type=authorization_code";
-			return GetAccessTokenFromResolvedUrl(url);
+			return GetUserAccessTokenFromResolvedUrl(url);
 		}
-		public WeChatAccessToken RefreshAccessToken(string refreshToken, WeChatOpenPlatformSettings overrideSettings = null) {
+		public WeChatUserAccessToken RefreshUserAccessToken(string refreshToken, WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
 					  $"?appid={settings.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
-			return GetAccessTokenFromResolvedUrl(url);
+			return GetUserAccessTokenFromResolvedUrl(url);
 		}
-		private WeChatAccessToken GetAccessTokenFromResolvedUrl(string url) {
+		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url) {
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
@@ -75,7 +80,7 @@ namespace Husky.WeChatIntegration
 				if ( d.access_token == null ) {
 					return null;
 				}
-				return new WeChatAccessToken {
+				return new WeChatUserAccessToken {
 					AccessToken = d.access_token,
 					RefreshToken = d.refresh_token,
 					OpenId = d.openid
@@ -83,7 +88,10 @@ namespace Husky.WeChatIntegration
 			}
 		}
 
-		public WeChatUserInfo GetUserInfo(WeChatAccessToken token) {
+		public WeChatUserInfo GetUserInfo(string code, WeChatAppSettings overrideSettings = null) {
+			return GetUserInfo(GetUserAccessToken(code, overrideSettings));
+		}
+		public WeChatUserInfo GetUserInfo(WeChatUserAccessToken token) {
 			return GetUserInfo(token.OpenId, token.AccessToken);
 		}
 		public WeChatUserInfo GetUserInfo(string openId, string accessToken) {
@@ -105,6 +113,58 @@ namespace Husky.WeChatIntegration
 					HeadImageUrl = d.headimgurl
 				};
 			}
+		}
+
+		public WeChatGeneralAccessToken GetGeneralAccessToken(WeChatAppSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			return _cache.GetOrCreate(settings.AppId + nameof(GetGeneralAccessToken), entry => {
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7150));
+				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
+					  $"?grant_type=client_credential" +
+					  $"&appid={settings.AppId}" +
+					  $"&secret={settings.AppSecret}";
+				using ( var client = new WebClient() ) {
+					var json = client.DownloadString(url);
+					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					return new WeChatGeneralAccessToken {
+						AccessToken = d.access_token
+					};
+				}
+			});
+		}
+
+		public string GetJsapiTicket(WeChatAppSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			return _cache.GetOrCreate(settings.AppId + nameof(GetJsapiTicket), entry => {
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7150));
+				var accessToken = GetGeneralAccessToken(overrideSettings);
+				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
+				using ( var client = new WebClient() ) {
+					var json = client.DownloadString(url);
+					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					return d.ticket;
+				}
+			});
+		}
+
+		public WeChatJsapiConfig BuildWeChatJsapiConfig(WeChatAppSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			var config = new WeChatJsapiConfig {
+				AppId = settings.AppId,
+				Ticket = GetJsapiTicket(overrideSettings),
+				NonceStr = Crypto.RandomString(16),
+				Timestamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000
+			};
+
+			var sb = new StringBuilder();
+			sb.Append("jsapi_ticket=" + config.Ticket);
+			sb.Append("&noncestr=" + config.NonceStr);
+			sb.Append("&timestamp=" + config.Timestamp.ToString());
+			sb.Append("&url=" + _http.Request.UrlBase() + _http.Request.Url());
+
+			config.RawString = sb.ToString();
+			config.Signature = Crypto.SHA1(config.RawString);
+			return config;
 		}
 	}
 }
