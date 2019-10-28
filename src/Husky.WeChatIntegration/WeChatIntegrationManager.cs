@@ -182,7 +182,7 @@ namespace Husky.WeChatIntegration
 					"chooseImage"
 				};
 			}
-			return @"<script type='text/javascript' src='http://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+			return @"<script type='text/javascript' src='https://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 				<script type='text/javascript'>
 					function loadWeChatConfig() {
 						if (typeof(wx) == undefined) {
