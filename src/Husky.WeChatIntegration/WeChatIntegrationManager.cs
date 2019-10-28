@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
@@ -166,5 +167,40 @@ namespace Husky.WeChatIntegration
 			config.Signature = Crypto.SHA1(config.RawString);
 			return config;
 		}
+
+		public string CreateWeChatJsapiConfigScript(params string[] jsApiList) {
+			var cfg = BuildWeChatJsapiConfig();
+			if ( jsApiList == null || jsApiList.Length == 0 ) {
+				jsApiList = new[] {
+					"updateAppMessageShareData",
+					"updateTimelineShareData",
+					"openLocation",
+					"getLocation",
+					"scanQRCode",
+					"chooseWXPay",
+					"getNetworkType",
+					"chooseImage"
+				};
+			}
+			return @"<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
+				<script type='text/javascript'>
+					function loadWeChatConfig() {
+						if (typeof(wx) == undefined) {
+							setTimeout(loadWeChatConfig, 50);
+						}
+						else {
+							wx.config({
+								debug: false,
+								appId: '" + cfg.AppId + @"',
+								timestamp: " + cfg.Timestamp + @",
+								nonceStr: '" + cfg.NonceStr + @"',
+								signature: '" + cfg.Signature + @"',
+								jsApiList: [" + string.Join(',', jsApiList.Select(x => $"'{x}'")) + @"]
+							});
+						}
+					}
+					setTimeout(loadWeChatConfig, 50);
+				</script>";
+		} 
 	}
 }
