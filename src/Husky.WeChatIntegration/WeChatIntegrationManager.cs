@@ -119,7 +119,7 @@ namespace Husky.WeChatIntegration
 		public WeChatGeneralAccessToken GetGeneralAccessToken(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetGeneralAccessToken), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7150));
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(2400));
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
 					  $"&appid={settings.AppId}" +
@@ -137,7 +137,7 @@ namespace Husky.WeChatIntegration
 		public string GetJsapiTicket(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetJsapiTicket), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7150));
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(2400));
 				var accessToken = GetGeneralAccessToken(overrideSettings);
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 				using ( var client = new WebClient() ) {
@@ -152,9 +152,9 @@ namespace Husky.WeChatIntegration
 			var settings = overrideSettings ?? Settings;
 			var config = new WeChatJsapiConfig {
 				AppId = settings.AppId,
-				Ticket = GetJsapiTicket(overrideSettings),
 				NonceStr = Crypto.RandomString(16),
-				Timestamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000
+				Timestamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000,
+				Ticket = GetJsapiTicket(overrideSettings),
 			};
 
 			var sb = new StringBuilder();
@@ -182,7 +182,7 @@ namespace Husky.WeChatIntegration
 					"chooseImage"
 				};
 			}
-			return @"<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
+			return @"<script type='text/javascript' src='http://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 				<script type='text/javascript'>
 					function loadWeChatConfig() {
 						if (typeof(wx) == undefined) {
