@@ -64,33 +64,28 @@ namespace Husky.WeChatIntegration
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
 					  $"?appid={settings.AppId}&secret={settings.AppSecret}&code={code}&grant_type=authorization_code";
-			return GetUserAccessTokenFromResolvedUrl(url, overrideSettings);
+			return GetUserAccessTokenFromResolvedUrl(url);
 		}
 		public WeChatUserAccessToken RefreshUserAccessToken(string refreshToken, WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
 					  $"?appid={settings.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
-			return GetUserAccessTokenFromResolvedUrl(url, overrideSettings);
+			return GetUserAccessTokenFromResolvedUrl(url);
 		}
-		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url, WeChatAppSettings overrideSettings = null) {
-			var settings = overrideSettings ?? Settings;
-			return _cache.GetOrCreate(settings.AppId + nameof(GetUserAccessTokenFromResolvedUrl), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
+		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url) {
+			using ( var client = new WebClient() ) {
+				var json = client.DownloadString(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-				using ( var client = new WebClient() ) {
-					var json = client.DownloadString(url);
-					var d = JsonConvert.DeserializeObject<dynamic>(json);
-
-					if ( d.access_token == null ) {
-						return null;
-					}
-					return new WeChatUserAccessToken {
-						AccessToken = d.access_token,
-						RefreshToken = d.refresh_token,
-						OpenId = d.openid
-					};
+				if ( d.access_token == null ) {
+					return null;
 				}
-			});
+				return new WeChatUserAccessToken {
+					AccessToken = d.access_token,
+					RefreshToken = d.refresh_token,
+					OpenId = d.openid
+				};
+			}
 		}
 
 		public WeChatUserInfo GetUserInfo(string code, WeChatAppSettings overrideSettings = null) {
