@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -65,28 +64,33 @@ namespace Husky.WeChatIntegration
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
 					  $"?appid={settings.AppId}&secret={settings.AppSecret}&code={code}&grant_type=authorization_code";
-			return GetUserAccessTokenFromResolvedUrl(url);
+			return GetUserAccessTokenFromResolvedUrl(url, overrideSettings);
 		}
 		public WeChatUserAccessToken RefreshUserAccessToken(string refreshToken, WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
 					  $"?appid={settings.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
-			return GetUserAccessTokenFromResolvedUrl(url);
+			return GetUserAccessTokenFromResolvedUrl(url, overrideSettings);
 		}
-		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url) {
-			using ( var client = new WebClient() ) {
-				var json = client.DownloadString(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url, WeChatAppSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			return _cache.GetOrCreate(settings.AppId + nameof(GetUserAccessTokenFromResolvedUrl), entry => {
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
 
-				if ( d.access_token == null ) {
-					return null;
+				using ( var client = new WebClient() ) {
+					var json = client.DownloadString(url);
+					var d = JsonConvert.DeserializeObject<dynamic>(json);
+
+					if ( d.access_token == null ) {
+						return null;
+					}
+					return new WeChatUserAccessToken {
+						AccessToken = d.access_token,
+						RefreshToken = d.refresh_token,
+						OpenId = d.openid
+					};
 				}
-				return new WeChatUserAccessToken {
-					AccessToken = d.access_token,
-					RefreshToken = d.refresh_token,
-					OpenId = d.openid
-				};
-			}
+			});
 		}
 
 		public WeChatUserInfo GetUserInfo(string code, WeChatAppSettings overrideSettings = null) {
@@ -119,7 +123,8 @@ namespace Husky.WeChatIntegration
 		public WeChatGeneralAccessToken GetGeneralAccessToken(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetGeneralAccessToken), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(2400));
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
+
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
 					  $"&appid={settings.AppId}" +
@@ -137,7 +142,8 @@ namespace Husky.WeChatIntegration
 		public string GetJsapiTicket(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetJsapiTicket), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(2400));
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
+
 				var accessToken = GetGeneralAccessToken(overrideSettings);
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 				using ( var client = new WebClient() ) {
@@ -161,7 +167,7 @@ namespace Husky.WeChatIntegration
 			sb.Append("jsapi_ticket=" + config.Ticket);
 			sb.Append("&noncestr=" + config.NonceStr);
 			sb.Append("&timestamp=" + config.Timestamp.ToString());
-			sb.Append("&url=" + _http.Request.UrlBase() + _http.Request.Url());
+			sb.Append("&url=" + _http.Request.FullUrl().Split('#').First());
 
 			config.RawString = sb.ToString();
 			config.Signature = Crypto.SHA1(config.RawString);
@@ -201,6 +207,6 @@ namespace Husky.WeChatIntegration
 					}
 					setTimeout(loadWeChatConfig, 50);
 				</script>";
-		} 
+		}
 	}
 }
