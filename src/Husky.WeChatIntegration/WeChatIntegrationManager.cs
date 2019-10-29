@@ -110,7 +110,7 @@ namespace Husky.WeChatIntegration
 					Province = d.province,
 					City = d.city,
 					Country = d.country,
-					HeadImageUrl = d.headimgurl
+					HeadImageUrl = ((string)d.headimgurl)?.Replace("http://", "https://")
 				};
 			}
 		}
@@ -118,17 +118,19 @@ namespace Husky.WeChatIntegration
 		public WeChatGeneralAccessToken GetGeneralAccessToken(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetGeneralAccessToken), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
 
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
 					  $"&appid={settings.AppId}" +
 					  $"&secret={settings.AppSecret}";
+
 				using ( var client = new WebClient() ) {
 					var json = client.DownloadString(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
 					return new WeChatGeneralAccessToken {
-						AccessToken = d.access_token
+						AccessToken = d.access_token,
+						ExpiresIn = d.expires_in
 					};
 				}
 			});
@@ -137,13 +139,14 @@ namespace Husky.WeChatIntegration
 		public string GetJsapiTicket(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetJsapiTicket), entry => {
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(7200));
 
 				var accessToken = GetGeneralAccessToken(overrideSettings);
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
+
 				using ( var client = new WebClient() ) {
 					var json = client.DownloadString(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
 					return d.ticket;
 				}
 			});
