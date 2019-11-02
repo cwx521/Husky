@@ -178,12 +178,16 @@ namespace Husky.WeChatIntegration
 				jsApiList = new[] {
 					"updateAppMessageShareData",
 					"updateTimelineShareData",
+					"onMenuShareAppMessage",
+					"onMenuShareTimeline",
 					"openLocation",
 					"getLocation",
 					"scanQRCode",
 					"chooseWXPay",
 					"getNetworkType",
-					"chooseImage"
+					"chooseImage",
+					"hideMenuItems",
+					"closeWindow"
 				};
 			}
 			return @"<script type='text/javascript' src='https://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
