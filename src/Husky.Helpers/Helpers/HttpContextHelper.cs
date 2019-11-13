@@ -8,12 +8,16 @@ namespace Husky
 			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
 
-		public static string Url(this HttpRequest request) {
-			return request.Path + request.QueryString.Value;
+		public static string SchemeAndHost(this HttpRequest request) {
+			return (request.IsHttps ? "https://" : "http://") + request.Host;
 		}
 
-		public static string UrlBase(this HttpRequest request) {
-			return (request.IsHttps ? "https://" : "http://") + request.Host;
+		public static string Url(this HttpRequest request) {
+			return request.PathBase + request.Path + request.QueryString.Value;
+		}
+
+		public static string FullUrl(this HttpRequest request) {
+			return request.SchemeAndHost() + request.Url();
 		}
 
 		public static string UserAgent(this HttpRequest request) {
