@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <RootNamespace>Husky</RootNamespace>
-    <Version>3.0.24.31029</Version>
-    <AssemblyVersion>3.0.24.31029</AssemblyVersion>
-    <FileVersion>3.0.24.31029</FileVersion>
+    <Version>3.0.25.31113</Version>
+    <AssemblyVersion>3.0.25.31113</AssemblyVersion>
+    <FileVersion>3.0.25.31113</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
   </PropertyGroup>

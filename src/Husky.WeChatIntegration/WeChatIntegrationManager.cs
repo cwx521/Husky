@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -209,6 +210,53 @@ namespace Husky.WeChatIntegration
 					}
 					setTimeout(loadWeChatConfig, 50);
 				</script>";
+		}
+
+		public WeChatJsapiPayParameter BuildWeChatJsapiPayParameter(string prepayId, WeChatAppSettings overrideSettings = null) {
+			var settings = overrideSettings ?? Settings;
+			var nonceStr = Crypto.RandomString(32);
+			var timeStamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000;
+
+			var sb = new StringBuilder();
+			sb.Append("appId=" + settings.AppId);
+			sb.Append("&nonceStr=" + nonceStr);
+			sb.Append("&package=prepay_id=" + prepayId);
+			sb.Append("&signType=MD5");
+			sb.Append("&timeStamp=" + timeStamp);
+			sb.Append("&key=" + settings.MerchantSecret);
+			var paySign = Crypto.MD5(sb.ToString()).ToUpper();
+
+			return new WeChatJsapiPayParameter {
+				timestamp = timeStamp,
+				nonceStr = nonceStr,
+				package = $"prepay_id={prepayId}",
+				signType = "MD5",
+				paySign = paySign
+			};
+		}
+
+		public string GetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters, string overrideMerchantSecret = null) {
+			var sb = new StringBuilder();
+
+			var orderedNames = parameters.Keys.OrderBy(x => x).ToArray();
+			foreach ( var name in orderedNames ) {
+				sb.Append(name + "=" + parameters[name] + "&");
+			}
+			sb.Append("key=" + overrideMerchantSecret ?? Settings.MerchantSecret);
+
+			var tobeSigned = sb.ToString();
+			parameters.Add("sign", Crypto.MD5(tobeSigned).ToUpper());
+
+			sb.Clear();
+			sb.Append("<xml>");
+			foreach ( var item in parameters ) {
+				sb.AppendFormat("<{0}>{1}</{0}>", item.Key, item.Value);
+			}
+			sb.Append("</xml>");
+			var xml = sb.ToString();
+
+			using var webClient = new WebClient();
+			return webClient.UploadString(wechatApiUrl, xml);
 		}
 	}
 }
