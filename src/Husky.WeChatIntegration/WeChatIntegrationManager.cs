@@ -137,6 +137,24 @@ namespace Husky.WeChatIntegration
 			});
 		}
 
+		public WeChatMiniProgramLoginResult MiniProgramLogin(string code, string wechatMiniProgramAppId, string wechatMiniProgramAppSecret) {
+			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
+					  $"?appid={wechatMiniProgramAppId}" +
+					  $"&secret={wechatMiniProgramAppSecret}" +
+					  $"&js_code={code}" +
+					  $"&grant_type=authorization_code";
+
+			using ( var client = new WebClient() ) {
+				var json = client.DownloadString(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				return new WeChatMiniProgramLoginResult {
+					OpenId = d.openid,
+					UnionId = d.unionid,
+					SessionKey = d.session_key
+				};
+			}
+		}
+
 		public string GetJsapiTicket(WeChatAppSettings overrideSettings = null) {
 			var settings = overrideSettings ?? Settings;
 			return _cache.GetOrCreate(settings.AppId + nameof(GetJsapiTicket), entry => {
