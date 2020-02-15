@@ -22,12 +22,17 @@ namespace Husky.Diagnostics
 				var userName = principal?.DisplayName ?? principal?.IdString ?? context.HttpContext.User?.Identity?.Name;
 				var userIp = context.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
+				var exception = context.Exception;
+				while ( exception.InnerException != null ) {
+					exception = exception.InnerException;
+				}
+
 				var log = new ExceptionLog {
 					HttpMethod = context.HttpContext.Request.Method,
-					ExceptionType = context.Exception.GetType().FullName,
-					Message = context.Exception.Message,
-					Source = context.Exception.Source,
-					StackTrace = context.Exception.StackTrace,
+					ExceptionType = exception.GetType().FullName,
+					Message = exception.Message,
+					Source = exception.Source,
+					StackTrace = exception.StackTrace,
 					Url = context.HttpContext.Request.GetDisplayUrl(),
 					UserIdString = userIdString,
 					UserName = userName,
