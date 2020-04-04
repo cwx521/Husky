@@ -205,6 +205,7 @@ namespace Husky.WeChatIntegration
 					"chooseWXPay",
 					"getNetworkType",
 					"chooseImage",
+					"previewImage",
 					"hideMenuItems",
 					"closeWindow"
 				};
