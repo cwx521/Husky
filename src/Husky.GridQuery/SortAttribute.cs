@@ -1,5 +1,4 @@
 ﻿using System;
-using Husky;
 
 namespace Husky.GridQuery
 {

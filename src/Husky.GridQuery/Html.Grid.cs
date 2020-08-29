@@ -20,12 +20,7 @@ namespace Husky.GridQuery
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static string GetGridCookieKey(this IPrincipalUser me, string dataSourceUrl, string forAction) {
-			return Crypto
-				.MD5(dataSourceUrl + "|" + forAction + me.IdString)
-				.Substring(6, 6);
-		}
-
+		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
 		public static IHtmlContent Grid(this IHtmlHelper helper, Type typeOfGridModel, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) {
 			var principal = helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
 			var requestCookies = helper.ViewContext.HttpContext.Request.Cookies;
@@ -64,7 +59,10 @@ namespace Husky.GridQuery
 			return new HtmlString(sb.ToString());
 		}
 
-		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
-
+		public static string GetGridCookieKey(this IPrincipalUser me, string dataSourceUrl, string forAction) {
+			return Crypto
+				.MD5(dataSourceUrl + "|" + forAction + me.IdString)
+				.Substring(6, 6);
+		}
 	}
 }

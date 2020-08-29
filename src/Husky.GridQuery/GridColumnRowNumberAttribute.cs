@@ -11,7 +11,7 @@ namespace Husky.GridQuery
 			Sortable = false;
 			Locked = true;
 			Title = " ";
-			CssClass = "rownumber text-muted-lighter text-11px bg-light text-right";
+			CssClass = "rownumber text-muted text-11px bg-light text-right";
 		}
 	}
 }

@@ -1,6 +1,4 @@
-﻿using Husky;
-
-namespace Husky.GridQuery
+﻿namespace Husky.GridQuery
 {
 	public enum QueryFilterComparison
 	{
@@ -23,16 +21,16 @@ namespace Husky.GridQuery
 	public static class QueryFilterComparisonEquality
 	{
 		public static Comparison Equality(this QueryFilterComparison comparison) {
-			switch ( comparison ) {
-				default:
-				case QueryFilterComparison.Eq: return Comparison.Equal;
-				case QueryFilterComparison.Neq: return Comparison.NotEqual;
-				case QueryFilterComparison.Contains: return Comparison.HasKeyword;
-				case QueryFilterComparison.Gt: return Comparison.GreaterThan;
-				case QueryFilterComparison.Gte: return Comparison.GreaterThanOrEqual;
-				case QueryFilterComparison.Lt: return Comparison.LessThan;
-				case QueryFilterComparison.Lte: return Comparison.LessThanOrEqual;
-			}
+			return comparison switch
+			{
+				QueryFilterComparison.Neq => Comparison.NotEqual,
+				QueryFilterComparison.Contains => Comparison.HasKeyword,
+				QueryFilterComparison.Gt => Comparison.GreaterThan,
+				QueryFilterComparison.Gte => Comparison.GreaterThanOrEqual,
+				QueryFilterComparison.Lt => Comparison.LessThan,
+				QueryFilterComparison.Lte => Comparison.LessThanOrEqual,
+				_ => Comparison.Equal,
+			};
 		}
 	}
 }
