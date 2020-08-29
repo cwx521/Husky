@@ -20,12 +20,6 @@ namespace Husky.Tests
 		}
 
 		[TestMethod()]
-		public void EmptyOrWhiteSpaceAsNullTest() {
-			Assert.AreEqual(StringCast.EmptyOrWhiteSpaceAsNull(" "), null);
-			Assert.AreEqual(StringCast.EmptyOrWhiteSpaceAsNull(@"\s\t\r\n"), null);
-		}
-
-		[TestMethod()]
 		public void AsIntTest() {
 			Assert.AreEqual(StringCast.AsInt("123"), 123);
 			Assert.AreEqual(StringCast.AsInt("abc", 123), 123);
@@ -69,7 +63,7 @@ namespace Husky.Tests
 			Assert.AreEqual(StringCast.As("abc", true), true);
 
 			var dt = DateTime.Now;
-			Assert.AreEqual(StringCast.As<DateTime>(dt.ToString()), dt);
+			Assert.AreEqual(StringCast.As<DateTime>(dt.ToString()).ToString(), dt.ToString());
 			var ts = TimeSpan.FromSeconds(120);
 			Assert.AreEqual(StringCast.As<TimeSpan>(ts.ToString()), ts);
 			var g = Guid.NewGuid();

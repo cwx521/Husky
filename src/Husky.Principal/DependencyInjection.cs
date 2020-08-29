@@ -4,11 +4,11 @@ using Husky.Principal.Implements;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDependencyInjectionHub AddPrincipal(this HuskyDependencyInjectionHub husky, IdType idType, IdentityCarrier carrier, IdentityOptions options = null) {
+		public static HuskyDI AddPrincipal(this HuskyDI husky, IdType idType, IdentityCarrier carrier, IdentityOptions options = null) {
 			var key = typeof(IPrincipalUser).FullName;
 
 			husky.Services

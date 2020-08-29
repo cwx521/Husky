@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDependencyInjectionHub AddWeChatIntegration(this HuskyDependencyInjectionHub husky, WeChatAppSettings settings) {
+		public static HuskyDI AddWeChatIntegration(this HuskyDI husky, WeChatAppSettings settings) {
 			husky.Services.AddScoped(svc =>
 				new WeChatIntegrationManager(
 					settings,

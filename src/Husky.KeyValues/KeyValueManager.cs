@@ -22,10 +22,9 @@ namespace Husky.KeyValues
 		private readonly IMemoryCache _cache;
 
 		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
-			using ( var scope = _svc.CreateScope() ) {
-				var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
-				return db.KeyValues.AsNoTracking().ToList();
-			}
+			using var scope = _svc.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			return db.KeyValues.AsNoTracking().ToList();
 		});
 		private KeyValue Find(string key) => Items.Find(x => x.Key == key);
 
@@ -81,17 +80,16 @@ namespace Husky.KeyValues
 		public void Reload() => _cache.Remove(_cacheKey);
 
 		public void SaveChanges() {
-			using ( var scope = _svc.CreateScope() ) {
-				var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
-				var fromDb = db.KeyValues.ToList();
-				var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
+			using var scope = _svc.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			var fromDb = db.KeyValues.ToList();
+			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
-				fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
-				fromDb.ForEach(x => x.Value = GetString(x.Key));
-				db.AddRange(added);
+			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
+			fromDb.ForEach(x => x.Value = GetString(x.Key));
+			db.AddRange(added);
 
-				db.SaveChanges();
-			}
+			db.SaveChanges();
 		}
 	}
 }

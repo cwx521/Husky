@@ -3,20 +3,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
 		private static bool migrated = false;
 
-		public static HuskyDependencyInjectionHub AddDiagnostics(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
+		public static HuskyDI AddDiagnostics(this HuskyDI husky, string nameOfConnectionString = null) {
 			husky.Services.AddDbContextPool<DiagnosticsDbContext>((svc, builder) => {
 				var config = svc.GetRequiredService<IConfiguration>();
 				var connstr = config.SeekConnectionString<DiagnosticsDbContext>(nameOfConnectionString);
 				builder.UseSqlServer(connstr);
 
 				if ( !migrated ) {
-					builder.Migrate();
+					builder.CreateDbContext().Database.Migrate();
 					migrated = true;
 				}
 			});

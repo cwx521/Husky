@@ -22,9 +22,6 @@ namespace Husky
 		public static bool IsUrl(this string str) {
 			return str != null && str.Length >= 6 && Uri.IsWellFormedUriString(str, UriKind.Absolute);
 		}
-		public static bool IsVolumePath(this string str) {
-			return str != null && str.Length >= 3 && str.Contains(":");
-		}
 		public static bool IsEmail(this string str) {
 			return str != null && str.Length >= 6 && Regex.IsMatch(str, EmailRegexPattern);
 		}

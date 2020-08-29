@@ -1,11 +1,11 @@
 ﻿using Husky.AliyunSms;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDependencyInjectionHub AddAliyunSms(this HuskyDependencyInjectionHub husky, AliyunSmsSettings settings) {
+		public static HuskyDI AddAliyunSms(this HuskyDI husky, AliyunSmsSettings settings) {
 			husky.Services.AddSingleton(new AliyunSmsSender(settings));
 			return husky;
 		}

@@ -9,7 +9,6 @@ namespace Husky
 	{
 		public static string NullAsEmpty(this string str) => str ?? "";
 		public static string EmptyAsNull(this string str) => string.IsNullOrEmpty(str) ? null : str;
-		public static string EmptyOrWhiteSpaceAsNull(this string str) => string.IsNullOrWhiteSpace(str) ? null : str;
 
 		public static int AsInt(this string str, int defaultValue = 0) {
 			return int.TryParse(str, out var i) ? i : defaultValue;

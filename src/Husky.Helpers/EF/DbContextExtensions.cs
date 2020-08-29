@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -35,6 +36,9 @@ namespace Husky
 			else {
 				var updating = context.Entry(row);
 				foreach ( var p in updating.Properties ) {
+					if ( p.Metadata.PropertyInfo.IsDefined(typeof(NeverUpdateAttribute)) ) {
+						continue;
+					}
 					p.CurrentValue = importing.Property(p.Metadata.Name).CurrentValue;
 				}
 			}
