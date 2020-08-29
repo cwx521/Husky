@@ -2,7 +2,7 @@
 using Husky.KeyValues;
 using Microsoft.Extensions.Configuration;
 
-namespace Shipping.Kernel
+namespace Husky
 {
 	public abstract partial class ConfigBase
 	{
@@ -32,7 +32,7 @@ namespace Shipping.Kernel
 			}
 
 			if ( hasChange ) {
-				_keyValues.SaveChanges();
+				_keyValues.SaveAll();
 			}
 		}
 
@@ -40,7 +40,8 @@ namespace Shipping.Kernel
 		private readonly IConfiguration _appSettings;
 
 		public void Reload() => _keyValues.Reload();
-		public void SaveChanges() => _keyValues.SaveChanges();
+		public void Save<T>(string key, T value) => _keyValues.Save(key, value);
+		public void SaveAll() => _keyValues.SaveAll();
 
 		[NotMapped] public virtual bool IsTestEnv => _appSettings.GetValue<bool>("IsTestEnv");
 		[NotMapped] public virtual string PermanentToken => _appSettings.GetValue<string>("Security:PermanentToken");

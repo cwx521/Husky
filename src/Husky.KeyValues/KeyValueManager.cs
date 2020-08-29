@@ -21,18 +21,14 @@ namespace Husky.KeyValues
 		private readonly IServiceProvider _svc;
 		private readonly IMemoryCache _cache;
 
-		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
-			using var scope = _svc.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
-			return db.KeyValues.AsNoTracking().ToList();
-		});
-		private KeyValue Find(string key) => Items.Find(x => x.Key == key);
-
 		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
+
 		public bool Exists(string key) => Items.Any(x => x.Key == key);
 
 		public string GetString(string key) => Find(key)?.Value;
-		public T Get<T>(string key, T defaultValue = default(T)) => GetString(key).As(defaultValue);
+
+		public T Get<T>(string key, T defaultValue = default) => GetString(key).As(defaultValue);
+
 		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) => (T)GetOrAdd(key, defaultValueIfNotExist, typeof(T));
 
 		public object GetOrAdd(string key, object defaultValueIfNotExist, Type defaultValueType) {
@@ -79,7 +75,19 @@ namespace Husky.KeyValues
 
 		public void Reload() => _cache.Remove(_cacheKey);
 
-		public void SaveChanges() {
+		public void Save<T>(string key, T value) {
+			AddOrUpdate(key, value?.ToString());
+
+			using var scope = _svc.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			db.AddOrUpdate(new KeyValue {
+				Key = key,
+				Value = value?.ToString()
+			});
+			db.SaveChanges();
+		}
+
+		public void SaveAll() {
 			using var scope = _svc.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
 			var fromDb = db.KeyValues.ToList();
@@ -91,5 +99,13 @@ namespace Husky.KeyValues
 
 			db.SaveChanges();
 		}
+
+		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
+			using var scope = _svc.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			return db.KeyValues.AsNoTracking().ToList();
+		});
+
+		private KeyValue Find(string key) => Items.Find(x => x.Key == key);
 	}
 }
