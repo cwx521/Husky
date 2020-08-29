@@ -18,7 +18,7 @@ namespace Husky
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			// Find keyand Build query
+			// Find key and Build query
 			var importing = context.Entry(entity);
 			var keyProperties = importing.Metadata.FindPrimaryKey().Properties;
 

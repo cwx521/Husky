@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using MD5Algorithm = System.Security.Cryptography.MD5;
 using SHA1Algorithm = System.Security.Cryptography.SHA1;
+using SHA256Algorithm = System.Security.Cryptography.SHA256;
 
 namespace Husky
 {
@@ -28,11 +29,10 @@ namespace Husky
 		#region RandomBytes, RandomNumber, RandomString
 
 		public static byte[] RandomBytes(int length = 4) {
-			using ( var rng = RandomNumberGenerator.Create() ) {
-				var salt = new byte[length];
-				rng.GetBytes(salt);
-				return salt;
-			}
+			using var rng = RandomNumberGenerator.Create();
+			var salt = new byte[length];
+			rng.GetBytes(salt);
+			return salt;
 		}
 
 		public static int RandomNumber() => BitConverter.ToInt32(RandomBytes(4), 0);
@@ -49,28 +49,21 @@ namespace Husky
 
 		#endregion
 
-		#region MD5, SHA1
+		#region MD5, SHA1, SHA256
 
 		public static string MD5(this string str) {
-			if ( str == null ) {
-				throw new ArgumentNullException(nameof(str));
-			}
-			using ( var algorithm = MD5Algorithm.Create() ) {
-				var original = Encoding.UTF8.GetBytes(str);
-				var encoded = algorithm.ComputeHash(original);
-				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
-			}
+			using var algorithm = MD5Algorithm.Create();
+			return algorithm.ComputeResult(str);
 		}
 
 		public static string SHA1(this string str) {
-			if ( str == null ) {
-				throw new ArgumentNullException(nameof(str));
-			}
-			using ( var algorithm = SHA1Algorithm.Create() ) {
-				var original = Encoding.UTF8.GetBytes(str);
-				var encoded = algorithm.ComputeHash(original);
-				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
-			}
+			using var algorithm = SHA1Algorithm.Create();
+			return algorithm.ComputeResult(str);
+		}
+
+		public static string SHA256(this string str) {
+			using var algorithm = SHA256Algorithm.Create();
+			return algorithm.ComputeResult(str);
 		}
 
 		#endregion
@@ -81,21 +74,18 @@ namespace Husky
 			if ( str == null ) {
 				throw new ArgumentNullException(nameof(str));
 			}
-
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
-
-			using ( var hmac = new TAlgorithm() ) {
-				hmac.Key = ComputeKey(key);
-				var original = Encoding.UTF8.GetBytes(str);
-				var encoded = hmac.ComputeHash(original);
-				return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
-			}
+			using var hmac = new TAlgorithm {
+				Key = Hash(key)
+			};
+			return hmac.ComputeResult(str);
 		}
 
 		public static string HmacMD5(this string str, string key) => Hmac<HMACMD5>(str, key);
 		public static string HmacSHA1(this string str, string key) => Hmac<HMACSHA1>(str, key);
+		public static string HmacSHA256(this string str, string key) => Hmac<HMACSHA256>(str, key);
 
 		#endregion
 
@@ -108,15 +98,14 @@ namespace Husky
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			using ( var aes = Aes.Create() ) {
-				aes.Key = ComputeKey(key ?? PermanentToken);
-				aes.IV = IV;
-				using ( var encryptor = aes.CreateEncryptor() ) {
-					var original = Encoding.UTF8.GetBytes(str);
-					var encrypted = encryptor.TransformFinalBlock(original, 0, original.Length);
-					return Convert.ToBase64String(encrypted).Mutate();
-				}
-			}
+			using var aes = Aes.Create();
+			aes.Key = Hash(key ?? PermanentToken);
+			aes.IV = IV;
+
+			using var encryptor = aes.CreateEncryptor();
+			var original = Encoding.UTF8.GetBytes(str);
+			var encrypted = encryptor.TransformFinalBlock(original, 0, original.Length);
+			return Convert.ToBase64String(encrypted).Mutate();
 		}
 
 		public static string Decrypt(string base64String, string key = null) {
@@ -124,15 +113,14 @@ namespace Husky
 				throw new ArgumentNullException(nameof(base64String));
 			}
 
-			using ( var aes = Aes.Create() ) {
-				aes.Key = ComputeKey(key ?? PermanentToken);
-				aes.IV = IV;
-				using ( var decryptor = aes.CreateDecryptor() ) {
-					var base64 = Convert.FromBase64String(base64String.Restore());
-					var decrypted = decryptor.TransformFinalBlock(base64, 0, base64.Length);
-					return Encoding.UTF8.GetString(decrypted);
-				}
-			}
+			using var aes = Aes.Create();
+			aes.Key = Hash(key ?? PermanentToken);
+			aes.IV = IV;
+
+			using var decryptor = aes.CreateDecryptor();
+			var base64 = Convert.FromBase64String(base64String.Restore());
+			var decrypted = decryptor.TransformFinalBlock(base64, 0, base64.Length);
+			return Encoding.UTF8.GetString(decrypted);
 		}
 
 		public static string Encrypt<T>(T obj, string key) where T : IFormattable => Encrypt(obj.ToString(), key);
@@ -145,10 +133,18 @@ namespace Husky
 
 		#region ComputeKey
 
-		private static byte[] ComputeKey(string givenKey) {
-			using ( var md5 = MD5Algorithm.Create() ) {
-				return md5.ComputeHash(Encoding.UTF8.GetBytes(givenKey));
+		private static byte[] Hash(string givenKey) {
+			using var md5 = MD5Algorithm.Create();
+			return md5.ComputeHash(Encoding.UTF8.GetBytes(givenKey));
+		}
+
+		private static string ComputeResult(this HashAlgorithm algorithm, string str) {
+			if ( str == null ) {
+				throw new ArgumentNullException(nameof(str));
 			}
+			var original = Encoding.UTF8.GetBytes(str);
+			var encoded = algorithm.ComputeHash(original);
+			return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
 		}
 
 		#endregion

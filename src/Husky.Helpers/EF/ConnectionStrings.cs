@@ -7,7 +7,9 @@ namespace Husky
 {
 	public static class ConnectionStrings
 	{
-		public static string SeekConnectionString<T>(this IConfiguration configuration, string nameOfConnectionString = null) where T : DbContext {
+		public static string SeekConnectionString<T>(this IConfiguration configuration, string nameOfConnectionString = null)
+			where T : DbContext {
+
 			var lookForNames = new[] {
 				nameOfConnectionString,
 				"Dev",

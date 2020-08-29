@@ -8,30 +8,33 @@ namespace Husky
 	{
 		public static string ToLower(this Enum value) => value.ToString().ToLower();
 		public static string ToUpper(this Enum value) => value.ToString().ToUpper();
-		public static string ToLabel(this Enum value) => value.GetLabel(useDescription: false);
-		public static string ToDescription(this Enum value) => value.GetLabel(useDescription: true);
+		public static string ToLabel(this Enum value) => value.GetLabel(useDescription: false, enableCss: false);
+		public static string ToLabelWithCss(this Enum value) => value.GetLabel(useDescription: false, enableCss: true);
+		public static string ToDescription(this Enum value) => value.GetLabel(useDescription: true, enableCss: false);
+		public static string ToDescriptionWithCss(this Enum value) => value.GetLabel(useDescription: true, enableCss: true);
 
-		private static string GetLabel(this Enum value, bool useDescription) {
+		private static string GetLabel(this Enum value, bool useDescription, bool enableCss) {
 			var fieldName = Enum.GetName(value.GetType(), value);
 			if ( fieldName != null ) {
 				var field = value.GetType().GetField(fieldName);
-				var attribute = field?.GetCustomAttribute<LabelAttribute>();
-				return (useDescription ? attribute?.Description : null) ?? attribute?.Label ?? fieldName;
+				return DisplayAs(field, fieldName, useDescription, enableCss);
 			}
-			var result = string.Join(", ", GetMultipleLabels(value, useDescription));
+			var result = string.Join(", ", GetMultipleLabels(value, useDescription, enableCss));
 			return result == "0" ? "" : result;
 		}
 
-		private static string[] GetMultipleLabels(this Enum value, bool useDescription) {
+		private static IEnumerable<string> GetMultipleLabels(this Enum value, bool useDescription, bool enableCss) {
 			var fieldNames = value.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			var results = new List<string>();
-
 			foreach ( var i in fieldNames ) {
 				var field = value.GetType().GetField(i);
-				var attribute = field?.GetCustomAttribute<LabelAttribute>();
-				results.Add((useDescription ? attribute?.Description : null) ?? attribute?.Label ?? i);
+				yield return DisplayAs(field, i, useDescription, enableCss);
 			}
-			return results.ToArray();
+		}
+
+		private static string DisplayAs(FieldInfo field, string fieldName, bool useDescription, bool enableCss) {
+			var attribute = field?.GetCustomAttribute<LabelAttribute>();
+			var text = (useDescription ? attribute?.Description : null) ?? attribute?.Label ?? fieldName;
+			return !enableCss ? text : $"<span class='{attribute.CssClass}'>{text}</span>";
 		}
 	}
 }
