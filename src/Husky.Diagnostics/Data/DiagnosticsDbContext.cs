@@ -1,8 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Husky.Principal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
-	public class DiagnosticsDbContext : DbContext
+	public partial class DiagnosticsDbContext : DbContext
 	{
 		public DiagnosticsDbContext(DbContextOptions<DiagnosticsDbContext> options) : base(options) {
 		}
