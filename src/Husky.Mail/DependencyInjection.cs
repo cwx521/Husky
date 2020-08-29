@@ -22,7 +22,7 @@ namespace Husky
 						migrated = true;
 					}
 				})
-				.AddSingleton<IMailSender, MailSender>();
+				.AddScoped<IMailSender, MailSender>();
 
 			return husky;
 		}

@@ -39,6 +39,9 @@ namespace Husky.Mail.Data
 			set => PasswordEncrypted = Crypto.Decrypt(value, Id.ToString());
 		}
 
-		public List<MailRecord> SentMails { get; set; } = new List<MailRecord>();
+
+		// nav props
+
+		public List<MailRecord> MailRecords { get; set; } = new List<MailRecord>();
 	}
 }

@@ -12,7 +12,7 @@ namespace Husky.Principal
 
 		public virtual T Id<T>() where T : struct, IFormattable, IEquatable<T> {
 			if ( IsAnonymous ) {
-				return default(T);
+				return default;
 			}
 			return IdString.As<T>();
 		}

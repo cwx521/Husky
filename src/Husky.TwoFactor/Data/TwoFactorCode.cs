@@ -9,12 +9,15 @@ namespace Husky.TwoFactor.Data
 		[Key]
 		public int Id { get; set; }
 
+		[NeverUpdate]
 		[Column(TypeName = "varchar(36)")]
 		public string UserIdString { get; set; }
 
+		[NeverUpdate]
 		[Column(TypeName = "varchar(50)")]
 		public string SentTo { get; set; }
 
+		[NeverUpdate]
 		[Column(TypeName = "varchar(8)")]
 		public string Code { get; set; }
 
@@ -22,6 +25,7 @@ namespace Husky.TwoFactor.Data
 
 		public bool IsUsed { get; set; }
 
+		[NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 	}
 }

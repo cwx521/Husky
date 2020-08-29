@@ -10,8 +10,8 @@ namespace Husky.Principal.Implements
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
 		}
 
-		private HttpContext _httpContext;
-		private IdentityOptions _options;
+		private readonly HttpContext _httpContext;
+		private readonly IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];

@@ -21,6 +21,8 @@ namespace Husky.Mail.Data
 		public DateTime CreatedTime { get; set; }
 
 
-		public virtual MailRecord Mail { get; set; }
+		// nav props
+
+		public MailRecord Mail { get; set; }
 	}
 }

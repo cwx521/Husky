@@ -10,8 +10,8 @@ namespace Husky.Principal.Implements
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Session);
 		}
 
-		private HttpContext _httpContext;
-		private IdentityOptions _options;
+		private readonly HttpContext _httpContext;
+		private readonly IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			var combined = _httpContext.Session.GetString(_options.Key);

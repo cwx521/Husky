@@ -13,17 +13,14 @@ namespace Husky.Mail.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<MailSmtpProvider>()
-				.HasMany(x => x.SentMails)
+				.HasMany(x => x.MailRecords)
 				.WithOne(x => x.Smtp)
-				.HasForeignKey(x => x.SmtpId)
-				.IsRequired(false);
+				.HasForeignKey(x => x.SmtpId);
 
 			modelBuilder.Entity<MailRecord>()
 				.HasMany(x => x.Attachments)
 				.WithOne(x => x.Mail)
-				.HasForeignKey(x => x.MailId)
-				.IsRequired()
-				.OnDelete(DeleteBehavior.Cascade);
+				.HasForeignKey(x => x.MailId);
 		}
 	}
 }

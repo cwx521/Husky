@@ -9,7 +9,7 @@ namespace Husky.Principal
 			_principal = principal;
 		}
 
-		private IPrincipalUser _principal;
+		private readonly IPrincipalUser _principal;
 
 		string ISessionDataContainer.Key => _principal.IdString;
 		DateTime ISessionDataContainer.ActiveTime { get; set; }

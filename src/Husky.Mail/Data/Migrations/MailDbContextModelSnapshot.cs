@@ -118,7 +118,7 @@ namespace Husky.Mail.Data.Migrations
             modelBuilder.Entity("Husky.Mail.Data.MailRecord", b =>
                 {
                     b.HasOne("Husky.Mail.Data.MailSmtpProvider", "Smtp")
-                        .WithMany("SentMails")
+                        .WithMany("MailRecords")
                         .HasForeignKey("SmtpId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

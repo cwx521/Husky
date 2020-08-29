@@ -8,8 +8,5 @@ namespace Husky.KeyValues.Data
 		}
 
 		public DbSet<KeyValue> KeyValues { get; set; }
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-		}
 	}
 }

@@ -14,15 +14,13 @@ namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender(IServiceProvider serviceProvider, ISmtpProvider givenSmtp = null) {
-			_svc = serviceProvider;
-			_givenSmtp = givenSmtp;
+		public MailSender(MailDbContext mailDbContext, ISmtpProvider givenSmtp = null) {
+			_mailDbContext = mailDbContext;
+			_smtp = givenSmtp;
 		}
 
-		private readonly IServiceProvider _svc;
-		private readonly ISmtpProvider _givenSmtp;
-
-		public MailDbContext Db => _svc.GetService<MailDbContext>();
+		private readonly MailDbContext _mailDbContext;
+		private readonly ISmtpProvider _smtp;
 
 		public async Task SendAsync(string subject, string content, params string[] recipients) {
 			if ( recipients == null || recipients.Length == 0 ) {
@@ -43,56 +41,48 @@ namespace Husky.Mail
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
-			var smtp = _givenSmtp ?? GetInternalSmtpProvider();
+			var smtp = _smtp ?? GetInternalSmtpProvider();
 			var mailRecord = CreateMailRecord(mailMessage);
 
 			if ( smtp is MailSmtpProvider internalSmtp ) {
 				mailRecord.SmtpId = internalSmtp.Id;
 			}
 
-			using ( var scope = _svc.CreateScope() ) {
-				var db = scope.ServiceProvider.GetRequiredService<MailDbContext>();
+			_mailDbContext.Add(mailRecord);
+			await _mailDbContext.SaveChangesAsync();
 
-				db.Add(mailRecord);
-				await db.SaveChangesAsync();
+			using var client = new SmtpClient();
+			client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+				mailRecord.IsSuccessful = true;
+				await _mailDbContext.SaveChangesAsync();
+				await Task.Run(() => {
+					onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
+				});
+			};
 
-				using ( var client = new SmtpClient() ) {
-					client.MessageSent += async (object sender, MessageSentEventArgs e) => {
-						mailRecord.IsSuccessful = true;
-						await db.SaveChangesAsync();
-						await Task.Run(() => {
-							onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
-						});
-					};
-					try {
-						await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
+			try {
+				await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
 
-						if ( !string.IsNullOrEmpty(smtp.CredentialName) ) {
-							await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
-						}
-						await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
-					}
-					catch ( Exception ex ) {
-						mailRecord.Exception = ex.Message.Left(200);
-						await db.SaveChangesAsync();
-					}
+				if ( !string.IsNullOrEmpty(smtp.CredentialName) ) {
+					await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
 				}
+				await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
+			}
+			catch ( Exception ex ) {
+				mailRecord.Exception = ex.Message.Left(200);
+				await _mailDbContext.SaveChangesAsync();
 			}
 		}
 
 		private static int _increment = 0;
 
 		private MailSmtpProvider GetInternalSmtpProvider() {
-			using ( var scope = _svc.CreateScope() ) {
-				var db = scope.ServiceProvider.GetRequiredService<MailDbContext>();
-
-				var haveCount = db.MailSmtpProviders.Count(x => x.IsInUse);
-				if ( haveCount == 0 ) {
-					throw new Exception("SMTP account is not configured yet.");
-				}
-				var skip = _increment++ % haveCount;
-				return db.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
+			var haveSmtpCount = _mailDbContext.MailSmtpProviders.Count(x => x.IsInUse);
+			if ( haveSmtpCount == 0 ) {
+				throw new Exception("SMTP account is not configured yet.");
 			}
+			var skip = _increment++ % haveSmtpCount;
+			return _mailDbContext.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 		}
 
 		private MailRecord CreateMailRecord(MailMessage mailMessage) {
