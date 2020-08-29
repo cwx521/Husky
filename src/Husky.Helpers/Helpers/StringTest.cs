@@ -8,32 +8,35 @@ namespace Husky
 	{
 		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
 		public const string MainlandMobileRegexPattern = @"^1[3456789]\d{9}$";
+		public const string MainlandSocialNumberRegexPattern = @"^\d{17}[0123456789X]$";
 
-		public static bool IsInt32(this string str) => int.TryParse(str, out var i);
-		public static bool IsInt64(this string str) => long.TryParse(str, out var i);
-		public static bool IsNumeric(this string str) => decimal.TryParse(str, out var d);
-		public static bool IsBoolean(this string str) => bool.TryParse(str, out var b);
-		public static bool IsDateTime(this string str) => DateTime.TryParse(str, out var dt);
-		public static bool IsIPv4(this string str) => IPAddress.TryParse(str, out var ip);
+		public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
+
+		public static bool IsInt32(this string str) => int.TryParse(str, out _);
+		public static bool IsInt64(this string str) => long.TryParse(str, out _);
+		public static bool IsNumeric(this string str) => decimal.TryParse(str, out _);
+		public static bool IsBoolean(this string str) => bool.TryParse(str, out _);
+		public static bool IsDateTime(this string str) => DateTime.TryParse(str, out _);
+		public static bool IsIPAddress(this string str) => IPAddress.TryParse(str, out _);
 
 		public static bool IsUrl(this string str) {
-			return (str == null || str.Length < 6) ? false : Uri.IsWellFormedUriString(str, UriKind.Absolute);
+			return str != null && str.Length >= 6 && Uri.IsWellFormedUriString(str, UriKind.Absolute);
 		}
-		public static bool IsVolumePath(this string path) {
-			return (path == null || path.Length < 3) ? false : path.Contains(":");
+		public static bool IsVolumePath(this string str) {
+			return str != null && str.Length >= 3 && str.Contains(":");
 		}
 		public static bool IsEmail(this string str) {
-			return (str == null || str.Length < 6) ? false : Regex.IsMatch(str, EmailRegexPattern);
+			return str != null && str.Length >= 6 && Regex.IsMatch(str, EmailRegexPattern);
 		}
 		public static bool IsCardNumber(this string str) {
-			return (str == null || (str.Length != 16 && str.Length != 19)) ? false : Regex.IsMatch(str, @"^\d+$");
+			return str != null && (str.Length == 16 || str.Length == 19) && Regex.IsMatch(str, @"^\d+$");
 		}
 		public static bool IsMainlandMobile(this string str) {
-			return (str == null || str.Length != 11) ? false : Regex.IsMatch(str, MainlandMobileRegexPattern);
+			return str != null && str.Length == 11 && Regex.IsMatch(str, MainlandMobileRegexPattern);
 		}
 
-		internal static bool IsMainlandSocialNumber(this string str) {
-			return str.Length == 18 && Regex.IsMatch(str, @"^\d{17}[0123456789X]$", RegexOptions.IgnoreCase);
+		public static bool IsMainlandSocialNumber(this string str) {
+			return str != null && str.Length == 18 && Regex.IsMatch(str, MainlandSocialNumberRegexPattern, RegexOptions.IgnoreCase);
 		}
 		public static bool IsMainlandSocialNumber(this string str, Sex sex) {
 			if ( str == null || str.Length != 18 ) return false;

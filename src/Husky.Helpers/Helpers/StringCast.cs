@@ -1,42 +1,32 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Husky
 {
 	public static class StringCast
 	{
-		public static string NullAsEmpty(this string str) {
-			return str ?? "";
-		}
-
-		public static string EmptyAsNull(this string str) {
-			return string.IsNullOrEmpty(str) ? null : str;
-		}
-
-		public static string EmptyOrWhiteSpaceAsNull(this string str) {
-			return string.IsNullOrWhiteSpace(str) ? null : str;
-		}
+		public static string NullAsEmpty(this string str) => str ?? "";
+		public static string EmptyAsNull(this string str) => string.IsNullOrEmpty(str) ? null : str;
+		public static string EmptyOrWhiteSpaceAsNull(this string str) => string.IsNullOrWhiteSpace(str) ? null : str;
 
 		public static int AsInt(this string str, int defaultValue = 0) {
 			return int.TryParse(str, out var i) ? i : defaultValue;
 		}
-
 		public static bool AsBool(this string str, bool defaultValue = false) {
 			return bool.TryParse(str, out var b) ? b : defaultValue;
 		}
-
-		public static Guid AsGuid(this string str, Guid defaultValue = default(Guid)) {
+		public static Guid AsGuid(this string str, Guid defaultValue = default) {
 			return Guid.TryParse(str, out var g) ? g : defaultValue;
 		}
-
-		public static TimeSpan AsTimeSpan(this string str, TimeSpan defaultValue = default(TimeSpan)) {
+		public static TimeSpan AsTimeSpan(this string str, TimeSpan defaultValue = default) {
 			return TimeSpan.TryParse(str, out var t) ? t : defaultValue;
 		}
 
-		public static T As<T>(this string str, T defaultValue = default(T)) {
+		public static T As<T>(this string str, T defaultValue = default) {
 			if ( str == null ) {
-				return default(T);
+				return default;
 			}
 			if ( typeof(T) == typeof(Guid) ) {
 				return (T)(object)str.AsGuid((Guid)(object)defaultValue);
@@ -55,7 +45,7 @@ namespace Husky
 			}
 		}
 
-		public static double HexToDouble(this string hex) {
+		public static int HexToInt(this string hex) {
 			if ( string.IsNullOrEmpty(hex) ) {
 				throw new ArgumentNullException(nameof(hex));
 			}
@@ -65,7 +55,7 @@ namespace Husky
 				hex = hex.Substring(2);
 			}
 
-			double dbl = 0;
+			var result = 0;
 			var charArray = hex.Reverse().ToArray();
 
 			for ( int i = 0; i < charArray.Count(); i++ ) {
@@ -81,9 +71,9 @@ namespace Husky
 				else {
 					throw new FormatException($"{hex} is not a valid hex number string.");
 				}
-				dbl += num * Math.Pow(16, i);
+				result += num * (int)Math.Pow(16, i);
 			}
-			return dbl;
+			return result;
 		}
 
 		public static string Mask(this string str) {
@@ -98,7 +88,7 @@ namespace Husky
 			}
 			if ( str.IsEmail() ) {
 				var at = str.IndexOf('@');
-				return $"{str.Substring(0, 1)}{new string('*', str.Length - 1 - at)}{str.Substring(at)}";
+				return $"{str.Substring(0, 1)}{new string('*', at - 1)}{str.Substring(at)}";
 			}
 			if ( str.IsCardNumber() ) {
 				return $"{str.Substring(0, 4)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
@@ -107,6 +97,44 @@ namespace Husky
 				return $"{str.Substring(0, 6)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
 			return str;
+		}
+
+		public static string BetterDisplayCardNumber(this string str) {
+			var sb = new StringBuilder();
+			for ( int i = 0; i < str.Length; i++ ) {
+				if ( i != 0 && i % 4 == 0 ) {
+					sb.Append(' ');
+				}
+				sb.Append(str[i]);
+			}
+			return sb.ToString();
+		}
+
+		public static string TextEncode(this string str) {
+			return str == null
+				? null
+				: new StringBuilder(str)
+					.Replace("&", "&amp;")
+					.Replace("<", "&lt;")
+					.Replace(">", "&gt;")
+					.Replace("\"", "&quot;")
+					.Replace("\'", "&#39;")
+					.ToString();
+		}
+
+		public static string HtmlEncode(this string str) {
+			return str == null
+				? null
+				: new StringBuilder(str)
+					.Replace("&", "&amp;")
+					.Replace("<", "&lt;")
+					.Replace(">", "&gt;")
+					.Replace("\"", "&quot;")
+					.Replace("\'", "&#39;")
+					.Replace("\t", "&nbsp; &nbsp; ")
+					.Replace("\r", "")
+					.Replace("\n", "<br />")
+					.ToString();
 		}
 	}
 }

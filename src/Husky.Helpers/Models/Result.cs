@@ -17,18 +17,13 @@ namespace Husky
 		public virtual string Message { get; set; }
 		public virtual int? Code { get; set; }
 
-		public string ToJson() {
-			return JsonConvert.SerializeObject(this);
-		}
-
-		public async Task ExecuteResultAsync(ActionContext context) {
-			await new JsonResult(this).ExecuteResultAsync(context);
-		}
+		public string ToJson() => JsonConvert.SerializeObject(this);
+		public async Task ExecuteResultAsync(ActionContext context) => await new JsonResult(this).ExecuteResultAsync(context);
 	}
 
 	public class Result<T> : Result
 	{
-		public Result(bool ok = false, string message = null, int? code = null, T data = default(T)) : base(ok, message, code) { Data = data; }
+		public Result(bool ok = false, string message = null, int? code = null, T data = default) : base(ok, message, code) { Data = data; }
 		public T Data { get; set; }
 	}
 

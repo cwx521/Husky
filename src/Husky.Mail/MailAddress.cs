@@ -15,8 +15,8 @@ namespace Husky.Mail
 				return new MailAddress { Address = mailAddressString };
 			}
 			if ( mailAddressString.IndexOf('<') != -1 && mailAddressString.EndsWith(">") ) {
-				var name = mailAddressString.Left("<", true).Trim();
-				var address = mailAddressString.Right("<", true).TrimEnd('>');
+				var name = mailAddressString.LeftBy("<", true).Trim();
+				var address = mailAddressString.RightBy("<", true).TrimEnd('>');
 				if ( address.IsEmail() ) {
 					return new MailAddress { Name = name, Address = address };
 				}
@@ -31,8 +31,8 @@ namespace Husky.Mail
 					return true;
 				}
 				if ( mailAddressString.IndexOf('<') != -1 && mailAddressString.EndsWith(">") ) {
-					var name = mailAddressString.Left("<", true);
-					var address = mailAddressString.Right("<", true).TrimEnd('>');
+					var name = mailAddressString.LeftBy("<", true);
+					var address = mailAddressString.RightBy("<", true).TrimEnd('>');
 					if ( address.IsEmail() ) {
 						mailAddress = new MailAddress { Name = name, Address = address };
 						return true;

@@ -11,18 +11,17 @@ namespace Husky
 			if ( string.IsNullOrEmpty(str) ) {
 				return str;
 			}
+			static bool IsCapital(char x) => x >= 'A' && x <= 'Z';
 			var sb = new StringBuilder();
-			Func<char, bool> IsCaptical = x => x >= 'A' && x <= 'Z';
 			for ( int i = 0; i < str.Length; i++ ) {
-				var c = str[i];
 				var prevIsSpace = (i > 0) && str[i - 1] == ' ';
-				var prevIsCapital = (i > 0) && IsCaptical(str[i - 1]);
-				var nextIsLowerCase = (i + 1 < str.Length) && !IsCaptical(str[i + 1]);
+				var prevIsCapital = (i > 0) && IsCapital(str[i - 1]);
+				var nextIsLowerCase = (i + 1 < str.Length) && !IsCapital(str[i + 1]);
 
-				if ( IsCaptical(c) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
+				if (i != 0 && IsCapital(str[i]) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
 					sb.Append(' ');
 				}
-				sb.Append(c);
+				sb.Append(str[i]);
 			}
 			return sb.ToString();
 		}
@@ -47,15 +46,15 @@ namespace Husky
 			if ( string.IsNullOrEmpty(str) ) {
 				return null;
 			}
-			var match = new Regex(pattern).Match(str);
-			return !match.Success ? null : match.Result("$" + Math.Max(matchIndex, 1));
+			var matches = new Regex(pattern).Matches(str);
+			return matches.Count == 0 ? null : matches[Math.Max(matchIndex, 1) - 1].Value;
 		}
 
 		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : IFormattable {
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
-		public static string Mid(this string str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
+		public static string MidBy(this string str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -71,14 +70,14 @@ namespace Husky
 					i += afterKeyword.Length;
 					var j = str.IndexOf(endAtKeyword, i, StringComparison.Ordinal);
 					if ( j > i ) {
-						return str.Substring(i, j - i);
+						return str[i..j];
 					}
 				}
 			}
 			return null;
 		}
 
-		public static string Left(this string str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string LeftBy(this string str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( beforeKeyword == null ) {
 				throw new ArgumentNullException(nameof(beforeKeyword));
 			}
@@ -94,7 +93,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string Right(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string RightBy(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}

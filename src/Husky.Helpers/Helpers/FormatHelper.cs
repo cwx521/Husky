@@ -28,6 +28,9 @@ namespace Husky
 		public static string ToShortDateTimeString(this DateTime datetime, string format = null) => datetime.ToString(format ?? ShortDateTimeFormat);
 		public static string ToShortDateTimeString(this DateTime? datetime, string format = null) => datetime.ToString(format ?? ShortDateTimeFormat);
 
+		public static string TrimEnd(this decimal d, string format = null) => d.ToString(format).TrimEnd('0').TrimEnd('.');
+		public static string TrimEnd(this float f, string format = null) => f.ToString(format).TrimEnd('0').TrimEnd('.');
+		public static string TrimEnd(this double d, string format = null) => d.ToString(format).TrimEnd('0').TrimEnd('.');
 		public static string TrimEnd(this decimal? d, string format = null) => d.ToString(format).TrimEnd('0').TrimEnd('.');
 		public static string TrimEnd(this float? f, string format = null) => f.ToString(format).TrimEnd('0').TrimEnd('.');
 		public static string TrimEnd(this double? d, string format = null) => d.ToString(format).TrimEnd('0').TrimEnd('.');

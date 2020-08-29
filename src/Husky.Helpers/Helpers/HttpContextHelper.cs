@@ -4,10 +4,6 @@ namespace Husky
 {
 	public static class HttpContextHelper
 	{
-		public static bool IsAjaxRequest(this HttpRequest request) {
-			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
-		}
-
 		public static string SchemeAndHost(this HttpRequest request) {
 			return (request.IsHttps ? "https://" : "http://") + request.Host;
 		}
@@ -22,6 +18,18 @@ namespace Husky
 
 		public static string UserAgent(this HttpRequest request) {
 			return request.Headers["User-Agent"];
+		}
+
+		public static bool IsMobile(this HttpRequest request) {
+			var userAgent = request.UserAgent();
+			return userAgent.Contains("iPhone") || userAgent.Contains("Android");
+		}
+
+		public static bool IsXhr(this HttpRequest request) {
+			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+		}
+		public static bool IsAjaxRequest(this HttpRequest request) {
+			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
 	}
 }

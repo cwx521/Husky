@@ -27,7 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.GridQuery", "src\Husk
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Razor", "src\Husky.Razor\Husky.Razor.csproj", "{26B38E9E-F9CE-43DD-BA39-716AF092551C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.WeChatIntegration", "src\Husky.WeChatIntegration\Husky.WeChatIntegration.csproj", "{008D5928-AE73-42F8-BEFE-B919CDCF6D70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration", "src\Husky.WeChatIntegration\Husky.WeChatIntegration.csproj", "{008D5928-AE73-42F8-BEFE-B919CDCF6D70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FF52C040-869B-47F4-B5FF-C0DF5070D4ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuskyTests", "tests\HuskyTests\HuskyTests.csproj", "{4F542987-805F-4AC2-AF04-DCA5B462576E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,9 +91,16 @@ Global
 		{008D5928-AE73-42F8-BEFE-B919CDCF6D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008D5928-AE73-42F8-BEFE-B919CDCF6D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{008D5928-AE73-42F8-BEFE-B919CDCF6D70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F542987-805F-4AC2-AF04-DCA5B462576E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F542987-805F-4AC2-AF04-DCA5B462576E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F542987-805F-4AC2-AF04-DCA5B462576E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F542987-805F-4AC2-AF04-DCA5B462576E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4F542987-805F-4AC2-AF04-DCA5B462576E} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}
