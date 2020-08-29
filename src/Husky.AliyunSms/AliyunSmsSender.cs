@@ -32,7 +32,8 @@ namespace Husky.AliyunSms
 			await Task.Run(() => {
 				try {
 					var profile = DefaultProfile.GetProfile(endPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
-					new DefaultAcsClient(profile).GetAcsResponse(request);
+					var client = new DefaultAcsClient(profile);
+					client.GetAcsResponse(request);
 				}
 				catch { }
 			});
