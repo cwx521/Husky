@@ -14,6 +14,8 @@ namespace Husky.Tests
 			Assert.AreEqual(StringTruncate.SplitWords("HelloWorld"), "Hello World");
 			Assert.AreEqual(StringTruncate.SplitWords("Hello World"), "Hello World");
 			Assert.AreEqual(StringTruncate.SplitWords("ohHelloWorld"), "oh Hello World");
+			Assert.AreEqual(StringTruncate.SplitWords("ID"), "ID");
+			Assert.AreEqual(StringTruncate.SplitWords("IDE"), "IDE");
 		}
 
 		[TestMethod()]

@@ -13,8 +13,8 @@ namespace Husky.GridQuery
 		public virtual bool Filterable { get; set; } = true;
 		public virtual bool Sortable { get; set; } = true;
 		public virtual bool Hidable { get; set; } = true;
-		public virtual bool Hidden { get; set; } = false;
 		public virtual bool Editable { get; set; } = false;
+		public virtual bool Hidden { get; set; } = false;
 		public virtual bool Locked { get; set; } = false;
 
 		public virtual string CssClass { get; set; }

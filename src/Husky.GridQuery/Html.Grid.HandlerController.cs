@@ -16,9 +16,12 @@ namespace Husky.GridQuery
 
 		private readonly IPrincipalUser _me;
 		private readonly HttpContext _http;
-		private readonly CookieOptions _cookieOptions = new CookieOptions { Expires = DateTimeOffset.Now.AddYears(10) };
 
-		public ActionResult ShowColumn(string dataSourceUrl, string columns) {
+		private readonly CookieOptions _cookieOptions = new CookieOptions {
+			Expires = DateTimeOffset.Now.AddYears(10)
+		};
+
+		public IActionResult ShowColumn(string dataSourceUrl, string columns) {
 			var key = _me.GetGridCookieKey(dataSourceUrl, "Hide");
 			var array = columns.Split(',');
 
@@ -29,7 +32,7 @@ namespace Husky.GridQuery
 			return new EmptyResult();
 		}
 
-		public ActionResult HideColumn(string dataSourceUrl, string columns) {
+		public IActionResult HideColumn(string dataSourceUrl, string columns) {
 			var key = _me.GetGridCookieKey(dataSourceUrl, "Hide");
 			var array = columns.Split(',');
 
@@ -40,7 +43,7 @@ namespace Husky.GridQuery
 			return new EmptyResult();
 		}
 
-		public ActionResult ReorderColumn(string dataSourceUrl, string columns) {
+		public IActionResult ReorderColumn(string dataSourceUrl, string columns) {
 			var key = _me.GetGridCookieKey(dataSourceUrl, "Order");
 			_http.Response.Cookies.Append(key, columns, _cookieOptions);
 			return new EmptyResult();

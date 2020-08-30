@@ -14,7 +14,7 @@ namespace Husky.GridQuery
 		public string title { get; set; }
 		public string type { get; set; }
 		public string group { get; set; }
-		public int? width { get; set; }
+		public int? width { get; set; } = 160;
 		public string attributes { get; set; }
 		public string format { get; set; }
 		public string template { get; set; }

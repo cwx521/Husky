@@ -23,35 +23,41 @@ namespace Husky.GridQuery
 		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
 		public static IHtmlContent Grid(this IHtmlHelper helper, Type typeOfGridModel, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) {
 			var principal = helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
-			var requestCookies = helper.ViewContext.HttpContext.Request.Cookies;
-			var id = "g" + Crypto.RandomString();
-			var sb = new StringBuilder();
+			var cookies = helper.ViewContext.HttpContext.Request.Cookies;
 
 			var columns = typeOfGridModel.GetGridColumnSpecs();
 			customize?.Invoke(columns);
 
-			if ( requestCookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Hide"), out var hiddenColumns) ) {
-				var hiddenArray = hiddenColumns.Split(',');
+			if ( cookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Hide"), out var hiddenColumns) ) {
+				var arr = hiddenColumns.Split(',');
 				foreach ( var col in columns ) {
-					col.hidden = hiddenArray.Contains(col.field);
+					col.hidden = arr.Contains(col.field);
 				}
 			}
-			if ( requestCookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Order"), out var columnOrders) ) {
+			if ( cookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Order"), out var columnOrders) ) {
 				var i = 0;
-				foreach ( var str in columnOrders.Split(',') ) {
-					var item = columns.Find(x => x.field == str);
-					if ( item != null ) {
-						columns.Insert(i, item);
+				var arr = columnOrders.Split(',');
+				foreach ( var str in arr ) {
+					var col = columns.Find(x => x.field == str);
+					if ( col != null ) {
+						columns.Insert(i, col);
 						columns.RemoveAt(columns.FindLastIndex(x => x.field == str));
 						i++;
 					}
 				}
 			}
 
+			var id = "g" + Crypto.RandomString();
+			var sb = new StringBuilder();
+			var criteriaJson = (criteria ?? new QueryCriteria()).Json();
+			var columnsJson = JsonConvert.SerializeObject(columns, new JsonSerializerSettings {
+				DefaultValueHandling = DefaultValueHandling.Ignore
+			});
+
 			sb.AppendLine($"<div id='{id}' style='height: 100%'>");
 			sb.AppendLine("<script type='text/javascript'>");
 			sb.AppendLine("	$(function () {");
-			sb.AppendLine($"	$('#{id}').loadGrid('{dataSourceUrl}', {(criteria ?? new QueryCriteria()).Json()}, {JsonConvert.SerializeObject(columns)}, {(int)editable});");
+			sb.AppendLine($"	$('#{id}').loadGrid('{dataSourceUrl}', {criteriaJson}, {columnsJson}, {(int)editable});");
 			sb.AppendLine("	});");
 			sb.AppendLine("</script>");
 			sb.AppendLine("</div>");

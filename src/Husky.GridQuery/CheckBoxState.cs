@@ -3,7 +3,7 @@
 	public enum CheckBoxState
 	{
 		[Label("")]
-		Default,
+		Unchecked,
 
 		[Label("checked")]
 		Checked,
