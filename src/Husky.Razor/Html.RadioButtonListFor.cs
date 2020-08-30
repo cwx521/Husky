@@ -19,34 +19,15 @@ namespace Husky.Razor
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.Radio, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderCustomControlGroupFor(expression, CustomControlType.Radio, selectListItems, layoutDirection, htmlAttributes);
 		}
 
 		public static IHtmlContent RadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, Type enumType, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object htmlAttributes = null) {
 			if ( enumType == null ) {
 				throw new ArgumentNullException(nameof(enumType));
 			}
-
-			var selectListItems = helper.GetEnumSelectList(enumType);
-
-			//hack: for the specific enum type 'YesNo', display Yes No instead of No Yes. 
-			if ( enumType == typeof(YesNo) ) {
-				selectListItems = selectListItems.Reverse();
-			}
-
-			if ( helper.ViewData.Model != null ) {
-				try {
-					var value = expression.Compile().Invoke(helper.ViewData.Model);
-					var str = value?.ToString();
-					if ( Enum.TryParse(enumType, str, out var enumVal) ) {
-						str = ((int)enumVal).ToString();
-					}
-					selectListItems.Where(x => x.Value == str).AsParallel().ForAll(x => x.Selected = true);
-				}
-				catch ( NullReferenceException ) { }
-				catch { throw; }
-			}
-			return helper.RenderCheckBoxOrRadioButtonListFor(expression, BoxType.Radio, selectListItems, layoutDirection, htmlAttributes);
+			var selectListItems = EnumHelper.ToSelectListItems(enumType);
+			return helper.RadioButtonListFor(expression, selectListItems, layoutDirection, htmlAttributes);
 		}
 	}
 }

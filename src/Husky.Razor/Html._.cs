@@ -12,21 +12,23 @@ namespace Husky.Razor
 	public static partial class HtmlHelperExtensions
 	{
 		private static string ToHtml(this IHtmlContent tag) {
-			using ( var writer = new StringWriter() ) {
-				tag.WriteTo(writer, HtmlEncoder.Default);
-				return writer.ToString() ?? string.Empty;
+			using var writer = new StringWriter();
+
+			tag.WriteTo(writer, HtmlEncoder.Default);
+			return writer.ToString() ?? string.Empty;
+		}
+
+		private static TagBuilder MergeAttributes(this TagBuilder tagBuilder, object htmlAttributes) {
+			if ( htmlAttributes != null ) {
+				var props = htmlAttributes.GetType().GetProperties();
+				foreach ( var p in props ) {
+					tagBuilder.MergeAttribute(p.Name, p.GetValue(htmlAttributes) as string, true);
+				}
 			}
+			return tagBuilder;
 		}
 
-		private static string BeautifyCheckBoxOrRadioButton(TagBuilder inputTag, string label, string addtionalCssClass = null) {
-			return inputTag == null ? null :
-				$@"<div class='custom-control custom-{inputTag.Attributes.GetValueOrDefault("type", "checkbox").ToLower()} {addtionalCssClass}'>
-					{inputTag.ToHtml()}
-					<label class='custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
-				</div>";
-		}
-
-		private static void BeautifyTextBoxOrDropDown(this TagBuilder tagBuilder) {
+		private static void PrettifyFormControl(this TagBuilder tagBuilder) {
 			if ( tagBuilder.Attributes.TryGetValue("class", out var cssClass) && cssClass.Contains("form-control") ) {
 				return;
 			}
@@ -38,38 +40,46 @@ namespace Husky.Razor
 			}
 		}
 
-		private enum BoxType
+		private enum CustomControlType
 		{
 			CheckBox,
-			Radio
+			Radio,
+			Switch
 		}
 
-		private static IHtmlContent RenderCheckBoxOrRadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, BoxType boxType, IEnumerable<SelectListItem> selectListItems, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object htmlAttributes = null) {
+		private static string PrettifyCustomControl(TagBuilder inputTag, CustomControlType customControlType, string label, string addtionalCssClass = null) {
+			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass.Contains("custom-control-input") ) {
+				inputTag.AddCssClass("custom-control-input");
+			}
+			return $@"<div class='custom-control custom-{customControlType.ToLower()} {addtionalCssClass}'>
+				{inputTag.ToHtml()}
+				<label class='custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
+			</div>";
+		}
+
+		private static IHtmlContent RenderCustomControlGroupFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, CustomControlType customControlType, IEnumerable<SelectListItem> selectListItems, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object htmlAttributes = null) {
 			var result = new HtmlContentBuilder();
 
 			foreach ( var item in selectListItems ) {
-				// build <input type='checkbox|radio' />
 				var inputTag = new TagBuilder("input") {
 					TagRenderMode = TagRenderMode.SelfClosing
 				};
+
 				inputTag.AddCssClass("custom-control-input");
-				inputTag.Attributes.Add("type", boxType.ToLower());
+				inputTag.Attributes.Add("type", customControlType == CustomControlType.Switch ? "checkbox" : customControlType.ToLower());
 				inputTag.Attributes.Add("id", "_" + Crypto.RandomString());
 				inputTag.Attributes.Add("name", helper.NameFor(expression));
 				inputTag.Attributes.Add("value", item.Value);
 				if ( item.Selected ) {
 					inputTag.Attributes.Add("checked", "checked");
 				}
-				if ( htmlAttributes != null ) {
-					var props = htmlAttributes.GetType().GetProperties();
-					foreach ( var p in props ) {
-						inputTag.MergeAttribute(p.Name, p.GetValue(htmlAttributes) as string, true);
-					}
-				}
+				inputTag.MergeAttributes(htmlAttributes);
 
 				// output custom-checkbox (bootstrap)
-				var str = BeautifyCheckBoxOrRadioButton(inputTag, item.Text.SplitWords(), addtionalCssClass: "list-box-item");
-				result.AppendHtml(layoutDirection == LayoutDirection.Horizontal ? str : $"<div>{str}</div>");
+				var outerDivCssClass = (layoutDirection == LayoutDirection.Horizontal ? "custom-control-inline custom-control-group-item" : "custom-control-group-item");
+				var customControl = PrettifyCustomControl(inputTag, customControlType, item.Text, outerDivCssClass);
+
+				result.AppendHtml(customControl);
 			}
 			return result;
 		}

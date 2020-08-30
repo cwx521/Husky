@@ -11,7 +11,7 @@ namespace Husky.Razor
 				return null;
 			}
 			if ( tagBuilder is TagBuilder ctl ) {
-				ctl.BeautifyTextBoxOrDropDown();
+				ctl.PrettifyFormControl();
 				ctl.AddCssClass(cssClass);
 				return ctl;
 			}

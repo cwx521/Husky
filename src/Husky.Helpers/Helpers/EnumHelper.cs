@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Husky
 {
@@ -12,6 +13,30 @@ namespace Husky
 		public static string ToLabelWithCss(this Enum value) => value.GetLabel(useDescription: false, enableCss: true);
 		public static string ToDescription(this Enum value) => value.GetLabel(useDescription: true, enableCss: false);
 		public static string ToDescriptionWithCss(this Enum value) => value.GetLabel(useDescription: true, enableCss: true);
+
+		public static List<SelectListItem> ToSelectListItems<TEnum>(string optionLabel = null, bool useIntValue = false) where TEnum : struct, IConvertible => ToSelectListItems(typeof(TEnum), optionLabel, useIntValue);
+		public static List<SelectListItem> ToSelectListItems(Type enumType, string optionLabel = null, bool useIntValue = false) {
+			var result = new List<SelectListItem>();
+
+			foreach ( int value in Enum.GetValues(enumType) ) {
+				var name = Enum.GetName(enumType, value);
+				result.Add(new SelectListItem {
+					Text = ((Enum)Enum.Parse(enumType, name)).ToLabel(),
+					Value = useIntValue ? value.ToString() : name
+				});
+			}
+			if ( enumType == typeof(YesNo) || enumType == typeof(OnOff) ) {
+				result.Reverse();
+			}
+			if ( optionLabel != null ) {
+				result.Insert(0, new SelectListItem {
+					Text = optionLabel,
+					Value = null
+				});
+			}
+			return result;
+		}
+
 
 		private static string GetLabel(this Enum value, bool useDescription, bool enableCss) {
 			var fieldName = Enum.GetName(value.GetType(), value);

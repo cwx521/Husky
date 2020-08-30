@@ -16,9 +16,9 @@ namespace Husky.Razor
 		public static IHtmlContent ModalFooter(this IHtmlHelper helper, SaveButtonState saveButton = SaveButtonState.NotHave, string saveButtonText = "确认", string buttonScheme = "btn-warning") {
 			var result = new HtmlContentBuilder();
 
-			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden'>");
-			result.AppendHtml("	<div class='modal-footer-state-container'><span class='modal-footer-state'></span></div>");
-			result.AppendHtml("	<div class='modal-footer-button-container'>");
+			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden d-flex'>");
+			result.AppendHtml("	 <div class='align-self-center'><span class='modal-footer-state'></span></div>");
+			result.AppendHtml("	 <div class='align-self-center pl-3 ml-auto'>");
 
 			if ( saveButton != SaveButtonState.NotHave ) {
 				var tag = new TagBuilder("button");
@@ -36,9 +36,9 @@ namespace Husky.Razor
 				result.AppendHtml(tag);
 			}
 
-			result.AppendHtml("<button type='button' class='btn btn-lg btn-light border btn-close' data-dismiss='modal'>关闭</button>");
+			result.AppendHtml("<button type='button' class='btn btn-light border btn-lg btn-close' data-dismiss='modal'>关闭</button>");
 
-			result.AppendHtml("	</div>");
+			result.AppendHtml("	 </div>");
 			result.AppendHtml("</div>");
 
 			return result;

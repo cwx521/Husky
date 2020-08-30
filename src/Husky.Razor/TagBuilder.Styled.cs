@@ -11,7 +11,7 @@ namespace Husky.Razor
 				return null;
 			}
 			if ( tagBuilder is TagBuilder ctl ) {
-				ctl.BeautifyTextBoxOrDropDown();
+				ctl.PrettifyFormControl();
 				return ctl;
 			}
 			throw new InvalidCastException($"The type of the parameter is not TagBuilder.");

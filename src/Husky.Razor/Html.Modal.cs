@@ -5,15 +5,15 @@ namespace Husky.Razor
 {
 	public enum ModalSize
 	{
-		[Label("")]
+		[Label("", Description = "默认")]
 		Default,
-		[Label("modal-sm")]
+		[Label("modal-sm", Description = "小")]
 		Small,
-		[Label("modal-lg")]
+		[Label("modal-lg", Description = "大")]
 		Large,
-		[Label("modal-xl")]
+		[Label("modal-xl", Description = "超大")]
 		ExtraLarge,
-		[Label("modal-full")]
+		[Label("modal-full", Description = "满屏")]
 		Full
 	}
 
@@ -21,47 +21,47 @@ namespace Husky.Razor
 	{
 		public static IHtmlContent Modal(this IHtmlHelper helper, string id, string title, string loadContentFromUrl, ModalSize size = ModalSize.Default, bool showFooter = true) {
 			var result = new HtmlContentBuilder();
-			result.AppendHtml(helper.BeginModal(id, title, size));
-			result.AppendHtml($"<div data-load-from='{loadContentFromUrl}'></div>");
-			result.AppendHtml(helper.EndModal(showFooter));
+			result.AppendHtml(BeginModal(id, title, size));
+			result.AppendHtml($"<div data-load-mode='passive' data-load-from='{loadContentFromUrl}'></div>");
+			result.AppendHtml(EndModal(showFooter));
 			return result;
 		}
 
 		private static IHtmlContent ModalForConfirmation(this IHtmlHelper helper, string id, string message = null) {
 			var result = new HtmlContentBuilder();
-			result.AppendHtml(helper.BeginModal(id, "确认", ModalSize.Default));
-			result.AppendHtml($"<div class='mt-1 mb-3'>{message ?? "该操作不可恢复，确定要执行吗？"}</div>");
-			result.AppendHtml(helper.EndModal(true, showConfirmButton: true));
+			result.AppendHtml(BeginModal(id, "确认", ModalSize.Default));
+			result.AppendHtml($"<div class='mb-3'>{message ?? "该操作不可恢复，确定要执行吗？"}</div>");
+			result.AppendHtml(EndModal(true, confirmButton: true));
 			return result;
 		}
 
-		private static IHtmlContent BeginModal(this IHtmlHelper helper, string id, string title, ModalSize size = ModalSize.Default) {
+		private static IHtmlContent BeginModal(string id, string title, ModalSize size = ModalSize.Default) {
 			var result = new HtmlContentBuilder();
-			result.AppendHtml($"<div class='modal fade' id='{id}' role='dialog'>");
-			result.AppendHtml($"  <div class='modal-dialog {size.ToLabel()}' role='document'>");
-			result.AppendHtml("     <div class='modal-content'>");
+			result.AppendHtml($"<div id='{id}' class='modal fade'>")
+				  .AppendHtml($"  <div class='modal-dialog {size.ToLabel()}'>")
+				  .AppendHtml("     <div class='modal-content'>");
 
 			if ( !string.IsNullOrEmpty(title) ) {
-				result.AppendHtml("   <div class='modal-header'>");
-				result.AppendHtml($"    <h5 class='modal-title'>{title}</h5>");
-				result.AppendHtml("     <button type='button' class='close' data-dismiss='modal'>&times;</button>");
-				result.AppendHtml("   </div>");
+				result.AppendHtml("   <div class='modal-header'>")
+					  .AppendHtml($"    <h5 class='modal-title'>{title}</h5>")
+					  .AppendHtml("     <button type='button' class='close' data-dismiss='modal'>&times;</button>")
+					  .AppendHtml("   </div>");
 			}
 
 			result.AppendHtml("       <div class='modal-body'>");
 			return result;
 		}
 
-		private static IHtmlContent EndModal(this IHtmlHelper helper, bool showFooter, bool showConfirmButton = false) {
+		private static IHtmlContent EndModal(bool showFooter, bool confirmButton = false) {
 			var result = new HtmlContentBuilder();
-			result.AppendHtml("       </div>");
+			result.AppendHtml("       </div>"); //modal-body
 
 			if ( showFooter ) {
 				result.AppendHtml("   <div class='modal-footer'>");
-				if ( showConfirmButton ) {
-					result.AppendHtml(" <button type='button' class='btn btn-danger btn-confirm btn-submit' data-dismiss='modal'><i class='fa fa-check mr-1'></i>确认</button>");
+				if ( confirmButton ) {
+					result.AppendHtml(" <button type='button' class='btn btn-danger btn-confirm btn-submit' data-dismiss='modal'>确认</button>");
 				}
-				result.AppendHtml("     <button type='button' class='btn btn-secondary btn-close' data-dismiss='modal'><i class='fa fa-ban mr-1'></i>关闭</button>");
+				result.AppendHtml("     <button type='button' class='btn btn-secondary btn-close' data-dismiss='modal'>关闭</button>");
 				result.AppendHtml("   </div>");
 			}
 

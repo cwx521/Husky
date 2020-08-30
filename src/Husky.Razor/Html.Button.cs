@@ -14,15 +14,11 @@ namespace Husky.Razor
 	{
 		public static IHtmlContent Button(this IHtmlHelper helper, ButtonType buttonType, string buttonFace, object htmlAttributes = null) {
 			var button = new TagBuilder("button");
-			button.Attributes.Add("type", buttonType.ToLower());
 
-			if ( htmlAttributes != null ) {
-				var props = htmlAttributes.GetType().GetProperties();
-				foreach ( var p in props ) {
-					button.MergeAttribute(p.Name, p.GetValue(htmlAttributes) as string, true);
-				}
-			}
+			button.MergeAttributes(htmlAttributes);
+			button.MergeAttribute("type", buttonType.ToLower());
 			button.InnerHtml.AppendHtml(buttonFace);
+
 			return button;
 		}
 	}
