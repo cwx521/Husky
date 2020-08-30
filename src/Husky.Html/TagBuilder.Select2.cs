@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Html;
 
-namespace Husky.Razor
+namespace Husky.Html
 {
 	public static partial class HtmlHelperExtensions
 	{

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Husky.Razor
+namespace Husky.Html
 {
 	public static partial class HtmlHelperExtensions
 	{
