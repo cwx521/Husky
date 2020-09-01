@@ -14,8 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Husky.Helpers\Husky.Helpers.csproj" />
-    <ProjectReference Include="..\..\src\Husky.Principal\Husky.Principal.csproj" />
+    <ProjectReference Include="..\..\src\Husky.AliyunSms\Husky.AliyunSms.csproj" />
   </ItemGroup>
 
 </Project>
