@@ -43,9 +43,9 @@ namespace Husky
 		public void Save<T>(string key, T value) => _keyValues.Save(key, value);
 		public void SaveAll() => _keyValues.SaveAll();
 
-		[NotMapped] public virtual bool IsTestEnv => _appSettings.GetValue<bool>("IsTestEnv");
-		[NotMapped] public virtual string PermanentToken => _appSettings.GetValue<string>("Security:PermanentToken");
-		[NotMapped] public virtual string RerollableToken => _appSettings.GetValue<string>("Security:RerollableToken");
-		[NotMapped] public virtual string SuperCode => _appSettings.GetValue<string>("Security:SuperCode");
+		[NotMapped] public virtual bool IsTestEnv => _appSettings?.GetValue<bool>("IsTestEnv") ?? false;
+		[NotMapped] public virtual string PermanentToken => _appSettings?.GetValue<string>("Security:PermanentToken");
+		[NotMapped] public virtual string RerollableToken => _appSettings?.GetValue<string>("Security:RerollableToken");
+		[NotMapped] public virtual string SuperCode => _appSettings?.GetValue<string>("Security:SuperCode");
 	}
 }
