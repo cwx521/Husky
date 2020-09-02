@@ -25,7 +25,7 @@ namespace Husky.Tests
 
 		[TestMethod()]
 		public void StripSpaceTest() {
-			Assert.AreEqual("Hello World".StripSpace(), "HelloWorld");
+			Assert.AreEqual("\t He  l\tlo \t W\to \r\nrl\r\nd ".StripSpace(), "HelloWorld");
 		}
 
 		[TestMethod()]
