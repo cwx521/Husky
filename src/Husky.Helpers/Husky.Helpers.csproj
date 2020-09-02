@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<RootNamespace>Husky</RootNamespace>
 		<Version>3.1.0.40828</Version>
 		<AssemblyVersion>3.1.0.40828</AssemblyVersion>
 		<FileVersion>3.1.0.40828</FileVersion>
 		<Company></Company>
 		<Authors>chenwx521@hotmail.com</Authors>
+		<RootNamespace>Husky</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
