@@ -13,11 +13,12 @@ namespace Husky.Diagnostics.Tests
 	{
 		[TestMethod()]
 		public void LogTest() {
-			var dbName = "UnitTest" + Crypto.MD5(Guid.NewGuid().ToString());
+			var dbName = $"UnitTest_{nameof(ExceptionLogHelperTests)}_{nameof(LogTest)}";
 			var dbBuilder = new DbContextOptionsBuilder<DiagnosticsDbContext>();
 			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
 
 			using var db = new DiagnosticsDbContext(dbBuilder.Options);
+			db.Database.EnsureDeleted();
 			db.Database.Migrate();
 
 			Exception exception = null;

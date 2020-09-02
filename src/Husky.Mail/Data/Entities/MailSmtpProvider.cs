@@ -36,7 +36,7 @@ namespace Husky.Mail.Data
 		[NotMapped]
 		public string Password {
 			get => Crypto.Decrypt(PasswordEncrypted, Id.ToString());
-			set => PasswordEncrypted = Crypto.Decrypt(value, Id.ToString());
+			set => PasswordEncrypted = Crypto.Encrypt(value, Id.ToString());
 		}
 
 

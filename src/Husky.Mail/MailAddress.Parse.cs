@@ -2,26 +2,17 @@
 
 namespace Husky.Mail
 {
-	public sealed class MailAddress
+	partial class MailAddress
 	{
-		public string Name { get; set; }
-		public string Address { get; set; }
-
 		public static MailAddress Parse(string mailAddressString) {
 			if ( mailAddressString == null ) {
 				throw new ArgumentNullException(nameof(mailAddressString));
 			}
-			if ( mailAddressString.IsEmail() ) {
-				return new MailAddress { Address = mailAddressString };
+			var ok = TryParse(mailAddressString, out var mailAddress);
+			if ( !ok ) {
+				throw new FormatException($"'{mailAddressString}' is an invalid mail box address. A valid format should be like 'Your Name<youraccount@domain.com>'.");
 			}
-			if ( mailAddressString.IndexOf('<') != -1 && mailAddressString.EndsWith(">") ) {
-				var name = mailAddressString.LeftBy("<", true).Trim();
-				var address = mailAddressString.RightBy("<", true).TrimEnd('>');
-				if ( address.IsEmail() ) {
-					return new MailAddress { Name = name, Address = address };
-				}
-			}
-			throw new FormatException($"'{mailAddressString}' is an invalid mail box address format. Valid format should be like 'Your Name<youraccount@domain.com>'.");
+			return mailAddress;
 		}
 
 		public static bool TryParse(string mailAddressString, out MailAddress mailAddress) {
@@ -41,13 +32,6 @@ namespace Husky.Mail
 			}
 			mailAddress = null;
 			return false;
-		}
-
-		public override string ToString() {
-			if ( string.IsNullOrWhiteSpace(Address) || string.IsNullOrWhiteSpace(Name) ) {
-				return Address;
-			}
-			return $"{Name}<{Address}>";
 		}
 	}
 }

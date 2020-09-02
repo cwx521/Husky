@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Helpers.Tests", "tests\Husky.Helpers.Tests\Husky.Helpers.Tests.csproj", "{342342CB-2B12-469E-B85D-EF0EB19F9D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Diagnostics.Tests", "tests\Husky.Diagnostics.Tests\Husky.Diagnostics.Tests.csproj", "{5463CCB7-7BD6-4FC3-830B-88A99013D11C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Diagnostics.Tests", "tests\Husky.Diagnostics.Tests\Husky.Diagnostics.Tests.csproj", "{5463CCB7-7BD6-4FC3-830B-88A99013D11C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Lbs.Tests", "tests\Husky.Lbs.Tests\Husky.Lbs.Tests.csproj", "{7CC7474B-F970-42EC-B029-F0CA777D788E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Mail.Tests", "tests\Husky.Mail.Tests\Husky.Mail.Tests.csproj", "{36F21E21-9911-4308-A30D-BED255253D7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{7CC7474B-F970-42EC-B029-F0CA777D788E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CC7474B-F970-42EC-B029-F0CA777D788E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CC7474B-F970-42EC-B029-F0CA777D788E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36F21E21-9911-4308-A30D-BED255253D7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36F21E21-9911-4308-A30D-BED255253D7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36F21E21-9911-4308-A30D-BED255253D7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36F21E21-9911-4308-A30D-BED255253D7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{342342CB-2B12-469E-B85D-EF0EB19F9D8D} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{5463CCB7-7BD6-4FC3-830B-88A99013D11C} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{7CC7474B-F970-42EC-B029-F0CA777D788E} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
+		{36F21E21-9911-4308-A30D-BED255253D7A} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}

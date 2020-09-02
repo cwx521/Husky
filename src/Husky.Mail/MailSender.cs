@@ -6,7 +6,6 @@ using Husky.Mail.Data;
 using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
 using MimeKit.Text;
 
