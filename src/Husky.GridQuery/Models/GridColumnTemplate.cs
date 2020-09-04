@@ -11,8 +11,7 @@
 		Date,
 		DateTime,
 		TimeAgo,
-		Elapsed,
-		ElapsedSeconds,
+		TimeElapsed,
 		CheckBox,
 		ZeroAsEmpty
 	}

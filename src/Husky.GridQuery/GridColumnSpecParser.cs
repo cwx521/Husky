@@ -156,20 +156,21 @@ namespace Husky.GridQuery
 					return $"#if ({fieldName} !== {(int)CheckBoxState.NoDisplay}) {{# {fragment2} #}} #";
 
 				case GridColumnTemplate.Date:
-					return $"#: formatDate({fieldName}) #";
+					return $"#: $.toDateString({fieldName}) #";
 
 				case GridColumnTemplate.DateTime:
-					return $"#: formatDateTime({fieldName}) #";
+					return $"#: $.toDateTimeString({fieldName}) #";
 
 				case GridColumnTemplate.TimeAgo:
-					return $"#: ago({fieldName}) #";
+					return $"#: $.toTimeAgoString({fieldName}) #";
 
-				case GridColumnTemplate.Elapsed:
-				case GridColumnTemplate.ElapsedSeconds:
-					return $"#: elapsed({fieldName}) #";
+				case GridColumnTemplate.TimeElapsed:
+					return $"#: $.toTimeElapsedString({fieldName}) #";
 
 				case GridColumnTemplate.ZeroAsEmpty:
-					return $"#: {fieldName} == 0 ? '' : {fieldName} #";
+					return string.IsNullOrEmpty(attr.Format)
+						? $"#: {fieldName} == 0 ? '' : {fieldName} #"
+						: $"#: {fieldName} == 0 ? '' : kendo.toString({fieldName}, '{attr.Format}') #";
 
 				case GridColumnTemplate.None:
 				default:
