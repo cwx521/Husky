@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Husky.TwoFactor.Data.Migrations
 {
@@ -14,13 +12,13 @@ namespace Husky.TwoFactor.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Code = table.Column<string>(type: "varchar(8)", nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false),
-					ErrorTimes = table.Column<int>(nullable: false),
-                    IsUsed = table.Column<bool>(nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserIdString = table.Column<string>(type: "varchar(36)", nullable: true),
                     SentTo = table.Column<string>(type: "varchar(50)", nullable: true),
-                    UserIdString = table.Column<string>(type: "varchar(36)", nullable: true)
+                    Code = table.Column<string>(type: "varchar(8)", nullable: true),
+                    ErrorTimes = table.Column<int>(nullable: false),
+                    IsUsed = table.Column<bool>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

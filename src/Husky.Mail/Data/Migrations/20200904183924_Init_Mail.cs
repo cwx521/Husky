@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Husky.Mail.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class Init_Mail : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,14 +12,14 @@ namespace Husky.Mail.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CredentialName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
                     Host = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    IsInUse = table.Column<bool>(nullable: false),
-                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true),
+                    CredentialName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
                     Port = table.Column<int>(nullable: false),
-                    SenderDisplayName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    Ssl = table.Column<bool>(nullable: false),
+                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true),
                     SenderMailAddress = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    Ssl = table.Column<bool>(nullable: false)
+                    SenderDisplayName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    IsInUse = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,16 +31,16 @@ namespace Husky.Mail.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Body = table.Column<string>(nullable: true),
-                    Cc = table.Column<string>(maxLength: 2000, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false),
-                    Exception = table.Column<string>(maxLength: 500, nullable: true),
-                    IsHtml = table.Column<bool>(nullable: false),
-                    IsSuccessful = table.Column<bool>(nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     SmtpId = table.Column<Guid>(nullable: true),
                     Subject = table.Column<string>(maxLength: 200, nullable: true),
-                    To = table.Column<string>(maxLength: 2000, nullable: true)
+                    Body = table.Column<string>(nullable: true),
+                    IsHtml = table.Column<bool>(nullable: false),
+                    To = table.Column<string>(maxLength: 2000, nullable: true),
+                    Cc = table.Column<string>(maxLength: 2000, nullable: true),
+                    Exception = table.Column<string>(maxLength: 500, nullable: true),
+                    IsSuccessful = table.Column<bool>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,12 +58,12 @@ namespace Husky.Mail.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MailId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
                     ContentStream = table.Column<byte[]>(nullable: true),
                     ContentType = table.Column<string>(maxLength: 32, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false),
-                    MailId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 100, nullable: true)
+                    CreatedTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

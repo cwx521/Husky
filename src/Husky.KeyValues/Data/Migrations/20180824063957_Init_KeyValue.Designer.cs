@@ -16,17 +16,17 @@ namespace Husky.KeyValues.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Husky.Configuration.Data.KeyValue", b =>
+            modelBuilder.Entity("Husky.KeyValues.Data.KeyValue", b =>
                 {
                     b.Property<string>("Key")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("Value")
+                        .HasColumnType("nvarchar(2000)")
                         .HasMaxLength(2000);
 
                     b.HasKey("Key");

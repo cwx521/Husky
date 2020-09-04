@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Husky.Diagnostics.Data.Migrations
 {
@@ -13,26 +11,48 @@ namespace Husky.Diagnostics.Data.Migrations
                 name: "ExceptionLogs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Count = table.Column<int>(type: "int", nullable: false),
-                    ExceptionType = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
-                    FirstTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true),
-                    LastTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Md5Comparison = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StackTrace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Url = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: true),
+                    Url = table.Column<string>(type: "varchar(4000)", maxLength: 4000, nullable: true),
+                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true),
+                    ExceptionType = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
+                    Message = table.Column<string>(maxLength: 1000, nullable: true),
+                    Source = table.Column<string>(nullable: true),
+                    StackTrace = table.Column<string>(nullable: true),
+                    UserIdString = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
+                    UserName = table.Column<string>(maxLength: 100, nullable: true),
                     UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
-					UserIdString = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
-					UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
-					UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-				},
+                    UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
+                    Count = table.Column<int>(nullable: false),
+                    FirstTime = table.Column<DateTime>(nullable: false),
+                    LastTime = table.Column<DateTime>(nullable: false)
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExceptionLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(maxLength: 1000, nullable: true),
+                    Referrer = table.Column<string>(maxLength: 1000, nullable: true),
+                    Data = table.Column<string>(nullable: true),
+                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true),
+                    UserIdString = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: true),
+                    UserName = table.Column<string>(maxLength: 100, nullable: true),
+                    IsAjax = table.Column<bool>(nullable: false),
+                    UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
+                    UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
+                    Time = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -46,6 +66,9 @@ namespace Husky.Diagnostics.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ExceptionLogs");
+
+            migrationBuilder.DropTable(
+                name: "RequestLogs");
         }
     }
 }
