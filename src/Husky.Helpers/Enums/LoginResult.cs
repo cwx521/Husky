@@ -30,6 +30,9 @@
 		RejectedOtherReason,
 
 		[Label("帐号已被停用")]
-		RejectedAccountSuspended
+		RejectedAccountSuspended,
+
+		[Label("帐号已被删除")]
+		RejectedAccountDeleted
 	}
 }

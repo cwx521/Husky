@@ -29,6 +29,7 @@ namespace Husky.CommonModules.Users.Data
 		public DbSet<UserMessageCommonContent> UserMessageCommonContents { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder mb) {
+
 			//Indices
 			mb.Entity<UserPhone>().HasIndex(x => x.Number).IsUnique();
 			mb.Entity<UserCredit>().HasIndex(x => new { x.UserId, x.CreditTypeId }).IsUnique();
@@ -37,6 +38,9 @@ namespace Husky.CommonModules.Users.Data
 				wechat.HasIndex(x => x.MobilePlatformOpenId).IsUnique();
 				wechat.HasIndex(x => x.UnionId).IsUnique();
 			});
+
+			//QueryFilters
+			mb.Entity<UserPassword>().HasQueryFilter(x => !x.IsObsoleted);
 
 			//User
 			mb.Entity<User>(user => {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Diagnostics
 {
-	public sealed class ExceptionHandlerFilter : IExceptionFilter
+	public sealed class ExceptionLogHandlerFilter : IExceptionFilter
 	{
 		public void OnException(ExceptionContext context) {
 			try {
