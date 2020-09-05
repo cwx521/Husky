@@ -48,7 +48,7 @@ namespace Husky.TwoFactor
 			}
 
 			var code = new TwoFactorCode { 
-				UserIdString = _me.IdString,
+				UserId = _me.Id,
 				Code = new Random().Next(0, 1000000).ToString("D6"),
 				SentTo = emailOrMobile
 			};
@@ -81,7 +81,7 @@ namespace Husky.TwoFactor
 				.Where(x => x.IsUsed == false)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.SentTo == model.SendTo)
-				.Where(x => _me.IsAnonymous || x.UserIdString == _me.IdString)
+				.Where(x => _me.IsAnonymous || x.UserId == _me.Id)
 				.OrderByDescending(x => x.Id)
 				.Take(1)
 				.FirstOrDefault();

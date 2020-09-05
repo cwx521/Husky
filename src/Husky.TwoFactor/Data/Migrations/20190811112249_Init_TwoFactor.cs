@@ -13,7 +13,7 @@ namespace Husky.TwoFactor.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserIdString = table.Column<string>(type: "varchar(36)", nullable: true),
+                    UserId = table.Column<int>(nullable: false),
                     SentTo = table.Column<string>(type: "varchar(50)", nullable: true),
                     Code = table.Column<string>(type: "varchar(8)", nullable: true),
                     ErrorTimes = table.Column<int>(nullable: false),

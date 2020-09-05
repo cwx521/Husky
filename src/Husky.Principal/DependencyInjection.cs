@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddPrincipal(this HuskyDI husky, IdType idType, IdentityCarrier carrier, IdentityOptions options = null) {
+		public static HuskyDI AddPrincipal(this HuskyDI husky, IdentityCarrier carrier, IdentityOptions options = null) {
 			var key = typeof(IPrincipalUser).FullName;
 
 			husky.Services
@@ -23,24 +23,16 @@ namespace Husky
 				})
 				.AddScoped<IPrincipalUser>(svc => {
 					var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
-					var p = http.Items[key] as IPrincipalUser;
-					if ( p == null ) {
-						p = svc.CreatePrincipalInstance(idType);
-						http.Items.Add(key, p);
+					var identityManager = svc.GetRequiredService<IIdentityManager>();
+					var principal = http.Items[key] as IPrincipalUser;
+					if ( principal == null ) {
+						principal = new PrincipalUser(identityManager, svc);
+						http.Items.Add(key, principal);
 					}
-					return p;
+					return principal;
 				});
 
 			return husky;
-		}
-
-		private static IPrincipalUser CreatePrincipalInstance(this IServiceProvider svc, IdType idType) {
-			var identityManager = svc.GetRequiredService<IIdentityManager>();
-			switch ( idType ) {
-				default: throw new ArgumentOutOfRangeException(nameof(idType));
-				case IdType.Guid: return new Principal<Guid>(identityManager, svc);
-				case IdType.Int: return new Principal<int>(identityManager, svc);
-			}
 		}
 	}
 }

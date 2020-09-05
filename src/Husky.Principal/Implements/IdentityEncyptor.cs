@@ -11,7 +11,7 @@ namespace Husky.Principal.Implements
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			return Crypto.Encrypt($"{identity.IdString}|{identity.DisplayName}|{Crypto.SHA1(identity.IdString + identity.DisplayName + token)}", token);
+			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}|{Crypto.SHA1(identity.Id + identity.DisplayName + token)}", token);
 		}
 
 		public IIdentity Decrypt(string encryptedString, string token) {
@@ -29,10 +29,10 @@ namespace Husky.Principal.Implements
 				if ( a != -1 && b > a ) {
 					var validation = str.Substring(b + 1);
 					var identity = new Identity {
-						IdString = str.Substring(0, a),
+						Id = str.Substring(0, a).AsInt(),
 						DisplayName = str.Substring(a + 1, b - a - 1)
 					};
-					if ( Crypto.SHA1(identity.IdString + identity.DisplayName + token) == validation ) {
+					if ( Crypto.SHA1(identity.Id + identity.DisplayName + token) == validation ) {
 						return identity;
 					}
 				}

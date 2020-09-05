@@ -19,7 +19,7 @@ namespace Husky.Diagnostics
 				Source = e.Source,
 				StackTrace = e.StackTrace,
 				Url = http?.Request?.GetDisplayUrl(),
-				UserIdString = principal?.IdString,
+				UserId = principal?.Id,
 				UserName = principal?.DisplayName ?? http?.User?.Identity?.Name,
 				UserAgent = http?.Request?.UserAgent(),
 				UserIp = http?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString()

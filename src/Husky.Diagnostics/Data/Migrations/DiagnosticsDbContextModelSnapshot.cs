@@ -65,9 +65,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("varchar(1000)")
                         .HasMaxLength(1000);
 
-                    b.Property<string>("UserIdString")
-                        .HasColumnType("varchar(36)")
-                        .HasMaxLength(36);
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserIp")
                         .HasColumnType("varchar(39)")
@@ -117,9 +116,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("varchar(1000)")
                         .HasMaxLength(1000);
 
-                    b.Property<string>("UserIdString")
-                        .HasColumnType("varchar(36)")
-                        .HasMaxLength(36);
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserIp")
                         .HasColumnType("varchar(39)")

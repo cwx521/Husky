@@ -31,7 +31,7 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( identity.IsAnonymous ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
+				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
 			}
 			if ( !_httpContext.Response.HasStarted ) {
 				_httpContext.Response.Cookies.Append(

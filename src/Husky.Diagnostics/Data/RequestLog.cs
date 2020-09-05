@@ -19,8 +19,7 @@ namespace Husky.Diagnostics.Data
 		[StringLength(10), Column(TypeName = "varchar(10)")]
 		public string HttpMethod { get; set; }
 
-		[StringLength(36), Column(TypeName = "varchar(36)")]
-		public string UserIdString { get; set; }
+		public int? UserId { get; set; }
 
 		[StringLength(100)]
 		public string UserName { get; set; }

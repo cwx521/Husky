@@ -28,8 +28,7 @@ namespace Husky.Diagnostics.Data
 
 		public string StackTrace { get; set; }
 		
-		[StringLength(36), Column(TypeName = "varchar(36)")]
-		public string UserIdString { get; set; }
+		public int? UserId { get; set; }
 
 		[StringLength(100)]
 		public string UserName { get; set; }

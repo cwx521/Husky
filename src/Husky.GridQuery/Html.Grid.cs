@@ -67,7 +67,7 @@ namespace Husky.GridQuery
 
 		public static string GetGridCookieKey(this IPrincipalUser me, string dataSourceUrl, string forAction) {
 			return Crypto
-				.MD5(dataSourceUrl + "|" + forAction + me.IdString)
+				.MD5(dataSourceUrl + "|" + forAction + me.Id)
 				.Substring(6, 6);
 		}
 	}

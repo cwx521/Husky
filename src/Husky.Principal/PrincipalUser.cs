@@ -2,24 +2,19 @@
 
 namespace Husky.Principal
 {
-	public class Principal<T> : Identity, IIdentity, IPrincipalUser where T : struct, IFormattable, IEquatable<T>
+	public class PrincipalUser : Identity, IIdentity, IPrincipalUser
 	{
-		public Principal(IIdentityManager identityManager, IServiceProvider serviceProvider) {
+		public PrincipalUser(IIdentityManager identityManager, IServiceProvider serviceProvider) {
 
 			var identity = identityManager.ReadIdentity();
 			if ( identity != null && identity.IsAuthenticated ) {
-				IdString = identity.IdString;
+				Id = identity.Id;
 				DisplayName = identity.DisplayName;
 				identityManager.SaveIdentity(this);
 			}
 
 			IdentityManager = identityManager;
 			ServiceProvider = serviceProvider;
-		}
-
-		public T? Id {
-			get => Id<T>();
-			set => IdString = value?.ToString();
 		}
 
 		public IIdentityManager IdentityManager { get; private set; }

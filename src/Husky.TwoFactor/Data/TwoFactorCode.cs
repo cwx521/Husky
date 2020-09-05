@@ -10,8 +10,7 @@ namespace Husky.TwoFactor.Data
 		public int Id { get; set; }
 
 		[NeverUpdate]
-		[Column(TypeName = "varchar(36)")]
-		public string UserIdString { get; set; }
+		public int UserId { get; set; }
 
 		[NeverUpdate]
 		[Column(TypeName = "varchar(50)")]

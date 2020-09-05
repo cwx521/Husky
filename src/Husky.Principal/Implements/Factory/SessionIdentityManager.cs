@@ -19,7 +19,7 @@ namespace Husky.Principal.Implements
 				var i = combined.IndexOf('|');
 				if ( i > 0 ) {
 					return new Identity {
-						IdString = combined.Substring(0, i),
+						Id = combined.Substring(0, i).AsInt(),
 						DisplayName = combined.Substring(i + 1)
 					};
 				}
@@ -32,9 +32,9 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( identity.IsAnonymous ) {
-				throw new ArgumentNullException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not a athenticated value.");
+				throw new ArgumentNullException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not a athenticated value.");
 			}
-			_httpContext.Session.SetString(_options.Key, string.Concat(identity.IdString, '|', identity.DisplayName));
+			_httpContext.Session.SetString(_options.Key, string.Concat(identity.Id, '|', identity.DisplayName));
 		}
 
 		void IIdentityManager.DeleteIdentity() => _httpContext.Session.Remove(_options.Key);

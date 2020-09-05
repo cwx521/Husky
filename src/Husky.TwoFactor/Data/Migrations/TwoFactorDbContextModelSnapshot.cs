@@ -41,8 +41,8 @@ namespace Husky.TwoFactor.Data.Migrations
                     b.Property<string>("SentTo")
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("UserIdString")
-                        .HasColumnType("varchar(36)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
