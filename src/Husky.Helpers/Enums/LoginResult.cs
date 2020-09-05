@@ -1,10 +1,8 @@
-﻿using Husky;
-
-namespace Shipping.Data
+﻿namespace Husky
 {
 	public enum LoginResult
 	{
-		[Label("成功")]
+		[Label("成功", CssClass = "text-success")]
 		Success,
 
 		[Label("帐号格式不正确")]

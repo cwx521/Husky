@@ -5,8 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Husky
 {
-	public static class ConnectionStrings
-	{
+	public static class ConnectionStrings {
 		public static string SeekConnectionString<T>(this IConfiguration configuration, string nameOfConnectionString = null)
 			where T : DbContext {
 
@@ -30,5 +29,7 @@ namespace Husky
 			}
 			return connstr;
 		}
+
+		public static string HuskyDevTestConnectionString => "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=HuskyDevTest; Integrated Security=True";
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using Husky;
 
-namespace Shipping.Data
+namespace Husky
 {
 	public enum DayOfWeekZhcn
 	{
