@@ -88,18 +88,20 @@ namespace Husky.Tests
 
 		[TestMethod()]
 		public void EncryptTest() {
-			var str = Crypto.RandomString(200);
+			var str = Crypto.RandomString(12);
+			var iv = Crypto.RandomString();
 			var key = Crypto.RandomString();
-			var encrypted = Crypto.Encrypt(str, key);
+			var encrypted = Crypto.Encrypt(str, iv, key);
 			Assert.AreNotEqual(str, encrypted);
 		}
 
 		[TestMethod()]
 		public void DecryptTest() {
 			var str = Crypto.RandomString(200);
+			var iv = Crypto.RandomString();
 			var key = Crypto.RandomString();
-			var encrypted = Crypto.Encrypt(str, key);
-			var decrypted = Crypto.Decrypt(encrypted, key);
+			var encrypted = Crypto.Encrypt(str, iv, key);
+			var decrypted = Crypto.Decrypt(encrypted, iv, key);
 			Assert.AreNotEqual(str, encrypted);
 			Assert.AreEqual(str, decrypted);
 		}

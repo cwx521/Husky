@@ -11,7 +11,9 @@ namespace Husky.Principal.Implements
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}|{Crypto.SHA1(identity.Id + identity.DisplayName + token)}", token);
+
+			var iv = Crypto.SHA1(identity.Id + identity.DisplayName);
+			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}", iv, token) + iv;
 		}
 
 		public IIdentity Decrypt(string encryptedString, string token) {
@@ -22,20 +24,15 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(token));
 			}
 			try {
-				var str = Crypto.Decrypt(encryptedString, token);
-				var a = str.IndexOf('|');
-				var b = str.LastIndexOf('|');
+				var ivSaltStringLength = 40;
+				var iv = encryptedString[^ivSaltStringLength..];
+				var str = Crypto.Decrypt(encryptedString[..^ivSaltStringLength], iv, token);
+				var splitAt = str.IndexOf('|');
 
-				if ( a != -1 && b > a ) {
-					var validation = str.Substring(b + 1);
-					var identity = new Identity {
-						Id = str.Substring(0, a).AsInt(),
-						DisplayName = str.Substring(a + 1, b - a - 1)
-					};
-					if ( Crypto.SHA1(identity.Id + identity.DisplayName + token) == validation ) {
-						return identity;
-					}
-				}
+				return new Identity {
+					Id = str[0..splitAt].AsInt(),
+					DisplayName = str[(splitAt + 1)..]
+				};
 			}
 			catch {
 			}
