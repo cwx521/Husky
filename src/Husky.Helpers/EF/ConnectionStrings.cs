@@ -5,15 +5,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace Husky
 {
-	public static class ConnectionStrings {
-		public static string SeekConnectionString<T>(this IConfiguration configuration, string nameOfConnectionString = null)
-			where T : DbContext {
+	public static class ConnectionStrings
+	{
+		public static string SeekConnectionString<TContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
+			where TContext : DbContext {
+
+			//try looking for the first found connection string setting by this sequence
 
 			var lookForNames = new[] {
 				nameOfConnectionString,
 				"Dev",
-				"QA",
-				typeof(T).Name.Replace("DbContext", ""),
+				"Test",
+				typeof(TContext).Name.Replace("DbContext", ""),
 				"Default"
 			};
 			var connstr = lookForNames
@@ -30,6 +33,6 @@ namespace Husky
 			return connstr;
 		}
 
-		public static string HuskyDevTestConnectionString => "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=HuskyDevTest; Integrated Security=True";
+		public const string HuskyDevTestConnectionString = "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=HuskyDevTest; Integrated Security=True";
 	}
 }
