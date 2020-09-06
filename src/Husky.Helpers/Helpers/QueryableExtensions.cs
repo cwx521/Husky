@@ -13,8 +13,8 @@ namespace Husky
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_OrderByDescending) : nameof(_OrderBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(typeof(T), propertyType);
-			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath });
+			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
 		public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> query, string propertyPath) => OrderBy(query, propertyPath, SortDirection.Descending);
 
@@ -25,8 +25,8 @@ namespace Husky
 		public static IOrderedQueryable<T> ThenBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_ThenByDescending) : nameof(_ThenBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(typeof(T), propertyType);
-			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath });
+			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
 		public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> query, string propertyPath) => ThenBy(query, propertyPath, SortDirection.Descending);
 
@@ -50,18 +50,18 @@ namespace Husky
 			var type = typeof(T);
 			var steps = propertyPath.Split('.');
 			foreach ( var propertyName in steps ) {
-				type = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance).PropertyType;
+				type = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance)!.PropertyType;
 			}
 			return type;
 		}
 
 		private static Expression GetPropertyExpression<T>(ParameterExpression arg, string propertyPath) {
-			Expression property = null;
+			Expression? property = null;
 			var steps = propertyPath.Split('.');
 			foreach ( var propertyName in steps ) {
 				property = Expression.Property(property ?? arg, propertyName);
 			}
-			return property;
+			return property!;
 		}
 
 		private static Expression<Func<T, TReturn>> Selector<T, TReturn>(string propertyPath) {
@@ -84,8 +84,8 @@ namespace Husky
 			//hack: kendo datetime format.
 			//todo: need to improve
 			if ( typeofValue == typeof(DateTime) ) {
-				var datestr = value as string ?? value?.ToString();
-				if ( datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
+				var datestr = value as string ?? value.ToString();
+				if ( datestr != null && datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
 					value = datestr.Substring(4, 11);
 				}
 			}

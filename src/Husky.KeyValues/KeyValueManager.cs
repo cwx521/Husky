@@ -27,9 +27,9 @@ namespace Husky.KeyValues
 
 		public string GetString(string key) => Find(key)?.Value;
 
-		public T Get<T>(string key, T defaultValue = default) => GetString(key).As(defaultValue);
+		public T Get<T>(string key, T defaultValue = default) where T : struct => GetString(key).As(defaultValue);
 
-		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) => (T)GetOrAdd(key, defaultValueIfNotExist, typeof(T));
+		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct => (T)GetOrAdd(key, defaultValueIfNotExist, typeof(T));
 
 		public object GetOrAdd(string key, object defaultValueIfNotExist, Type defaultValueType) {
 			if ( key == null ) {
@@ -51,7 +51,7 @@ namespace Husky.KeyValues
 			return defaultValueIfNotExist;
 		}
 
-		public void AddOrUpdate<T>(string key, T value) {
+		public void AddOrUpdate<T>(string key, T value) where T : struct {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
@@ -60,7 +60,7 @@ namespace Husky.KeyValues
 			if ( item == null ) {
 				item = new KeyValue {
 					Key = key,
-					Value = value?.ToString()
+					Value = value.ToString()
 				};
 				lock ( _lock ) {
 					Items.Add(item);
@@ -68,21 +68,21 @@ namespace Husky.KeyValues
 			}
 			else {
 				lock ( _lock ) {
-					item.Value = value?.ToString();
+					item.Value = value.ToString();
 				}
 			}
 		}
 
 		public void Reload() => _cache.Remove(_cacheKey);
 
-		public void Save<T>(string key, T value) {
-			AddOrUpdate(key, value?.ToString());
+		public void Save<T>(string key, T value) where T : struct {
+			AddOrUpdate(key, value);
 
 			using var scope = _svc.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
 			db.AddOrUpdate(new KeyValue {
 				Key = key,
-				Value = value?.ToString()
+				Value = value.ToString()
 			});
 			db.SaveChanges();
 		}

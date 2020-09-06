@@ -263,7 +263,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
                     b.Property<int>("UserId")

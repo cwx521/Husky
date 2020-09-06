@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Husky.Syntactic.Natural;
 using Newtonsoft.Json;
 
 namespace Husky.GridQuery
@@ -96,7 +94,7 @@ namespace Husky.GridQuery
 			if ( t == typeof(DateTime) ) {
 				return "date";
 			}
-			if ( t.Is(typeof(int), typeof(uint), typeof(decimal), typeof(double), typeof(float)) ) {
+			if ( t == typeof(int) || t == typeof(uint) || t == typeof(decimal) || t == typeof(double) || t == typeof(float) ) {
 				return "number";
 			}
 			return null;

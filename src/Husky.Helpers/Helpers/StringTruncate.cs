@@ -7,7 +7,7 @@ namespace Husky
 {
 	public static class StringTruncate
 	{
-		public static string SplitWords(this string str) {
+		public static string? SplitWords(this string? str) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return str;
 			}
@@ -26,23 +26,23 @@ namespace Husky
 			return sb.ToString();
 		}
 
-		public static string StripWord(this string str, string wordToRemove) {
+		public static string? StripWord(this string? str, string wordToRemove) {
 			return string.IsNullOrEmpty(str) ? str : str.Replace(wordToRemove, "");
 		}
 
-		public static string StripSpace(this string str) {
+		public static string? StripSpace(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"\s+", "", RegexOptions.Multiline);
 		}
 
-		public static string StripHtml(this string str) {
+		public static string? StripHtml(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"<\/?[1-6a-zA-Z]+[^>]*>", "", RegexOptions.Multiline);
 		}
 
-		public static string StripRegEx(this string str, string pattern, RegexOptions options = RegexOptions.None) {
+		public static string? StripRegEx(this string? str, string pattern, RegexOptions options = RegexOptions.None) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, pattern, "", options);
 		}
 
-		public static string Extract(this string str, string pattern, int matchIndex = 1) {
+		public static string? Extract(this string? str, string pattern, int matchIndex = 1) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return null;
 			}
@@ -50,11 +50,11 @@ namespace Husky
 			return matches.Count == 0 ? null : matches[Math.Max(matchIndex, 1) - 1].Value;
 		}
 
-		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : IFormattable {
+		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : struct {
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
-		public static string MidBy(this string str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
+		public static string? MidBy(this string? str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -77,7 +77,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string LeftBy(this string str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string? LeftBy(this string? str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( beforeKeyword == null ) {
 				throw new ArgumentNullException(nameof(beforeKeyword));
 			}
@@ -93,7 +93,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string RightBy(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string? RightBy(this string? str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -109,7 +109,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string Left(this string str, int neededCount, bool endWithEllipsis = false) {
+		public static string? Left(this string? str, int neededCount, bool endWithEllipsis = false) {
 			return str == null || str.Length <= neededCount || neededCount < 3
 				? str
 				: endWithEllipsis
@@ -117,7 +117,7 @@ namespace Husky
 					: str.Substring(0, neededCount);
 		}
 
-		public static string LeftMonospaced(this string str, int neededWidthInHalfangle) {
+		public static string? LeftMonospaced(this string? str, int neededWidthInHalfangle) {
 			if ( str == null || str.Length <= neededWidthInHalfangle / 2 || neededWidthInHalfangle < 3 ) {
 				return str;
 			}
@@ -134,7 +134,7 @@ namespace Husky
 			return str.Substring(0, i - j) + "...";
 		}
 
-		public static T[] Split<T>(this string wellFormed, params char[] separators) where T : IFormattable {
+		public static T[] Split<T>(this string? wellFormed, params char[] separators) where T : struct {
 			return string.IsNullOrEmpty(wellFormed) ? new T[0] : wellFormed.Split(separators).Select(x => x.As<T>()).ToArray();
 		}
 	}

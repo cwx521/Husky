@@ -40,7 +40,7 @@ namespace Husky
 		private readonly IConfiguration _appSettings;
 
 		public void Reload() => _keyValues.Reload();
-		public void Save<T>(string key, T value) => _keyValues.Save(key, value);
+		public void Save<T>(string key, T value) where T : struct => _keyValues.Save(key, value);
 		public void SaveAll() => _keyValues.SaveAll();
 
 		[NotMapped] public virtual bool IsTestEnv => _appSettings?.GetValue<bool>("IsTestEnv") ?? false;

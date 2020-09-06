@@ -30,7 +30,7 @@ namespace Husky.Principal
 					.AsNoTracking()
 					.Where(x => x.Id == principal.Id)
 					.Select(x => new UserQuickView {
-						DisplayName = x.DisplayName ?? x.Phone!.Number.Mask(),
+						DisplayName = x.DisplayName ?? x.Phone!.Number.Mask()!,
 						PhotoUrl = x.PhotoUrl ?? (x.WeChat == null ? null : x.WeChat.HeadImageUrl),
 						PhoneNumber = x.Phone == null ? null : x.Phone.Number,
 						RegisteredTime = x.RegisteredTime,

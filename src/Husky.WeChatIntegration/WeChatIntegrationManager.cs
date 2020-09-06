@@ -42,7 +42,7 @@ namespace Husky.WeChatIntegration
 								id: '" + targetElementId + @"',
 								appid: '" + idSecret.AppId + @"',
 								redirect_uri: '" + redirectUri + @"',
-								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss")) + @"',
+								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), ivSalt: idSecret.AppId) + @"',
 								href: '" + styleSheetUrl + @"',
 								style: ''
 							});
@@ -62,7 +62,7 @@ namespace Husky.WeChatIntegration
 				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
 				   $"&response_type=code" +
 				   $"&scope={scope}" +
-				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"))}" +
+				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), ivSalt: idSecret.AppId)}" +
 				   $"#wechat_redirect";
 		}
 

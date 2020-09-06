@@ -37,7 +37,7 @@ namespace Husky.Principal
 				return new Failure($"{mobileNumber} 已被用于其他帐号");
 			}
 
-			var encryptedPassword = Crypto.Encrypt(password);
+			var encryptedPassword = Crypto.SHA1(password);
 			var user = new User {
 				Phone = new UserPhone {
 					Number = mobileNumber,
@@ -81,7 +81,7 @@ namespace Husky.Principal
 				return await AddLoginRecord(user.Id, mobileNumber, null, LoginResult.RejectedContinuousAttemption);
 			}
 
-			if ( user.Passwords.All(x => x.IsObsoleted || x.Password != Crypto.Encrypt(password)) ) {
+			if ( user.Passwords.All(x => x.IsObsoleted || x.Password != Crypto.SHA1(password)) ) {
 				return await AddLoginRecord(user.Id, mobileNumber, password, LoginResult.ErrorPassword, additionalDescription);
 			}
 			if ( user.State == RowStatus.Suspended ) {
@@ -120,7 +120,7 @@ namespace Husky.Principal
 				LoginResult = result,
 				UserId = userId,
 				AttemptedAccount = inputAccount,
-				SickPassword = string.IsNullOrEmpty(sickPassword) ? sickPassword : (sickPassword?.Length > 25 ? "(超出25位)" : Crypto.Encrypt(sickPassword)),
+				SickPassword = string.IsNullOrEmpty(sickPassword) ? sickPassword : (sickPassword.Length > 25 ? sickPassword.Left(88) : Crypto.Encrypt(sickPassword, ivSalt: inputAccount)),
 				Description = description,
 				UserAgent = _http.Request.UserAgent(),
 				Ip = ipString

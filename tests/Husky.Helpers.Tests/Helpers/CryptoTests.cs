@@ -7,8 +7,8 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public void RandomNumberTest() {
-			var a = Crypto.RandomNumber();
-			var b = Crypto.RandomNumber();
+			var a = Crypto.RandomInt32();
+			var b = Crypto.RandomInt32();
 			Assert.AreNotEqual(a, b);
 		}
 

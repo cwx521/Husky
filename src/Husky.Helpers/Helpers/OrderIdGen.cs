@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Husky.Syntactic.Natural;
 
 namespace Husky
 {
@@ -13,7 +11,7 @@ namespace Husky
 			return str + Validation(str);
 		}
 
-		public static bool TryParse(string str, out DateTime datetime) {
+		public static bool TryParse(string? str, out DateTime datetime) {
 			if ( str == null || str.Length != 12 || Validation(str.Substring(0, 11)) != str[11] - '0' ) {
 				datetime = DateTime.MinValue;
 				return false;
@@ -28,7 +26,7 @@ namespace Husky
 			);
 			return DateTime.TryParse(makeup, out datetime);
 		}
-		public static bool IsValid(string orderId) => TryParse(orderId, out _);
+		public static bool IsValid(string? str) => TryParse(str, out _);
 
 		private static char Year => (char)('0' + (DateTime.Now.Year - 2011));
 		private static char Month => (char)('A' + DateTime.Now.Month - 1);

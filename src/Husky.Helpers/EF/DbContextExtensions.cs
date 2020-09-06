@@ -12,20 +12,13 @@ namespace Husky
 			where TDbContext : DbContext
 			where TEntity : class {
 
-			if ( context == null ) {
-				throw new ArgumentNullException(nameof(context));
-			}
-			if ( entity == null ) {
-				throw new ArgumentNullException(nameof(entity));
-			}
-
 			// Find key and Build query
-			var importing = context.Entry(entity);
-			var keyProperties = importing.Metadata.FindPrimaryKey().Properties;
+			var entityEntry = context.Entry(entity);
+			var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
 
 			IQueryable<TEntity> query = context.Set<TEntity>();
 			foreach ( var key in keyProperties ) {
-				query = query.Where(key.Name, importing.Property(key.Name).CurrentValue, Comparison.Equal);
+				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
 			}
 
 			// Add or Update
@@ -34,44 +27,40 @@ namespace Husky
 				context.Add(entity);
 			}
 			else {
-				var updating = context.Entry(row);
-				foreach ( var p in updating.Properties ) {
+				var properties = context.Entry(row).Properties;
+				foreach ( var p in properties ) {
 					if ( p.Metadata.PropertyInfo.IsDefined(typeof(NeverUpdateAttribute)) ) {
 						continue;
 					}
-					p.CurrentValue = importing.Property(p.Metadata.Name).CurrentValue;
+					p.CurrentValue = entityEntry.Property(p.Metadata.Name).CurrentValue;
 				}
 			}
-			return importing;
+			return entityEntry;
 		}
 
 		public static EntityEntry<TEntity> Update<TDbContext, TEntity>(this TDbContext context, TEntity entity, params string[] updatingFields)
 			where TDbContext : DbContext
 			where TEntity : class {
 
-			if ( context == null ) {
-				throw new ArgumentNullException(nameof(context));
-			}
-			if ( entity == null ) {
-				throw new ArgumentNullException(nameof(entity));
-			}
-			if ( updatingFields?.Length < 1 ) {
-				throw new ArgumentNullException(nameof(updatingFields));
+			if ( updatingFields.Length < 1 ) {
+				throw new ArgumentException(nameof(updatingFields));
 			}
 
-			// Find key
-			var tempEntry = context.Entry(entity);
-			var keyProperties = tempEntry.Metadata.FindPrimaryKey().Properties;
-
-			if ( tempEntry.IsKeySet ) {
+			var entityEntry = context.Entry(entity);
+			if ( entityEntry.IsKeySet ) {
 				throw new ArgumentException($"The Primary Key data of the entity parameter is not set.", nameof(entity));
 			}
 
-			// Find entry from ChangeTracker; if not found then Attach new with IsKeySet
-			var query = context.ChangeTracker.Entries<TEntity>();
+			// Find key
+			var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
+
+			// Find entry from current ChangeTracker
+			var query = context.ChangeTracker.Entries<TEntity>().AsQueryable();
 			foreach ( var key in keyProperties ) {
-				query = query.AsQueryable().Where(key.Name, tempEntry.Property(key.Name).CurrentValue, Comparison.Equal);
-			}
+				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
+			} 
+			
+			//if not, then Attach
 			var updating = query.SingleOrDefault() ?? context.Attach(entity);
 
 			// Set IsModified for desired fields

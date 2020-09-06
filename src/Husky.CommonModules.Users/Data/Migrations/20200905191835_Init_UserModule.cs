@@ -169,7 +169,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
-                    Password = table.Column<string>(type: "varchar(50)", maxLength: 40, nullable: false),
+                    Password = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: false),
                     IsObsoleted = table.Column<bool>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)
                 },

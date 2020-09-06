@@ -8,22 +8,25 @@ namespace Husky
 
 	public class Result : IActionResult
 	{
-		public Result(bool ok = false, string message = null, int? code = null) {
+		public Result(bool ok = false, string? message = null, int? code = null) {
 			Ok = ok;
 			Message = message;
 			Code = code;
 		}
 		public virtual bool Ok { get; set; }
-		public virtual string Message { get; set; }
+		public virtual string? Message { get; set; }
 		public virtual int? Code { get; set; }
 
-		public string ToJson() => JsonConvert.SerializeObject(this);
+		public string ToJson() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
+			NullValueHandling = NullValueHandling.Ignore
+		});
+
 		public async Task ExecuteResultAsync(ActionContext context) => await new JsonResult(this).ExecuteResultAsync(context);
 	}
 
 	public class Result<T> : Result
 	{
-		public Result(bool ok = false, string message = null, int? code = null, T data = default) : base(ok, message, code) { Data = data; }
+		public Result(bool ok = false, string? message = null, int? code = null, T data = default) : base(ok, message, code) { Data = data; }
 		public T Data { get; set; }
 	}
 
@@ -34,14 +37,14 @@ namespace Husky
 	public class Success : Result
 	{
 		public Success() : base(true) { }
-		public Success(string message) : base(true, message, null) { }
+		public Success(string? message) : base(true, message, null) { }
 	}
 
 	public class Success<T> : Result<T>
 	{
 		public Success() : base(true) { }
 		public Success(T data) : base(true, null, null, data) { }
-		public Success(string message, T data) : base(true, message, null, data) { }
+		public Success(string? message, T data) : base(true, message, null, data) { }
 
 	}
 
@@ -51,14 +54,14 @@ namespace Husky
 
 	public class Failure : Result
 	{
-		public Failure(string message) : base(false, message) { }
-		public Failure(string message, int code) : base(false, message, code) { }
+		public Failure(string? message) : base(false, message) { }
+		public Failure(string? message, int code) : base(false, message, code) { }
 	}
 
 	public class Failure<T> : Result<T>
 	{
-		public Failure(string message) : base(false, message) { }
-		public Failure(string message, int code) : base(false, message, code) { }
+		public Failure(string? message) : base(false, message) { }
+		public Failure(string? message, int code) : base(false, message, code) { }
 	}
 
 	#endregion

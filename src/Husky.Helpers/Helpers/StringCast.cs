@@ -7,23 +7,23 @@ namespace Husky
 {
 	public static class StringCast
 	{
-		public static string NullAsEmpty(this string str) => str ?? "";
-		public static string EmptyAsNull(this string str) => string.IsNullOrEmpty(str) ? null : str;
+		public static string NullAsEmpty(this string? str) => str ?? "";
+		public static string? EmptyAsNull(this string? str) => string.IsNullOrEmpty(str) ? null : str;
 
-		public static int AsInt(this string str, int defaultValue = 0) {
+		public static int AsInt(this string? str, int defaultValue = 0) {
 			return int.TryParse(str, out var i) ? i : defaultValue;
 		}
-		public static bool AsBool(this string str, bool defaultValue = false) {
+		public static bool AsBool(this string? str, bool defaultValue = false) {
 			return bool.TryParse(str, out var b) ? b : defaultValue;
 		}
-		public static Guid AsGuid(this string str, Guid defaultValue = default) {
+		public static Guid AsGuid(this string? str, Guid defaultValue = default) {
 			return Guid.TryParse(str, out var g) ? g : defaultValue;
 		}
-		public static TimeSpan AsTimeSpan(this string str, TimeSpan defaultValue = default) {
+		public static TimeSpan AsTimeSpan(this string? str, TimeSpan defaultValue = default) {
 			return TimeSpan.TryParse(str, out var t) ? t : defaultValue;
 		}
 
-		public static T As<T>(this string str, T defaultValue = default) {
+		public static T As<T>(this string? str, T defaultValue = default) where T : struct {
 			if ( str == null ) {
 				return default;
 			}
@@ -75,7 +75,7 @@ namespace Husky
 			return result;
 		}
 
-		public static string Mask(this string str) {
+		public static string? Mask(this string? str) {
 			if ( string.IsNullOrWhiteSpace(str) ) {
 				return str;
 			}
@@ -98,7 +98,10 @@ namespace Husky
 			return str;
 		}
 
-		public static string BetterDisplayCardNumber(this string str) {
+		public static string? BetterDisplayCardNumber(this string? str) {
+			if ( string.IsNullOrEmpty(str) ) {
+				return str;
+			}
 			var sb = new StringBuilder();
 			for ( int i = 0; i < str.Length; i++ ) {
 				if ( i != 0 && i % 4 == 0 ) {
@@ -109,7 +112,7 @@ namespace Husky
 			return sb.ToString();
 		}
 
-		public static string TextEncode(this string str) {
+		public static string? TextEncode(this string? str) {
 			return str == null
 				? null
 				: new StringBuilder(str)
@@ -121,7 +124,7 @@ namespace Husky
 					.ToString();
 		}
 
-		public static string HtmlEncode(this string str) {
+		public static string? HtmlEncode(this string? str) {
 			return str == null
 				? null
 				: new StringBuilder(str)
