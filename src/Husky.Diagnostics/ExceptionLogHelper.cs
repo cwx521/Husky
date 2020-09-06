@@ -11,10 +11,10 @@ namespace Husky.Diagnostics
 {
 	public static class ExceptionLogHelper
 	{
-		public static void Log(this DbContext db, Exception e, HttpContext http, IPrincipalUser principal) {
+		public static void Log(this DbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
 			var log = new ExceptionLog {
 				HttpMethod = http?.Request?.Method,
-				ExceptionType = e.GetType().FullName,
+				ExceptionType = e.GetType().FullName!,
 				Message = e.Message,
 				Source = e.Source,
 				StackTrace = e.StackTrace,
@@ -41,8 +41,8 @@ namespace Husky.Diagnostics
 			using var scope = serviceProvider.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<DiagnosticsDbContext>();
 
-			HttpContext http = null;
-			IPrincipalUser principal = null;
+			HttpContext? http = null;
+			IPrincipalUser? principal = null;
 
 			try {
 				http = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
