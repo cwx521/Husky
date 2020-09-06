@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Husky.Diagnostics.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace Husky.Diagnostics.Tests
 {
@@ -17,7 +15,7 @@ namespace Husky.Diagnostics.Tests
 			var dbBuilder = new DbContextOptionsBuilder<DiagnosticsDbContext>();
 			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
 
-			using var db = new DiagnosticsDbContext(dbBuilder.Options);
+			using var db = dbBuilder.CreateDbContext();
 			db.Database.EnsureDeleted();
 			db.Database.Migrate();
 

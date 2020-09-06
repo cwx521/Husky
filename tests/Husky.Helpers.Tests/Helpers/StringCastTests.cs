@@ -1,24 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Husky;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Tests
 {
 	[TestClass()]
 	public class StringCastTests
 	{
-		[TestMethod()]
-		public void NullAsEmptyTest() {
-			Assert.AreEqual(StringCast.NullAsEmpty(null), "");
-		}
-
-		[TestMethod()]
-		public void EmptyAsNullTest() {
-			Assert.AreEqual(StringCast.EmptyAsNull(""), null);
-		}
-
 		[TestMethod()]
 		public void AsIntTest() {
 			Assert.AreEqual(StringCast.AsInt("123"), 123);

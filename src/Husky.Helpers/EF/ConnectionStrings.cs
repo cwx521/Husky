@@ -20,6 +20,7 @@ namespace Husky
 				"Default"
 			};
 			var connstr = lookForNames
+				.Where(name => !string.IsNullOrEmpty(name))
 				.Select(name => configuration.GetConnectionString(name))
 				.Where(value => !string.IsNullOrEmpty(value))
 				.FirstOrDefault();

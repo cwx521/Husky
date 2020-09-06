@@ -4,13 +4,10 @@ using System.Text.RegularExpressions;
 
 namespace Husky
 {
-	public static class StringTest
-	{
+	public static class StringTest {
 		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
 		public const string MainlandMobileRegexPattern = @"^1[3456789]\d{9}$";
 		public const string MainlandSocialNumberRegexPattern = @"^\d{17}[0123456789X]$";
-
-		public static bool IsNullOrEmpty(this string? str) => string.IsNullOrEmpty(str);
 
 		public static bool IsInt32(this string? str) => int.TryParse(str, out _);
 		public static bool IsInt64(this string? str) => long.TryParse(str, out _);
@@ -32,10 +29,7 @@ namespace Husky
 			return str != null && str.Length == 11 && Regex.IsMatch(str, MainlandMobileRegexPattern);
 		}
 
-		public static bool IsMainlandSocialNumber(this string? str) {
-			return str != null && str.Length == 18 && Regex.IsMatch(str, MainlandSocialNumberRegexPattern, RegexOptions.IgnoreCase);
-		}
-		public static bool IsMainlandSocialNumber(this string? str, Sex sex) {
+		public static bool IsMainlandSocialNumber(this string? str, Sex? sex = null) {
 			if ( str == null || str.Length != 18 ) return false;
 			if ( sex == Sex.Male && (str[16] - '0') % 2 == 0 ) return false;
 			if ( sex == Sex.Female && (str[16] - '0') % 2 == 1 ) return false;
@@ -47,6 +41,12 @@ namespace Husky
 			var n = 0;
 			for ( int i = 0; i < 17; n += (str[i] - '0') * times[i++] ) ;
 			return new[] { '1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2' }[n % 11] == str[17];
+		}
+		public static Sex? GetSexFromMainlandSocialNumber(this string? str) {
+			if ( str == null || !str.IsMainlandSocialNumber() ) {
+				return null;
+			}
+			return (str[16] - '0') % 2 == 0 ? Sex.Female : Sex.Male;
 		}
 	}
 }

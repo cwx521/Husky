@@ -14,6 +14,12 @@ namespace Husky
 			return context!;
 		}
 
+		public static TContext CreateDbContext<TContext>(this DbContextOptionsBuilder<TContext> optionsBuilder) where TContext : DbContext {
+			var contextType = optionsBuilder.Options.ContextType;
+			var context = Activator.CreateInstance(contextType, optionsBuilder.Options) as TContext;
+			return context!;
+		}
+
 		public static void Migrate(this DbContextOptionsBuilder optionsBuilder) {
 			var contextType = optionsBuilder.Options.ContextType;
 			if ( !_migrated.Contains(contextType) ) {

@@ -18,9 +18,8 @@ namespace Husky
 			get {
 				if ( string.IsNullOrEmpty(_permanentToken) ) {
 					throw new InvalidOperationException(
-						$"{nameof(Crypto)}.{nameof(PermanentToken)} has not been assigned yet, " +
-						$"the value of it is still null or empty. " +
-						$"It's very important to set this value for security purpose.");
+						$"{nameof(Crypto)}.{nameof(PermanentToken)} is still null or empty and has not been assigned yet, " +
+						$"It is required to set this value for security purpose.");
 				}
 				return _permanentToken;
 			}
@@ -132,8 +131,8 @@ namespace Husky
 			return Encoding.UTF8.GetString(decrypted);
 		}
 
-		public static string Encrypt<T>(T obj, string ivSalt, string? key) where T : struct, IFormattable => Encrypt(obj.ToString()!, ivSalt, key);
-		public static T Decrypt<T>(string base64String, string ivSalt, string? key) where T : struct, IFormattable => Decrypt(base64String, ivSalt, key).As<T>();
+		public static string Encrypt<T>(T obj, string ivSalt, string? key) where T : struct => Encrypt(obj.ToString()!, ivSalt, key);
+		public static T Decrypt<T>(string base64String, string ivSalt, string? key) where T : struct => Decrypt(base64String, ivSalt, key).As<T>();
 
 		private static string Mutate(this string base64String) => base64String.Replace('+', '_').Replace('/', '-').TrimEnd('=');
 		private static string Restore(this string base64String) => base64String.Replace('_', '+').Replace('-', '/').PadRight(base64String.Length + (base64String.Length % 4 == 0 ? 0 : (4 - base64String.Length % 4)), '=');
