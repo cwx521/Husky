@@ -8,6 +8,9 @@ namespace Husky.DataAudit.Data
 		public AuditDbContext(DbContextOptions<AuditDbContext> options) : base(options) {
 		}
 
+		internal AuditDbContext(DbContextOptions options) : base(options) {
+		}
+
 		public DbSet<AuditEntry> AuditEntries { get; set; } = null!;
 		public DbSet<AuditEntryProperty> AuditEntryProperties { get; set; } = null!;
 	}

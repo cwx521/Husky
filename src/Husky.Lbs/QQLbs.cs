@@ -23,7 +23,7 @@ namespace Husky.Lbs
 
 		private readonly string _key;
 
-		public async Task<GeoLocation> Query(IPAddress ip) {
+		public async Task<GeoLocation?> Query(IPAddress ip) {
 			using var client = new WebClient();
 
 			var ipString = ip.MapToIPv4().ToString();
@@ -35,18 +35,22 @@ namespace Husky.Lbs
 			}
 
 			var d = JsonConvert.DeserializeObject<dynamic>(json);
-			if ( d == null || d.status != 0 || d.message != "query ok" ) {
+			if ( d == null ) {
+				return null;
+			}
+			if ( d.status != 0 || d.message != "query ok" || d.result == null ) {
 				return null;
 			}
 
+			var x = d.result;
 			return new GeoLocation {
-				Ip = d.result.ip,
-				Lon = d.result.location.lng,
-				Lat = d.result.location.lat,
-				Nation = d.result.ad_info.nation,
-				Province = d.result.ad_info.province,
-				City = d.result.ad_info.city,
-				District = d.result.ad_info.district,
+				Ip = x.ip,
+				Lon = x.location.lng,
+				Lat = x.location.lat,
+				Nation = x.ad_info.nation,
+				Province = x.ad_info.province,
+				City = x.ad_info.city,
+				District = x.ad_info.district,
 			};
 		}
 	}

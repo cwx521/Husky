@@ -5,7 +5,7 @@ namespace Husky.Principal.Implements
 {
 	internal sealed class SessionIdentityManager : IIdentityManager
 	{
-		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
+		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Session);
 		}
@@ -13,7 +13,7 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		IIdentity IIdentityManager.ReadIdentity() {
+		IIdentity? IIdentityManager.ReadIdentity() {
 			var combined = _httpContext.Session.GetString(_options.Key);
 			if ( !string.IsNullOrEmpty(combined) ) {
 				var i = combined.IndexOf('|');

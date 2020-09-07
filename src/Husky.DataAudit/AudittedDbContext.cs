@@ -8,6 +8,10 @@ namespace Husky.DataAudit
 {
 	public abstract class AuditEnabledDbContext : DbContext
 	{
+		protected AuditEnabledDbContext(DbContextOptions options) : base(options) {
+			_auditDb = new AuditDbContext(options);
+		}
+
 		protected AuditEnabledDbContext(DbContextOptions options, AuditDbContext auditDb) : base(options) {
 			_auditDb = auditDb;
 		}

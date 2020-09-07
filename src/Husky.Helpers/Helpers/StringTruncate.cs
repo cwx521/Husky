@@ -54,6 +54,10 @@ namespace Husky
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
+		public static int ExtractNumber(this string str, int matchIndex = 1) {
+			return Extract(str, @"-?\d+", matchIndex).AsInt();
+		}
+
 		public static string? MidBy(this string? str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));

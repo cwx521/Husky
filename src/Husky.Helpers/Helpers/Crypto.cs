@@ -19,7 +19,8 @@ namespace Husky
 				if ( string.IsNullOrEmpty(_permanentToken) ) {
 					throw new InvalidOperationException(
 						$"{nameof(Crypto)}.{nameof(PermanentToken)} is still null or empty and has not been assigned yet, " +
-						$"It is required to set this value for security purpose.");
+						$"It is required to set this value for security purpose."
+					);
 				}
 				return _permanentToken;
 			}
@@ -101,13 +102,13 @@ namespace Husky
 
 		#region AES: Encrypt, Decrypt
 
-		public static string Encrypt(string str, string ivSalt, string? key = null) {
+		public static string Encrypt(string str, string iv, string? key = null) {
 			if ( str == null ) {
 				throw new ArgumentNullException(nameof(str));
 			}
 
 			using var aes = Aes.Create();
-			aes.IV = Hash(ivSalt);
+			aes.IV = Hash(iv);
 			aes.Key = Hash(key ?? PermanentToken);
 
 			using var encryptor = aes.CreateEncryptor();
@@ -116,13 +117,13 @@ namespace Husky
 			return Convert.ToBase64String(encrypted).Mutate();
 		}
 
-		public static string Decrypt(string base64String, string ivSalt, string? key = null) {
+		public static string Decrypt(string base64String, string iv, string? key = null) {
 			if ( base64String == null ) {
 				throw new ArgumentNullException(nameof(base64String));
 			}
 
 			using var aes = Aes.Create();
-			aes.IV = Hash(ivSalt);
+			aes.IV = Hash(iv);
 			aes.Key = Hash(key ?? PermanentToken);
 
 			using var decryptor = aes.CreateDecryptor();
@@ -131,8 +132,8 @@ namespace Husky
 			return Encoding.UTF8.GetString(decrypted);
 		}
 
-		public static string Encrypt<T>(T obj, string ivSalt, string? key) where T : struct => Encrypt(obj.ToString()!, ivSalt, key);
-		public static T Decrypt<T>(string base64String, string ivSalt, string? key) where T : struct => Decrypt(base64String, ivSalt, key).As<T>();
+		public static string Encrypt<T>(T obj, string iv, string? key) where T : struct => Encrypt(obj.ToString()!, iv, key);
+		public static T Decrypt<T>(string base64String, string iv, string? key) where T : struct => Decrypt(base64String, iv, key).As<T>();
 
 		private static string Mutate(this string base64String) => base64String.Replace('+', '_').Replace('/', '-').TrimEnd('=');
 		private static string Restore(this string base64String) => base64String.Replace('_', '+').Replace('-', '/').PadRight(base64String.Length + (base64String.Length % 4 == 0 ? 0 : (4 - base64String.Length % 4)), '=');

@@ -13,13 +13,13 @@ namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender(MailDbContext mailDbContext, ISmtpProvider givenSmtp = null) {
+		public MailSender(MailDbContext mailDbContext, ISmtpProvider? givenSmtp = null) {
 			_mailDbContext = mailDbContext;
 			_smtp = givenSmtp;
 		}
 
 		private readonly MailDbContext _mailDbContext;
-		private readonly ISmtpProvider _smtp;
+		private readonly ISmtpProvider? _smtp;
 
 		public async Task SendAsync(string subject, string content, params string[] recipients) {
 			if ( recipients == null || recipients.Length == 0 ) {
@@ -33,9 +33,7 @@ namespace Husky.Mail
 			});
 		}
 
-		public async Task SendAsync(MailMessage mailMessage) => await SendAsync(mailMessage, null);
-
-		public async Task SendAsync(MailMessage mailMessage, Action<MailSentEventArgs> onCompleted) {
+		public async Task SendAsync(MailMessage mailMessage, Action<MailSentEventArgs>? onCompleted = null) {
 			if ( mailMessage == null ) {
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
@@ -51,7 +49,7 @@ namespace Husky.Mail
 			await _mailDbContext.SaveChangesAsync();
 
 			using var client = new SmtpClient();
-			client.MessageSent += async (object sender, MessageSentEventArgs e) => {
+			client.MessageSent += async (object? sender, MessageSentEventArgs e) => {
 				mailRecord.IsSuccessful = true;
 				await _mailDbContext.SaveChangesAsync();
 				await Task.Run(() => {
@@ -118,7 +116,7 @@ namespace Husky.Mail
 			var body = new TextPart(mailMessage.IsHtml ? TextFormat.Html : TextFormat.Text) {
 				Text = mailMessage.Body
 			};
-			if ( mailMessage.Attachments?.Count == 0 ) {
+			if ( mailMessage.Attachments.Count == 0 ) {
 				mail.Body = body;
 			}
 			// Or: Body + Attachments

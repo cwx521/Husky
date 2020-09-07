@@ -5,7 +5,7 @@ namespace Husky.Principal.Implements
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
+		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Cookie);
 		}
@@ -13,7 +13,7 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		IIdentity IIdentityManager.ReadIdentity() {
+		IIdentity? IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var cookie);
 			if ( string.IsNullOrEmpty(cookie) ) {
 				return null;

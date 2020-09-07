@@ -53,6 +53,14 @@ namespace Husky.Tests
 		}
 
 		[TestMethod()]
+		public void ExtractNumberTest() {
+			Assert.AreEqual("Hello World".ExtractNumber(), 0);
+			Assert.AreEqual("Hello Wo123rld".ExtractNumber(), 123);
+			Assert.AreEqual("He123llo Wo456rld".ExtractNumber(), 123);
+			Assert.AreEqual("He-123llo Wo456rld".ExtractNumber(), -123);
+		}
+
+		[TestMethod()]
 		public void MidByTest() {
 			Assert.AreEqual("HelloHelloBigWorld".MidBy("Hello", "World"), "HelloBig");
 			Assert.AreEqual("HelloHelloBigWorld".MidBy("Hello", "World", useLastFoundAfterKeywordInsteadOfTheFirst: true), "Big");

@@ -16,7 +16,7 @@ namespace Husky.Principal.Implements
 			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}", iv, token) + iv;
 		}
 
-		public IIdentity Decrypt(string encryptedString, string token) {
+		public IIdentity? Decrypt(string encryptedString, string token) {
 			if ( encryptedString == null ) {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
@@ -24,9 +24,11 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(token));
 			}
 			try {
-				var ivSaltStringLength = 40;
-				var iv = encryptedString[^ivSaltStringLength..];
-				var str = Crypto.Decrypt(encryptedString[..^ivSaltStringLength], iv, token);
+				//iv is a Crypto.SHA1 result
+				const int ivLength = 40;
+
+				var iv = encryptedString[^ivLength..];
+				var str = Crypto.Decrypt(encryptedString[..^ivLength], iv, token);
 				var splitAt = str.IndexOf('|');
 
 				return new Identity {
@@ -40,6 +42,6 @@ namespace Husky.Principal.Implements
 		}
 
 		string IIdentityEncyptor.Encrypt(IIdentity identity, string token) => Encrypt(identity, token);
-		IIdentity IIdentityEncyptor.Decrypt(string encryptedString, string token) => Decrypt(encryptedString, token);
+		IIdentity? IIdentityEncyptor.Decrypt(string encryptedString, string token) => Decrypt(encryptedString, token);
 	}
 }

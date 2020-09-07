@@ -8,8 +8,10 @@ namespace Husky.Principal
 
 			var identity = identityManager.ReadIdentity();
 			if ( identity != null && identity.IsAuthenticated ) {
+
 				Id = identity.Id;
 				DisplayName = identity.DisplayName;
+
 				identityManager.SaveIdentity(this);
 			}
 

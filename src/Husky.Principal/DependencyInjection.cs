@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddPrincipal(this HuskyDI husky, IdentityCarrier carrier, IdentityOptions options = null) {
+		public static HuskyDI AddPrincipal(this HuskyDI husky, IdentityCarrier carrier, IdentityOptions? options = null) {
 			var key = typeof(IPrincipalUser).FullName;
 
 			husky.Services

@@ -55,7 +55,7 @@ namespace Husky.Principal
 			await AddLoginRecord(user.Id, mobileNumber, password, LoginResult.Success, "新注册");
 
 			_me.Id = user.Id;
-			_me.DisplayName = user.Phone.Number.Mask();
+			_me.DisplayName = mobileNumber.Mask()!;
 			_me.IdentityManager.SaveIdentity(_me);
 
 			return new Success();
@@ -100,7 +100,7 @@ namespace Husky.Principal
 			await _db.SaveChangesAsync();
 
 			_me.Id = user.Id;
-			_me.DisplayName = user.DisplayName ?? mobileNumber.Mask();
+			_me.DisplayName = user.DisplayName ?? mobileNumber.Mask()!;
 			_me.IdentityManager.SaveIdentity(_me);
 
 			return await AddLoginRecord(user.Id, mobileNumber, password, LoginResult.Success, additionalDescription);
@@ -111,7 +111,6 @@ namespace Husky.Principal
 				_me.AbandonSessionData();
 				_me.IdentityManager.DeleteIdentity();
 				_me.Id = 0;
-				_me.DisplayName = null;
 			}
 		}
 
@@ -123,7 +122,7 @@ namespace Husky.Principal
 				? sickPassword
 				: sickPassword.Length > 25
 					? sickPassword.Left(88)
-					: Crypto.Encrypt(sickPassword, ivSalt: inputAccount);
+					: Crypto.Encrypt(sickPassword, iv: inputAccount);
 
 			_db.Add(new UserLoginRecord {
 				LoginResult = result,

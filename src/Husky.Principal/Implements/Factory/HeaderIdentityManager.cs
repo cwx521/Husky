@@ -5,7 +5,7 @@ namespace Husky.Principal.Implements
 {
 	internal sealed class HeaderIdentityManager : IIdentityManager
 	{
-		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
+		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
 		}
@@ -13,7 +13,7 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		IIdentity IIdentityManager.ReadIdentity() {
+		IIdentity? IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];
 			if ( string.IsNullOrEmpty(header) ) {
 				return null;

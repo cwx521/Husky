@@ -11,18 +11,18 @@ namespace Husky.Mail.Data
 		public int MailId { get; set; }
 
 		[MaxLength(100)]
-		public string Name { get; set; }
+		public string Name { get; set; } = null!;
 
-		public byte[] ContentStream { get; set; }
+		public byte[] ContentStream { get; set; } = null!;
 
 		[MaxLength(32)]
-		public string ContentType { get; set; }
+		public string ContentType { get; set; } = null!;
 
 		public DateTime CreatedTime { get; set; }
 
 
 		// nav props
 
-		public MailRecord Mail { get; set; }
+		public MailRecord Mail { get; set; } = null!;
 	}
 }

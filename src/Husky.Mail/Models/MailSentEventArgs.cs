@@ -2,6 +2,6 @@
 {
 	public sealed class MailSentEventArgs
 	{
-		public MailMessage MailMessage { get; set; }
+		public MailMessage MailMessage { get; set; } = null!;
 	}
 }

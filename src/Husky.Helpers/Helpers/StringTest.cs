@@ -4,7 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace Husky
 {
-	public static class StringTest {
+	public static class StringTest
+	{
 		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
 		public const string MainlandMobileRegexPattern = @"^1[3456789]\d{9}$";
 		public const string MainlandSocialNumberRegexPattern = @"^\d{17}[0123456789X]$";
