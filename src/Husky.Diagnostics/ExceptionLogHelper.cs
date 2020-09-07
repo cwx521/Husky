@@ -22,7 +22,7 @@ namespace Husky.Diagnostics
 				UserId = principal?.Id,
 				UserName = principal?.DisplayName ?? http?.User?.Identity?.Name,
 				UserAgent = http?.Request?.UserAgent(),
-				UserIp = http?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString()
+				UserIp = http?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString(),
 			};
 			log.ComputeMd5Comparison();
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20171220113405_Init_Diagnostics")]
+    [Migration("20200907195841_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,20 +32,26 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ExceptionType")
+                        .IsRequired()
                         .HasColumnType("varchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<DateTime>("FirstTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("HttpMethod")
                         .HasColumnType("varchar(10)")
                         .HasMaxLength(10);
 
                     b.Property<DateTime>("LastTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Md5Comparison")
+                        .IsRequired()
                         .HasColumnType("varchar(32)")
                         .HasMaxLength(32);
 
@@ -97,6 +103,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HttpMethod")
+                        .IsRequired()
                         .HasColumnType("varchar(10)")
                         .HasMaxLength(10);
 
@@ -108,9 +115,12 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(1000);
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 

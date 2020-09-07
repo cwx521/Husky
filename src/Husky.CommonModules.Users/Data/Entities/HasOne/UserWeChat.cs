@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Husky;
 using Newtonsoft.Json;
 
 namespace Husky.CommonModules.Users.Data
@@ -47,7 +46,6 @@ namespace Husky.CommonModules.Users.Data
 		[MaxLength(128), Column(TypeName = "varchar(128)")]
 		public string? RefreshToken { get; set; }
 
-		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

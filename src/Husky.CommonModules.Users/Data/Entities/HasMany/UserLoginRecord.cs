@@ -29,7 +29,6 @@ namespace Husky.CommonModules.Users.Data
 		[MaxLength(39), Column(TypeName = "varchar(39)")]
 		public string? Ip { get; set; }
 
-		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

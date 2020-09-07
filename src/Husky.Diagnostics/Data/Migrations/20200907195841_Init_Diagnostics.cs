@@ -13,10 +13,10 @@ namespace Husky.Diagnostics.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Md5Comparison = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
+                    Md5Comparison = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false),
                     Url = table.Column<string>(type: "varchar(4000)", maxLength: 4000, nullable: true),
                     HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true),
-                    ExceptionType = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true),
+                    ExceptionType = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     Message = table.Column<string>(maxLength: 1000, nullable: true),
                     Source = table.Column<string>(nullable: true),
                     StackTrace = table.Column<string>(nullable: true),
@@ -25,8 +25,8 @@ namespace Husky.Diagnostics.Data.Migrations
                     UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
                     Count = table.Column<int>(nullable: false),
-                    FirstTime = table.Column<DateTime>(nullable: false),
-                    LastTime = table.Column<DateTime>(nullable: false)
+                    FirstTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    LastTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -39,16 +39,16 @@ namespace Husky.Diagnostics.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Url = table.Column<string>(maxLength: 1000, nullable: true),
+                    Url = table.Column<string>(maxLength: 1000, nullable: false),
                     Referrer = table.Column<string>(maxLength: 1000, nullable: true),
                     Data = table.Column<string>(nullable: true),
-                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true),
+                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
                     UserId = table.Column<int>(nullable: true),
                     UserName = table.Column<string>(maxLength: 100, nullable: true),
                     IsAjax = table.Column<bool>(nullable: false),
                     UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
-                    Time = table.Column<DateTime>(nullable: false)
+                    Time = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {

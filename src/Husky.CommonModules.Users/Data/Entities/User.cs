@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Husky;
 
 namespace Husky.CommonModules.Users.Data
 {
@@ -19,7 +18,6 @@ namespace Husky.CommonModules.Users.Data
 
 		public RowStatus State { get; set; } = RowStatus.Active;
 
-		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime RegisteredTime { get; set; } = DateTime.Now;
 
 
