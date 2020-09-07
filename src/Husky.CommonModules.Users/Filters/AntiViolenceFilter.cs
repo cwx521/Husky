@@ -22,11 +22,15 @@ namespace Husky.Principal.Filters
 				return;
 			}
 
-			if ( principal.AntiViolenceTimer().AddMilliseconds(300) < DateTime.Now ) {
+			// POST too fast will be judged as violence
+			// Within milliseconds 
+			const int ms = 300;
+
+			if ( principal.AntiViolenceTimer().AddMilliseconds(ms) < DateTime.Now ) {
 				principal.SetAntiViolenceTimer();
 			}
 			else {
-				principal.SetAntiViolenceTimer(DateTime.Now.AddMilliseconds(300));
+				principal.SetAntiViolenceTimer(DateTime.Now.AddMilliseconds(ms));
 				context.Result = new ViewResult { ViewName = "_AntiViolence" };
 			}
 		}

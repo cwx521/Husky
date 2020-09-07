@@ -28,7 +28,7 @@ namespace Husky.CommonModules.Users.Data
 		public string District { get; set; } = null!;
 
 		[MaxLength(100)]
-		public string DetailAddress { get; set; } = null!;
+		public string? DetailAddress { get; set; }
 
 		[MaxLength(16)]
 		public string? ContactName { get; set; }

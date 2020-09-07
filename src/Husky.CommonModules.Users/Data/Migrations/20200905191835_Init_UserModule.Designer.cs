@@ -34,7 +34,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(10);
 
                     b.Property<string>("Unit")
-                        .IsRequired()
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -93,7 +92,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DetailAddress")
-                        .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
@@ -207,6 +205,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("nvarchar(4000)")
                         .HasMaxLength(4000);
 

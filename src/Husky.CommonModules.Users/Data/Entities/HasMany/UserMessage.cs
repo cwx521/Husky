@@ -14,7 +14,7 @@ namespace Husky.CommonModules.Users.Data
 		public int? CommonContentId { get; set; }
 
 		[MaxLength(4000)]
-		public string? Content { get; set; }
+		public string Content { get; set; } = null!;
 
 		public bool IsRead { get; set; }
 

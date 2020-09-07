@@ -10,14 +10,6 @@ using Newtonsoft.Json;
 
 namespace Husky.GridQuery
 {
-	public enum GridEditable
-	{
-		NA = 0,
-		Incell = 1,
-		IncellAndSaveTogether = 2,
-		Inline = 3
-	}
-
 	public static partial class HtmlHelperExtensions
 	{
 		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria? criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>>? customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
@@ -31,28 +23,26 @@ namespace Husky.GridQuery
 			if ( cookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Hide"), out var hiddenColumns) ) {
 				var arr = hiddenColumns.Split(',');
 				foreach ( var col in columns ) {
-					col.hidden = arr.Contains(col.field);
+					col.Hidden = arr.Contains(col.Field);
 				}
 			}
 			if ( cookies.TryGetValue(principal.GetGridCookieKey(dataSourceUrl, "Order"), out var columnOrders) ) {
 				var i = 0;
 				var arr = columnOrders.Split(',');
 				foreach ( var str in arr ) {
-					var col = columns.Find(x => x.field == str);
+					var col = columns.Find(x => x.Field == str);
 					if ( col != null ) {
 						columns.Insert(i, col);
-						columns.RemoveAt(columns.FindLastIndex(x => x.field == str));
+						columns.RemoveAt(columns.FindLastIndex(x => x.Field == str));
 						i++;
 					}
 				}
 			}
 
 			var id = "g" + Crypto.RandomString();
-			var sb = new StringBuilder();
 			var criteriaJson = (criteria ?? new QueryCriteria()).Json();
-			var columnsJson = JsonConvert.SerializeObject(columns, new JsonSerializerSettings {
-				DefaultValueHandling = DefaultValueHandling.Ignore
-			});
+			var columnsJson = columns.Json();
+			var sb = new StringBuilder();
 
 			sb.AppendLine($"<div id='{id}' style='height: 100%'>");
 			sb.AppendLine("<script type='text/javascript'>");

@@ -3,7 +3,6 @@
 #pragma warning disable CS8603 // Possible null reference return.
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace Husky.CommonModules.Users.Data
 {

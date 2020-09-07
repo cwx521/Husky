@@ -16,7 +16,11 @@ namespace Husky.GridQuery
 		public List<QueryFilter> PreFilters { get; set; } = new List<QueryFilter>();
 		public List<QueryFilter> PostFilters { get; set; } = new List<QueryFilter>();
 
-		public string Json() => JsonConvert.SerializeObject(this);
+
+		public string Json() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
+			DefaultValueHandling = DefaultValueHandling.Ignore,
+			NullValueHandling = NullValueHandling.Ignore
+		});
 		public override string ToString() => Json();
 	}
 }

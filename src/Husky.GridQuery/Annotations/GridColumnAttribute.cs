@@ -5,8 +5,6 @@ namespace Husky.GridQuery
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 	public class GridColumnAttribute : Attribute
 	{
-		public virtual bool Visible { get; set; } = true;
-
 		public virtual string? Title { get; set; }
 		public virtual int Width { get; set; }
 
@@ -25,5 +23,8 @@ namespace Husky.GridQuery
 
 		public virtual string? Group { get; set; }
 		public virtual string? DisplayAfter { get; set; }
+
+		public virtual bool Visible { get; set; } = true;
+
 	}
 }

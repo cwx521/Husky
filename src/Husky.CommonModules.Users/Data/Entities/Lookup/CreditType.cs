@@ -11,6 +11,6 @@ namespace Husky.CommonModules.Users.Data
 		public string CreditName { get; set; } = null!;
 
 		[StringLength(10)]
-		public string Unit { get; set; } = null!;
+		public string? Unit { get; set; }
 	}
 }

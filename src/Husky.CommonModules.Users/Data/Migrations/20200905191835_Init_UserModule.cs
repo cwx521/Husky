@@ -14,7 +14,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreditName = table.Column<string>(maxLength: 10, nullable: false),
-                    Unit = table.Column<string>(maxLength: 10, nullable: false)
+                    Unit = table.Column<string>(maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,7 +62,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Province = table.Column<string>(maxLength: 16, nullable: false),
                     City = table.Column<string>(maxLength: 16, nullable: false),
                     District = table.Column<string>(maxLength: 16, nullable: false),
-                    DetailAddress = table.Column<string>(maxLength: 100, nullable: false),
+                    DetailAddress = table.Column<string>(maxLength: 100, nullable: true),
                     ContactName = table.Column<string>(maxLength: 16, nullable: true),
                     ContactPhoneNumber = table.Column<string>(maxLength: 11, nullable: true),
                     IsDefault = table.Column<bool>(nullable: false),
@@ -140,7 +140,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
                     CommonContentId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(maxLength: 4000, nullable: true),
+                    Content = table.Column<string>(maxLength: 4000, nullable: false),
                     IsRead = table.Column<bool>(nullable: false),
                     State = table.Column<int>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)

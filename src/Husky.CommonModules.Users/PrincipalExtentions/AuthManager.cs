@@ -62,7 +62,10 @@ namespace Husky.Principal
 		}
 
 		public async Task<LoginResult> SignIn(string mobileNumber, string password, string? additionalDescription = null) {
-			if ( string.IsNullOrEmpty(mobileNumber) || string.IsNullOrEmpty(password) || !mobileNumber.IsMainlandMobile() ) {
+			if ( string.IsNullOrEmpty(mobileNumber) || string.IsNullOrEmpty(password) ) {
+				return LoginResult.InvalidInput;
+			}
+			if ( !mobileNumber.IsMainlandMobile() ) {
 				return LoginResult.InvalidInput;
 			}
 
@@ -116,11 +119,17 @@ namespace Husky.Principal
 			var ip = _http.Connection.RemoteIpAddress;
 			var ipString = ip.MapToIPv4().ToString();
 
+			var encryptedSickPassword = string.IsNullOrEmpty(sickPassword) || inputAccount.Length == 0
+				? sickPassword
+				: sickPassword.Length > 25
+					? sickPassword.Left(88)
+					: Crypto.Encrypt(sickPassword, ivSalt: inputAccount);
+
 			_db.Add(new UserLoginRecord {
 				LoginResult = result,
 				UserId = userId,
-				AttemptedAccount = inputAccount,
-				SickPassword = string.IsNullOrEmpty(sickPassword) ? sickPassword : (sickPassword.Length > 25 ? sickPassword.Left(88) : Crypto.Encrypt(sickPassword, ivSalt: inputAccount)),
+				AttemptedAccount = inputAccount ?? "",
+				SickPassword = encryptedSickPassword,
 				Description = description,
 				UserAgent = _http.Request.UserAgent(),
 				Ip = ipString

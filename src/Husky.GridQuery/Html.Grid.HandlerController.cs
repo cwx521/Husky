@@ -26,7 +26,7 @@ namespace Husky.GridQuery
 			var array = columns.Split(',');
 
 			if ( _http.Request.Cookies.TryGetValue(key, out var str) ) {
-				var current = string.IsNullOrEmpty(str) ? new List<string>() : str.Split(',').ToList();
+				var current = string.IsNullOrEmpty(str) ? new string[0] : str.Split(',');
 				_http.Response.Cookies.Append(key, string.Join(',', current.Except(array).ToArray()), _cookieOptions);
 			}
 			return new EmptyResult();
@@ -37,7 +37,7 @@ namespace Husky.GridQuery
 			var array = columns.Split(',');
 
 			_http.Request.Cookies.TryGetValue(key, out var str);
-			var current = string.IsNullOrEmpty(str) ? new List<string>() : str.Split(',').ToList();
+			var current = string.IsNullOrEmpty(str) ? new string[0] : str.Split(',');
 
 			_http.Response.Cookies.Append(key, string.Join(',', current.Concat(array).Distinct().ToArray()), _cookieOptions);
 			return new EmptyResult();

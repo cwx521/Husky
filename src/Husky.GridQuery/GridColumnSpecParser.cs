@@ -10,9 +10,6 @@ namespace Husky.GridQuery
 	{
 		private const int GridColumnDefaultWidth = 160;
 
-		public static string GetGridColumnJson<TGridModel>() => typeof(TGridModel).GetGridColumnJson();
-		public static string GetGridColumnJson(this Type typeOfGridModel) => JsonConvert.SerializeObject(typeOfGridModel.GetGridColumnSpecs());
-
 		public static List<GridColumnSpec> GetGridColumnSpecs<TGridModel>() => typeof(TGridModel).GetGridColumnSpecs();
 		public static List<GridColumnSpec> GetGridColumnSpecs(this Type typeOfGridModel) {
 			if ( typeOfGridModel == null ) {
@@ -25,9 +22,6 @@ namespace Husky.GridQuery
 			// read the properties and create columns one by one
 			// when attribute.DisplayAfter is set, the columns will be added later on
 			foreach ( var p in properties ) {
-				if ( p.Name.Equals("Id") || p.Name.EndsWith("Css") || p.Name == "IsHighlighted" || p.Name == "IsMuted" ) {
-					continue;
-				}
 				var attribute = p.GetCustomAttribute<GridColumnAttribute>();
 				if ( attribute != null && (!attribute.Visible || !string.IsNullOrEmpty(attribute.DisplayAfter)) ) {
 					continue;
@@ -43,50 +37,63 @@ namespace Husky.GridQuery
 				}
 
 				var column = BuildGridColumnSpecModel(p, attribute);
-				var insertAt = columns.FindIndex(x => x.field == attribute.DisplayAfter) + 1;
+				var insertAt = columns.FindIndex(x => x.Field == attribute.DisplayAfter) + 1;
 				columns.Insert(insertAt, column);
 			}
 
 			// grouping
 			var result = new List<GridColumnSpec>();
 			foreach ( var col in columns ) {
-				if ( string.IsNullOrEmpty(col.group) ) {
+				if ( string.IsNullOrEmpty(col.Group) ) {
 					result.Add(col);
 					continue;
 				}
-				var g = result.SingleOrDefault(x => x.title == col.group);
+				var g = result.SingleOrDefault(x => x.Title == col.Group);
 				if ( g == null ) {
 					g = new GridColumnSpec {
-						title = col.group,
-						columns = new List<GridColumnSpec>()
+						Title = col.Group,
+						Columns = new List<GridColumnSpec>()
 					};
 					result.Add(g);
 				}
-				g.columns!.Add(col);
+				g.Columns!.Add(col);
 			}
 
 			return result;
 		}
 
+		public static string Json(this List<GridColumnSpec> specs) {
+			return JsonConvert.SerializeObject(specs, new JsonSerializerSettings {
+				DefaultValueHandling = DefaultValueHandling.Ignore
+			});
+		}
+
 		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute? attr) => new GridColumnSpec {
-			field = property?.Name,
-			title = attr?.Title ?? property?.Name?.SplitWords(),
-			group = attr?.Group,
-			width = (attr == null || attr.Width == 0) ? GridColumnDefaultWidth : (attr.Width != -1 ? attr.Width : (int?)null),
-			template = attr?.Template ?? GetTemplateString(attr, property?.Name),
-			format = attr?.Format,
-			filterable = property != null && (attr?.Filterable ?? true),
-			sortable = (attr?.Sortable ?? true),
-			hidable = (attr?.Hidable ?? true),
-			editableFlag = (attr?.Editable ?? true),
-			locked = (attr?.Locked ?? false),
-			hidden = (attr?.Hidden ?? false),
-			attributes = attr?.CssClass == null ? null : $" class='{attr.CssClass}'",
-			type = property?.GetMappedJsType(),
-			values = property?.GetEnumerableValues(),
+			Field = property?.Name.CamelCase(),
+			Title = attr?.Title ?? property?.Name?.SplitWords(),
+			Group = attr?.Group,
+			Width = (attr == null || attr.Width == 0) ? GridColumnDefaultWidth : (attr.Width != -1 ? attr.Width : (int?)null),
+			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),
+			Format = attr?.Format,
+			Filterable = property != null && (attr?.Filterable ?? true),
+			Sortable = (attr?.Sortable ?? true),
+			Hidable = (attr?.Hidable ?? true),
+			EditableFlag = (attr?.Editable ?? true),
+			Locked = (attr?.Locked ?? false),
+			Hidden = (attr?.Hidden ?? false),
+			Attributes = attr?.CssClass == null ? null : $" class='{attr.CssClass}'",
+			Type = property?.GetMappedJavaScriptType(),
+			Values = property?.GetEnumerableValues(),
 		};
 
-		private static string? GetMappedJsType(this PropertyInfo property) {
+		private static string? CamelCase(this string? fieldName) {
+			if ( string.IsNullOrEmpty(fieldName) ) {
+				return fieldName;
+			}
+			return fieldName[0].ToString() + fieldName[1..];
+		}
+
+		private static string? GetMappedJavaScriptType(this PropertyInfo property) {
 			var t = !property.PropertyType.IsGenericType
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
@@ -112,8 +119,8 @@ namespace Husky.GridQuery
 			var values = Enum.GetValues(t);
 			foreach ( var i in values ) {
 				result.Add(new GridColumnSpecEnumItem {
-					text = (i as Enum)!.ToLabel(),
-					value = i!.GetHashCode()
+					Text = (i as Enum)!.ToLabel(),
+					Value = i!.GetHashCode()
 				});
 			}
 			return result.ToArray();
