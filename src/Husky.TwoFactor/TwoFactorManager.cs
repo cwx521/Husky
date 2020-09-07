@@ -23,7 +23,7 @@ namespace Husky.TwoFactor
 		private readonly AliyunSmsSender _aliyunSmsSender;
 		//private readonly IMailSender _mailSender;
 
-		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string templateCode = null, string signName = null, string messageTemplateWithCodeAsArg0 = null) {
+		public async Task<Result> RequestTwoFactorCode(string emailOrMobile, string? templateCode = null, string? signName = null, string? messageTemplateWithCodeAsArg0 = null) {
 			if ( emailOrMobile == null ) {
 				throw new ArgumentNullException(nameof(emailOrMobile));
 			}

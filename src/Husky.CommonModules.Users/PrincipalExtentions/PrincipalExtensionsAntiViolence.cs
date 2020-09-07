@@ -6,10 +6,11 @@ namespace Husky.Principal
 	public static partial class PrincipalExtensions
 	{
 		public static DateTime AntiViolenceTimer(this IPrincipalUser principal) {
-			if ( principal.IsAnonymous ) {
-				DateTime.Now.AddDays(-1);
+			var sessionData = principal.SessionData();
+			if ( sessionData == null ) {
+				return DateTime.MinValue;
 			}
-			return (DateTime)principal.SessionData().GetOrAdd(nameof(AntiViolenceTimer), key => DateTime.Now.AddDays(-1));
+			return (DateTime)sessionData.GetOrAdd(nameof(AntiViolenceTimer), key => DateTime.Now.AddDays(-1));
 		}
 
 		public static void SetAntiViolenceTimer(this IPrincipalUser principal, DateTime? time = null) {
@@ -21,7 +22,7 @@ namespace Husky.Principal
 		}
 
 		public static void ClearAntiViolenceTimer(this IPrincipalUser principal) {
-			SetAntiViolenceTimer(principal, DateTime.Now.AddDays(-1));
+			SetAntiViolenceTimer(principal, DateTime.MinValue);
 		}
 	}
 }

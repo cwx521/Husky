@@ -5,7 +5,7 @@ namespace Husky.Principal.SessionData
 {
 	public static class PrincipalSessionDataExtension
 	{
-		public static SessionDataContainer SessionData(this IPrincipalUser principal) {
+		public static SessionDataContainer? SessionData(this IPrincipalUser principal) {
 			if ( principal.IsAnonymous ) {
 				return null;
 			}

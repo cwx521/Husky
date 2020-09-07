@@ -7,6 +7,6 @@ namespace Husky.TwoFactor.Data
 		public TwoFactorDbContext(DbContextOptions<TwoFactorDbContext> options) : base(options) {
 		}
 
-		public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
+		public DbSet<TwoFactorCode> TwoFactorCodes { get; set; } = null!;
 	}
 }

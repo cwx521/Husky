@@ -2,7 +2,7 @@
 {
 	public class TwoFactorModel
 	{
-		public virtual string SendTo { get; set; }
-		public virtual string Code { get; set; }
+		public virtual string SendTo { get; set; } = null!;
+		public virtual string Code { get; set; } = null!;
 	}
 }

@@ -16,7 +16,7 @@ namespace Husky.Principal
 
 		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
 
-		internal T Pick(string key) {
+		internal T? Pick(string key) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}

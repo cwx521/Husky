@@ -2,11 +2,11 @@
 {
 	public class WeChatJsapiConfig
 	{
-		public string AppId { get; internal set; }
-		public string Ticket { get; internal set; }
-		public string NonceStr { get; internal set; }
+		public string AppId { get; internal set; } = null!;
+		public string Ticket { get; internal set; } = null!;
+		public string NonceStr { get; internal set; } = null!;
 		public long Timestamp { get; internal set; }
-		public string Signature { get; internal set; }
-		public string RawString { get; internal set; }
+		public string Signature { get; internal set; } = null!;
+		public string RawString { get; internal set; } = null!;
 	}
 }

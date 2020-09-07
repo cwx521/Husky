@@ -22,11 +22,13 @@ namespace Husky.WeChatIntegration
 		private readonly IMemoryCache _cache;
 		private readonly WeChatAppSettings _wechatSettings;
 
-		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.OpenPlatformAppId,
 				AppSecret = _wechatSettings.OpenPlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
@@ -42,7 +44,7 @@ namespace Husky.WeChatIntegration
 								id: '" + targetElementId + @"',
 								appid: '" + idSecret.AppId + @"',
 								redirect_uri: '" + redirectUri + @"',
-								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId) + @"',
+								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId!) + @"',
 								href: '" + styleSheetUrl + @"',
 								style: ''
 							});
@@ -52,56 +54,62 @@ namespace Husky.WeChatIntegration
 			return html;
 		}
 
-		public string CreateMobilePlatformAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatAppIdSecret overrideAppIdSecret = null) {
+		public string CreateMobilePlatformAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
 				   $"?appid={idSecret.AppId}" +
 				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
 				   $"&response_type=code" +
 				   $"&scope={scope}" +
-				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId)}" +
+				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId!)}" +
 				   $"#wechat_redirect";
 		}
 
-		public WeChatUserAccessToken GetOpenPlatformUserAccessToken(string code, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatUserAccessToken? GetOpenPlatformUserAccessToken(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			return GetUserAccessToken(code, overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.OpenPlatformAppId,
 				AppSecret = _wechatSettings.OpenPlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken GetMobilePlatformUserAccessToken(string code, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatUserAccessToken? GetMobilePlatformUserAccessToken(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			return GetUserAccessToken(code, overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken GetUserAccessToken(string code, WeChatAppIdSecret idSecret) {
+		public WeChatUserAccessToken? GetUserAccessToken(string code, WeChatAppIdSecret idSecret) {
+			idSecret.CheckNull();
+
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
 					  $"?appid={idSecret.AppId}&secret={idSecret.AppSecret}&code={code}&grant_type=authorization_code";
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
 
-		public WeChatUserAccessToken RefreshOpenPlatformUserAccessToken(string refreshToken, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatUserAccessToken? RefreshOpenPlatformUserAccessToken(string refreshToken, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			return RefreshUserAccessToken(refreshToken, overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.OpenPlatformAppId,
 				AppSecret = _wechatSettings.OpenPlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken RefreshMobilePlatformUserAccessToken(string refreshToken, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatUserAccessToken? RefreshMobilePlatformUserAccessToken(string refreshToken, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			return RefreshUserAccessToken(refreshToken, overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken RefreshUserAccessToken(string refreshToken, WeChatAppIdSecret idSecret) {
+		public WeChatUserAccessToken? RefreshUserAccessToken(string refreshToken, WeChatAppIdSecret idSecret) {
+			idSecret.CheckNull();
+
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
 					  $"?appid={idSecret.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
-		private WeChatUserAccessToken GetUserAccessTokenFromResolvedUrl(string url) {
+		private WeChatUserAccessToken? GetUserAccessTokenFromResolvedUrl(string url) {
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
@@ -117,10 +125,10 @@ namespace Husky.WeChatIntegration
 			}
 		}
 
-		public WeChatUserInfo GetUserInfo(WeChatUserAccessToken token) {
+		public WeChatUserInfo? GetUserInfo(WeChatUserAccessToken token) {
 			return GetUserInfo(token.OpenId, token.AccessToken);
 		}
-		public WeChatUserInfo GetUserInfo(string openId, string accessToken) {
+		public WeChatUserInfo? GetUserInfo(string openId, string accessToken) {
 			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
@@ -136,16 +144,18 @@ namespace Husky.WeChatIntegration
 					Province = d.province,
 					City = d.city,
 					Country = d.country,
-					HeadImageUrl = ((string)d.headimgurl)?.Replace("http://", "https://")
+					HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
 				};
 			}
 		}
 
-		public WeChatMiniProgramLoginResult MiniProgramLogin(string code, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatMiniProgramLoginResult MiniProgramLogin(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MiniProgramAppId,
 				AppSecret = _wechatSettings.MiniProgramAppSecret
 			};
+			idSecret.CheckNull();
+
 			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
 					  $"?appid={idSecret.AppId}" +
 					  $"&secret={idSecret.AppSecret}" +
@@ -163,11 +173,13 @@ namespace Husky.WeChatIntegration
 			}
 		}
 
-		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken(WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken(WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			return _cache.GetOrCreate(idSecret.AppId + nameof(GetMobilePlatformGeneralAccessToken), entry => {
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
@@ -186,11 +198,13 @@ namespace Husky.WeChatIntegration
 			});
 		}
 
-		public string GetJsapiTicket(WeChatAppIdSecret overrideAppIdSecret = null) {
+		public string GetJsapiTicket(WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			return _cache.GetOrCreate(idSecret.AppId + nameof(GetJsapiTicket), entry => {
 				var accessToken = GetMobilePlatformGeneralAccessToken(idSecret);
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
@@ -204,13 +218,15 @@ namespace Husky.WeChatIntegration
 			});
 		}
 
-		public WeChatJsapiConfig BuildWeChatJsapiConfig(WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatJsapiConfig BuildWeChatJsapiConfig(WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			var config = new WeChatJsapiConfig {
-				AppId = idSecret.AppId,
+				AppId = idSecret.AppId!,
 				NonceStr = Crypto.RandomString(16),
 				Timestamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000,
 				Ticket = GetJsapiTicket(idSecret),
@@ -267,11 +283,13 @@ namespace Husky.WeChatIntegration
 				</script>";
 		}
 
-		public WeChatJsapiPayParameter BuildMobilePlatformJsapiPayParameter(string prepayId, WeChatAppIdSecret overrideAppIdSecret = null) {
+		public WeChatJsapiPayParameter BuildMobilePlatformJsapiPayParameter(string prepayId, WeChatAppIdSecret? overrideAppIdSecret = null) {
 			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			};
+			idSecret.CheckNull();
+
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000;
 
@@ -293,7 +311,7 @@ namespace Husky.WeChatIntegration
 			};
 		}
 
-		public string GetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters, string overrideMerchantSecret = null) {
+		public string GetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters, string? overrideMerchantSecret = null) {
 			var sb = new StringBuilder();
 
 			var orderedNames = parameters.Keys.OrderBy(x => x).ToArray();

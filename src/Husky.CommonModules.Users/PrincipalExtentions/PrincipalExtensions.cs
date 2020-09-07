@@ -14,10 +14,11 @@ namespace Husky.Principal
 		}
 
 		public static UserQuickView QuickView(this IPrincipalUser principal) {
-			if ( principal.IsAnonymous ) {
+			var sessionData = principal.SessionData();
+			if ( sessionData == null ) {
 				return new UserQuickView();
 			}
-			return (UserQuickView)principal.SessionData().GetOrAdd(nameof(UserQuickView), key => {
+			return (UserQuickView)sessionData.GetOrAdd(nameof(UserQuickView), key => {
 				if ( principal.Id == 0 ) {
 					principal.UserAuth().SignOut();
 					return new UserQuickView();

@@ -14,11 +14,11 @@ namespace Husky.TwoFactor.Data
 
 		[NeverUpdate]
 		[Column(TypeName = "varchar(50)")]
-		public string SentTo { get; set; }
+		public string SentTo { get; set; } = null!;
 
 		[NeverUpdate]
 		[Column(TypeName = "varchar(8)")]
-		public string Code { get; set; }
+		public string Code { get; set; } = null!;
 
 		public int ErrorTimes { get; set; }
 
