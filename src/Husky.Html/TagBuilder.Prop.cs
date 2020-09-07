@@ -6,10 +6,7 @@ namespace Husky.Html
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent Prop(this IHtmlContent tagBuilder, string propName, object propValue) {
-			if ( tagBuilder == null ) {
-				return null;
-			}
+		public static IHtmlContent Prop(this IHtmlContent tagBuilder, string propName, object? propValue) {
 			if ( tagBuilder is TagBuilder ctl ) {
 				ctl.PrettifyFormControl();
 

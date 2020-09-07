@@ -7,9 +7,6 @@ namespace Husky.Html
 	public static partial class HtmlHelperExtensions
 	{
 		public static IHtmlContent AddCssClass(this IHtmlContent tagBuilder, string cssClass) {
-			if ( tagBuilder == null ) {
-				return null;
-			}
 			if ( tagBuilder is TagBuilder ctl ) {
 				ctl.PrettifyFormControl();
 				ctl.AddCssClass(cssClass);

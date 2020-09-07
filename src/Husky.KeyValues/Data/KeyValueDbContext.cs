@@ -7,6 +7,6 @@ namespace Husky.KeyValues.Data
 		public KeyValueDbContext(DbContextOptions<KeyValueDbContext> options) : base(options) {
 		}
 
-		public DbSet<KeyValue> KeyValues { get; set; }
+		public DbSet<KeyValue> KeyValues { get; set; } = null!;
 	}
 }

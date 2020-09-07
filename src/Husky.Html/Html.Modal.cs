@@ -27,10 +27,10 @@ namespace Husky.Html
 			return result;
 		}
 
-		private static IHtmlContent ModalForConfirmation(this IHtmlHelper helper, string id, string message = null) {
+		private static IHtmlContent ModalForConfirmation(this IHtmlHelper helper, string id, string message) {
 			var result = new HtmlContentBuilder();
 			result.AppendHtml(BeginModal(id, "确认", ModalSize.Default));
-			result.AppendHtml($"<div class='mb-3'>{message ?? "该操作不可恢复，确定要执行吗？"}</div>");
+			result.AppendHtml($"<div class='mb-3'>{message}</div>");
 			result.AppendHtml(EndModal(true, confirmButton: true));
 			return result;
 		}

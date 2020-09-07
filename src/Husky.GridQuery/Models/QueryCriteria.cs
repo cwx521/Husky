@@ -10,7 +10,7 @@ namespace Husky.GridQuery
 		public int Limit { get; set; } = 100;
 		public int Offset { get; set; }
 
-		public string SortBy { get; set; }
+		public string? SortBy { get; set; }
 		public SortDirection SortDirection { get; set; }
 
 		public List<QueryFilter> PreFilters { get; set; } = new List<QueryFilter>();

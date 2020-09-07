@@ -12,7 +12,7 @@ namespace Husky.Html
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent Button(this IHtmlHelper helper, ButtonType buttonType, string buttonFace, object htmlAttributes = null) {
+		public static IHtmlContent Button(this IHtmlHelper helper, ButtonType buttonType, string buttonFace, object? htmlAttributes = null) {
 			var button = new TagBuilder("button");
 
 			button.MergeAttributes(htmlAttributes);

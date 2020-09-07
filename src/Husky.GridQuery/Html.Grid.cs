@@ -20,8 +20,8 @@ namespace Husky.GridQuery
 
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
-		public static IHtmlContent Grid(this IHtmlHelper helper, Type typeOfGridModel, string dataSourceUrl, QueryCriteria criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>> customize = null) {
+		public static IHtmlContent Grid<TGridModel>(this IHtmlHelper helper, string dataSourceUrl, QueryCriteria? criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>>? customize = null) => helper.Grid(typeof(TGridModel), dataSourceUrl, criteria, editable, customize);
+		public static IHtmlContent Grid(this IHtmlHelper helper, Type typeOfGridModel, string dataSourceUrl, QueryCriteria? criteria = null, GridEditable editable = GridEditable.NA, Action<List<GridColumnSpec>>? customize = null) {
 			var principal = helper.ViewContext.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
 			var cookies = helper.ViewContext.HttpContext.Request.Cookies;
 

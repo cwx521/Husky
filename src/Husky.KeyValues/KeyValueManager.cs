@@ -22,28 +22,27 @@ namespace Husky.KeyValues
 		private readonly IMemoryCache _cache;
 
 		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
-
 		public bool Exists(string key) => Items.Any(x => x.Key == key);
 
-		public string GetString(string key) => Find(key)?.Value;
 
-		public T Get<T>(string key, T defaultValue = default) where T : struct => GetString(key).As(defaultValue);
+		public string? Get(string key) => Find(key)?.Value;
+		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
 
-		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct => (T)GetOrAdd(key, defaultValueIfNotExist, typeof(T));
 
-		public object GetOrAdd(string key, object defaultValueIfNotExist, Type defaultValueType) {
+		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct => GetOrAdd(key, defaultValueIfNotExist.ToString()).As<T>();
+		public string? GetOrAdd(string key, string? defaultValueIfNotExist) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
 
 			var item = Find(key);
 			if ( item != null ) {
-				return Convert.ChangeType(item.Value, defaultValueType);
+				return item.Value;
 			}
 
 			item = new KeyValue {
 				Key = key,
-				Value = defaultValueIfNotExist?.ToString()
+				Value = defaultValueIfNotExist
 			};
 			lock ( _lock ) {
 				Items.Add(item);
@@ -51,7 +50,8 @@ namespace Husky.KeyValues
 			return defaultValueIfNotExist;
 		}
 
-		public void AddOrUpdate<T>(string key, T value) where T : struct {
+		public void AddOrUpdate<T>(string key, T value) where T : struct => AddOrUpdate(key, value.ToString());
+		public void AddOrUpdate(string key, string? value) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
@@ -60,7 +60,7 @@ namespace Husky.KeyValues
 			if ( item == null ) {
 				item = new KeyValue {
 					Key = key,
-					Value = value.ToString()
+					Value = value
 				};
 				lock ( _lock ) {
 					Items.Add(item);
@@ -68,21 +68,23 @@ namespace Husky.KeyValues
 			}
 			else {
 				lock ( _lock ) {
-					item.Value = value.ToString();
+					item.Value = value;
 				}
 			}
 		}
 
 		public void Reload() => _cache.Remove(_cacheKey);
 
-		public void Save<T>(string key, T value) where T : struct {
+
+		public void Save<T>(string key, T value) where T : struct => Save(key, value.ToString());
+		public void Save(string key, string? value) {
 			AddOrUpdate(key, value);
 
 			using var scope = _svc.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
 			db.AddOrUpdate(new KeyValue {
 				Key = key,
-				Value = value.ToString()
+				Value = value
 			});
 			db.SaveChanges();
 		}
@@ -94,7 +96,7 @@ namespace Husky.KeyValues
 			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
 			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
-			fromDb.ForEach(x => x.Value = GetString(x.Key));
+			fromDb.ForEach(x => x.Value = Get(x.Key));
 			db.AddRange(added);
 
 			db.SaveChanges();
@@ -106,6 +108,6 @@ namespace Husky.KeyValues
 			return db.KeyValues.AsNoTracking().ToList();
 		});
 
-		private KeyValue Find(string key) => Items.Find(x => x.Key == key);
+		private KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 	}
 }

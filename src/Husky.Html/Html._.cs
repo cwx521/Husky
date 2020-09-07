@@ -18,7 +18,7 @@ namespace Husky.Html
 			return writer.ToString() ?? string.Empty;
 		}
 
-		private static TagBuilder MergeAttributes(this TagBuilder tagBuilder, object htmlAttributes) {
+		private static TagBuilder MergeAttributes(this TagBuilder tagBuilder, object? htmlAttributes) {
 			if ( htmlAttributes != null ) {
 				var props = htmlAttributes.GetType().GetProperties();
 				foreach ( var p in props ) {
@@ -47,7 +47,7 @@ namespace Husky.Html
 			Switch
 		}
 
-		private static string PrettifyCustomControl(TagBuilder inputTag, CustomControlType customControlType, string label, string addtionalCssClass = null) {
+		private static string PrettifyCustomControl(TagBuilder inputTag, CustomControlType customControlType, string? label, string? addtionalCssClass = null) {
 			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass.Contains("custom-control-input") ) {
 				inputTag.AddCssClass("custom-control-input");
 			}
@@ -57,7 +57,7 @@ namespace Husky.Html
 			</div>";
 		}
 
-		private static IHtmlContent RenderCustomControlGroupFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, CustomControlType customControlType, IEnumerable<SelectListItem> selectListItems, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object htmlAttributes = null) {
+		private static IHtmlContent RenderCustomControlGroupFor<TModel, TResult>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TResult>> expression, CustomControlType customControlType, IEnumerable<SelectListItem> selectListItems, LayoutDirection layoutDirection = LayoutDirection.Horizontal, object? htmlAttributes = null) {
 			var result = new HtmlContentBuilder();
 
 			foreach ( var item in selectListItems ) {

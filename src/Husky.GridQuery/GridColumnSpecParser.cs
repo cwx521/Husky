@@ -62,13 +62,13 @@ namespace Husky.GridQuery
 					};
 					result.Add(g);
 				}
-				g.columns.Add(col);
+				g.columns!.Add(col);
 			}
 
 			return result;
 		}
 
-		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute attr) => new GridColumnSpec {
+		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute? attr) => new GridColumnSpec {
 			field = property?.Name,
 			title = attr?.Title ?? property?.Name?.SplitWords(),
 			group = attr?.Group,
@@ -86,7 +86,7 @@ namespace Husky.GridQuery
 			values = property?.GetEnumerableValues(),
 		};
 
-		private static string GetMappedJsType(this PropertyInfo property) {
+		private static string? GetMappedJsType(this PropertyInfo property) {
 			var t = !property.PropertyType.IsGenericType
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
@@ -100,7 +100,7 @@ namespace Husky.GridQuery
 			return null;
 		}
 
-		private static GridColumnSpecEnumItem[] GetEnumerableValues(this PropertyInfo property) {
+		private static GridColumnSpecEnumItem[]? GetEnumerableValues(this PropertyInfo property) {
 			var t = !property.PropertyType.IsGenericType
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
@@ -112,14 +112,14 @@ namespace Husky.GridQuery
 			var values = Enum.GetValues(t);
 			foreach ( var i in values ) {
 				result.Add(new GridColumnSpecEnumItem {
-					text = EnumHelper.ToLabel(i as Enum),
-					value = i.GetHashCode()
+					text = (i as Enum)!.ToLabel(),
+					value = i!.GetHashCode()
 				});
 			}
 			return result.ToArray();
 		}
 
-		private static string GetTemplateString(GridColumnAttribute attr, string fieldName) {
+		private static string? GetTemplateString(GridColumnAttribute? attr, string? fieldName) {
 			if ( attr == null || string.IsNullOrEmpty(fieldName) ) {
 				return null;
 			}

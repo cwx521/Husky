@@ -5,7 +5,7 @@ namespace Husky.Html
 	public static partial class HtmlHelperExtensions
 	{
 		public static IHtmlContent InputDate(this IHtmlContent tagBuilder) {
-			return tagBuilder.AddCssClass("form-datepicker");
+			return tagBuilder.Prop("data-toggle", "datepicker");
 		}
 	}
 }

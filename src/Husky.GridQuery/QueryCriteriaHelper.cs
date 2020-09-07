@@ -19,7 +19,7 @@ namespace Husky.GridQuery
 					}
 					continue;
 				}
-				if ( filter.Value == null || filter.Value.ToString().Length == 0 ) {
+				if ( filter.Value == null || filter.Value.ToString()?.Length == 0 ) {
 					continue;
 				}
 				query = query.Where(filter.Field, filter.Value, filter.Operator.Equality());
@@ -34,7 +34,7 @@ namespace Husky.GridQuery
 			if ( sortBy == null || typeof(T).GetProperty(sortBy, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance) == null ) {
 				var property = typeof(T).GetProperties().FirstOrDefault(p => p.IsDefined(typeof(SortAttribute)));
 				if ( property != null ) {
-					var attribute = property.GetCustomAttribute<SortAttribute>();
+					var attribute = property.GetCustomAttribute<SortAttribute>()!;
 					sortBy = property.Name;
 					sortDirection = attribute.SortDirection;
 				}

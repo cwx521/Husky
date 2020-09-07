@@ -5,7 +5,7 @@ namespace Husky.Html
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent ButtonWithConfirm(this IHtmlHelper helper, string buttonFace, string message = null, object htmlAttributes = null) {
+		public static IHtmlContent ButtonWithConfirm(this IHtmlHelper helper, string buttonFace, string message = "该操作不可恢复，确定要执行吗？", object? htmlAttributes = null) {
 			var id = "_" + Crypto.RandomString();
 
 			var button = new TagBuilder("button");
