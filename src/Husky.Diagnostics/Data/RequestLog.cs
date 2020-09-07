@@ -32,6 +32,7 @@ namespace Husky.Diagnostics.Data
 		[StringLength(39), Column(TypeName = "varchar(39)")]
 		public string? UserIp { get; set; }
 
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime Time { get; set; } = DateTime.Now;
 	}
 }

@@ -41,8 +41,10 @@ namespace Husky.Diagnostics.Data
 
 		public int Count { get; set; } = 1;
 
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime FirstTime { get; set; } = DateTime.Now;
 
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime LastTime { get; set; } = DateTime.Now;
 
 

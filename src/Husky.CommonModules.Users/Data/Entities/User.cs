@@ -17,9 +17,10 @@ namespace Husky.CommonModules.Users.Data
 		[MaxLength(500), Column(TypeName = "varchar(500)")]
 		public string? PhotoUrl { get; set; }
 
-		public DateTime RegisteredTime { get; set; } = DateTime.Now;
-
 		public RowStatus State { get; set; } = RowStatus.Active;
+
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+		public DateTime RegisteredTime { get; set; } = DateTime.Now;
 
 
 		// nav props

@@ -16,6 +16,7 @@ namespace Husky.CommonModules.Users.Data
 
 		public bool IsVerified { get; set; }
 
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

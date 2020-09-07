@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Mail.Data
 {
@@ -18,7 +19,8 @@ namespace Husky.Mail.Data
 		[MaxLength(32)]
 		public string ContentType { get; set; } = null!;
 
-		public DateTime CreatedTime { get; set; }
+		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 
 		// nav props
