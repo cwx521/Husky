@@ -14,8 +14,8 @@ namespace Husky.TwoFactor.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
-                    SentTo = table.Column<string>(type: "varchar(50)", nullable: true),
-                    Code = table.Column<string>(type: "varchar(8)", nullable: true),
+                    SentTo = table.Column<string>(type: "varchar(50)", nullable: false),
+                    Code = table.Column<string>(type: "varchar(8)", nullable: false),
                     ErrorTimes = table.Column<int>(nullable: false),
                     IsUsed = table.Column<bool>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)

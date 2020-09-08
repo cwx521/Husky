@@ -27,7 +27,8 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(maxLength: 4000, nullable: false)
+                    Content = table.Column<string>(maxLength: 4000, nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -42,8 +43,8 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DisplayName = table.Column<string>(maxLength: 36, nullable: true),
                     PhotoUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
-                    RegisteredTime = table.Column<DateTime>(nullable: false),
-                    State = table.Column<int>(nullable: false)
+                    State = table.Column<int>(nullable: false),
+                    RegisteredTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -61,12 +62,12 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Lat = table.Column<decimal>(type: "decimal(11, 6)", nullable: true),
                     Province = table.Column<string>(maxLength: 16, nullable: false),
                     City = table.Column<string>(maxLength: 16, nullable: false),
-                    District = table.Column<string>(maxLength: 16, nullable: false),
-                    DetailAddress = table.Column<string>(maxLength: 100, nullable: true),
+                    District = table.Column<string>(maxLength: 16, nullable: true),
+                    Location = table.Column<string>(maxLength: 100, nullable: true),
                     ContactName = table.Column<string>(maxLength: 16, nullable: true),
-                    ContactPhoneNumber = table.Column<string>(maxLength: 11, nullable: true),
+                    ContactPhoneNumber = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: true),
                     IsDefault = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -119,7 +120,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Description = table.Column<string>(maxLength: 100, nullable: true),
                     UserAgent = table.Column<string>(maxLength: 500, nullable: true),
                     Ip = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -143,7 +144,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Content = table.Column<string>(maxLength: 4000, nullable: false),
                     IsRead = table.Column<bool>(nullable: false),
                     State = table.Column<int>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -171,7 +172,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     UserId = table.Column<int>(nullable: false),
                     Password = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: false),
                     IsObsoleted = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -191,7 +192,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     UserId = table.Column<int>(nullable: false),
                     Number = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: false),
                     IsVerified = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -221,7 +222,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Country = table.Column<string>(maxLength: 24, nullable: true),
                     AccessToken = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true),
                     RefreshToken = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false)
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -235,19 +236,26 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CreditTypes_CreditName",
+                table: "CreditTypes",
+                column: "CreditName",
+                unique: true)
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserAddresses_UserId",
                 table: "UserAddresses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserCredits_CreditTypeId",
+                name: "IX_UserCredits_UserId",
                 table: "UserCredits",
-                column: "CreditTypeId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserCredits_UserId_CreditTypeId",
+                name: "IX_UserCredits_CreditTypeId_UserId",
                 table: "UserCredits",
-                columns: new[] { "UserId", "CreditTypeId" },
+                columns: new[] { "CreditTypeId", "UserId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -274,28 +282,40 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 name: "IX_UserPhones_Number",
                 table: "UserPhones",
                 column: "Number",
-                unique: true);
+                unique: true)
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserWeChats_MiniProgramOpenId",
                 table: "UserWeChats",
                 column: "MiniProgramOpenId",
                 unique: true,
-                filter: "[MiniProgramOpenId] IS NOT NULL");
+                filter: "[MiniProgramOpenId] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserWeChats_MobilePlatformOpenId",
                 table: "UserWeChats",
                 column: "MobilePlatformOpenId",
                 unique: true,
-                filter: "[MobilePlatformOpenId] IS NOT NULL");
+                filter: "[MobilePlatformOpenId] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWeChats_PrivateId",
+                table: "UserWeChats",
+                column: "PrivateId",
+                unique: true,
+                filter: "[PrivateId] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserWeChats_UnionId",
                 table: "UserWeChats",
                 column: "UnionId",
                 unique: true,
-                filter: "[UnionId] IS NOT NULL");
+                filter: "[UnionId] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

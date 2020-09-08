@@ -9,8 +9,10 @@ namespace Husky.CommonModules.Users.Data
 		[Key]
 		public int Id { get; set; }
 
+		[CompositeUnique, NeverUpdate]
 		public int UserId { get; set; }
 
+		[CompositeUnique, NeverUpdate]
 		public int CreditTypeId { get; set; }
 
 		[Column(TypeName = "decimal(8, 2)")]

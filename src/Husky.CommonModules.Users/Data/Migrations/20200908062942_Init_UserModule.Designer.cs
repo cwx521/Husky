@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.CommonModules.Users.Data.Migrations
 {
     [DbContext(typeof(UserModuleDbContext))]
-    [Migration("20200905191835_Init_UserModule")]
+    [Migration("20200908062942_Init_UserModule")]
     partial class Init_UserModule
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,10 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreditName")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
+
                     b.ToTable("CreditTypes");
                 });
 
@@ -58,7 +62,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(500);
 
                     b.Property<DateTime>("RegisteredTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("State")
                         .HasColumnType("int");
@@ -85,18 +91,15 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(16);
 
                     b.Property<string>("ContactPhoneNumber")
-                        .HasColumnType("nvarchar(11)")
+                        .HasColumnType("varchar(11)")
                         .HasMaxLength(11);
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DetailAddress")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("District")
-                        .IsRequired()
                         .HasColumnType("nvarchar(16)")
                         .HasMaxLength(16);
 
@@ -105,6 +108,10 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.Property<decimal?>("Lat")
                         .HasColumnType("decimal(11, 6)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<decimal?>("Lon")
                         .HasColumnType("decimal(11, 6)");
@@ -142,9 +149,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreditTypeId");
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("UserId", "CreditTypeId")
+                    b.HasIndex("CreditTypeId", "UserId")
                         .IsUnique();
 
                     b.ToTable("UserCredits");
@@ -163,7 +170,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(100)")
@@ -210,7 +219,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(4000);
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
@@ -242,6 +253,11 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("nvarchar(4000)")
                         .HasMaxLength(4000);
 
+                    b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
                     b.HasKey("Id");
 
                     b.ToTable("UserMessageCommonContents");
@@ -255,7 +271,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("IsObsoleted")
                         .HasColumnType("bit");
@@ -281,7 +299,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
@@ -294,7 +314,8 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     b.HasKey("UserId");
 
                     b.HasIndex("Number")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("UserPhones");
                 });
@@ -317,7 +338,9 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasMaxLength(24);
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("HeadImageUrl")
                         .IsRequired()
@@ -360,15 +383,23 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.HasIndex("MiniProgramOpenId")
                         .IsUnique()
-                        .HasFilter("[MiniProgramOpenId] IS NOT NULL");
+                        .HasFilter("[MiniProgramOpenId] IS NOT NULL")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("MobilePlatformOpenId")
                         .IsUnique()
-                        .HasFilter("[MobilePlatformOpenId] IS NOT NULL");
+                        .HasFilter("[MobilePlatformOpenId] IS NOT NULL")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("PrivateId")
+                        .IsUnique()
+                        .HasFilter("[PrivateId] IS NOT NULL")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("UnionId")
                         .IsUnique()
-                        .HasFilter("[UnionId] IS NOT NULL");
+                        .HasFilter("[UnionId] IS NOT NULL")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("UserWeChats");
                 });

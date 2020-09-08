@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Husky.CommonModules.Users.Data
 {
@@ -12,6 +11,9 @@ namespace Husky.CommonModules.Users.Data
 
 		[MaxLength(4000)]
 		public string Content { get; set; } = null!;
+
+		[DefaultValueSql("getdate()"), NeverUpdate]
+		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 
 		// nav props

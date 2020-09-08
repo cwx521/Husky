@@ -27,6 +27,7 @@ namespace Husky.TwoFactor.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("varchar(8)");
 
                     b.Property<DateTime>("CreatedTime")
@@ -39,6 +40,7 @@ namespace Husky.TwoFactor.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SentTo")
+                        .IsRequired()
                         .HasColumnType("varchar(50)");
 
                     b.Property<int>("UserId")

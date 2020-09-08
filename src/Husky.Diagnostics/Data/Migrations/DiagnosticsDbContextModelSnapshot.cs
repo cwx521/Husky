@@ -40,8 +40,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("HttpMethod")
-                        .HasColumnType("varchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("varchar(6)")
+                        .HasMaxLength(6);
 
                     b.Property<DateTime>("LastTime")
                         .ValueGeneratedOnAdd()
@@ -102,8 +102,8 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("HttpMethod")
                         .IsRequired()
-                        .HasColumnType("varchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("varchar(6)")
+                        .HasMaxLength(6);
 
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");

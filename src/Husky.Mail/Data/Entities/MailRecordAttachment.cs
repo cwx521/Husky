@@ -18,6 +18,7 @@ namespace Husky.Mail.Data
 		[MaxLength(32)]
 		public string ContentType { get; set; } = null!;
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

@@ -29,6 +29,7 @@ namespace Husky.Mail.Data
 
 		public bool IsSuccessful { get; set; }
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

@@ -7,10 +7,10 @@ namespace Husky.CommonModules.Users.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(10)]
+		[MaxLength(10), Index(IsUnique = true)]
 		public string CreditName { get; set; } = null!;
 
-		[StringLength(10)]
+		[MaxLength(10)]
 		public string? Unit { get; set; }
 	}
 }

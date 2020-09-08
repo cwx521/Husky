@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20190811112249_Init_TwoFactor")]
+    [Migration("20200908062937_Init_TwoFactor")]
     partial class Init_TwoFactor
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +29,7 @@ namespace Husky.TwoFactor.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("varchar(8)");
 
                     b.Property<DateTime>("CreatedTime")
@@ -41,6 +42,7 @@ namespace Husky.TwoFactor.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SentTo")
+                        .IsRequired()
                         .HasColumnType("varchar(50)");
 
                     b.Property<int>("UserId")

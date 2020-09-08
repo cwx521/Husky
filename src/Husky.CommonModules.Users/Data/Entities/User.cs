@@ -18,6 +18,7 @@ namespace Husky.CommonModules.Users.Data
 
 		public RowStatus State { get; set; } = RowStatus.Active;
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime RegisteredTime { get; set; } = DateTime.Now;
 
 

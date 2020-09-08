@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.DataAudit.Data.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20180105162847_Init_DataAudit")]
+    [Migration("20200908062909_Init_DataAudit")]
     partial class Init_DataAudit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

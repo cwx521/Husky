@@ -25,26 +25,27 @@ namespace Husky.CommonModules.Users.Data
 		public string City { get; set; } = null!;
 
 		[MaxLength(16)]
-		public string District { get; set; } = null!;
+		public string? District { get; set; }
 
 		[MaxLength(100)]
-		public string? DetailAddress { get; set; }
+		public string? Location { get; set; }
 
 		[MaxLength(16)]
 		public string? ContactName { get; set; }
 
-		[MaxLength(11), Phone]
+		[MaxLength(11), Phone, Column(TypeName = "varchar(11)")]
 		public string? ContactPhoneNumber { get; set; }
 
 		public bool IsDefault { get; set; }
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 
 		// calculation
 
-		public string FullAddress => Province + City + District + DetailAddress;
-		public string FullAddressSplitBySpace => string.Join(" ", Province, City, District, DetailAddress);
+		public string FullAddress => Province + City + District + Location;
+		public string FullAddressSplitBySpace => string.Join(" ", Province, City, District, Location);
 
 
 		// nav props

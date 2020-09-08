@@ -16,6 +16,7 @@ namespace Husky.CommonModules.Users.Data
 
 		public bool IsObsoleted { get; set; }
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 

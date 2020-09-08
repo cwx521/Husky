@@ -2,6 +2,7 @@
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8603 // Possible null reference return.
 
+using Husky.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Husky.CommonModules.Users.Data
@@ -28,15 +29,7 @@ namespace Husky.CommonModules.Users.Data
 		public DbSet<UserMessageCommonContent> UserMessageCommonContents { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder mb) {
-
-			//Indices
-			mb.Entity<UserPhone>().HasIndex(x => x.Number).IsUnique();
-			mb.Entity<UserCredit>().HasIndex(x => new { x.UserId, x.CreditTypeId }).IsUnique();
-			mb.Entity<UserWeChat>(wechat => {
-				wechat.HasIndex(x => x.MiniProgramOpenId).IsUnique();
-				wechat.HasIndex(x => x.MobilePlatformOpenId).IsUnique();
-				wechat.HasIndex(x => x.UnionId).IsUnique();
-			});
+			mb.ApplyHuskyAnnotations();
 
 			//QueryFilters
 			mb.Entity<UserPassword>().HasQueryFilter(x => !x.IsObsoleted);

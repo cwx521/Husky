@@ -24,7 +24,7 @@ namespace Husky.TwoFactor.Data
 
 		public bool IsUsed { get; set; }
 
-		[NeverUpdate]
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 	}
 }

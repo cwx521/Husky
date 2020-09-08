@@ -27,6 +27,7 @@ namespace Husky.Mail.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Body")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Cc")
@@ -50,10 +51,12 @@ namespace Husky.Mail.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Subject")
+                        .IsRequired()
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
                     b.Property<string>("To")
+                        .IsRequired()
                         .HasColumnType("nvarchar(2000)")
                         .HasMaxLength(2000);
 
@@ -72,9 +75,11 @@ namespace Husky.Mail.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte[]>("ContentStream")
+                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ContentType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(32)")
                         .HasMaxLength(32);
 
@@ -85,6 +90,7 @@ namespace Husky.Mail.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
@@ -102,6 +108,7 @@ namespace Husky.Mail.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CredentialName")
+                        .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
@@ -114,6 +121,7 @@ namespace Husky.Mail.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordEncrypted")
+                        .IsRequired()
                         .HasColumnType("varchar(64)")
                         .HasMaxLength(64);
 
@@ -121,10 +129,12 @@ namespace Husky.Mail.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SenderDisplayName")
+                        .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
                     b.Property<string>("SenderMailAddress")
+                        .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 

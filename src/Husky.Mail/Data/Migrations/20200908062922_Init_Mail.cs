@@ -13,12 +13,12 @@ namespace Husky.Mail.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Host = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    CredentialName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    CredentialName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Port = table.Column<int>(nullable: false),
                     Ssl = table.Column<bool>(nullable: false),
-                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true),
-                    SenderMailAddress = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    SenderDisplayName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false),
+                    SenderMailAddress = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    SenderDisplayName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     IsInUse = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -33,10 +33,10 @@ namespace Husky.Mail.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SmtpId = table.Column<Guid>(nullable: true),
-                    Subject = table.Column<string>(maxLength: 200, nullable: true),
-                    Body = table.Column<string>(nullable: true),
+                    Subject = table.Column<string>(maxLength: 200, nullable: false),
+                    Body = table.Column<string>(nullable: false),
                     IsHtml = table.Column<bool>(nullable: false),
-                    To = table.Column<string>(maxLength: 2000, nullable: true),
+                    To = table.Column<string>(maxLength: 2000, nullable: false),
                     Cc = table.Column<string>(maxLength: 2000, nullable: true),
                     Exception = table.Column<string>(maxLength: 500, nullable: true),
                     IsSuccessful = table.Column<bool>(nullable: false),
@@ -60,9 +60,9 @@ namespace Husky.Mail.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MailId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(maxLength: 100, nullable: true),
-                    ContentStream = table.Column<byte[]>(nullable: true),
-                    ContentType = table.Column<string>(maxLength: 32, nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    ContentStream = table.Column<byte[]>(nullable: false),
+                    ContentType = table.Column<string>(maxLength: 32, nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>

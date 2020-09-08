@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20200907195841_Init_Diagnostics")]
+    [Migration("20200908062931_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,8 +42,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("HttpMethod")
-                        .HasColumnType("varchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("varchar(6)")
+                        .HasMaxLength(6);
 
                     b.Property<DateTime>("LastTime")
                         .ValueGeneratedOnAdd()
@@ -104,8 +104,8 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("HttpMethod")
                         .IsRequired()
-                        .HasColumnType("varchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("varchar(6)")
+                        .HasMaxLength(6);
 
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");
