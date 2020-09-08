@@ -20,9 +20,6 @@ namespace Husky.CommonModules.Users.Data
 
 		public LoginResult LoginResult { get; set; }
 
-		[MaxLength(100)]
-		public string? Description { get; set; }
-
 		[MaxLength(500)]
 		public string? UserAgent { get; set; }
 

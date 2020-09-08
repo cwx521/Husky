@@ -43,7 +43,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DisplayName = table.Column<string>(maxLength: 36, nullable: true),
                     PhotoUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
-                    State = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
                     RegisteredTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -117,7 +117,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     AttemptedAccount = table.Column<string>(maxLength: 50, nullable: false),
                     SickPassword = table.Column<string>(type: "varchar(88)", maxLength: 88, nullable: true),
                     LoginResult = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(maxLength: 100, nullable: true),
                     UserAgent = table.Column<string>(maxLength: 500, nullable: true),
                     Ip = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
                     CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
@@ -211,6 +210,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 {
                     UserId = table.Column<int>(nullable: false),
                     PrivateId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
+                    OpenPlatformOpenId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
                     MobilePlatformOpenId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
                     MiniProgramOpenId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
                     UnionId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
@@ -220,8 +220,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     Province = table.Column<string>(maxLength: 24, nullable: true),
                     City = table.Column<string>(maxLength: 24, nullable: true),
                     Country = table.Column<string>(maxLength: 24, nullable: true),
-                    AccessToken = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true),
-                    RefreshToken = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true),
                     CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -248,15 +246,15 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserCredits_CreditTypeId",
+                table: "UserCredits",
+                column: "CreditTypeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserCredits_UserId",
                 table: "UserCredits",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserCredits_CreditTypeId_UserId",
-                table: "UserCredits",
-                columns: new[] { "CreditTypeId", "UserId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLoginRecords_UserId",
@@ -299,6 +297,14 @@ namespace Husky.CommonModules.Users.Data.Migrations
                 column: "MobilePlatformOpenId",
                 unique: true,
                 filter: "[MobilePlatformOpenId] IS NOT NULL")
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWeChats_OpenPlatformOpenId",
+                table: "UserWeChats",
+                column: "OpenPlatformOpenId",
+                unique: true,
+                filter: "[OpenPlatformOpenId] IS NOT NULL")
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(

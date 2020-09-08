@@ -87,7 +87,7 @@ namespace Husky.TwoFactor
 				.FirstOrDefault();
 
 			if ( record == null ) {
-				return new Failure("验证码输入错误");
+				return new Failure("验证码匹配失败");
 			}
 			if ( record.ErrorTimes > 10 || string.Compare(model.Code, record.Code, true) != 0 ) {
 				record.ErrorTimes++;

@@ -17,6 +17,15 @@
 		[Label("图形验证码不正确")]
 		ErrorCaptcha,
 
+		[Label("手机验证码不正确")]
+		ErrorTwoFactorCode,
+
+		[Label("请求微信接口失败")]
+		FailureWeChatRequestToken,
+
+		[Label("获取微信用户信息失败")]
+		FailureWeChatRequestUserInfo,
+
 		[Label("连续失败次数过多")]
 		RejectedContinuousAttemption,
 

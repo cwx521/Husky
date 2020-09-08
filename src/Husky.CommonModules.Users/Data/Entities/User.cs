@@ -16,7 +16,7 @@ namespace Husky.CommonModules.Users.Data
 		[MaxLength(500), Column(TypeName = "varchar(500)")]
 		public string? PhotoUrl { get; set; }
 
-		public RowStatus State { get; set; } = RowStatus.Active;
+		public RowStatus Status { get; set; } = RowStatus.Active;
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime RegisteredTime { get; set; } = DateTime.Now;

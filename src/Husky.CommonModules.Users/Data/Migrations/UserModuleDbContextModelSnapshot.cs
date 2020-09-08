@@ -64,7 +64,7 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<int>("State")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -147,10 +147,10 @@ namespace Husky.CommonModules.Users.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("CreditTypeId", "UserId")
+                    b.HasIndex("CreditTypeId")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserCredits");
                 });
@@ -171,10 +171,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
 
                     b.Property<string>("Ip")
                         .HasColumnType("varchar(39)")
@@ -323,10 +319,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("AccessToken")
-                        .HasColumnType("varchar(128)")
-                        .HasMaxLength(128);
-
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(24)")
                         .HasMaxLength(24);
@@ -358,6 +350,10 @@ namespace Husky.CommonModules.Users.Data.Migrations
                         .HasColumnType("nvarchar(36)")
                         .HasMaxLength(36);
 
+                    b.Property<string>("OpenPlatformOpenId")
+                        .HasColumnType("varchar(32)")
+                        .HasMaxLength(32);
+
                     b.Property<string>("PrivateId")
                         .HasColumnType("varchar(32)")
                         .HasMaxLength(32);
@@ -365,10 +361,6 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     b.Property<string>("Province")
                         .HasColumnType("nvarchar(24)")
                         .HasMaxLength(24);
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("varchar(128)")
-                        .HasMaxLength(128);
 
                     b.Property<int>("Sex")
                         .HasColumnType("int");
@@ -387,6 +379,11 @@ namespace Husky.CommonModules.Users.Data.Migrations
                     b.HasIndex("MobilePlatformOpenId")
                         .IsUnique()
                         .HasFilter("[MobilePlatformOpenId] IS NOT NULL")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("OpenPlatformOpenId")
+                        .IsUnique()
+                        .HasFilter("[OpenPlatformOpenId] IS NOT NULL")
                         .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("PrivateId")

@@ -15,6 +15,9 @@ namespace Husky.CommonModules.Users.Data
 		public string? PrivateId { get; set; }
 
 		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
+		public string? OpenPlatformOpenId { get; set; }
+
+		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
 		public string? MobilePlatformOpenId { get; set; }
 
 		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
@@ -39,12 +42,6 @@ namespace Husky.CommonModules.Users.Data
 
 		[MaxLength(24)]
 		public string? Country { get; set; }
-
-		[MaxLength(128), Column(TypeName = "varchar(128)")]
-		public string? AccessToken { get; set; }
-
-		[MaxLength(128), Column(TypeName = "varchar(128)")]
-		public string? RefreshToken { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
