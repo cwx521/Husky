@@ -6,9 +6,15 @@ using Newtonsoft.Json;
 
 namespace Husky.GridQuery
 {
-	public static class GridColumnSpecParser
+	public static class GridColumnSpecHelper
 	{
 		private const int GridColumnDefaultWidth = 160;
+
+		public static string Json(this List<GridColumnSpec> specs) {
+			return JsonConvert.SerializeObject(specs, new JsonSerializerSettings {
+				DefaultValueHandling = DefaultValueHandling.Ignore
+			});
+		}
 
 		public static List<GridColumnSpec> GetGridColumnSpecs<TGridModel>() => typeof(TGridModel).GetGridColumnSpecs();
 		public static List<GridColumnSpec> GetGridColumnSpecs(this Type typeOfGridModel) {
@@ -44,14 +50,14 @@ namespace Husky.GridQuery
 			// grouping
 			var result = new List<GridColumnSpec>();
 			foreach ( var col in columns ) {
-				if ( string.IsNullOrEmpty(col.Group) ) {
+				if ( string.IsNullOrEmpty(col.Gather) ) {
 					result.Add(col);
 					continue;
 				}
-				var g = result.SingleOrDefault(x => x.Title == col.Group);
+				var g = result.SingleOrDefault(x => x.Title == col.Gather);
 				if ( g == null ) {
 					g = new GridColumnSpec {
-						Title = col.Group,
+						Title = col.Gather,
 						Columns = new List<GridColumnSpec>()
 					};
 					result.Add(g);
@@ -62,23 +68,19 @@ namespace Husky.GridQuery
 			return result;
 		}
 
-		public static string Json(this List<GridColumnSpec> specs) {
-			return JsonConvert.SerializeObject(specs, new JsonSerializerSettings {
-				DefaultValueHandling = DefaultValueHandling.Ignore
-			});
-		}
-
 		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute? attr) => new GridColumnSpec {
 			Field = property?.Name.CamelCase(),
 			Title = attr?.Title ?? property?.Name?.SplitWords(),
-			Group = attr?.Group,
+			Gather = attr?.Gather,
 			Width = (attr == null || attr.Width == 0) ? GridColumnDefaultWidth : (attr.Width != -1 ? attr.Width : (int?)null),
 			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),
 			Format = attr?.Format,
+			Aggregates = attr?.Aggregates?.ToNameArray(),
 			Filterable = property != null && (attr?.Filterable ?? true),
-			Sortable = (attr?.Sortable ?? true),
+			Sortable = property != null && (attr?.Sortable ?? true),
+			EditableFlag = property != null && (attr?.Editable ?? true),
 			Hidable = (attr?.Hidable ?? true),
-			EditableFlag = (attr?.Editable ?? true),
+			Groupable = (attr?.Groupable ?? false),
 			Locked = (attr?.Locked ?? false),
 			Hidden = (attr?.Hidden ?? false),
 			Attributes = attr?.CssClass == null ? null : $" class='{attr.CssClass}'",
@@ -91,6 +93,10 @@ namespace Husky.GridQuery
 				return fieldName;
 			}
 			return fieldName[0].ToString() + fieldName[1..];
+		}
+
+		private static string[]? ToNameArray(this Enum? values) {
+			return values?.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		private static string? GetMappedJavaScriptType(this PropertyInfo property) {

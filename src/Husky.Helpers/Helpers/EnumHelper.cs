@@ -42,7 +42,6 @@ namespace Husky
 			return result;
 		}
 
-
 		private static string GetLabel(this Enum value, bool useDescription, bool enableCss) {
 			var fieldName = Enum.GetName(value.GetType(), value);
 			if ( fieldName != null ) {

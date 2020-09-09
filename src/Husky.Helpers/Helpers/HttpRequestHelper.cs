@@ -2,7 +2,7 @@
 
 namespace Husky
 {
-	public static class HttpContextHelper
+	public static class HttpRequestHelper
 	{
 		public static string SchemeAndHost(this HttpRequest request) {
 			return (request.IsHttps ? "https://" : "http://") + request.Host;
@@ -23,6 +23,11 @@ namespace Husky
 		public static bool IsMobile(this HttpRequest request) {
 			var userAgent = request.UserAgent();
 			return userAgent.Contains("iPhone") || userAgent.Contains("Android");
+		}
+
+		public static bool IsWeChatBrowser(this HttpRequest request) {
+			var userAgent = request.UserAgent();
+			return userAgent.Contains("MicroMessenger");
 		}
 
 		public static bool IsXhr(this HttpRequest request) {
