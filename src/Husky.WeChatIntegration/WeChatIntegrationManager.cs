@@ -13,21 +13,17 @@ namespace Husky.WeChatIntegration
 	public class WeChatIntegrationManager
 	{
 		public WeChatIntegrationManager(WeChatAppSettings wechatSettings, IHttpContextAccessor http, IMemoryCache cache) {
+			_wechatSettings = wechatSettings;
 			_http = http.HttpContext;
 			_cache = cache;
-			_wechatSettings = wechatSettings;
 		}
 
+		private readonly WeChatAppSettings _wechatSettings;
 		private readonly HttpContext _http;
 		private readonly IMemoryCache _cache;
-		private readonly WeChatAppSettings _wechatSettings;
 
-		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.OpenPlatformAppId,
-				AppSecret = _wechatSettings.OpenPlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public string CreateLoginQrCode(string redirectUri, string styleSheetUrl) {
+			_wechatSettings.RequireOpenPlatformSettings();
 
 			var targetElementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + targetElementId + @"'></div>
@@ -42,9 +38,9 @@ namespace Husky.WeChatIntegration
 								self_redirect: false,
 								scope: 'snsapi_login',
 								id: '" + targetElementId + @"',
-								appid: '" + idSecret.AppId + @"',
+								appid: '" + _wechatSettings.OpenPlatformAppId + @"',
 								redirect_uri: '" + redirectUri + @"',
-								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId!) + @"',
+								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatSettings.OpenPlatformAppId!) + @"',
 								href: '" + styleSheetUrl + @"',
 								style: ''
 							});
@@ -54,30 +50,30 @@ namespace Husky.WeChatIntegration
 			return html;
 		}
 
-		public string CreateMobilePlatformAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo", WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MobilePlatformAppId,
-				AppSecret = _wechatSettings.MobilePlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public string CreateMobilePlatformAutoLoginSteppingUrl(string redirectUrl, string scope = "snsapi_userinfo") {
+			_wechatSettings.RequireMobilePlatformSettings();
 
 			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
-				   $"?appid={idSecret.AppId}" +
+				   $"?appid={_wechatSettings.MobilePlatformAppId}" +
 				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
 				   $"&response_type=code" +
 				   $"&scope={scope}" +
-				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: idSecret.AppId!)}" +
+				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatSettings.MobilePlatformAppId!)}" +
 				   $"#wechat_redirect";
 		}
 
-		public WeChatUserAccessToken? GetOpenPlatformUserAccessToken(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			return GetUserAccessToken(code, overrideAppIdSecret ?? new WeChatAppIdSecret {
+		public WeChatUserAccessToken? GetOpenPlatformUserAccessToken(string code) {
+			_wechatSettings.RequireOpenPlatformSettings();
+
+			return GetUserAccessToken(code, new WeChatAppIdSecret {
 				AppId = _wechatSettings.OpenPlatformAppId,
 				AppSecret = _wechatSettings.OpenPlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken? GetMobilePlatformUserAccessToken(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			return GetUserAccessToken(code, overrideAppIdSecret ?? new WeChatAppIdSecret {
+		public WeChatUserAccessToken? GetMobilePlatformUserAccessToken(string code) {
+			_wechatSettings.RequireMobilePlatformSettings();
+
+			return GetUserAccessToken(code, new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			});
@@ -90,14 +86,18 @@ namespace Husky.WeChatIntegration
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
 
-		public WeChatUserAccessToken? RefreshOpenPlatformUserAccessToken(string refreshToken, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			return RefreshUserAccessToken(refreshToken, overrideAppIdSecret ?? new WeChatAppIdSecret {
+		public WeChatUserAccessToken? RefreshOpenPlatformUserAccessToken(string refreshToken) {
+			_wechatSettings.RequireOpenPlatformSettings();
+
+			return RefreshUserAccessToken(refreshToken, new WeChatAppIdSecret {
 				AppId = _wechatSettings.OpenPlatformAppId,
 				AppSecret = _wechatSettings.OpenPlatformAppSecret
 			});
 		}
-		public WeChatUserAccessToken? RefreshMobilePlatformUserAccessToken(string refreshToken, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			return RefreshUserAccessToken(refreshToken, overrideAppIdSecret ?? new WeChatAppIdSecret {
+		public WeChatUserAccessToken? RefreshMobilePlatformUserAccessToken(string refreshToken) {
+			_wechatSettings.RequireMobilePlatformSettings();
+
+			return RefreshUserAccessToken(refreshToken, new WeChatAppIdSecret {
 				AppId = _wechatSettings.MobilePlatformAppId,
 				AppSecret = _wechatSettings.MobilePlatformAppSecret
 			});
@@ -109,6 +109,7 @@ namespace Husky.WeChatIntegration
 					  $"?appid={idSecret.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
+
 		private WeChatUserAccessToken? GetUserAccessTokenFromResolvedUrl(string url) {
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
@@ -149,16 +150,12 @@ namespace Husky.WeChatIntegration
 			}
 		}
 
-		public WeChatMiniProgramLoginResult MiniProgramLogin(string code, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MiniProgramAppId,
-				AppSecret = _wechatSettings.MiniProgramAppSecret
-			};
-			idSecret.CheckNull();
+		public WeChatMiniProgramLoginResult MiniProgramLogin(string code) {
+			_wechatSettings.RequireMiniProgramSettings();
 
 			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
-					  $"?appid={idSecret.AppId}" +
-					  $"&secret={idSecret.AppSecret}" +
+					  $"?appid={_wechatSettings.MiniProgramAppId}" +
+					  $"&secret={_wechatSettings.MiniProgramAppSecret}" +
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
@@ -173,18 +170,14 @@ namespace Husky.WeChatIntegration
 			}
 		}
 
-		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken(WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MobilePlatformAppId,
-				AppSecret = _wechatSettings.MobilePlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken() {
+			_wechatSettings.RequireMobilePlatformSettings();
 
-			return _cache.GetOrCreate(idSecret.AppId + nameof(GetMobilePlatformGeneralAccessToken), entry => {
+			return _cache.GetOrCreate(_wechatSettings.MobilePlatformAppId + nameof(GetMobilePlatformGeneralAccessToken), entry => {
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
-					  $"&appid={idSecret.AppId}" +
-					  $"&secret={idSecret.AppSecret}";
+					  $"&appid={_wechatSettings.MobilePlatformAppId}" +
+					  $"&secret={_wechatSettings.MobilePlatformAppSecret}";
 
 				using ( var client = new WebClient() ) {
 					var json = client.DownloadString(url);
@@ -198,15 +191,11 @@ namespace Husky.WeChatIntegration
 			});
 		}
 
-		public string GetJsapiTicket(WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MobilePlatformAppId,
-				AppSecret = _wechatSettings.MobilePlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public string GetJsapiTicket() {
+			_wechatSettings.RequireMobilePlatformSettings();
 
-			return _cache.GetOrCreate(idSecret.AppId + nameof(GetJsapiTicket), entry => {
-				var accessToken = GetMobilePlatformGeneralAccessToken(idSecret);
+			return _cache.GetOrCreate(_wechatSettings.MobilePlatformAppId + nameof(GetJsapiTicket), entry => {
+				var accessToken = GetMobilePlatformGeneralAccessToken();
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 
 				using ( var client = new WebClient() ) {
@@ -218,18 +207,14 @@ namespace Husky.WeChatIntegration
 			});
 		}
 
-		public WeChatJsapiConfig BuildWeChatJsapiConfig(WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MobilePlatformAppId,
-				AppSecret = _wechatSettings.MobilePlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public WeChatJsapiConfig CreateJsapiConfig() {
+			_wechatSettings.RequireMobilePlatformSettings();
 
 			var config = new WeChatJsapiConfig {
-				AppId = idSecret.AppId!,
+				AppId = _wechatSettings.MobilePlatformAppId!,
 				NonceStr = Crypto.RandomString(16),
-				Timestamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000,
-				Ticket = GetJsapiTicket(idSecret),
+				Timestamp = DateTime.Now.Timestamp(),
+				Ticket = GetJsapiTicket(),
 			};
 
 			var sb = new StringBuilder();
@@ -243,10 +228,12 @@ namespace Husky.WeChatIntegration
 			return config;
 		}
 
-		public string CreateWeChatJsapiConfigScript(params string[] jsApiList) {
-			var cfg = BuildWeChatJsapiConfig();
-			if ( jsApiList == null || jsApiList.Length == 0 ) {
-				jsApiList = new[] {
+		public string CreateJsapiConfigScript(params string[] enableJsapiNames) {
+			_wechatSettings.RequireMobilePlatformSettings();
+
+			var cfg = CreateJsapiConfig();
+			if ( enableJsapiNames == null || enableJsapiNames.Length == 0 ) {
+				enableJsapiNames = new[] {
 					"updateAppMessageShareData",
 					"updateTimelineShareData",
 					"onMenuShareAppMessage",
@@ -275,7 +262,7 @@ namespace Husky.WeChatIntegration
 								timestamp: " + cfg.Timestamp + @",
 								nonceStr: '" + cfg.NonceStr + @"',
 								signature: '" + cfg.Signature + @"',
-								jsApiList: [" + string.Join(',', jsApiList.Select(x => $"'{x}'")) + @"]
+								jsApiList: [" + string.Join(',', enableJsapiNames.Select(x => $"'{x}'")) + @"]
 							});
 						}
 					}
@@ -283,18 +270,15 @@ namespace Husky.WeChatIntegration
 				</script>";
 		}
 
-		public WeChatJsapiPayParameter BuildMobilePlatformJsapiPayParameter(string prepayId, WeChatAppIdSecret? overrideAppIdSecret = null) {
-			var idSecret = overrideAppIdSecret ?? new WeChatAppIdSecret {
-				AppId = _wechatSettings.MobilePlatformAppId,
-				AppSecret = _wechatSettings.MobilePlatformAppSecret
-			};
-			idSecret.CheckNull();
+		public WeChatJsapiPayParameter JsapiPayCreateParameter(string prepayId) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
 
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000;
 
 			var sb = new StringBuilder();
-			sb.Append("appId=" + idSecret.AppId);
+			sb.Append("appId=" + _wechatSettings.MobilePlatformAppId);
 			sb.Append("&nonceStr=" + nonceStr);
 			sb.Append("&package=prepay_id=" + prepayId);
 			sb.Append("&signType=MD5");
@@ -311,14 +295,72 @@ namespace Husky.WeChatIntegration
 			};
 		}
 
-		public string GetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters, string? overrideMerchantSecret = null) {
+		public WeChatJsapiPayParameter JsapiPayCreateParameter(WeChatJsapiPayModel model) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
+
+			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+
+			var now = DateTime.Now;
+			var nonceStr = Crypto.RandomString(32);
+
+			var dictionary = new Dictionary<string, string> {
+				{ "appid", _wechatSettings.MobilePlatformAppId! },
+				{ "mch_id", _wechatSettings.MerchantId! },
+				{ "device_info", "WEB" },
+				{ "nonce_str", nonceStr },
+				{ "sign_type", "MD5" },
+				{ "body", model.Body ?? string.Empty },
+				{ "out_trade_no", model.InternalOrderId },
+				{ "total_fee", (model.Amount * 100).ToString("f0") },
+				{ "spbill_create_ip", _http.Connection.RemoteIpAddress.ToString() },
+				{ "time_start", now.ToString("yyyyMMddHHmmss") },
+				{ "time_expire", now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
+				{ "notify_url", model.NotifyUrl },
+				{ "trade_type", "JSAPI" },
+				{ "openid", model.OpenId },
+				{ "attach", model.Attach ?? Crypto.MD5(model.InternalOrderId + model.Amount) }
+			};
+
+			var response = JsapiPayGetApiResultXml(apiUrl, dictionary);
+			var prepayId = response.MidBy("<prepay_id><![CDATA[", "]]></prepay_id>");
+
+			return JsapiPayCreateParameter(prepayId!);
+		}
+
+		public bool JsapiPayQueryOrder(string internalOrderId, decimal amount) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
+
+			var apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
+
+			var nonceStr = Crypto.RandomString(32);
+			var dictionary = new Dictionary<string, string> {
+				{ "appid", _wechatSettings.MobilePlatformAppId! },
+				{ "mch_id", _wechatSettings.MerchantId! },
+				{ "nonce_str", nonceStr },
+				{ "out_trade_no", internalOrderId },
+				{ "sign_type", "MD5" },
+			};
+
+			var response = JsapiPayGetApiResultXml(apiUrl, dictionary);
+			var totalFee = response.MidBy("<total_fee>", "</total_fee>");
+			var tradeState = response.MidBy("<trade_state><![CDATA[", "]]></trade_state>");
+
+			return tradeState == "SUCCESS" && totalFee == (amount * 100).ToString("f0");
+		}
+
+		public string JsapiPayGetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
+
 			var sb = new StringBuilder();
 
 			var orderedNames = parameters.Keys.OrderBy(x => x).ToArray();
 			foreach ( var name in orderedNames ) {
 				sb.Append(name + "=" + parameters[name] + "&");
 			}
-			sb.Append("key=" + overrideMerchantSecret ?? _wechatSettings.MerchantSecret);
+			sb.Append("key=" + _wechatSettings.MerchantSecret);
 
 			var tobeSigned = sb.ToString();
 			parameters.Add("sign", Crypto.MD5(tobeSigned).ToUpper());
