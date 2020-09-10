@@ -7,9 +7,9 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddWeChatIntegration(this HuskyDI husky, WeChatAppSettings settings) {
+		public static HuskyDI AddWeChatIntegration(this HuskyDI husky, WeChatAppConfig settings) {
 			husky.Services.AddScoped(svc =>
-				new WeChatIntegrationManager(
+				new WeChatService(
 					settings,
 					svc.GetRequiredService<IHttpContextAccessor>(),
 					svc.GetRequiredService<IMemoryCache>()

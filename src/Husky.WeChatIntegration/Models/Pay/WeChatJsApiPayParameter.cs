@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatJsapiPayParameter
+	public class WeChatJsApiPayParameter
 	{
 		public string id { get; set; } = null!;
 		public string nonceStr { get; set; } = null!;

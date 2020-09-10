@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatJsapiConfig
+	public class WeChatJsApiConfig
 	{
 		public string AppId { get; internal set; } = null!;
 		public string Ticket { get; internal set; } = null!;

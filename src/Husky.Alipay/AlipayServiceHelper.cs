@@ -49,7 +49,6 @@ namespace Husky.Alipay
 				return new AlipayOrderQueryResult {
 					Ok = !response.IsError && response.Msg == "Success" && response.TradeStatus == "TRADE_SUCCESS",
 					Message = response.SubMsg ?? response.Msg,
-					Code = response.Code.AsInt(),
 					AlipayTradeNo = response.TradeNo,
 					AlipayBuyerUserId = response.BuyerUserId,
 					AlipayBuyerLogonId = response.BuyerLogonId,
@@ -80,7 +79,6 @@ namespace Husky.Alipay
 				return new AlipayRefundResult {
 					Ok = !response.IsError && response.Msg == "Success",
 					Message = response.SubMsg ?? response.Msg,
-					Code = response.Code.AsInt(),
 					AggregatedRefundAmount = response.RefundFee.As<decimal>(),
 					OriginalResult = response,
 				};
@@ -106,7 +104,6 @@ namespace Husky.Alipay
 				return new AlipayRefundQueryResult {
 					Ok = !response.IsError && response.Msg == "Success",
 					Message = response.SubMsg ?? response.Msg,
-					Code = response.Code.AsInt(),
 					RefundReason = response.RefundReason,
 					RefundAmount = response.RefundAmount.As<decimal>(),
 					OriginalResult = response,
