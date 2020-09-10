@@ -6,11 +6,11 @@ using System.Text;
 using Husky.WeChatIntegration.Models.Pay;
 using Microsoft.AspNetCore.Http;
 
-namespace Husky.WeChatIntegration
+namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatPayService
 	{
-		public WeChatPayService(IHttpContextAccessor http, WeChatAppConfig wechatConfig) {
+		public WeChatPayService(WeChatAppConfig wechatConfig, IHttpContextAccessor http) {
 			_http = http.HttpContext;
 			_wechatConfig = wechatConfig;
 
