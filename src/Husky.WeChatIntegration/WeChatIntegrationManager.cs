@@ -270,7 +270,7 @@ namespace Husky.WeChatIntegration
 				</script>";
 		}
 
-		public WeChatJsapiPayParameter JsapiPayCreateParameter(string prepayId) {
+		public WeChatJsapiPayParameter CreateJsapiPayParameter(string prepayId) {
 			_wechatSettings.RequireMobilePlatformSettings();
 			_wechatSettings.RequireMerchantSettings();
 
@@ -295,7 +295,11 @@ namespace Husky.WeChatIntegration
 			};
 		}
 
-		public WeChatJsapiPayParameter JsapiPayCreateParameter(WeChatJsapiPayModel model) {
+		public WeChatJsapiPayParameter CreateJsapiPayParameter(WeChatPayModel model) {
+			return CreateJsapiPayParameter(CreatePrepayId(model));
+		}
+
+		public string CreatePrepayId(WeChatPayModel model) {
 			_wechatSettings.RequireMobilePlatformSettings();
 			_wechatSettings.RequireMerchantSettings();
 
@@ -304,14 +308,14 @@ namespace Husky.WeChatIntegration
 			var now = DateTime.Now;
 			var nonceStr = Crypto.RandomString(32);
 
-			var dictionary = new Dictionary<string, string> {
+			var parameters = new Dictionary<string, string> {
 				{ "appid", _wechatSettings.MobilePlatformAppId! },
 				{ "mch_id", _wechatSettings.MerchantId! },
 				{ "device_info", "WEB" },
 				{ "nonce_str", nonceStr },
 				{ "sign_type", "MD5" },
 				{ "body", model.Body ?? string.Empty },
-				{ "out_trade_no", model.InternalOrderId },
+				{ "out_trade_no", model.OrderId },
 				{ "total_fee", (model.Amount * 100).ToString("f0") },
 				{ "spbill_create_ip", _http.Connection.RemoteIpAddress.ToString() },
 				{ "time_start", now.ToString("yyyyMMddHHmmss") },
@@ -319,38 +323,89 @@ namespace Husky.WeChatIntegration
 				{ "notify_url", model.NotifyUrl },
 				{ "trade_type", "JSAPI" },
 				{ "openid", model.OpenId },
-				{ "attach", model.Attach ?? Crypto.MD5(model.InternalOrderId + model.Amount) }
+				{ "attach", model.Attach ?? Crypto.MD5(model.OrderId + model.Amount) }
 			};
 
-			var response = JsapiPayGetApiResultXml(apiUrl, dictionary);
+			var response = GetWeChatPayApiResultXml(apiUrl, parameters);
 			var prepayId = response.MidBy("<prepay_id><![CDATA[", "]]></prepay_id>");
-
-			return JsapiPayCreateParameter(prepayId!);
+			return prepayId!;
 		}
 
-		public bool JsapiPayQueryOrder(string internalOrderId, decimal amount) {
+		public WeChatPayQueryOrderResult? QueryOrder(string orderId, decimal amount) {
 			_wechatSettings.RequireMobilePlatformSettings();
 			_wechatSettings.RequireMerchantSettings();
 
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
 			var nonceStr = Crypto.RandomString(32);
-			var dictionary = new Dictionary<string, string> {
+			var parameters = new Dictionary<string, string> {
 				{ "appid", _wechatSettings.MobilePlatformAppId! },
 				{ "mch_id", _wechatSettings.MerchantId! },
 				{ "nonce_str", nonceStr },
-				{ "out_trade_no", internalOrderId },
-				{ "sign_type", "MD5" },
+				{ "out_trade_no", orderId }
 			};
+			var response = GetWeChatPayApiResultXml(apiUrl, parameters);
 
-			var response = JsapiPayGetApiResultXml(apiUrl, dictionary);
-			var totalFee = response.MidBy("<total_fee>", "</total_fee>");
 			var tradeState = response.MidBy("<trade_state><![CDATA[", "]]></trade_state>");
-
-			return tradeState == "SUCCESS" && totalFee == (amount * 100).ToString("f0");
+			if ( tradeState != "SUCCESS" ) {
+				return null;
+			}
+			return new WeChatPayQueryOrderResult {
+				TransactionId = response.MidBy("<transaction_id><![CDATA[", "]]></transaction_id>")!,
+				AppId = response.MidBy("<appid><![CDATA[", "]]></appid>")!,
+				MerchantId = response.MidBy("<mch_id><![CDATA[", "]]></mch_id>")!,
+				OpenId = response.MidBy("<openid><![CDATA[", "]]></openid>")!,
+				Amount = response.MidBy("<total_fee>", "</total_fee>").AsInt() / 100m,
+			};
 		}
 
-		public string JsapiPayGetApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters) {
+		public Result Refund(string originalOrderId, string newRefundRequestOrderId, decimal totalAmount, decimal refundAmount) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
+
+			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+
+			var nonceStr = Crypto.RandomString(32);
+			var parameters = new Dictionary<string, string> {
+				{ "appid", _wechatSettings.MobilePlatformAppId! },
+				{ "mch_id", _wechatSettings.MerchantId! },
+				{ "nonce_str", nonceStr },
+				{ "out_refund_no", newRefundRequestOrderId },
+				{ "out_trade_no", originalOrderId },
+				{ "refund_fee", (refundAmount * 100).ToString("f0") },
+				{ "total_fee", (totalAmount * 100).ToString("f0") },
+			};
+			var response = GetWeChatPayApiResultXml(apiUrl, parameters);
+
+			var ok = response.MidBy("<result_code><![CDATA[", "]]></result_code>") == "SUCCESS";
+			var message =  response.MidBy("<return_msg><![CDATA[", "]]></return_msg>");
+			return new Result(ok, message);
+		}
+
+		//WeChatPayRefundQueryResult
+		public Result<decimal> QueryRefund(string refundRequestOrderId) {
+			_wechatSettings.RequireMobilePlatformSettings();
+			_wechatSettings.RequireMerchantSettings();
+
+			var apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
+			var nonceStr = Crypto.RandomString(32);
+			var parameters = new Dictionary<string, string> {
+				{ "appid", _wechatSettings.MobilePlatformAppId! },
+				{ "mch_id", _wechatSettings.MerchantId! },
+				{ "nonce_str", nonceStr },
+				{ "out_refund_no", refundRequestOrderId },
+			};
+			var response = GetWeChatPayApiResultXml(apiUrl, parameters);
+
+			var ok = response.MidBy("<result_code><![CDATA[", "]]></result_code>") == "SUCCESS";
+			var message = response.MidBy("<return_msg><![CDATA[", "]]></return_msg>");
+			var amount = response.MidBy("<return_msg><![CDATA[", "]]></return_msg>").AsInt();
+
+			return new Result<decimal>(ok, message, data: amount);
+		}
+
+
+		public string GetWeChatPayApiResultXml(string wechatApiUrl, Dictionary<string, string> parameters) {
 			_wechatSettings.RequireMobilePlatformSettings();
 			_wechatSettings.RequireMerchantSettings();
 

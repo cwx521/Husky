@@ -27,10 +27,10 @@ namespace Husky.Alipay.Tests
 			var options = Options.Create(_alipayOptions);
 			var alipay = new AlipayService(options);
 
-			var tradeModel = new AlipayTradeModel {
+			var tradeModel = new AlipayPayment {
 				OnMobileDevice = false,
 				Amount = 0.1m,
-				InternalOrderNo = OrderIdGen.New(),
+				OrderId = OrderIdGen.New(),
 				Subject = "UnitTest",
 				NotifyUrl = "",
 				CallbackUrl = "",
@@ -43,33 +43,42 @@ namespace Husky.Alipay.Tests
 			//Use debug mode
 			//Open the url in browser
 			//Set break point here, pay manually in the opened page, then continue
-			var queryResult = alipay.QueryOrder(tradeModel.InternalOrderNo);
+			var queryResult = alipay.QueryOrder(tradeModel.OrderId);
 			Assert.AreEqual(tradeModel.Amount, queryResult.TotalAmount);
 
 			var remainedAmount = tradeModel.Amount;
 
+			//Refund 0.01
 			var refundAmount = 0.01m;
-			var refundRequestOrderNo = OrderIdGen.New();
-			var refundResult = alipay.Refund(tradeModel.InternalOrderNo, refundRequestOrderNo, refundAmount, "Test");
+			var refundRequestOrderId = OrderIdGen.New();
+			var refundResult = alipay.Refund(tradeModel.OrderId, refundRequestOrderId, refundAmount, "Test");
 			Assert.IsTrue(refundResult.Ok);
+
 			remainedAmount -= refundAmount;
 
-			var queryRefundResult = alipay.QueryRefund(tradeModel.InternalOrderNo, refundRequestOrderNo);
+			//Query refund 0.01
+			var queryRefundResult = alipay.QueryRefund(tradeModel.OrderId, refundRequestOrderId);
 			Assert.AreEqual(refundAmount, queryRefundResult.RefundAmount);
 
-			var queryResult2 = alipay.QueryOrder(tradeModel.InternalOrderNo);
-			Assert.AreEqual(tradeModel.Amount, queryResult2.TotalAmount);
-
+			//Refund another 0.01
 			var refundAmount2 = 0.01m;
-			var refundResult2 = alipay.Refund(tradeModel.InternalOrderNo, OrderIdGen.New(), refundAmount2, "Test");
+			var refundRequestOrderId2 = OrderIdGen.New();
+			var refundResult2 = alipay.Refund(tradeModel.OrderId, refundRequestOrderId2, refundAmount2, "Test");
 			Assert.IsTrue(refundResult2.Ok);
+
 			remainedAmount -= refundAmount2;
 
+			//Query another refund 0.01
+			var queryRefundResult2 = alipay.QueryRefund(tradeModel.OrderId, refundRequestOrderId2);
+			Assert.AreEqual(refundAmount2, queryRefundResult2.RefundAmount);
+
+			//Expected failure refund
 			var refundAmount3 = tradeModel.Amount;
-			var refundResult3 = alipay.Refund(tradeModel.InternalOrderNo, OrderIdGen.New(), refundAmount3, "Test");
+			var refundResult3 = alipay.Refund(tradeModel.OrderId, OrderIdGen.New(), refundAmount3, "Test");
 			Assert.IsFalse(refundResult3.Ok);
 
-			var refundResult4 = alipay.Refund(tradeModel.InternalOrderNo, OrderIdGen.New(), remainedAmount, "Test");
+			//Refund all remained amount
+			var refundResult4 = alipay.Refund(tradeModel.OrderId, OrderIdGen.New(), remainedAmount, "Test");
 			Assert.IsTrue(refundResult4.Ok);
 		}
 	}

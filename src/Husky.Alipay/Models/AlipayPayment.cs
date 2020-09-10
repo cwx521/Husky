@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Husky.Alipay
+﻿namespace Husky.Alipay
 {
-	public class AlipayTradeModel
+	public class AlipayPayment
 	{
 		public decimal Amount { get; set; }
-		public string InternalOrderNo { get; set; } = null!;
+		public string OrderId { get; set; } = null!;
 		public string Subject { get; set; } = null!;
 		public string? Body { get; set; }
 

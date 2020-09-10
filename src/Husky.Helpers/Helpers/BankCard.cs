@@ -6,7 +6,7 @@ namespace Husky
 {
 	public static class BankCardHelper
 	{
-		public static BankCardInfo GetBandCardInfo(string cardNumber) {
+		public static BankCardInfo? GetBandCardInfo(string cardNumber) {
 			using ( var client = new WebClient() ) {
 				var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
 				try {

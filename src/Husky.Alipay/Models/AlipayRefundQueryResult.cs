@@ -1,9 +1,12 @@
-﻿namespace Husky.Alipay
+﻿using Alipay.AopSdk.Core.Response;
+
+namespace Husky.Alipay.Models
 {
-	public class AlipayRefundQueryResult
+	public class AlipayRefundQueryResult : Result
 	{
-		public string AlipayTradeNo { get; internal set; } = null!;
+		public string? RefundReason { get; internal set; }
 		public decimal RefundAmount { get; internal set; }
-		public decimal TotalAmount { get; internal set; }
+
+		public AlipayTradeFastpayRefundQueryResponse? OriginalResult { get; internal set; }
 	}
 }
