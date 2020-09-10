@@ -9,6 +9,7 @@ namespace Husky.WeChatIntegration
 		public string OrderId { get; set; } = null!;
 		public string NotifyUrl { get; set; } = null!;
 		public string Body { get; set; } = null!;
+		public string IPAddress { get; set; } = null!;
 		public string? Attach { get; set; }
 		public decimal Amount { get; set; }
 		public bool AllowCreditCard { get; set; } = true;

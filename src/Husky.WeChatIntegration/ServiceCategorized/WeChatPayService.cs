@@ -4,20 +4,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Husky.WeChatIntegration.Models.Pay;
-using Microsoft.AspNetCore.Http;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatPayService
 	{
-		public WeChatPayService(WeChatAppConfig wechatConfig, IHttpContextAccessor http) {
-			_http = http.HttpContext;
+		public WeChatPayService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
-
 			_wechatConfig.RequireMerchantSettings();
 		}
 
-		private readonly HttpContext _http;
 		private readonly WeChatAppConfig _wechatConfig;
 
 		public WeChatJsApiPayParameter CreateJsApiPayParameter(string prepayId) {
@@ -49,9 +45,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var more = new Dictionary<string, string> {
 				{ "time_start", DateTime.Now.ToString("yyyyMMddHHmmss") },
 				{ "time_expire", DateTime.Now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
-				{ "spbill_create_ip", _http.Connection.RemoteIpAddress.ToString() },
 				{ "device_info", model.Device },
 				{ "trade_type", model.TradeType.ToString() },
+				{ "spbill_create_ip", model.IPAddress },
 				{ "out_trade_no", model.OrderId },
 				{ "notify_url", model.NotifyUrl },
 				{ "openid", model.OpenId },

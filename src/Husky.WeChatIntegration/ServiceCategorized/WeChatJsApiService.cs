@@ -32,7 +32,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				using ( var client = new WebClient() ) {
 					var json = client.DownloadString(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json);
+
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
+
 					return new WeChatGeneralAccessToken {
 						AccessToken = d.access_token,
 						ExpiresIn = d.expires_in
@@ -51,6 +53,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				using ( var client = new WebClient() ) {
 					var json = client.DownloadString(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json);
+
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
 					return d.ticket;
 				}
@@ -78,29 +81,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return config;
 		}
 
-		public string CreateJsApiScript(params string[] enableJsApiNames) {
+		public string CreateJsApiScript(string enableJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow") {
 			_wechatConfig.RequireMobilePlatformSettings();
 
-			if ( enableJsApiNames == null || enableJsApiNames.Length == 0 ) {
-				enableJsApiNames = new[] {
-					"updateAppMessageShareData",
-					"updateTimelineShareData",
-					"onMenuShareAppMessage",
-					"onMenuShareTimeline",
-					"openLocation",
-					"getLocation",
-					"scanQRCode",
-					"chooseWXPay",
-					"getNetworkType",
-					"chooseImage",
-					"previewImage",
-					"hideMenuItems",
-					"closeWindow"
-				};
-			}
-
 			var cfg = CreateJsApiConfig();
-
 			return @"<script type='text/javascript' src='https://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 				<script type='text/javascript'>
 					function configWeChatJsApi() {
@@ -114,7 +98,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 								timestamp: " + cfg.Timestamp + @",
 								nonceStr: '" + cfg.NonceStr + @"',
 								signature: '" + cfg.Signature + @"',
-								jsApiList: [" + string.Join(',', enableJsApiNames.Select(x => $"'{x}'")) + @"]
+								jsApiList: [" + string.Join(',', enableJsApiNames.Split(',', '|').Select(x => $"'{x.Trim()}'")) + @"]
 							});
 						}
 					}

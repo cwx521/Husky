@@ -17,9 +17,9 @@ namespace Husky.WeChatIntegration
 
 		public WeChatAppConfig WechatAppConfig { get; }
 
-		public WeChatUserService UserService() => new WeChatUserService(WechatAppConfig, _http);
-		public WeChatLoginService LoginService() => new WeChatLoginService(WechatAppConfig, _http);
+		public WeChatUserService UserService() => new WeChatUserService(WechatAppConfig);
+		public WeChatLoginService LoginService() => new WeChatLoginService(WechatAppConfig);
 		public WeChatJsApiService JsApiService() => new WeChatJsApiService(WechatAppConfig, _http, _cache);
-		public WeChatPayService PayService() => new WeChatPayService(WechatAppConfig, _http);
+		public WeChatPayService PayService() => new WeChatPayService(WechatAppConfig);
 	}
 }

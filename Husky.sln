@@ -45,9 +45,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Tests", "tests\Husky.Tests\Husky.Tests.csproj", "{C2904EFE-5429-4826-B1C6-74410C17ACC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Alipay", "src\Husky.Alipay\Husky.Alipay.csproj", "{3AB5C1AE-EAD4-424C-A95D-26A7AF1F394A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay", "src\Husky.Alipay\Husky.Alipay.csproj", "{3AB5C1AE-EAD4-424C-A95D-26A7AF1F394A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Alipay.Tests", "tests\Husky.Alipay.Tests\Husky.Alipay.Tests.csproj", "{3892D705-1B0A-4409-8EF3-F99A3E07A148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay.Tests", "tests\Husky.Alipay.Tests\Husky.Alipay.Tests.csproj", "{3892D705-1B0A-4409-8EF3-F99A3E07A148}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.WeChatIntegration.Tests", "tests\Husky.WeChatIntegration.Tests\Husky.WeChatIntegration.Tests.csproj", "{FC5742B8-0A23-408E-9CCB-48F6D14118C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +145,10 @@ Global
 		{3892D705-1B0A-4409-8EF3-F99A3E07A148}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3892D705-1B0A-4409-8EF3-F99A3E07A148}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3892D705-1B0A-4409-8EF3-F99A3E07A148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC5742B8-0A23-408E-9CCB-48F6D14118C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC5742B8-0A23-408E-9CCB-48F6D14118C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC5742B8-0A23-408E-9CCB-48F6D14118C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC5742B8-0A23-408E-9CCB-48F6D14118C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,6 +162,7 @@ Global
 		{E86D1D0C-29B2-48A9-BB7F-159B9B069F82} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{C2904EFE-5429-4826-B1C6-74410C17ACC0} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{3892D705-1B0A-4409-8EF3-F99A3E07A148} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
+		{FC5742B8-0A23-408E-9CCB-48F6D14118C2} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}

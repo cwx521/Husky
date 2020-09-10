@@ -6,12 +6,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatUserService
 	{
-		public WeChatUserService(WeChatAppConfig wechatConfig, IHttpContextAccessor http) {
-			_http = http.HttpContext;
+		public WeChatUserService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
 		}
 
-		private readonly HttpContext _http;
 		private readonly WeChatAppConfig _wechatConfig;
 
 		public WeChatUserInfo? GetUserInfo(WeChatUserAccessToken token) {

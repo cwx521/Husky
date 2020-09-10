@@ -8,12 +8,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatLoginService
 	{
-		public WeChatLoginService(WeChatAppConfig wechatConfig, IHttpContextAccessor http) {
-			_http = http.HttpContext;
+		public WeChatLoginService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
 		}
 
-		private readonly HttpContext _http;
 		private readonly WeChatAppConfig _wechatConfig;
 
 		public string CreateWebQrCodeLoginScript(string redirectUri, string styleSheetUrl) {
