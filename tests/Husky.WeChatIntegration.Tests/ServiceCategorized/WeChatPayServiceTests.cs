@@ -10,17 +10,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 		private readonly string _openId = "ougf3wF_K0LLtG-sVrQELJ615kHk";
 
 		private readonly WeChatAppConfig _wechatConfig = new WeChatAppConfig {
-			OpenPlatformAppId = "wx337078d6bc1d9c05",
-			OpenPlatformAppSecret = "e4f1aeae78dc0b56a2001dcf9d0f876c",
+			OpenPlatformAppId = "",
+			OpenPlatformAppSecret = "",
 
-			MobilePlatformAppId = "wxd67d73189e529060",
-			MobilePlatformAppSecret = "45e7ad725a341ddb0e20ca88671b1b0e",
+			MobilePlatformAppId = "",
+			MobilePlatformAppSecret = "",
 
-			MiniProgramAppId = "wx0db4db6c8b955ac1",
-			MiniProgramAppSecret = "24987a794bfcafb7cee7f4451e19e9f1",
+			MiniProgramAppId = "",
+			MiniProgramAppSecret = "",
 
-			MerchantId = "1562282191",
-			MerchantSecret = "o9PQE3opRQh5KydXq2lBhelrUr47Tz15"
+			MerchantId = "",
+			MerchantSecret = ""
 		};
 
 		[TestMethod()]
@@ -53,14 +53,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				NotifyUrl = "https://bigfridge.xingyisoftware.com/pay/callback/wechat",
 			};
 
+			//JsApi
 			model.TradeType = WeChatPayTradeType.JsApi;
 			model.OrderId = OrderIdGen.New();
+
 			var result1 = wechatPay.CreateUnifedOrder(model);
 			Assert.IsTrue(result1.Ok);
 			Assert.IsNotNull(result1.PrepayId);
 
+			//Native
 			model.TradeType = WeChatPayTradeType.Native;
 			model.OrderId = OrderIdGen.New();
+
 			var result2 = wechatPay.CreateUnifedOrder(model);
 			Assert.IsTrue(result2.Ok);
 			Assert.IsNotNull(result2.PrepayId);
@@ -68,17 +72,35 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		[TestMethod()]
 		public void QueryOrderTest() {
+			var payedOrderId = "DI4365967059199";
 
+			var wechatPay = new WeChatPayService(_wechatConfig);
+			var result = wechatPay.QueryOrder(_wechatConfig.MobilePlatformAppId, payedOrderId);
+			Assert.IsTrue(result.Ok);
+			Assert.AreEqual(0.01m, result.Amount);
+			Assert.AreEqual(_openId, result.OpenId);
 		}
 
-		[TestMethod()]
-		public void RefundTest() {
+		//[TestMethod()]
+		//public void RefundTest() {
+		//	var payedOrderId = "[give_an_order_id]";
+		//	var newRefundRequestOrderId = "Refund_" + payedOrderId;
 
-		}
+		//	var wechatPay = new WeChatPayService(_wechatConfig);
+		//	var result = wechatPay.Refund(_wechatConfig.MobilePlatformAppId, payedOrderId, newRefundRequestOrderId, 0.01m, 0.01m, "UnitTest");
+		//	Assert.IsTrue(result.Ok);
+		//	Assert.AreEqual(0.01m, result.AggregatedRefundAmount);
+		//}
 
 		[TestMethod()]
 		public void QueryRefundTest() {
+			var payedOrderId = "DI4405964098996";
+			var refundRequestOrderId = "Refund_" + payedOrderId;
 
+			var wechatPay = new WeChatPayService(_wechatConfig);
+			var result = wechatPay.QueryRefund(_wechatConfig.MobilePlatformAppId, refundRequestOrderId);
+			Assert.IsTrue(result.Ok);
+			Assert.AreEqual(0.01m, result.RefundAmount);
 		}
 	}
 }

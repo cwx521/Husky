@@ -1,4 +1,6 @@
-﻿using System;
+﻿//API document: https://pay.weixin.qq.com/wiki/doc/api/index.html
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -108,7 +110,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundResult Refund(string appId, string orderId, string newRefundRequestOrderId, decimal totalOrderAmount, decimal refundAmount) {
+		public WeChatPayRefundResult Refund(string appId, string orderId, string newRefundRequestOrderId, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
 			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 			var parameters = GetCommonParameters(appId);
@@ -117,17 +119,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				{ "out_refund_no", newRefundRequestOrderId },
 				{ "total_fee", (totalOrderAmount * 100).ToString("f0") },
 				{ "refund_fee", (refundAmount * 100).ToString("f0") },
+				{ "refund_desc", refundReason },
 			};
 			foreach ( var i in more ) {
 				parameters.Add(i.Key, i.Value);
 			}
 
 			try {
-				var xml = PostThenGetResultXml(apiUrl, parameters);
+				var xml = PostThenGetResultXml(apiUrl, parameters, true);
 				return new WeChatPayRefundResult {
 					Ok = GetCdata(xml, "result_code") == "SUCCESS",
 					Message = GetCdata(xml, "return_msg"),
-					AggregatedRefundAmount = GetValue<int>(xml, "refund_fee") / 100,
+					AggregatedRefundAmount = GetValue<int>(xml, "refund_fee") / 100m,
 					OriginalResult = xml
 				};
 			}
@@ -151,7 +154,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					Ok = GetCdata(xml, "result_code") == "SUCCESS" &&
 						(GetCdata(xml, "refund_status_0") == "SUCCESS" || GetCdata(xml, "refund_status_0") == "PROCESSING"),
 					Message = GetCdata(xml, "return_msg"),
-					RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100,
+					RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100m,
 					OriginalResult = xml
 				};
 			}
@@ -163,7 +166,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters) {
+		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) {
 			var sb = new StringBuilder();
 			apiParameters.Add("sign_type", "MD5");
 
@@ -188,7 +191,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var xml = sb.ToString();
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
-			using var webClient = new WebClient();
+			using var webClient = useCert ? new CertifiedWebClient(_wechatConfig.MerchantId!) : new WebClient();
+
 			var xmlResult = webClient.UploadString(wechatApiUrl, xml);
 			return xmlResult;
 		}
