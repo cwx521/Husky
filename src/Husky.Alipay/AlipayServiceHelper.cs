@@ -1,10 +1,12 @@
 ﻿//API document: https://opendocs.alipay.com/apis/api_1/alipay.trade.pay
 
 using System;
+using System.Collections.Generic;
 using Alipay.AopSdk.AspnetCore;
 using Alipay.AopSdk.Core.Domain;
 using Alipay.AopSdk.Core.Request;
 using Husky.Alipay.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Husky.Alipay
 {
@@ -66,10 +68,10 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundResult Refund(this AlipayService alipay, string originalOrderId, string newRefundRequestOrderId, decimal refundAmount, string refundReason) {
+		public static AlipayRefundResult Refund(this AlipayService alipay, string originalOrderId, string newRefundRequestId, decimal refundAmount, string refundReason) {
 			var model = new AlipayTradeRefundModel {
 				OutTradeNo = originalOrderId,
-				OutRequestNo = newRefundRequestOrderId,
+				OutRequestNo = newRefundRequestId,
 				RefundAmount = refundAmount.ToString("f2"),
 				RefundReason = refundReason
 			};
@@ -95,10 +97,10 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderId, string refundRequestOrderId) {
+		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderId, string refundRequestId) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderId,
-				OutRequestNo = refundRequestOrderId
+				OutRequestNo = refundRequestId
 			};
 			var request = new AlipayTradeFastpayRefundQueryRequest();
 			request.SetBizModel(model);
@@ -119,6 +121,39 @@ namespace Husky.Alipay
 					Message = e.Message
 				};
 			}
+		}
+
+		public static AlipayNotifyResult ParseNotifyResult(this AlipayService alipay, HttpRequest request) {
+			var dict = new Dictionary<string, string>();
+
+			if ( request.HasFormContentType ) {
+				foreach ( var i in request.Form.Keys ) dict.Add(i, request.Form[i]);
+			}
+			else if ( request.Query.Count != 0 ) {
+				foreach ( var i in request.Query.Keys ) dict.Add(i, request.Query[i]);
+			}
+
+			if ( dict.Count == 0 ) {
+				return new AlipayNotifyResult { Ok = false, Message = "未收到任何参数" };
+			}
+
+			var success = dict.TryGetValue("trade_status", out var status) && (status == "TRADE_SUCCESS" || status == "TRADE_FINISHED");
+			if ( !success ) {
+				return new AlipayNotifyResult { Ok = false, Message = "支付失败" };
+			}
+
+			var validationOk = dict.TryGetValue("trade_status", out var amount) && alipay.RSACheckV1(dict);
+			if ( !validationOk ) {
+				return new AlipayNotifyResult { Ok = false, Message = "未通过数据加密验证" };
+			}
+
+			return new AlipayNotifyResult {
+				Ok = true,
+				OrderId = dict["out_trade_no"],
+				AlipayTradeNo = dict["trade_no"],
+				AlipayBuyerId = dict["buyer_id"],
+				Amount = amount.As<decimal>()
+			};
 		}
 	}
 }

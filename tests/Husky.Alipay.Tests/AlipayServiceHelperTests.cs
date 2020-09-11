@@ -50,26 +50,26 @@ namespace Husky.Alipay.Tests
 
 			//Refund 0.01
 			var refundAmount = 0.01m;
-			var refundRequestOrderId = OrderIdGen.New();
-			var refundResult = alipay.Refund(tradeModel.OrderId, refundRequestOrderId, refundAmount, "Test");
+			var refundRequestId = OrderIdGen.New();
+			var refundResult = alipay.Refund(tradeModel.OrderId, refundRequestId, refundAmount, "Test");
 			Assert.IsTrue(refundResult.Ok);
 
 			remainedAmount -= refundAmount;
 
 			//Query refund 0.01
-			var queryRefundResult = alipay.QueryRefund(tradeModel.OrderId, refundRequestOrderId);
+			var queryRefundResult = alipay.QueryRefund(tradeModel.OrderId, refundRequestId);
 			Assert.AreEqual(refundAmount, queryRefundResult.RefundAmount);
 
 			//Refund another 0.01
 			var refundAmount2 = 0.01m;
-			var refundRequestOrderId2 = OrderIdGen.New();
-			var refundResult2 = alipay.Refund(tradeModel.OrderId, refundRequestOrderId2, refundAmount2, "Test");
+			var refundRequestId2 = OrderIdGen.New();
+			var refundResult2 = alipay.Refund(tradeModel.OrderId, refundRequestId2, refundAmount2, "Test");
 			Assert.IsTrue(refundResult2.Ok);
 
 			remainedAmount -= refundAmount2;
 
 			//Query another refund 0.01
-			var queryRefundResult2 = alipay.QueryRefund(tradeModel.OrderId, refundRequestOrderId2);
+			var queryRefundResult2 = alipay.QueryRefund(tradeModel.OrderId, refundRequestId2);
 			Assert.AreEqual(refundAmount2, queryRefundResult2.RefundAmount);
 
 			//Expected failure refund

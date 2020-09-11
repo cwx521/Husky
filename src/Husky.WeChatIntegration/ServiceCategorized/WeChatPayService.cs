@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using Husky.WeChatIntegration.Models.Pay;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
@@ -18,7 +20,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatAppConfig _wechatConfig;
 
-		public WeChatJsApiPayParameter CreateJsApiPayParameter(string prepayId) {
+		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Timestamp();
 
@@ -31,7 +33,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			sb.Append("&key=" + _wechatConfig.MerchantSecret);
 			var paySign = Crypto.MD5(sb.ToString()).ToUpper();
 
-			return new WeChatJsApiPayParameter {
+			return new WeChatPayJsApiParameter {
 				timestamp = timeStamp,
 				nonceStr = nonceStr,
 				package = $"prepay_id={prepayId}",
@@ -112,13 +114,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundResult Refund(string appId, string orderId, string newRefundRequestOrderId, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
+		public WeChatPayRefundResult Refund(string appId, string orderId, string newRefundRequestId, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
 			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 			var parameters = GetCommonParameters(appId);
 			var more = new Dictionary<string, string> {
 				{ "out_trade_no", orderId },
-				{ "out_refund_no", newRefundRequestOrderId },
+				{ "out_refund_no", newRefundRequestId },
 				{ "total_fee", (totalOrderAmount * 100).ToString("f0") },
 				{ "refund_fee", (refundAmount * 100).ToString("f0") },
 				{ "refund_desc", refundReason },
@@ -144,11 +146,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundQueryResult QueryRefund(string appId, string refundRequestOrderId) {
+		public WeChatPayRefundQueryResult QueryRefund(string appId, string refundRequestId) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
 			var parameters = GetCommonParameters(appId);
-			parameters.Add("out_refund_no", refundRequestOrderId);
+			parameters.Add("out_refund_no", refundRequestId);
 
 			try {
 				var xml = PostThenGetResultXml(apiUrl, parameters);
@@ -196,6 +198,35 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			var xmlResult = webClient.UploadString(wechatApiUrl, xml);
 			return xmlResult;
+		}
+
+		public string CreateNotifyRespondSuccessXml() {
+			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
+		}
+
+		public WeChatPayNotifyResult ParseNotifyResult(Stream stream) {
+			try {
+				var bytes = new byte[(int)stream.Length];
+				stream.Read(bytes, 0, bytes.Length);
+
+				var xml = Encoding.UTF8.GetString(bytes);
+				return new WeChatPayNotifyResult {
+					Ok = IsOk(xml),
+					Message = GetMessage(xml),
+					Amount = GetValue<decimal>(xml, "total_fee") / 100m,
+					OpenId = GetCdata(xml, "openid")!,
+					OrderId = GetCdata(xml, "out_trade_no")!,
+					TransactionId = GetCdata(xml, "transaction_id")!,
+					Attach = GetCdata(xml, "attach"),
+					OriginalResult = xml
+				};
+			}
+			catch (Exception e) {
+				return new WeChatPayNotifyResult {
+					Ok = false,
+					Message = e.Message
+				};
+			}
 		}
 
 		private Dictionary<string, string> GetCommonParameters(string wechatAppId) {

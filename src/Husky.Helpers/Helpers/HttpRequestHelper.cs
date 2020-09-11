@@ -36,5 +36,9 @@ namespace Husky
 		public static bool IsAjaxRequest(this HttpRequest request) {
 			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
+
+		public static bool IsLocalhost(this HttpRequest request) {
+			return request.Host.Host == "127.0.0.1" || request.Host.Host == "localhost";
+		}
 	}
 }
