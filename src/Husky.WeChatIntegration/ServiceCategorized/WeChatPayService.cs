@@ -18,7 +18,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public WeChatJsApiPayParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
-			var timeStamp = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).Ticks / 1000;
+			var timeStamp = DateTime.Now.Timestamp();
 
 			var sb = new StringBuilder();
 			sb.Append("appId=" + _wechatConfig.MobilePlatformAppId);
@@ -41,25 +41,28 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public WeChatPayOrderModelUnifiedResult CreateUnifedOrder(WeChatPayOrderModel model) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
+			var now = DateTime.Now;
 			var parameters = GetCommonParameters(model.AppId);
 			var more = new Dictionary<string, string> {
-				{ "time_start", DateTime.Now.ToString("yyyyMMddHHmmss") },
-				{ "time_expire", DateTime.Now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
+				{ "time_start", now.ToString("yyyyMMddHHmmss") },
+				{ "time_expire", now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
 				{ "device_info", model.Device },
-				{ "trade_type", model.TradeType.ToString() },
+				{ "trade_type", model.TradeType.ToUpper() },
 				{ "spbill_create_ip", model.IPAddress },
 				{ "out_trade_no", model.OrderId },
 				{ "notify_url", model.NotifyUrl },
 				{ "openid", model.OpenId },
 				{ "total_fee", (model.Amount * 100).ToString("f0") },
 				{ "body", model.Body },
-				{ "attach", model.Attach ?? Crypto.MD5(model.OrderId + model.Amount) },
 			};
 			foreach ( var i in more ) {
 				parameters.Add(i.Key, i.Value);
 			}
 			if ( !model.AllowCreditCard ) {
 				parameters.Add("limit_pay", "no_credit");
+			}
+			if ( !string.IsNullOrEmpty(model.Attach) ) {
+				parameters.Add("attach", model.Attach);
 			}
 
 			try {
@@ -162,6 +165,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters) {
 			var sb = new StringBuilder();
+			apiParameters.Add("sign_type", "MD5");
 
 			//按Key排序，追加key=@MerchantSecret，合成FormData格式字符串
 			var orderedNames = apiParameters.Keys.OrderBy(x => x).ToArray();
@@ -185,7 +189,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
 			using var webClient = new WebClient();
-			return webClient.UploadString(wechatApiUrl, xml);
+			var xmlResult = webClient.UploadString(wechatApiUrl, xml);
+			return xmlResult;
 		}
 
 		private Dictionary<string, string> GetCommonParameters(string wechatAppId) {

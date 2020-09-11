@@ -2,8 +2,8 @@
 {
 	public enum WeChatPayTradeType
 	{
-		JSAPI,
-		NATIVE,
-		APP
+		JsApi,
+		Native,
+		App
 	}
 }
