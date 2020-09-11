@@ -1,4 +1,6 @@
-﻿using System;
+﻿//API document: https://opendocs.alipay.com/apis/api_1/alipay.trade.pay
+
+using System;
 using Alipay.AopSdk.AspnetCore;
 using Alipay.AopSdk.Core.Domain;
 using Alipay.AopSdk.Core.Request;
@@ -76,9 +78,11 @@ namespace Husky.Alipay
 
 			try {
 				var response = alipay.Execute(request);
+				var ok = !response.IsError && response.Msg == "Success";
 				return new AlipayRefundResult {
-					Ok = !response.IsError && response.Msg == "Success",
+					Ok = ok,
 					Message = response.SubMsg ?? response.Msg,
+					RefundAmount = ok ? refundAmount : 0,
 					AggregatedRefundAmount = response.RefundFee.As<decimal>(),
 					OriginalResult = response,
 				};

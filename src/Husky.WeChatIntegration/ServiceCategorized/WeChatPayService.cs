@@ -70,8 +70,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = PostThenGetResultXml(apiUrl, parameters);
 				return new WeChatPayOrderModelUnifiedResult {
-					Ok = true,
-					Message = GetCdata(xml, "return_msg"),
+					Ok = IsOk(xml),
+					Message = GetMessage(xml),
 					PrepayId = GetCdata(xml, "prepay_id"),
 					CodeUrl = GetCdata(xml, "code_url"),
 					OriginalResult = xml
@@ -93,9 +93,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = PostThenGetResultXml(apiUrl, parameters);
+				var tradeState = GetCdata(xml, "trade_state");
 				return new WeChatPayOrderQueryResult {
-					Ok = GetCdata(xml, "trade_state") == "SUCCESS",
-					Message = GetCdata(xml, "return_msg"),
+					Ok = tradeState == "REFUND" || tradeState == "SUCCESS",
+					HasRefund = tradeState == "REFUND",
+					Message = GetMessage(xml),
 					OpenId = GetCdata(xml, "openid"),
 					Amount = GetValue<int>(xml, "total_fee") / 100m,
 					TransactionId = GetCdata(xml, "transaction_id"),
@@ -128,9 +130,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = PostThenGetResultXml(apiUrl, parameters, true);
 				return new WeChatPayRefundResult {
-					Ok = GetCdata(xml, "result_code") == "SUCCESS",
-					Message = GetCdata(xml, "return_msg"),
-					AggregatedRefundAmount = GetValue<int>(xml, "refund_fee") / 100m,
+					Ok = IsOk(xml),
+					Message = GetMessage(xml),
+					RefundAmount = GetValue<int>(xml, "refund_fee") / 100m,
 					OriginalResult = xml
 				};
 			}
@@ -151,9 +153,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = PostThenGetResultXml(apiUrl, parameters);
 				return new WeChatPayRefundQueryResult {
-					Ok = GetCdata(xml, "result_code") == "SUCCESS" &&
-						(GetCdata(xml, "refund_status_0") == "SUCCESS" || GetCdata(xml, "refund_status_0") == "PROCESSING"),
-					Message = GetCdata(xml, "return_msg"),
+					Ok = IsOk(xml) && (GetCdata(xml, "refund_status_0") == "SUCCESS" || GetCdata(xml, "refund_status_0") == "PROCESSING"),
+					Message = GetMessage(xml),
 					RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100m,
 					OriginalResult = xml
 				};
@@ -205,7 +206,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
 		static string? GetCdata(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
+		static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
+		static bool IsOk(string fromXml) => GetCdata(fromXml, "result_code") == "SUCCESS";
+		static string? GetMessage(string fromXml) => GetCdata(fromXml, "err_code_des");
 	}
 }

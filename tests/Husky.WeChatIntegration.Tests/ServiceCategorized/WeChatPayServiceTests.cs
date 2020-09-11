@@ -10,17 +10,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 		private readonly string _openId = "ougf3wF_K0LLtG-sVrQELJ615kHk";
 
 		private readonly WeChatAppConfig _wechatConfig = new WeChatAppConfig {
-			OpenPlatformAppId = "",
-			OpenPlatformAppSecret = "",
+			OpenPlatformAppId = "wx337078d6bc1d9c05",
+			OpenPlatformAppSecret = "e4f1aeae78dc0b56a2001dcf9d0f876c",
 
-			MobilePlatformAppId = "",
-			MobilePlatformAppSecret = "",
+			MobilePlatformAppId = "wxd67d73189e529060",
+			MobilePlatformAppSecret = "45e7ad725a341ddb0e20ca88671b1b0e",
 
-			MiniProgramAppId = "",
-			MiniProgramAppSecret = "",
+			MiniProgramAppId = "wx0db4db6c8b955ac1",
+			MiniProgramAppSecret = "24987a794bfcafb7cee7f4451e19e9f1",
 
-			MerchantId = "",
-			MerchantSecret = ""
+			MerchantId = "1562282191",
+			MerchantSecret = "o9PQE3opRQh5KydXq2lBhelrUr47Tz15"
 		};
 
 		[TestMethod()]
@@ -72,7 +72,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		[TestMethod()]
 		public void QueryOrderTest() {
-			var payedOrderId = "DI4365967059199";
+			var payedOrderId = "DIB710795325592";   //DI4365967059199
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var result = wechatPay.QueryOrder(_wechatConfig.MobilePlatformAppId, payedOrderId);
@@ -81,20 +81,20 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			Assert.AreEqual(_openId, result.OpenId);
 		}
 
-		//[TestMethod()]
-		//public void RefundTest() {
-		//	var payedOrderId = "[give_an_order_id]";
-		//	var newRefundRequestOrderId = "Refund_" + payedOrderId;
+		[TestMethod()]
+		public void RefundTest() {
+			var payedOrderId = "DIB710795325592";
+			var newRefundRequestOrderId = OrderIdGen.New();
 
-		//	var wechatPay = new WeChatPayService(_wechatConfig);
-		//	var result = wechatPay.Refund(_wechatConfig.MobilePlatformAppId, payedOrderId, newRefundRequestOrderId, 0.01m, 0.01m, "UnitTest");
-		//	Assert.IsTrue(result.Ok);
-		//	Assert.AreEqual(0.01m, result.AggregatedRefundAmount);
-		//}
+			var wechatPay = new WeChatPayService(_wechatConfig);
+			var result = wechatPay.Refund(_wechatConfig.MobilePlatformAppId, payedOrderId, newRefundRequestOrderId, 0.1m, 0.01m, "UnitTest");
+			Assert.IsTrue(result.Ok);
+			Assert.AreEqual(0.01m, result.RefundAmount);
+		}
 
 		[TestMethod()]
 		public void QueryRefundTest() {
-			var payedOrderId = "DI4405964098996";
+			var payedOrderId = "DIB710795325592";
 			var refundRequestOrderId = "Refund_" + payedOrderId;
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
