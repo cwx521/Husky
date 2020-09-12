@@ -6,32 +6,28 @@ namespace Husky
 {
 	public static class BankCardHelper
 	{
-		public static BankCardInfo? GetBandCardInfo(string cardNumber) {
+		public static BandCardModel? GetBandCardInfo(string cardNumber) {
 			using ( var client = new WebClient() ) {
 				var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
 				try {
 					var json = client.DownloadString(url);
 					var obj = JsonConvert.DeserializeObject<dynamic>(json);
-					return new BankCardInfo {
-						IsCreditCard = obj.cardType == "CC",
-						BankCardType = obj.cardType == "CC" ? "信用卡" : "借记卡",
+
+					if ( obj == null ) {
+						return null;
+					}
+					if ( obj.bank == null || obj.validated != "True" ) {
+						return null;
+					}
+					return new BandCardModel {
 						BankAbbr = obj.bank,
-						BankName = obj.bank == null ? null : BankCardInfo.BankNames.TryGetValue((string)obj.bank, out var bankName) ? bankName : obj.bank
+						BankName = BankNames.TryGetValue((string)obj.bank, out var bankName) ? bankName : obj.bank,
+						BankCardType = obj.cardType == "CC" ? BankCardType.CreditCard : BankCardType.DebitCard,
 					};
 				}
-				catch {
-					return null;
-				}
+				catch { return null; 	}
 			}
 		}
-	}
-
-	public class BankCardInfo
-	{
-		public bool IsCreditCard { get; set; }
-		public string BankCardType { get; set; } = null!;
-		public string? BankAbbr { get; set; }
-		public string? BankName { get; set; }
 
 		public static Dictionary<string, string> BankNames => new Dictionary<string, string> {
 			{"SRCB", "深圳农村商业银行"},
