@@ -72,6 +72,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		[TestMethod()]
 		public void QueryOrderTest() {
+			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+				return;
+			}
+
 			var payedOrderId = "DIB710795325592";   //DI4365967059199
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
@@ -83,6 +87,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		[TestMethod()]
 		public void RefundTest() {
+			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+				return;
+			}
+
 			var payedOrderId = "DIB710795325592";
 			var newRefundRequestId = OrderIdGen.New();
 
@@ -94,6 +102,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		[TestMethod()]
 		public void QueryRefundTest() {
+			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+				return;
+			}
+
 			var payedOrderId = "DIB710795325592";
 			var refundRequestId = "Refund_" + payedOrderId;
 
