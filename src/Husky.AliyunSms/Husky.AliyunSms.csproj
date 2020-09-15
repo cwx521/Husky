@@ -7,6 +7,7 @@
     <FileVersion>3.1.1.40917</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
+    <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
