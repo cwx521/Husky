@@ -47,7 +47,7 @@ namespace Husky.TwoFactor
 				}
 			}
 
-			var code = new TwoFactorCode { 
+			var code = new TwoFactorCode {
 				UserId = _me.Id,
 				Code = new Random().Next(0, 1000000).ToString("D6"),
 				SentTo = emailOrMobile

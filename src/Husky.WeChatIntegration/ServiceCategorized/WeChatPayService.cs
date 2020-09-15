@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Husky.WeChatIntegration.Models.Pay;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
@@ -221,7 +220,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					OriginalResult = xml
 				};
 			}
-			catch (Exception e) {
+			catch ( Exception e ) {
 				return new WeChatPayNotifyResult {
 					Ok = false,
 					Message = e.Message

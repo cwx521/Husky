@@ -1,14 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Husky;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Tests
 {
 	[Flags]
-	enum Abc {
+	enum Abc
+	{
 		[Label("LabelA", Description = "Description A", CssClass = "text-body")]
 		A,
 		[Label("LabelB", Description = "Description B", CssClass = "text-warning")]

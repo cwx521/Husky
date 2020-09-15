@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace Husky.WeChatIntegration.ServiceCategorized

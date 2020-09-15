@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Husky.Principal
+﻿namespace Husky.Principal
 {
 	public class Identity : IIdentity
 	{

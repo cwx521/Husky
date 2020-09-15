@@ -58,8 +58,8 @@ namespace Husky
 			var query = context.ChangeTracker.Entries<TEntity>().AsQueryable();
 			foreach ( var key in keyProperties ) {
 				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
-			} 
-			
+			}
+
 			//if not, then Attach
 			var updating = query.SingleOrDefault() ?? context.Attach(entity);
 

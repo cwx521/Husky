@@ -27,7 +27,7 @@ namespace Husky.Diagnostics.Data
 		public string? Source { get; set; }
 
 		public string? StackTrace { get; set; }
-		
+
 		public int? UserId { get; set; }
 
 		[MaxLength(100)]

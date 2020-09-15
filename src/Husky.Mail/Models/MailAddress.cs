@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Husky.Mail
+﻿namespace Husky.Mail
 {
 	public sealed partial class MailAddress
 	{

@@ -45,7 +45,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var model = new WeChatPayOrderModel {
-				OpenId =_openId,
+				OpenId = _openId,
 				AppId = _wechatConfig.MobilePlatformAppId,
 				IPAddress = "127.0.0.1",
 				Body = "Test",

@@ -18,7 +18,7 @@ namespace Husky
 				var prevIsCapital = (i > 0) && IsCapital(str[i - 1]);
 				var nextIsLowerCase = (i + 1 < str.Length) && !IsCapital(str[i + 1]);
 
-				if (i != 0 && IsCapital(str[i]) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
+				if ( i != 0 && IsCapital(str[i]) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
 					sb.Append(' ');
 				}
 				sb.Append(str[i]);

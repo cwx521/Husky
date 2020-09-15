@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Husky.EF;
+﻿using Husky.EF;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Husky.Diagnostics.Data
 {

@@ -25,7 +25,7 @@ namespace Husky
 						BankCardType = obj.cardType == "CC" ? BankCardType.CreditCard : BankCardType.DebitCard,
 					};
 				}
-				catch { return null; 	}
+				catch { return null; }
 			}
 		}
 

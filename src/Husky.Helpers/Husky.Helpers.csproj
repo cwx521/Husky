@@ -2,9 +2,9 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<Version>3.1.0.40903</Version>
-		<AssemblyVersion>3.1.0.40903</AssemblyVersion>
-		<FileVersion>3.1.0.40903</FileVersion>
+    <Version>3.1.1.40916</Version>
+    <AssemblyVersion>3.1.1.40916</AssemblyVersion>
+    <FileVersion>3.1.1.40916</FileVersion>
 		<Company></Company>
 		<Authors>chenwx521@hotmail.com</Authors>
     <Nullable>enable</Nullable>
@@ -20,10 +20,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Abstractions\" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using System;
-using Husky.Diagnostics.Data;
+﻿using Husky.Diagnostics.Data;
 using Husky.Principal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -34,7 +33,7 @@ namespace Husky.Diagnostics
 					Data = JsonConvert.SerializeObject(http.Request.Form),
 					UserAgent = http.Request.UserAgent(),
 					IsAjax = http.Request.IsAjaxRequest(),
-					Url = url, 
+					Url = url,
 					Referrer = http.Request.Headers["Referer"].ToString(),
 					UserIp = http.Connection.RemoteIpAddress.ToString()
 				});
