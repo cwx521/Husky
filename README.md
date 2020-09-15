@@ -8,14 +8,16 @@ put these at ConfigureServices in Startup.cs
 Example
 ---------------------
 
+
 public class Startup
 {
+
 	public Startup(IConfiguration configuration) {
 		Configuration = configuration;
 	}
-
+	
 	public IConfiguration Configuration { get; }
-
+	
 	public void ConfigureServices(IServiceCollection services) {
 		//Config
 		services.AddSingleton(Configuration);
@@ -47,4 +49,5 @@ public class Startup
 	}
   
 	//........
+	
 }
