@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Husky.DataAudit\Husky.DataAudit.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Diagnostics\Husky.Diagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />
+    <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />
+  </ItemGroup>
+
+</Project>

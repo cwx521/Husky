@@ -4,15 +4,15 @@ namespace Husky.Principal.Implements
 {
 	public sealed class IdentityOptions
 	{
-		public string Key { get; set; }
-		public string Token { get; set; }
+		public string Key { get; set; } = null!;
+		public string Token { get; set; } = null!;
 		public bool SessionMode { get; set; } = true;
 		public DateTimeOffset? Expires { get; set; }
-		public IIdentityEncyptor Encryptor { get; set; }
+		public IIdentityEncyptor Encryptor { get; set; } = null!;
 
 		internal IdentityOptions SolveUnassignedOptions(IdentityCarrier carrier) {
 			if ( string.IsNullOrEmpty(Key) ) {
-				Key = "WEIXING_AUTH_IDENTITY";
+				Key = "HUSKY_AUTH_IDENTITY";
 			}
 			if ( string.IsNullOrEmpty(Token) && carrier != IdentityCarrier.Session ) {
 				Token = Crypto.PermanentToken;

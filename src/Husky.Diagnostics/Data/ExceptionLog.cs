@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.RegularExpressions;
 
 namespace Husky.Diagnostics.Data
 {
@@ -10,41 +9,42 @@ namespace Husky.Diagnostics.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(32), Column(TypeName = "varchar(32)")]
-		public string Md5Comparison { get; set; }
+		[MaxLength(32), Column(TypeName = "varchar(32)")]
+		public string Md5Comparison { get; set; } = null!;
 
-		[StringLength(4000), Column(TypeName = "varchar(4000)")]
-		public string Url { get; set; }
+		[MaxLength(4000), Column(TypeName = "varchar(4000)")]
+		public string? Url { get; set; }
 
-		[StringLength(10), Column(TypeName = "varchar(10)")]
-		public string HttpMethod { get; set; }
+		[MaxLength(6), Column(TypeName = "varchar(6)")]
+		public string? HttpMethod { get; set; }
 
-		[StringLength(200), Column(TypeName = "varchar(200)")]
-		public string ExceptionType { get; set; }
+		[MaxLength(200), Column(TypeName = "varchar(200)")]
+		public string ExceptionType { get; set; } = null!;
 
-		[StringLength(1000)]
-		public string Message { get; set; }
+		[MaxLength(1000)]
+		public string? Message { get; set; }
 
-		public string Source { get; set; }
+		public string? Source { get; set; }
 
-		public string StackTrace { get; set; }
-		
-		[StringLength(36), Column(TypeName = "varchar(36)")]
-		public string UserIdString { get; set; }
+		public string? StackTrace { get; set; }
 
-		[StringLength(100)]
-		public string UserName { get; set; }
+		public int? UserId { get; set; }
 
-		[StringLength(1000), Column(TypeName = "varchar(1000)")]
-		public string UserAgent { get; set; }
+		[MaxLength(100)]
+		public string? UserName { get; set; }
 
-		[StringLength(39), Column(TypeName = "varchar(39)")]
-		public string UserIp { get; set; }
+		[MaxLength(1000), Column(TypeName = "varchar(1000)")]
+		public string? UserAgent { get; set; }
+
+		[MaxLength(39), Column(TypeName = "varchar(39)")]
+		public string? UserIp { get; set; }
 
 		public int Count { get; set; } = 1;
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime FirstTime { get; set; } = DateTime.Now;
 
+		[DefaultValueSql("getdate()")]
 		public DateTime LastTime { get; set; } = DateTime.Now;
 
 

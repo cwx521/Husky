@@ -5,15 +5,15 @@ namespace Husky.Principal.Implements
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
+		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Cookie);
 		}
 
-		private HttpContext _httpContext;
-		private IdentityOptions _options;
+		private readonly HttpContext _httpContext;
+		private readonly IdentityOptions _options;
 
-		IIdentity IIdentityManager.ReadIdentity() {
+		IIdentity? IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var cookie);
 			if ( string.IsNullOrEmpty(cookie) ) {
 				return null;
@@ -31,7 +31,7 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( identity.IsAnonymous ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
+				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
 			}
 			if ( !_httpContext.Response.HasStarted ) {
 				_httpContext.Response.Cookies.Append(
@@ -47,7 +47,7 @@ namespace Husky.Principal.Implements
 			}
 		}
 
-		private readonly string _sessionKey = "WEIXING_AUTH_SESSION_";
+		private readonly string _sessionKey = "HUSKY_AUTH_SESSION_";
 
 		private void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
 		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);

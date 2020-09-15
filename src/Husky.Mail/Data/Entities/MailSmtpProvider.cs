@@ -12,23 +12,23 @@ namespace Husky.Mail.Data
 		public Guid Id { get; set; } = Guid.NewGuid();
 
 		[Required, MaxLength(100), Column(TypeName = "varchar(100)")]
-		public string Host { get; set; }
+		public string Host { get; set; } = null!;
 
 		[MaxLength(50), Column(TypeName = "varchar(50)")]
-		public string CredentialName { get; set; }
+		public string CredentialName { get; set; } = null!;
 
 		public int Port { get; set; } = 25;
 
 		public bool Ssl { get; set; }
 
 		[MaxLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
-		public string PasswordEncrypted { get; set; }
+		public string PasswordEncrypted { get; set; } = null!;
 
 		[MaxLength(50), Column(TypeName = "varchar(50)")]
-		public string SenderMailAddress { get; set; }
+		public string SenderMailAddress { get; set; } = null!;
 
 		[MaxLength(50), Column(TypeName = "varchar(50)")]
-		public string SenderDisplayName { get; set; }
+		public string SenderDisplayName { get; set; } = null!;
 
 		public bool IsInUse { get; set; }
 
@@ -36,9 +36,12 @@ namespace Husky.Mail.Data
 		[NotMapped]
 		public string Password {
 			get => Crypto.Decrypt(PasswordEncrypted, Id.ToString());
-			set => PasswordEncrypted = Crypto.Decrypt(value, Id.ToString());
+			set => PasswordEncrypted = Crypto.Encrypt(value, Id.ToString());
 		}
 
-		public List<MailRecord> SentMails { get; set; } = new List<MailRecord>();
+
+		// nav props
+
+		public List<MailRecord> MailRecords { get; set; } = new List<MailRecord>();
 	}
 }

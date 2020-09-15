@@ -7,55 +7,58 @@ namespace Husky
 {
 	public static class StringTruncate
 	{
-		public static string JudgeWords(this string str) {
+		public static string? SplitWords(this string? str) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return str;
 			}
+			static bool IsCapital(char x) => x >= 'A' && x <= 'Z';
 			var sb = new StringBuilder();
-			Func<char, bool> IsCaptical = x => x >= 'A' && x <= 'Z';
 			for ( int i = 0; i < str.Length; i++ ) {
-				var c = str[i];
 				var prevIsSpace = (i > 0) && str[i - 1] == ' ';
-				var prevIsCapital = (i > 0) && IsCaptical(str[i - 1]);
-				var nextIsLowerCase = (i + 1 < str.Length) && !IsCaptical(str[i + 1]);
+				var prevIsCapital = (i > 0) && IsCapital(str[i - 1]);
+				var nextIsLowerCase = (i + 1 < str.Length) && !IsCapital(str[i + 1]);
 
-				if ( IsCaptical(c) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
+				if ( i != 0 && IsCapital(str[i]) && !prevIsSpace && (!prevIsCapital || nextIsLowerCase) ) {
 					sb.Append(' ');
 				}
-				sb.Append(c);
+				sb.Append(str[i]);
 			}
 			return sb.ToString();
 		}
 
-		public static string StripWord(this string str, string wordToRemove) {
+		public static string? StripWord(this string? str, string wordToRemove) {
 			return string.IsNullOrEmpty(str) ? str : str.Replace(wordToRemove, "");
 		}
 
-		public static string StripSpace(this string str) {
+		public static string? StripSpace(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"\s+", "", RegexOptions.Multiline);
 		}
 
-		public static string StripHtml(this string str) {
+		public static string? StripHtml(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"<\/?[1-6a-zA-Z]+[^>]*>", "", RegexOptions.Multiline);
 		}
 
-		public static string StripRegEx(this string str, string pattern, RegexOptions options = RegexOptions.None) {
+		public static string? StripRegEx(this string? str, string pattern, RegexOptions options = RegexOptions.None) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, pattern, "", options);
 		}
 
-		public static string Extract(this string str, string pattern, int matchIndex = 1) {
+		public static string? Extract(this string? str, string pattern, int matchIndex = 1) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return null;
 			}
-			var match = new Regex(pattern).Match(str);
-			return !match.Success ? null : match.Result("$" + Math.Max(matchIndex, 1));
+			var matches = new Regex(pattern).Matches(str);
+			return matches.Count == 0 ? null : matches[Math.Max(matchIndex, 1) - 1].Value;
 		}
 
-		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : IFormattable {
+		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : struct {
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
-		public static string Mid(this string str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
+		public static int ExtractNumber(this string str, int matchIndex = 1) {
+			return Extract(str, @"-?\d+", matchIndex).AsInt();
+		}
+
+		public static string? MidBy(this string? str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -71,14 +74,14 @@ namespace Husky
 					i += afterKeyword.Length;
 					var j = str.IndexOf(endAtKeyword, i, StringComparison.Ordinal);
 					if ( j > i ) {
-						return str.Substring(i, j - i);
+						return str[i..j];
 					}
 				}
 			}
 			return null;
 		}
 
-		public static string Left(this string str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string? LeftBy(this string? str, string beforeKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( beforeKeyword == null ) {
 				throw new ArgumentNullException(nameof(beforeKeyword));
 			}
@@ -94,7 +97,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string Right(this string str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
+		public static string? RightBy(this string? str, string afterKeyword, bool useLastFoundKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
@@ -110,7 +113,7 @@ namespace Husky
 			return null;
 		}
 
-		public static string Left(this string str, int neededCount, bool endWithEllipsis = false) {
+		public static string? Left(this string? str, int neededCount, bool endWithEllipsis = false) {
 			return str == null || str.Length <= neededCount || neededCount < 3
 				? str
 				: endWithEllipsis
@@ -118,7 +121,7 @@ namespace Husky
 					: str.Substring(0, neededCount);
 		}
 
-		public static string LeftMonospaced(this string str, int neededWidthInHalfangle) {
+		public static string? LeftMonospaced(this string? str, int neededWidthInHalfangle) {
 			if ( str == null || str.Length <= neededWidthInHalfangle / 2 || neededWidthInHalfangle < 3 ) {
 				return str;
 			}
@@ -135,7 +138,7 @@ namespace Husky
 			return str.Substring(0, i - j) + "...";
 		}
 
-		public static T[] Split<T>(this string wellFormed, params char[] separators) where T : IFormattable {
+		public static T[] Split<T>(this string? wellFormed, params char[] separators) where T : struct {
 			return string.IsNullOrEmpty(wellFormed) ? new T[0] : wellFormed.Split(separators).Select(x => x.As<T>()).ToArray();
 		}
 	}

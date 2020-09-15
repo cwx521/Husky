@@ -1,25 +1,14 @@
-﻿using Husky.Diagnostics.Data;
+﻿using System;
+using Husky.Diagnostics.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		private static bool migrated = false;
-
-		public static HuskyDependencyInjectionHub AddDiagnostics(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
-			husky.Services.AddDbContextPool<DiagnosticsDbContext>((svc, builder) => {
-				var config = svc.GetRequiredService<IConfiguration>();
-				var connstr = config.SeekConnectionString<DiagnosticsDbContext>(nameOfConnectionString);
-				builder.UseSqlServer(connstr);
-
-				if ( !migrated ) {
-					builder.Migrate();
-					migrated = true;
-				}
-			});
+		public static HuskyDI AddDiagnostics(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
+			husky.Services.AddDbContextPool<DiagnosticsDbContext>(optionsAction);
 			return husky;
 		}
 	}

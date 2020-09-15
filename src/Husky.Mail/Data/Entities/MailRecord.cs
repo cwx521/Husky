@@ -12,27 +12,30 @@ namespace Husky.Mail.Data
 		public Guid? SmtpId { get; set; }
 
 		[MaxLength(200)]
-		public string Subject { get; set; }
+		public string Subject { get; set; } = null!;
 
-		public string Body { get; set; }
+		public string Body { get; set; } = null!;
 
 		public bool IsHtml { get; set; }
 
 		[MaxLength(2000)]
-		public string To { get; set; }
+		public string To { get; set; } = null!;
 
 		[MaxLength(2000)]
-		public string Cc { get; set; }
+		public string? Cc { get; set; }
 
 		[MaxLength(500)]
-		public string Exception { get; set; }
+		public string? Exception { get; set; }
 
 		public bool IsSuccessful { get; set; }
 
+		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
 
 
-		public MailSmtpProvider Smtp { get; set; }
+		// nav props
+
+		public MailSmtpProvider? Smtp { get; set; }
 		public List<MailRecordAttachment> Attachments { get; set; } = new List<MailRecordAttachment>();
 	}
 }

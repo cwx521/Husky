@@ -9,25 +9,23 @@ namespace Husky.GridQuery
 {
 	public static class QueryCriteriaHelper
 	{
+		public static IQueryable<T> ApplyPreFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PreFilters, true);
+		public static IQueryable<T> ApplyPostFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PostFilters, false);
 		private static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, List<QueryFilter> filters, bool throwExceptionWhenFilterIsNotApplicable) {
 			foreach ( var filter in filters ) {
 				if ( !typeof(T).GetProperties().Any(x => string.Compare(filter.Field, x.Name, true) == 0) ) {
 					if ( throwExceptionWhenFilterIsNotApplicable ) {
-						throw new InvalidProgramException($"The PreFilter '{JsonConvert.SerializeObject(filter)}' is not applicable, please manage this PreFilter manually.");
+						throw new InvalidProgramException($"The PreFilter on column '{JsonConvert.SerializeObject(filter)}' is not applicable.");
 					}
 					continue;
 				}
-				if ( filter.Value == null || filter.Value.ToString().Length == 0 ) {
+				if ( filter.Value == null || filter.Value.ToString()?.Length == 0 ) {
 					continue;
 				}
 				query = query.Where(filter.Field, filter.Value, filter.Operator.Equality());
 			}
 			return query;
 		}
-
-		public static IQueryable<T> ApplyPreFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PreFilters, true);
-
-		public static IQueryable<T> ApplyPostFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PostFilters, false);
 
 		public static IQueryable<T> ApplySort<T>(this IQueryable<T> query, QueryCriteria criteria) {
 			var sortBy = criteria.SortBy;
@@ -36,7 +34,7 @@ namespace Husky.GridQuery
 			if ( sortBy == null || typeof(T).GetProperty(sortBy, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance) == null ) {
 				var property = typeof(T).GetProperties().FirstOrDefault(p => p.IsDefined(typeof(SortAttribute)));
 				if ( property != null ) {
-					var attribute = property.GetCustomAttribute<SortAttribute>();
+					var attribute = property.GetCustomAttribute<SortAttribute>()!;
 					sortBy = property.Name;
 					sortDirection = attribute.SortDirection;
 				}
@@ -54,12 +52,13 @@ namespace Husky.GridQuery
 			return query.Skip(criteria.Offset).Take(criteria.Limit);
 		}
 
-		public static JsonResult GridRowsJson<T>(this IQueryable<T> query, QueryCriteria criteria) {
-			var filteredQuery = query.ApplyPreFilters(criteria).ApplyPostFilters(criteria);
-			return new JsonResult(new {
-				TotalCount = filteredQuery.Count(),
-				Data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
-			});
+		public static JsonResult Apply<T>(this IQueryable<T> query, QueryCriteria criteria) {
+			var q = query.ApplyPreFilters(criteria).ApplyPostFilters(criteria);
+			var data = new {
+				TotalCount = q.Count(),
+				Data = q.ApplySort(criteria).ApplyPagination(criteria).ToList()
+			};
+			return new JsonResult(data);
 		}
 	}
 }

@@ -1,27 +1,16 @@
-﻿using Husky.TwoFactor;
+﻿using System;
+using Husky.TwoFactor;
 using Husky.TwoFactor.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		private static bool migrated = false;
-
-		public static HuskyDependencyInjectionHub AddTwoFactor(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
+		public static HuskyDI AddDiagnostics(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
-				.AddDbContextPool<TwoFactorDbContext>((svc, builder) => {
-					var config = svc.GetRequiredService<IConfiguration>();
-					var connstr = config.SeekConnectionString<TwoFactorDbContext>(nameOfConnectionString);
-					builder.UseSqlServer(connstr);
-
-					if ( !migrated ) {
-						builder.Migrate();
-						migrated = true;
-					}
-				})
+				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
 				.AddScoped<TwoFactorManager>();
 
 			return husky;

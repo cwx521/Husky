@@ -13,13 +13,10 @@ namespace Husky
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_OrderByDescending) : nameof(_OrderBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(typeof(T), propertyType);
-			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath });
+			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
 		public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> query, string propertyPath) => OrderBy(query, propertyPath, SortDirection.Descending);
-
-		private static IOrderedQueryable<T> _OrderBy<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderBy(Selector<T, TProp>(propertyPath));
-		private static IOrderedQueryable<T> _OrderByDescending<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderByDescending(Selector<T, TProp>(propertyPath));
 
 		#endregion
 
@@ -28,13 +25,10 @@ namespace Husky
 		public static IOrderedQueryable<T> ThenBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_ThenByDescending) : nameof(_ThenBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(typeof(T), propertyType);
-			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath });
+			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
-		public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> query, string propertyPath) => OrderBy(query, propertyPath, SortDirection.Descending);
-
-		private static IOrderedQueryable<T> _ThenBy<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenBy(Selector<T, TProp>(propertyPath));
-		private static IOrderedQueryable<T> _ThenByDescending<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenByDescending(Selector<T, TProp>(propertyPath));
+		public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> query, string propertyPath) => ThenBy(query, propertyPath, SortDirection.Descending);
 
 		#endregion
 
@@ -46,82 +40,86 @@ namespace Husky
 
 		#region Supports
 
+		private static IOrderedQueryable<T> _OrderBy<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderBy(Selector<T, TProp>(propertyPath));
+		private static IOrderedQueryable<T> _OrderByDescending<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderByDescending(Selector<T, TProp>(propertyPath));
+
+		private static IOrderedQueryable<T> _ThenBy<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenBy(Selector<T, TProp>(propertyPath));
+		private static IOrderedQueryable<T> _ThenByDescending<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenByDescending(Selector<T, TProp>(propertyPath));
+
 		private static Type GetPropertyType<T>(string propertyPath) {
 			var type = typeof(T);
-			foreach ( var propertyName in propertyPath.Split('.') ) {
-				type = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance).PropertyType;
+			var steps = propertyPath.Split('.');
+			foreach ( var propertyName in steps ) {
+				type = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance)!.PropertyType;
 			}
 			return type;
 		}
 
-		private static Expression<Func<T, TReturn>> Selector<T, TReturn>(string propertyPath) {
-			var arg = Expression.Parameter(typeof(T));
-			Expression property = null;
-			foreach ( var propertyName in propertyPath.Split('.') ) {
+		private static Expression GetPropertyExpression<T>(ParameterExpression arg, string propertyPath) {
+			Expression? property = null;
+			var steps = propertyPath.Split('.');
+			foreach ( var propertyName in steps ) {
 				property = Expression.Property(property ?? arg, propertyName);
 			}
+			return property!;
+		}
+
+		private static Expression<Func<T, TReturn>> Selector<T, TReturn>(string propertyPath) {
+			var arg = Expression.Parameter(typeof(T));
+			var property = GetPropertyExpression<T>(arg, propertyPath);
 			return Expression.Lambda<Func<T, TReturn>>(property, arg);
 		}
 
-		private static Expression<Func<T, bool>> Predicate<T>(string propertyPath, object filterValue, Comparison comparison) {
+		private static Expression<Func<T, bool>> Predicate<T>(string propertyPath, object value, Comparison comparison) {
 			var arg = Expression.Parameter(typeof(T));
-			Expression property = null;
-			Expression body = null;
+			var property = GetPropertyExpression<T>(arg, propertyPath);
 
-			foreach ( var propertyName in propertyPath.Split('.') ) {
-				property = Expression.Property(property ?? arg, propertyName);
-			}
-
-			var nonNullableType = property.Type;
-			if ( nonNullableType.IsGenericType ) {
-				nonNullableType = nonNullableType.GenericTypeArguments[0];
+			//Get type of value
+			var typeofValue = property.Type;
+			//when type of value is Nullable<T>, then T is what we want
+			if ( typeofValue.IsGenericType ) {
+				typeofValue = typeofValue.GenericTypeArguments[0];
 			}
 
 			//hack: kendo datetime format.
-			if ( nonNullableType == typeof(DateTime) ) {
-				var datestr = filterValue as string ?? filterValue?.ToString();
-				if ( datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
-					filterValue = datestr.Substring(4, 11);
+			//todo: need to improve
+			if ( typeofValue == typeof(DateTime) ) {
+				var datestr = value as string ?? value.ToString();
+				if ( datestr != null && datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {
+					value = datestr.Substring(4, 11);
 				}
 			}
 
-			var val = nonNullableType == filterValue.GetType()
-				? Expression.Constant(filterValue, property.Type)
-				: nonNullableType == typeof(string)
-					? Expression.Constant(filterValue.ToString(), property.Type)
-					: (nonNullableType.IsEnum || typeof(IConvertible).IsAssignableFrom(nonNullableType))
-						? Expression.Constant(TypeDescriptor.GetConverter(nonNullableType).ConvertFrom(filterValue), property.Type)
-						: (nonNullableType == typeof(Guid) && filterValue is string str)
+			//Get value expression
+			var exprValue = typeofValue == value.GetType()
+				? Expression.Constant(value, property.Type)
+
+					//: typeofValue == typeof(string)
+					//	? Expression.Constant(value.ToString(), property.Type)
+
+					: (typeofValue.IsEnum || typeof(IConvertible).IsAssignableFrom(typeofValue))
+						? Expression.Constant(TypeDescriptor.GetConverter(typeofValue).ConvertFrom(value), property.Type)
+
+						: (typeofValue == typeof(Guid) && value is string str)
 							? Expression.Constant(Guid.Parse(str), typeof(Guid))
-							: Expression.Constant(Convert.ChangeType(filterValue, nonNullableType), property.Type);
 
-			switch ( comparison ) {
-				default:
-					throw new ArgumentOutOfRangeException(nameof(comparison));
+							: Expression.Constant(Convert.ChangeType(value, typeofValue), property.Type)
+							;
 
-				case Comparison.Equal:
-					body = Expression.Equal(property, val);
-					break;
-				case Comparison.NotEqual:
-					body = Expression.NotEqual(property, val);
-					break;
-				case Comparison.HasKeyword:
-					body = Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) }), val);
-					break;
-				case Comparison.GreaterThan:
-					body = Expression.GreaterThan(property, val);
-					break;
-				case Comparison.GreaterThanOrEqual:
-					body = Expression.GreaterThanOrEqual(property, val);
-					break;
-				case Comparison.LessThan:
-					body = Expression.LessThan(property, val);
-					break;
-				case Comparison.LessThanOrEqual:
-					body = Expression.LessThanOrEqual(property, val);
-					break;
-			}
-			return Expression.Lambda<Func<T, bool>>(body, arg);
+			//Get lambda expression
+			Expression lambda = comparison switch
+			{
+				Comparison.Equal => Expression.Equal(property, exprValue),
+				Comparison.NotEqual => Expression.NotEqual(property, exprValue),
+				Comparison.GreaterThan => Expression.GreaterThan(property, exprValue),
+				Comparison.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, exprValue),
+				Comparison.LessThan => Expression.LessThan(property, exprValue),
+				Comparison.LessThanOrEqual => Expression.LessThanOrEqual(property, exprValue),
+				Comparison.HasKeyword => Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) }), exprValue),
+				_ => throw new ArgumentOutOfRangeException(nameof(comparison)),
+			};
+
+			return Expression.Lambda<Func<T, bool>>(lambda, arg);
 		}
 
 		#endregion

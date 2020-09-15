@@ -3,6 +3,6 @@
 	public interface IIdentityEncyptor
 	{
 		string Encrypt(IIdentity identity, string token);
-		IIdentity Decrypt(string encryptedString, string token);
+		IIdentity? Decrypt(string encryptedString, string token);
 	}
 }

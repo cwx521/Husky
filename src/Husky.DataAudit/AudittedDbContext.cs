@@ -8,6 +8,10 @@ namespace Husky.DataAudit
 {
 	public abstract class AuditEnabledDbContext : DbContext
 	{
+		protected AuditEnabledDbContext(DbContextOptions options) : base(options) {
+			_auditDb = new AuditDbContext(options);
+		}
+
 		protected AuditEnabledDbContext(DbContextOptions options, AuditDbContext auditDb) : base(options) {
 			_auditDb = auditDb;
 		}
@@ -31,7 +35,7 @@ namespace Husky.DataAudit
 			return affected;
 		}
 
-		public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken)) {
+		public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default) {
 			if ( _auditDb == null ) {
 				return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 			}
@@ -48,6 +52,6 @@ namespace Husky.DataAudit
 		}
 
 		public override int SaveChanges() => SaveChanges(true);
-		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken)) => await SaveChangesAsync(true, cancellationToken);
+		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => await SaveChangesAsync(true, cancellationToken);
 	}
 }

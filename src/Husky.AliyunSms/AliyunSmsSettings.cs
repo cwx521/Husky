@@ -2,9 +2,9 @@
 {
 	public class AliyunSmsSettings
 	{
-		public string AccessKeyId { get; set; }
-		public string AccessKeySecret { get; set; }
-		public string SignName { get; set; }
-		public string TemplateCode { get; set; }
+		public string AccessKeyId { get; set; } = null!;
+		public string AccessKeySecret { get; set; } = null!;
+		public string DefaultTemplateCode { get; set; } = null!;
+		public string DefaultSignName { get; set; } = null!;
 	}
 }

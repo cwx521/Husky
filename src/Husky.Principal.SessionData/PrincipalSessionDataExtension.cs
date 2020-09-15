@@ -5,7 +5,7 @@ namespace Husky.Principal.SessionData
 {
 	public static class PrincipalSessionDataExtension
 	{
-		public static SessionDataContainer SessionData(this IPrincipalUser principal) {
+		public static SessionDataContainer? SessionData(this IPrincipalUser principal) {
 			if ( principal.IsAnonymous ) {
 				return null;
 			}
@@ -14,13 +14,13 @@ namespace Husky.Principal.SessionData
 			var pool = new SessionDataPool<SessionDataContainer>(cache);
 			var sessionData = new SessionDataContainer(principal);
 
-			return pool.PickOrCreate(principal.IdString, sessionData);
+			return pool.PickOrCreate(principal.Id.ToString(), sessionData);
 		}
 
 		public static void AbandonSessionData(this IPrincipalUser principal) {
 			var cache = principal.ServiceProvider.GetRequiredService<IMemoryCache>();
 			var pool = new SessionDataPool<SessionDataContainer>(cache);
-			pool.Drop(principal.IdString);
+			pool.Drop(principal.Id.ToString());
 		}
 	}
 }
