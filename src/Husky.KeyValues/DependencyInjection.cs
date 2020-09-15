@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddDiagnostics(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyDI AddKeyValueManager(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<KeyValueDbContext>(optionsAction)
 				.AddSingleton<KeyValueManager>();
