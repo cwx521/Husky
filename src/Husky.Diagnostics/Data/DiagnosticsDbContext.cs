@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Husky.EF;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
@@ -7,10 +8,12 @@ namespace Husky.Diagnostics.Data
 		public DiagnosticsDbContext(DbContextOptions<DiagnosticsDbContext> options) : base(options) {
 		}
 
-		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
+		public DbSet<ExceptionLog> ExceptionLogs { get; set; } = null!;
+		public DbSet<RequestLog> RequestLogs { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).ForSqlServerIsClustered(false);
+			modelBuilder.ApplyHuskyAnnotations();
+			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).IsClustered(false);
 		}
 	}
 }

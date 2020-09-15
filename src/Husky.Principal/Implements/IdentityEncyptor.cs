@@ -4,17 +4,19 @@ namespace Husky.Principal.Implements
 {
 	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{
-		string IIdentityEncyptor.Encrypt(IIdentity identity, string token) {
+		public string Encrypt(IIdentity identity, string token) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			return Crypto.Encrypt($"{identity.IdString}|{identity.DisplayName}|{Crypto.SHA1(identity.IdString + identity.DisplayName + token)}", token);
+
+			var iv = Crypto.SHA1(identity.Id + identity.DisplayName);
+			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}", iv, token) + iv;
 		}
 
-		IIdentity IIdentityEncyptor.Decrypt(string encryptedString, string token) {
+		public IIdentity? Decrypt(string encryptedString, string token) {
 			if ( encryptedString == null ) {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
@@ -22,24 +24,24 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(token));
 			}
 			try {
-				var str = Crypto.Decrypt(encryptedString, token);
-				var a = str.IndexOf('|');
-				var b = str.LastIndexOf('|');
+				//iv is a Crypto.SHA1 result
+				const int ivLength = 40;
 
-				if ( a != -1 && b > a ) {
-					var validation = str.Substring(b + 1);
-					var identity = new Identity {
-						IdString = str.Substring(0, a),
-						DisplayName = str.Substring(a + 1, b - a - 1)
-					};
-					if ( Crypto.SHA1(identity.IdString + identity.DisplayName + token) == validation ) {
-						return identity;
-					}
-				}
+				var iv = encryptedString[^ivLength..];
+				var str = Crypto.Decrypt(encryptedString[..^ivLength], iv, token);
+				var splitAt = str.IndexOf('|');
+
+				return new Identity {
+					Id = str[0..splitAt].AsInt(),
+					DisplayName = str[(splitAt + 1)..]
+				};
 			}
 			catch {
 			}
 			return null;
 		}
+
+		string IIdentityEncyptor.Encrypt(IIdentity identity, string token) => Encrypt(identity, token);
+		IIdentity? IIdentityEncyptor.Decrypt(string encryptedString, string token) => Decrypt(encryptedString, token);
 	}
 }

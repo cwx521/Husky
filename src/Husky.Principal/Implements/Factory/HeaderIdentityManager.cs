@@ -5,15 +5,15 @@ namespace Husky.Principal.Implements
 {
 	internal sealed class HeaderIdentityManager : IIdentityManager
 	{
-		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions options = null) {
+		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
 			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
 		}
 
-		private HttpContext _httpContext;
-		private IdentityOptions _options;
+		private readonly HttpContext _httpContext;
+		private readonly IdentityOptions _options;
 
-		IIdentity IIdentityManager.ReadIdentity() {
+		IIdentity? IIdentityManager.ReadIdentity() {
 			var header = _httpContext.Request.Headers[_options.Key];
 			if ( string.IsNullOrEmpty(header) ) {
 				return null;
@@ -30,7 +30,7 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( identity.IsAnonymous ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.IdString)} '{identity.IdString}' is not an authenticated value.");
+				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
 			}
 			_httpContext.Response.Headers.Add(_options.Key, _options.Encryptor.Encrypt(identity, _options.Token));
 		}

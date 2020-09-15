@@ -1,28 +1,17 @@
-﻿using Husky.Mail;
+﻿using System;
+using Husky.Mail;
 using Husky.Mail.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		private static bool migrated = false;
-
-		public static HuskyDependencyInjectionHub AddMail(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
+		public static HuskyDI AddDiagnostics(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
-				.AddDbContextPool<MailDbContext>((svc, builder) => {
-					var config = svc.GetRequiredService<IConfiguration>();
-					var connstr = config.SeekConnectionString<MailDbContext>(nameOfConnectionString);
-					builder.UseSqlServer(connstr);
-
-					if ( !migrated ) {
-						builder.Migrate();
-						migrated = true;
-					}
-				})
-				.AddSingleton<IMailSender, MailSender>();
+				.AddDbContextPool<MailDbContext>(optionsAction)
+				.AddScoped<IMailSender, MailSender>();
 
 			return husky;
 		}

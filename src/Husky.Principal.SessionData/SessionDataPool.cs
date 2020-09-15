@@ -10,13 +10,13 @@ namespace Husky.Principal
 			_cache = cache;
 		}
 
-		private IMemoryCache _cache;
+		private readonly IMemoryCache _cache;
 		private static readonly object _lock = new object();
 		private static readonly string _cacheKey = "Pool_" + typeof(T).FullName;
 
 		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
 
-		internal T Pick(string key) {
+		internal T? Pick(string key) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
@@ -32,7 +32,7 @@ namespace Husky.Principal
 					Drop(key);
 				}
 			}
-			return default(T);
+			return default;
 		}
 
 		internal void Put(T bag) {

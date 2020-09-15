@@ -7,39 +7,56 @@ namespace Husky
 	public static class OrderIdGen
 	{
 		public static string New() {
-			var str = string.Concat(Hour, Month, Day, Time, Salt, Year);
+			var str = string.Concat(Hour, Month, Day, Time, Year);
 			return str + Validation(str);
 		}
 
-		public static bool TryParse(string str, out DateTime datetime) {
-			if ( str == null || str.Length != 15 || Validation(str.Substring(0, 14)) != str[14] - '0' ) {
+		public static bool TryParse(string? str, out DateTime datetime) {
+			if ( str == null || str.Length != 12 || Validation(str[0..11]) != str[11] - '0' ) {
 				datetime = DateTime.MinValue;
 				return false;
 			}
 			var makeup = string.Concat(
-				str[13] - '0' + 2011, '-',
-				str[1] - 'A' + 1, '-',
-				str[2] <= '9' ? str[2] - '0' : str[2] - 'A' + 10, ' ',
-				'Z' - str[0], ':',
-				string.Concat(str[5], str[7]), ':',
-				string.Concat(str[9], str[4])
+				str[10] - '0' + offsetYear, '-',                            //yyyy
+				str[1] - 'A' + 1, '-',                                      //M-
+				str[2] <= '9' ? (str[2] - '0') : (str[2] - 'A' + 10),       //d-
+				' ',
+				'Z' - str[0], ':',                                          //H:
+				string.Concat(str[5], str[7]), ':',                         //mm:
+				string.Concat(str[9], str[4])                               //ss
 			);
 			return DateTime.TryParse(makeup, out datetime);
 		}
-		public static bool IsValid(string orderId) => TryParse(orderId, out var dt);
+		public static bool IsValid(string? str) => TryParse(str, out _);
 
-		private static int _seed;
-		private static string Salt => new Random(Crypto.RandomNumber()).Next(0, 1000).ToString("D3");
-		private static char Year => (char)('0' + (DateTime.Now.Year - 2011));
+		//use 1 char to present Year, 0=2020, 1=2021, 2=2022 ...
+		private static readonly int offsetYear = 2020;
+		private static char Year => (char)('0' + (DateTime.Now.Year - offsetYear));
+
+		//use 1 char to present Month, A=Jan, B=Feb, C=Mar ...
 		private static char Month => (char)('A' + DateTime.Now.Month - 1);
+
+		//use 1 char to present Day, 1=1, 2=2, ... A=10, B=11 ...
 		private static char Day => (char)(DateTime.Now.Day + (DateTime.Now.Day < 10 ? '0' : 'A' - 10));
+
+		//use 1 char to present Day, Z=0, Y=1, X=2 ...
 		private static char Hour => (char)('Z' - DateTime.Now.Hour);
-		private static string Time => string.Join("", _Time());
+
+		//use 7 chars to present Time, the ordering of number values is obfuscated
+		private static string Time => string.Join("", TimeString());
+
+		//append a magic validation digit number, it takes one char, from 0-9
 		private static int Validation(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
 
-		private static IEnumerable<char> _Time() {
-			var add = _seed++ >= 1000 ? (_seed = 0) : _seed;
-			var str = (DateTime.Now.ToString("mmssfff").AsInt() + add).ToString("D7");
+
+		private static int _antiDup = 0;
+		private static IEnumerable<char> TimeString() {
+			var x = DateTime.Now.ToString("mmssfff").AsInt();
+			if ( x <= _antiDup ) {
+				x = _antiDup + 1;
+			}
+			_antiDup = x;
+			var str = x.ToString("D7");
 			var ordering = new[] { 7, 4, 1, 5, 2, 6, 3 };
 			foreach ( var i in ordering ) {
 				yield return str[i - 1];

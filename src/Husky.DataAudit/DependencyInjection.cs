@@ -1,25 +1,14 @@
-﻿using Husky.DataAudit.Data;
+﻿using System;
+using Husky.DataAudit.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.DependencyInjection
+namespace Husky
 {
 	public static class DependencyInjection
 	{
-		private static bool migrated = false;
-
-		public static HuskyDependencyInjectionHub AddDataAudit(this HuskyDependencyInjectionHub husky, string nameOfConnectionString = null) {
-			husky.Services.AddDbContextPool<AuditDbContext>((svc, builder) => {
-				var config = svc.GetRequiredService<IConfiguration>();
-				var connstr = config.SeekConnectionString<AuditDbContext>(nameOfConnectionString);
-				builder.UseSqlServer(connstr);
-
-				if ( !migrated ) {
-					builder.Migrate();
-					migrated = true;
-				}
-			});
+		public static HuskyDI AddDataAudit(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
+			husky.Services.AddDbContextPool<AuditDbContext>(optionsAction);
 			return husky;
 		}
 	}

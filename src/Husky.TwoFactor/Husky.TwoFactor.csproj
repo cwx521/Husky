@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>2.1.3.20824</Version>
-    <AssemblyVersion>2.1.4.20824</AssemblyVersion>
-    <FileVersion>2.1.4.20824</FileVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>3.1.1.40916</Version>
+    <AssemblyVersion>3.1.1.40916</AssemblyVersion>
+    <FileVersion>3.1.1.40916</FileVersion>
     <Company></Company>
     <Authors>chenwx521@hotmail.com</Authors>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

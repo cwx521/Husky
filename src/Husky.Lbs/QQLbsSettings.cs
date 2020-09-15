@@ -2,6 +2,6 @@
 {
 	public class QQLbsSettings
 	{
-		public string Key { get; set; }
+		public string Key { get; set; } = null!;
 	}
 }

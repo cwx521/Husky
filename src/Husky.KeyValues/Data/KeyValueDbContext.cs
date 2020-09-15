@@ -7,9 +7,6 @@ namespace Husky.KeyValues.Data
 		public KeyValueDbContext(DbContextOptions<KeyValueDbContext> options) : base(options) {
 		}
 
-		public DbSet<KeyValue> KeyValues { get; set; }
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-		}
+		public DbSet<KeyValue> KeyValues { get; set; } = null!;
 	}
 }

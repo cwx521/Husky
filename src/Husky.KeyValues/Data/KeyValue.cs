@@ -6,9 +6,9 @@ namespace Husky.KeyValues.Data
 	public class KeyValue
 	{
 		[Key, Column(TypeName = "varchar(50)")]
-		public string Key { get; set; }
+		public string Key { get; set; } = null!;
 
 		[MaxLength(2000)]
-		public string Value { get; set; }
+		public string? Value { get; set; }
 	}
 }
