@@ -15,6 +15,7 @@ namespace Husky.Payments.Data
 
 		public int CreditTypeId { get; set; }
 
+		[Column(TypeName = "decimal(10, 2)")]
 		public decimal RefundAmount { get; set; }
 
 		[MaxLength(200)]

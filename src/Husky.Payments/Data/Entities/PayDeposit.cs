@@ -17,7 +17,7 @@ namespace Husky.Payments.Data
 
 		public PaymentChannel Channel { get; set; }
 
-		[Column(TypeName = "decimal(15, 8)")]
+		[Column(TypeName = "decimal(10, 2)")]
 		public decimal Amount { get; set; }
 
 		public bool HasRefund { get; set; }

@@ -16,7 +16,7 @@ namespace Husky.Payments.Data
 		[CompositeUnique, NeverUpdate]
 		public int CreditTypeId { get; set; }
 
-		[Column(TypeName = "decimal(8, 2)")]
+		[Column(TypeName = "decimal(10, 2)")]
 		public decimal Balance { get; set; }
 
 
