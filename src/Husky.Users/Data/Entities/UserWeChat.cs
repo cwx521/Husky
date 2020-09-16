@@ -12,10 +12,10 @@ namespace Husky.Users.Data
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public int UserId { get; set; }
 
-		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
+		[MaxLength(32), Column(TypeName = "varchar(32)"), Unique]
 		public string? PrivateId { get; set; }
 
-		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
+		[MaxLength(32), Column(TypeName = "varchar(32)"), Unique]
 		public string? UnionId { get; set; }
 
 		[MaxLength(36)]
@@ -44,6 +44,6 @@ namespace Husky.Users.Data
 		[JsonIgnore]
 		public User User { get; set; } = null!;
 
-		public List<UserWeChatOpenId> OpenIds = new List<UserWeChatOpenId>();
+		public List<UserWeChatOpenId> OpenIds { get; set; } = new List<UserWeChatOpenId>();
 	}
 }

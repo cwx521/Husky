@@ -11,7 +11,7 @@ namespace Husky.Users.Data
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public int UserId { get; set; }
 
-		[MaxLength(11), Column(TypeName = "varchar(11)"), Index(IsUnique = true)]
+		[MaxLength(11), Column(TypeName = "varchar(11)"), Unique]
 		public string Number { get; set; } = null!;
 
 		public bool IsVerified { get; set; }

@@ -24,6 +24,10 @@ namespace Husky.EF
 						entityBuilder.HasIndex(p.Name).IsUnique(index.IsUnique).IsClustered(index.IsClustered);
 					}
 
+					if ( p.GetCustomAttribute<UniqueAttribute>() != null ) {
+						entityBuilder.HasIndex(p.Name).IsUnique();
+					}
+
 					if ( p.GetCustomAttribute<CompositeUniqueAttribute>() != null ) {
 						compositeUniqueProperties.Add(p.Name);
 					}

@@ -10,7 +10,7 @@ namespace Husky.Payments.Data
 		[Key]
 		public int Id { get; set; }
 
-		[Column(TypeName = "varchar(16)"), Index(IsUnique = true)]
+		[Column(TypeName = "varchar(16)"), Unique]
 		public string OrderId { get; set; } = null!;
 
 		[MaxLength(200)]

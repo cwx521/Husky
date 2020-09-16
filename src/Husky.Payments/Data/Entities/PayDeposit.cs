@@ -22,10 +22,10 @@ namespace Husky.Payments.Data
 
 		public bool HasRefund { get; set; }
 
-		[Column(TypeName = "varchar(15)"), Index(IsUnique = true)]
+		[Column(TypeName = "varchar(15)"), Unique]
 		public string OrderId { get; set; } = null!;
 
-		[Column(TypeName = "varchar(64)"), Index(IsUnique = true)]
+		[Column(TypeName = "varchar(64)"), Unique]
 		public string? ExternalTradeId { get; set; }
 
 		[Column(TypeName = "varchar(32)")]

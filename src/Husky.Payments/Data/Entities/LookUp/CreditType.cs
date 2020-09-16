@@ -7,7 +7,7 @@ namespace Husky.Payments.Data
 		[Key]
 		public int Id { get; set; }
 
-		[MaxLength(10), Index(IsUnique = true)]
+		[MaxLength(10), Unique]
 		public string CreditName { get; set; } = null!;
 
 		[MaxLength(10)]

@@ -16,7 +16,7 @@ namespace Husky.Users.Data
 
 		public WeChatOpenIdType OpenIdType { get; set; }
 
-		[MaxLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = true)]
+		[MaxLength(32), Column(TypeName = "varchar(32)"), Unique]
 		public string OpenIdValue { get; set; } = null!;
 
 

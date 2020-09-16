@@ -10,7 +10,7 @@ namespace Husky.Payments.Data
 
 		public int DepositId { get; set; }
 
-		[Column(TypeName = "varchar(15)"), Index(IsUnique = true)]
+		[Column(TypeName = "varchar(15)"), Unique]
 		public string RefundRequestOrderId { get; set; } = null!;
 
 		public int CreditTypeId { get; set; }

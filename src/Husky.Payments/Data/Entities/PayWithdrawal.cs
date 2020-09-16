@@ -20,10 +20,10 @@ namespace Husky.Payments.Data
 		[Column(TypeName = "decimal(10, 2)")]
 		public decimal HandlingFee { get; set; }
 
-		[Required, Column(TypeName = "varchar(15)"), Index(IsUnique = true)]
+		[Required, Column(TypeName = "varchar(15)"), Unique]
 		public string OrderId { get; set; } = null!;
 
-		[Column(TypeName = "varchar(64)"), Index(IsUnique = true)]
+		[Column(TypeName = "varchar(64)"), Unique]
 		public string? ExternalTradeId { get; set; }
 
 		public PaymentChannel TargetChannel { get; set; }
