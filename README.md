@@ -58,10 +58,10 @@ public class Startup
 		//Husky
 		services.Husky()
 			.AddPrincipal(IdentityCarrier.Cookie, new IdentityOptions { SessionMode = true })
-			.AddDiagnostics(x => x.UseSqlServer(defaultConnectionString))
-			.AddKeyValueManager(x => x.UseSqlServer(defaultConnectionString))
-			.AddMailSender(x => x.UseSqlServer(defaultConnectionString))
-			.AddTwoFactor(x => x.UseSqlServer(defaultConnectionString))
+			.AddDiagnostics(x => x.UseSqlServer(defaultConnectionString).Migrate())	   //Migrate() makes sure to crate the database and update to latest
+			.AddKeyValueManager(x => x.UseSqlServer(defaultConnectionString).Migrate())
+			.AddMailSender(x => x.UseSqlServer(defaultConnectionString).Migrate())
+			.AddTwoFactor(x => x.UseSqlServer(defaultConnectionString).Migrate())
 			.AddAliyunSms(Configuration.GetSection("AliyunSms").Get<AliyunSmsSettings>())
 			.AddWeChatIntegration(Configuration.GetSection("WeChat").Get<WeChatAppConfig>())
 			;
