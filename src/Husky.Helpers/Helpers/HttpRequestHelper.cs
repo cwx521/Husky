@@ -26,8 +26,7 @@ namespace Husky
 		}
 
 		public static bool IsWeChatBrowser(this HttpRequest request) {
-			var userAgent = request.UserAgent();
-			return userAgent.Contains("MicroMessenger");
+			return request.UserAgent().Contains("MicroMessenger");
 		}
 
 		public static bool IsXhr(this HttpRequest request) {
