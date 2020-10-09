@@ -3,7 +3,7 @@
 namespace Husky
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-	public class DefaultValueSqlAttribute : Attribute
+	public sealed class DefaultValueSqlAttribute : Attribute
 	{
 		public DefaultValueSqlAttribute(string sql) {
 			Sql = sql;

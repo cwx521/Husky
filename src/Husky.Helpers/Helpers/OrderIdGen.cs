@@ -7,7 +7,7 @@ namespace Husky
 	public static class OrderIdGen
 	{
 		public static string New() {
-			var str = string.Concat(Hour, Month, Day, Time, Year);
+			var str = string.Concat(Year, Month, Day, Hour, Time);
 			return str + Validation(str);
 		}
 
@@ -17,13 +17,13 @@ namespace Husky
 				return false;
 			}
 			var makeup = string.Concat(
-				str[10] - '0' + offsetYear, '-',                            //yyyy
+				str[0] - 'A' + offsetYear, '-',                             //yyyy-
 				str[1] - 'A' + 1, '-',                                      //M-
-				str[2] <= '9' ? (str[2] - '0') : (str[2] - 'A' + 10),       //d-
+				str[2] <= '9' ? (str[2] - '0') : (str[2] - 'A' + 10),       //d
 				' ',
-				'Z' - str[0], ':',                                          //H:
-				string.Concat(str[5], str[7]), ':',                         //mm:
-				string.Concat(str[9], str[4])                               //ss
+				'Z' - str[3], ':',                                          //H:
+				string.Concat(str[6], str[8]), ':',                         //mm:
+				string.Concat(str[10], str[5])                              //ss
 			);
 			return DateTime.TryParse(makeup, out datetime);
 		}
@@ -31,7 +31,7 @@ namespace Husky
 
 		//use 1 char to present Year, 0=2020, 1=2021, 2=2022 ...
 		private static readonly int offsetYear = 2020;
-		private static char Year => (char)('0' + (DateTime.Now.Year - offsetYear));
+		private static char Year => (char)('A' + (DateTime.Now.Year - offsetYear));
 
 		//use 1 char to present Month, A=Jan, B=Feb, C=Mar ...
 		private static char Month => (char)('A' + DateTime.Now.Month - 1);

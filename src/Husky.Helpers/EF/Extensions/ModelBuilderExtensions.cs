@@ -14,17 +14,16 @@ namespace Husky.EF
 				var compositeUniqueProperties = new List<string>();
 
 				entity.ClrType.GetProperties().AsParallel().ForAll(p => {
-					var valueSql = p.GetCustomAttribute<DefaultValueSqlAttribute>();
-					if ( valueSql != null ) {
+					if ( p.GetCustomAttribute<DefaultValueSqlAttribute>() is DefaultValueSqlAttribute valueSql ) {
 						entityBuilder.Property(p.Name).HasDefaultValueSql(valueSql.Sql);
 					}
-
-					var index = p.GetCustomAttribute<IndexAttribute>();
-					if ( index != null ) {
+					if ( p.GetCustomAttribute<IndexAttribute>() is IndexAttribute index ) {
 						entityBuilder.HasIndex(p.Name).IsUnique(index.IsUnique).IsClustered(index.IsClustered);
 					}
-
-					if ( p.GetCustomAttribute<CompositeUniqueAttribute>() != null ) {
+					if ( p.GetCustomAttribute<UniqueAttribute>() != null ) {
+						entityBuilder.HasIndex(p.Name).IsUnique();
+					}
+					if ( p.GetCustomAttribute<UniqueCompositeAttribute>() != null ) {
 						compositeUniqueProperties.Add(p.Name);
 					}
 				});
