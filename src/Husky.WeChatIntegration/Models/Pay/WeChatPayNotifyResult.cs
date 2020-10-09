@@ -2,7 +2,7 @@
 {
 	public class WeChatPayNotifyResult : Result
 	{
-		public string OrderId { get; internal set; } = null!;
+		public string OrderNo { get; internal set; } = null!;
 		public string TransactionId { get; internal set; } = null!;
 		public string OpenId { get; internal set; } = null!;
 		public decimal Amount { get; internal set; }

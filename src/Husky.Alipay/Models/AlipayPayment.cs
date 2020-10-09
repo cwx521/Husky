@@ -3,7 +3,7 @@
 	public class AlipayPayment
 	{
 		public decimal Amount { get; set; }
-		public string OrderId { get; set; } = null!;
+		public string OrderNo { get; set; } = null!;
 		public string Subject { get; set; } = null!;
 		public string? Body { get; set; }
 

@@ -16,7 +16,7 @@ namespace Husky.Alipay
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
-				OutTradeNo = payment.OrderId,
+				OutTradeNo = payment.OrderNo,
 				TotalAmount = payment.Amount.ToString("f2"),
 				ProductCode = "FAST_INSTANT_TRADE_PAY"
 			};
@@ -41,9 +41,9 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayOrderQueryResult QueryOrder(this AlipayService alipay, string orderId) {
+		public static AlipayOrderQueryResult QueryOrder(this AlipayService alipay, string orderNo) {
 			var model = new AlipayTradeQueryModel {
-				OutTradeNo = orderId
+				OutTradeNo = orderNo
 			};
 			var request = new AlipayTradeQueryRequest();
 			request.SetBizModel(model);
@@ -68,10 +68,10 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundResult Refund(this AlipayService alipay, string originalOrderId, string newRefundRequestId, decimal refundAmount, string refundReason) {
+		public static AlipayRefundResult Refund(this AlipayService alipay, string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
 			var model = new AlipayTradeRefundModel {
-				OutTradeNo = originalOrderId,
-				OutRequestNo = newRefundRequestId,
+				OutTradeNo = originalOrderNo,
+				OutRequestNo = newRefundRequestNo,
 				RefundAmount = refundAmount.ToString("f2"),
 				RefundReason = refundReason
 			};
@@ -97,10 +97,10 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderId, string refundRequestId) {
+		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
-				OutTradeNo = originalOrderId,
-				OutRequestNo = refundRequestId
+				OutTradeNo = originalOrderNo,
+				OutRequestNo = refundRequestNo
 			};
 			var request = new AlipayTradeFastpayRefundQueryRequest();
 			request.SetBizModel(model);
@@ -149,7 +149,7 @@ namespace Husky.Alipay
 
 			return new AlipayNotifyResult {
 				Ok = true,
-				OrderId = dict["out_trade_no"],
+				OrderNo = dict["out_trade_no"],
 				AlipayTradeNo = dict["trade_no"],
 				AlipayBuyerId = dict["buyer_id"],
 				Amount = amount.As<decimal>()
