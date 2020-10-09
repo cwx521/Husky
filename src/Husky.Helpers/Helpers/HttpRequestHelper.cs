@@ -4,40 +4,48 @@ namespace Husky
 {
 	public static class HttpRequestHelper
 	{
-		public static string SchemeAndHost(this HttpRequest request) {
-			return (request.IsHttps ? "https://" : "http://") + request.Host;
+		public static string RemoteIpv4(this HttpContext httpContext) {
+			return httpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 		}
 
-		public static string Url(this HttpRequest request) {
-			return request.PathBase + request.Path + request.QueryString.Value;
+		public static string RemoteIpv4(this HttpRequest httpRequest) {
+			return httpRequest.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 		}
 
-		public static string FullUrl(this HttpRequest request) {
-			return request.SchemeAndHost() + request.Url();
+		public static string SchemeAndHost(this HttpRequest httpRequest) {
+			return (httpRequest.IsHttps ? "https://" : "http://") + httpRequest.Host;
 		}
 
-		public static string UserAgent(this HttpRequest request) {
-			return request.Headers["User-Agent"];
+		public static string Url(this HttpRequest httpRequest) {
+			return httpRequest.PathBase + httpRequest.Path + httpRequest.QueryString.Value;
 		}
 
-		public static bool IsMobile(this HttpRequest request) {
-			var userAgent = request.UserAgent();
+		public static string FullUrl(this HttpRequest httpRequest) {
+			return httpRequest.SchemeAndHost() + httpRequest.Url();
+		}
+
+		public static string UserAgent(this HttpRequest httpRequest) {
+			return httpRequest.Headers["User-Agent"];
+		}
+
+		public static bool IsMobile(this HttpRequest httpRequest) {
+			var userAgent = httpRequest.UserAgent();
 			return userAgent.Contains("iPhone") || userAgent.Contains("Android");
 		}
 
-		public static bool IsWeChatBrowser(this HttpRequest request) {
-			return request.UserAgent().Contains("MicroMessenger");
+		public static bool IsWeChatBrowser(this HttpRequest httpRequest) {
+			return httpRequest.UserAgent().Contains("MicroMessenger");
 		}
 
-		public static bool IsXhr(this HttpRequest request) {
-			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+		public static bool IsXhr(this HttpRequest httpRequest) {
+			return httpRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
-		public static bool IsAjaxRequest(this HttpRequest request) {
-			return request.Headers["X-Requested-With"] == "XMLHttpRequest";
+		public static bool IsAjaxRequest(this HttpRequest httpRequest) {
+			return httpRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
 
-		public static bool IsLocalhost(this HttpRequest request) {
-			return request.Host.Host == "127.0.0.1" || request.Host.Host == "localhost";
+		public static bool IsLocalhost(this HttpRequest httpRequest) {
+			return httpRequest.Host.Host == "127.0.0.1" || httpRequest.Host.Host == "localhost";
 		}
 	}
 }
