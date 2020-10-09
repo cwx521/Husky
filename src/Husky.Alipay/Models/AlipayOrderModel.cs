@@ -1,6 +1,6 @@
 ﻿namespace Husky.Alipay
 {
-	public class AlipayPayment
+	public class AlipayOrderModel
 	{
 		public decimal Amount { get; set; }
 		public string OrderNo { get; set; } = null!;
@@ -9,6 +9,5 @@
 
 		public string CallbackUrl { get; set; } = null!;
 		public string NotifyUrl { get; set; } = null!;
-		public bool OnMobileDevice { get; set; }
 	}
 }

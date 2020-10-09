@@ -27,15 +27,14 @@ namespace Husky.Alipay.Tests
 			var options = Options.Create(_alipayOptions);
 			var alipay = new AlipayService(options);
 
-			var tradeModel = new AlipayPayment {
-				OnMobileDevice = false,
+			var tradeModel = new AlipayOrderModel {
 				Amount = 0.1m,
 				OrderNo = OrderIdGen.New(),
 				Subject = "UnitTest",
 				NotifyUrl = "",
 				CallbackUrl = "",
 			};
-			var paymentUrl = alipay.GenerateAlipayPaymentUrl(tradeModel);
+			var paymentUrl = alipay.GenerateAlipayPaymentUrl(tradeModel).DesktopPagePaymentUrl;
 
 			//Payment url is opened up in the default browser
 			Process.Start(new ProcessStartInfo(paymentUrl) { UseShellExecute = true });
