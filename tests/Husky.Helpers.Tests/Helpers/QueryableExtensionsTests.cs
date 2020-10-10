@@ -12,7 +12,7 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void WhereTest() {
 			var list = new List<Result<int>>();
-			for ( int i = 0; i < 100; i++ ) {
+			for ( var i = 0; i < 100; i++ ) {
 				list.Add(new Result<int> {
 					Ok = (i % 3 == 0),
 					Message = Guid.NewGuid().ToString(),
@@ -26,7 +26,7 @@ namespace Husky.Tests
 			var countA = a.Count();
 			var countB = b.Count();
 			Assert.AreEqual(countA, countB);
-			for ( int i = 0; i < Math.Min(countA, countB); i++ ) {
+			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
 				Assert.AreEqual(a[i].Message, b[i].Message);
 				Assert.AreEqual(a[i].Data, b[i].Data);
@@ -37,7 +37,7 @@ namespace Husky.Tests
 			countA = a.Count();
 			countB = b.Count();
 			Assert.AreEqual(countA, countB);
-			for ( int i = 0; i < Math.Min(countA, countB); i++ ) {
+			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
 				Assert.AreEqual(a[i].Message, b[i].Message);
 				Assert.AreEqual(a[i].Data, b[i].Data);
@@ -48,7 +48,7 @@ namespace Husky.Tests
 			countA = a.Count();
 			countB = b.Count();
 			Assert.AreEqual(countA, countB);
-			for ( int i = 0; i < Math.Min(countA, countB); i++ ) {
+			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
 				Assert.AreEqual(a[i].Message, b[i].Message);
 				Assert.AreEqual(a[i].Data, b[i].Data);
@@ -61,7 +61,7 @@ namespace Husky.Tests
 			countB = b.Count();
 			Assert.AreEqual(countA, 1);
 			Assert.AreEqual(countA, countB);
-			for ( int i = 0; i < Math.Min(countA, countB); i++ ) {
+			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
 				Assert.AreEqual(a[i].Message, b[i].Message);
 				Assert.AreEqual(a[i].Data, b[i].Data);
@@ -71,7 +71,7 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void OrderByTest() {
 			var list = new List<Result<int>>();
-			for ( int i = 0; i < 100; i++ ) {
+			for ( var i = 0; i < 100; i++ ) {
 				list.Add(new Result<int> {
 					Ok = (i % 3 == 0),
 					Message = Guid.NewGuid().ToString(),
@@ -82,7 +82,7 @@ namespace Husky.Tests
 
 			var a = queryable.OrderBy(x => x.Message).ThenByDescending(x => x.Data).ToList();
 			var b = queryable.OrderBy(nameof(Result.Message)).ThenByDescending(nameof(Result<int>.Data)).ToList();
-			for ( int i = 0; i < 100; i++ ) {
+			for ( var i = 0; i < 100; i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
 				Assert.AreEqual(a[i].Message, b[i].Message);
 				Assert.AreEqual(a[i].Data, b[i].Data);

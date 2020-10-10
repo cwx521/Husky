@@ -8,10 +8,6 @@ namespace Husky
 			return httpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 		}
 
-		public static string ResolveUrl(this HttpRequest httpRequest, string url) {
-			return url.StartsWith("~/") ? httpRequest.SchemeAndHost() + url.Substring(1) : url;
-		}
-
 		public static string RemoteIpv4(this HttpRequest httpRequest) {
 			return httpRequest.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 		}

@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>3.1.1.41009</Version>
     <AssemblyVersion>3.1.1.41009</AssemblyVersion>
     <FileVersion>3.1.1.41009</FileVersion>
-		<Company></Company>
-		<Authors>chenwx521@hotmail.com</Authors>
+    <Company></Company>
+    <Authors>chenwx521@hotmail.com</Authors>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
     <Nullable>enable</Nullable>
-		<RootNamespace>Husky</RootNamespace>
+    <RootNamespace>Husky</RootNamespace>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
-	</PropertyGroup>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+  </ItemGroup>
 
 </Project>

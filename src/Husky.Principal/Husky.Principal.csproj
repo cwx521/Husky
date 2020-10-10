@@ -15,7 +15,7 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace Husky
 			}
 			static bool IsCapital(char x) => x >= 'A' && x <= 'Z';
 			var sb = new StringBuilder();
-			for ( int i = 0; i < str.Length; i++ ) {
+			for ( var i = 0; i < str.Length; i++ ) {
 				var prevIsSpace = (i > 0) && str[i - 1] == ' ';
 				var prevIsCapital = (i > 0) && IsCapital(str[i - 1]);
 				var nextIsLowerCase = (i + 1 < str.Length) && !IsCapital(str[i + 1]);
