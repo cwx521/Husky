@@ -54,7 +54,7 @@ namespace Husky.Alipay
 					AlipayTradeNo = response.TradeNo,
 					AlipayBuyerUserId = response.BuyerUserId,
 					AlipayBuyerLogonId = response.BuyerLogonId,
-					TotalAmount = response.TotalAmount.As<decimal>(),
+					Amount = response.TotalAmount.As<decimal>(),
 					OriginalResult = response,
 				};
 			}
@@ -95,7 +95,7 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
+		public static AlipayRefundQueryResult QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = refundRequestNo

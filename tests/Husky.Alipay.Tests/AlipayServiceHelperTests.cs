@@ -43,7 +43,7 @@ namespace Husky.Alipay.Tests
 			//Open the url in browser
 			//Set break point here, pay manually in the opened page, then continue
 			var queryResult = alipay.QueryOrder(tradeModel.OrderNo);
-			Assert.AreEqual(tradeModel.Amount, queryResult.TotalAmount);
+			Assert.AreEqual(tradeModel.Amount, queryResult.Amount);
 
 			var remainedAmount = tradeModel.Amount;
 
