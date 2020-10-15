@@ -12,7 +12,7 @@ namespace Husky.Tests
 		public void NewTest() {
 			var n = 2000;
 			var list = new List<string>();
-			for ( int i = 0; i < n; i++ ) {
+			for ( var i = 0; i < n; i++ ) {
 				list.Add(OrderIdGen.New());
 			}
 			Assert.AreEqual(n, list.Distinct().Count());
@@ -20,18 +20,18 @@ namespace Husky.Tests
 
 		[TestMethod()]
 		public void IsValidTest() {
-			var orderId = OrderIdGen.New();
-			var fakeOrderId = string.Join("", orderId.Reverse());
-			Assert.IsTrue(OrderIdGen.IsValid(orderId));
-			Assert.IsFalse(OrderIdGen.IsValid(fakeOrderId));
+			var orderNo = OrderIdGen.New();
+			var fakeOrderNo = string.Join("", orderNo.Reverse());
+			Assert.IsTrue(OrderIdGen.IsValid(orderNo));
+			Assert.IsFalse(OrderIdGen.IsValid(fakeOrderNo));
 		}
 
 		[TestMethod()]
 		public void TryParseTest() {
-			var orderId = OrderIdGen.New();
-			var fakeOrderId = string.Join("", orderId.Reverse());
-			var shouldBeTrue = OrderIdGen.TryParse(orderId, out var t1);
-			var shouldBeFalse = OrderIdGen.TryParse(fakeOrderId, out _);
+			var orderNo = OrderIdGen.New();
+			var fakeOrderNo = string.Join("", orderNo.Reverse());
+			var shouldBeTrue = OrderIdGen.TryParse(orderNo, out var t1);
+			var shouldBeFalse = OrderIdGen.TryParse(fakeOrderNo, out _);
 			Assert.IsTrue(shouldBeTrue);
 			Assert.IsFalse(shouldBeFalse);
 			Assert.IsTrue(DateTime.Now.Subtract(t1).TotalSeconds < 1);

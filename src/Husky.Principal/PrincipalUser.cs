@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
 {
-	public class PrincipalUser : Identity, IIdentity, IPrincipalUser
+	public class PrincipalUser : Identity, IIdentity, IPrincipalUser, IPrincipalAdmin
 	{
 		private PrincipalUser(IServiceProvider serviceProvider) {
 			ServiceProvider = serviceProvider;
@@ -38,7 +38,7 @@ namespace Husky.Principal
 			};
 		}
 
-		public IIdentityManager IdentityManager { get; private set; }
-		public IServiceProvider ServiceProvider { get; private set; }
+		public IIdentityManager IdentityManager { get; }
+		public IServiceProvider ServiceProvider { get; }
 	}
 }

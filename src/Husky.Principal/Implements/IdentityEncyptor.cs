@@ -12,7 +12,7 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(token));
 			}
 
-			var iv = Crypto.SHA1(identity.Id + identity.DisplayName);
+			var iv = Crypto.SHA1(identity.Id + identity.DisplayName + token);
 			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}", iv, token) + iv;
 		}
 

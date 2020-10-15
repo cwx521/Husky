@@ -55,7 +55,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			//JsApi
 			model.TradeType = WeChatPayTradeType.JsApi;
-			model.OrderId = OrderIdGen.New();
+			model.OrderNo = OrderIdGen.New();
 
 			var result1 = wechatPay.CreateUnifedOrder(model);
 			Assert.IsTrue(result1.Ok);
@@ -63,7 +63,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			//Native
 			model.TradeType = WeChatPayTradeType.Native;
-			model.OrderId = OrderIdGen.New();
+			model.OrderNo = OrderIdGen.New();
 
 			var result2 = wechatPay.CreateUnifedOrder(model);
 			Assert.IsTrue(result2.Ok);
@@ -76,10 +76,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedOrderId = "DIB710795325592";   //DI4365967059199
+			var payedOrderNo = "DIB710795325592";   //DI4365967059199
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var result = wechatPay.QueryOrder(_wechatConfig.MobilePlatformAppId, payedOrderId);
+			var result = wechatPay.QueryOrder(_wechatConfig.MobilePlatformAppId, payedOrderNo);
 			Assert.IsTrue(result.Ok);
 			Assert.AreEqual(0.01m, result.Amount);
 			Assert.AreEqual(_openId, result.OpenId);
@@ -91,11 +91,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedOrderId = "DIB710795325592";
-			var newRefundRequestId = OrderIdGen.New();
+			var payedOrderNo = "DIB710795325592";
+			var newRefundRequestNo = OrderIdGen.New();
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var result = wechatPay.Refund(_wechatConfig.MobilePlatformAppId, payedOrderId, newRefundRequestId, 0.1m, 0.01m, "UnitTest");
+			var result = wechatPay.Refund(_wechatConfig.MobilePlatformAppId, payedOrderNo, newRefundRequestNo, 0.1m, 0.01m, "UnitTest");
 			Assert.IsTrue(result.Ok);
 			Assert.AreEqual(0.01m, result.RefundAmount);
 		}
@@ -106,11 +106,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedOrderId = "DIB710795325592";
-			var refundRequestId = "Refund_" + payedOrderId;
+			var payedOrderNo = "DIB710795325592";
+			var refundRequestNo = "Refund_" + payedOrderNo;
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var result = wechatPay.QueryRefund(_wechatConfig.MobilePlatformAppId, refundRequestId);
+			var result = wechatPay.QueryRefund(_wechatConfig.MobilePlatformAppId, refundRequestNo);
 			Assert.IsTrue(result.Ok);
 			Assert.AreEqual(0.01m, result.RefundAmount);
 		}

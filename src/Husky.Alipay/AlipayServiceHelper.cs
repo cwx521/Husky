@@ -12,7 +12,7 @@ namespace Husky.Alipay
 {
 	public static class AlipayServiceHelper
 	{
-		public static string GenerateAlipayPaymentUrl(this AlipayService alipay, AlipayPayment payment) {
+		public static AlipayOrderModelUnifiedResult GenerateAlipayPaymentUrl(this AlipayService alipay, AlipayOrderModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
@@ -21,24 +21,22 @@ namespace Husky.Alipay
 				ProductCode = "FAST_INSTANT_TRADE_PAY"
 			};
 
-			if ( payment.OnMobileDevice ) {
-				var request = new AlipayTradeWapPayRequest();
-				request.SetReturnUrl(payment.CallbackUrl);
-				request.SetNotifyUrl(payment.NotifyUrl);
-				request.SetBizModel(payModel);
+			var wapPayRequest = new AlipayTradeWapPayRequest();
+			wapPayRequest.SetReturnUrl(payment.CallbackUrl);
+			wapPayRequest.SetNotifyUrl(payment.NotifyUrl);
+			wapPayRequest.SetBizModel(payModel);
+			var wapPayResponse = alipay.SdkExecute(wapPayRequest);
 
-				var response = alipay.SdkExecute(request);
-				return alipay.Options.Gatewayurl + "?" + response.Body;
-			}
-			else {
-				var request = new AlipayTradePagePayRequest();
-				request.SetReturnUrl(payment.CallbackUrl);
-				request.SetNotifyUrl(payment.NotifyUrl);
-				request.SetBizModel(payModel);
+			var pagePayRequest = new AlipayTradePagePayRequest();
+			pagePayRequest.SetReturnUrl(payment.CallbackUrl);
+			pagePayRequest.SetNotifyUrl(payment.NotifyUrl);
+			pagePayRequest.SetBizModel(payModel);
+			var pagePayResponse = alipay.SdkExecute(pagePayRequest);
 
-				var response = alipay.SdkExecute(request);
-				return alipay.Options.Gatewayurl + "?" + response.Body;
-			}
+			return new AlipayOrderModelUnifiedResult {
+				MobileWebPaymentUrl = alipay.Options.Gatewayurl + "?" + wapPayResponse.Body,
+				DesktopPagePaymentUrl = alipay.Options.Gatewayurl + "?" + pagePayResponse.Body
+			};
 		}
 
 		public static AlipayOrderQueryResult QueryOrder(this AlipayService alipay, string orderNo) {
@@ -56,7 +54,7 @@ namespace Husky.Alipay
 					AlipayTradeNo = response.TradeNo,
 					AlipayBuyerUserId = response.BuyerUserId,
 					AlipayBuyerLogonId = response.BuyerLogonId,
-					TotalAmount = response.TotalAmount.As<decimal>(),
+					Amount = response.TotalAmount.As<decimal>(),
 					OriginalResult = response,
 				};
 			}
@@ -97,7 +95,7 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundQueryResult? QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
+		public static AlipayRefundQueryResult QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = refundRequestNo
