@@ -10,7 +10,7 @@ namespace Husky.Tests
 	[TestClass()]
 	public class ValidatorHelperTests
 	{
-		class TestModel : IValidatable
+		class TestModel
 		{
 			[Required]
 			[StringLength(10)]
