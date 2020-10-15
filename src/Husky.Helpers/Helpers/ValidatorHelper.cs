@@ -6,9 +6,6 @@ using System.Linq.Expressions;
 
 namespace Husky
 {
-	public interface IValidatable {
-	}
-
 	public static class ValidatorHelper
 	{
 		public static Result Validate<T>(T instance) {
@@ -32,8 +29,5 @@ namespace Husky
 
 			return new Failure(validationResults.First().ErrorMessage);
 		}
-
-		public static Result ValidateAllProperties<T>(this IValidatable instance) => Validate(instance);
-		public static Result ValidateProperty<T, TProperty>(this T instance, Expression<Func<T, TProperty>> propertyToValidate) => Validate(instance, propertyToValidate);
 	}
 }
