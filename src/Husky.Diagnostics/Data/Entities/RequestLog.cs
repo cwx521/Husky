@@ -32,7 +32,26 @@ namespace Husky.Diagnostics.Data
 		[StringLength(39), Column(TypeName = "varchar(39)")]
 		public string? UserIp { get; set; }
 
+		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]
+		public string Md5Comparison { get; set; } = null!;
+
+		public int Repeated { get; set; } = 1;
+
 		[DefaultValueSql("getdate()"), NeverUpdate]
-		public DateTime Time { get; set; } = DateTime.Now;
+		public DateTime FirstTime { get; set; } = DateTime.Now;
+
+		[DefaultValueSql("getdate()")]
+		public DateTime LastTime { get; set; } = DateTime.Now;
+
+
+		internal void ComputeMd5Comparison() => Md5Comparison = Crypto.MD5(string.Concat(
+			HttpMethod,
+			Url,
+			Data,
+			UserId,
+			IsAjax,
+			UserAgent,
+			UserIp
+		));
 	}
 }

@@ -9,9 +9,6 @@ namespace Husky.Diagnostics.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(32), Column(TypeName = "varchar(32)")]
-		public string Md5Comparison { get; set; } = null!;
-
 		[StringLength(4000), Column(TypeName = "varchar(4000)")]
 		public string? Url { get; set; }
 
@@ -39,7 +36,10 @@ namespace Husky.Diagnostics.Data
 		[StringLength(39), Column(TypeName = "varchar(39)")]
 		public string? UserIp { get; set; }
 
-		public int Count { get; set; } = 1;
+		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]
+		public string Md5Comparison { get; set; } = null!;
+
+		public int Repeated { get; set; } = 1;
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime FirstTime { get; set; } = DateTime.Now;

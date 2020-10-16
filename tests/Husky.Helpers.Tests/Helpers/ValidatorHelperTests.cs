@@ -1,16 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Husky;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Tests
 {
 	[TestClass()]
 	public class ValidatorHelperTests
 	{
-		class TestModel
+		private class TestModel
 		{
 			[Required]
 			[StringLength(10)]

@@ -26,7 +26,7 @@ namespace Husky.AliyunSms
 				TemplateParam = JsonConvert.SerializeObject(argument.Parameters)
 			};
 
-			var endPointRegion = "cn-hangzhou";
+			const string endPointRegion = "cn-hangzhou";
 			DefaultProfile.AddEndpoint(endPointRegion, endPointRegion, "Dysmsapi", "dysmsapi.aliyuncs.com");
 
 			await Task.Run(() => {

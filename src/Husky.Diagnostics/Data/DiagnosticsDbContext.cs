@@ -7,17 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
-	public class DiagnosticsDbContext : DbContext
+	public class DiagnosticsDbContext : DbContext, IDiagnosticsDbContext
 	{
 		public DiagnosticsDbContext(DbContextOptions<DiagnosticsDbContext> options) : base(options) {
 		}
 
+		public DbContext Normalize() => this;
+
+
 		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 		public DbSet<RequestLog> RequestLogs { get; set; }
 
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyHuskyAnnotations();
-			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).IsClustered(false);
 		}
 	}
 }

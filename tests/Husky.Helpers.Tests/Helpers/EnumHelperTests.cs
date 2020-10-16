@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Husky.Tests
 {
 	[Flags]
-	enum Abc
+	internal enum Abc
 	{
 		[Label("LabelA", Description = "Description A", CssClass = "text-body")]
 		A,

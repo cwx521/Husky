@@ -4,7 +4,7 @@ namespace Husky.Principal
 {
 	public interface IPrincipalUser : IIdentity
 	{
-		IIdentityManager IdentityManager { get; }
 		IServiceProvider ServiceProvider { get; }
+		IIdentityManager? IdentityManager { get; }
 	}
 }

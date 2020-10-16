@@ -22,7 +22,6 @@ namespace Husky.Principal
 
 		private PrincipalUser(IServiceProvider serviceProvider) {
 			ServiceProvider = serviceProvider;
-			IdentityManager = serviceProvider.GetRequiredService<IIdentityManager>();
 		}
 
 		public static PrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
@@ -41,7 +40,7 @@ namespace Husky.Principal
 			};
 		}
 
-		public IIdentityManager IdentityManager { get; }
 		public IServiceProvider ServiceProvider { get; }
+		public IIdentityManager? IdentityManager { get; }
 	}
 }

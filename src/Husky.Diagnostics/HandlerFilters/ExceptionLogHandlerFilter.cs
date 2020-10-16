@@ -9,16 +9,16 @@ namespace Husky.Diagnostics
 	{
 		public void OnException(ExceptionContext context) {
 			try {
-				var http = context.HttpContext;
-				var db = http.RequestServices.GetRequiredService<DiagnosticsDbContext>();
-				var principal = http.RequestServices.GetService<IPrincipalUser>();
+				var httpContext = context.HttpContext;
+				var db = httpContext.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
+				var principal = httpContext.RequestServices.GetService<IPrincipalUser>();
 
 				var exception = context.Exception;
 				while ( exception.InnerException != null ) {
 					exception = exception.InnerException;
 				}
 
-				db.Log(exception, http, principal);
+				db.LogException(exception, principal, httpContext);
 			}
 			catch { }
 		}

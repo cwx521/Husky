@@ -1,4 +1,5 @@
 using Husky.DataAudit.Data;
+using Husky.Diagnostics;
 using Husky.Diagnostics.Data;
 using Husky.KeyValues.Data;
 using Husky.Mail.Data;
@@ -6,7 +7,9 @@ using Husky.Principal.Administration.Data;
 using Husky.TwoFactor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Tests
@@ -15,13 +18,24 @@ namespace Husky.Tests
 	{
 		public void ConfigureServices(IServiceCollection services) {
 			var connstr = "Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";
+			//services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
+			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
+			//services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
+			//services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
+			//services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
+			//services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
 
-			services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
-			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr));
-			services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
-			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
-			services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
-			services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
+			//AspNet
+			services.AddRazorPages().AddMvcOptions(mvc => {
+				mvc.Filters.Add<ExceptionLogHandlerFilter>();
+				mvc.Filters.Add<RequestLogHandlerFilter>();
+			});
+			services.AddSession();
+			services.AddSingleton<IMemoryCache, MemoryCache>();
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+			services.Husky()
+				.AddDiagnostics(x => x.UseSqlServer(connstr).Migrate());
 
 			/*
 			add-migration  Init_DataAudit  -context AuditDbContext -project Husky.DataAudit -o Data/Migrations
@@ -33,7 +47,15 @@ namespace Husky.Tests
 			*/
 		}
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+		public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+			app.UseDeveloperExceptionPage();
+			app.UseHttpsRedirection();
+			app.UseStaticFiles();
+			app.UseRouting();
+			app.UseAuthorization();
+			app.UseEndpoints(endpoints => {
+				endpoints.MapRazorPages();
+			});
 		}
 	}
 }

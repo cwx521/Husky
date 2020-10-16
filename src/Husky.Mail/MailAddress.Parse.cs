@@ -2,7 +2,7 @@
 
 namespace Husky.Mail
 {
-	partial class MailAddress
+	public partial class MailAddress
 	{
 		public static MailAddress Parse(string mailAddressString) {
 			if ( mailAddressString == null ) {
