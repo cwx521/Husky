@@ -35,7 +35,7 @@ namespace Husky.Principal.Implements
 				return new Identity {
 					Id = str[0..splitAt].AsInt(),
 					DisplayName = str[(splitAt + 1)..splitAtLast],
-					IsConsolidated = str[(splitAtLast)..].AsBool()
+					IsConsolidated = str[(splitAtLast + 1)..].AsBool()
 				};
 			}
 			catch {
