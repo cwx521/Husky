@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20200908062931_Init_Diagnostics")]
+    [Migration("20201016181451_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -27,9 +27,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
 
                     b.Property<string>("ExceptionType")
                         .IsRequired()
@@ -59,6 +56,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 
+                    b.Property<int>("Repeated")
+                        .HasColumnType("int");
+
                     b.Property<string>("Source")
                         .HasColumnType("nvarchar(max)");
 
@@ -87,7 +87,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                        .IsUnique();
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -102,6 +102,10 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("Data")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("FirstTime")
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
                     b.Property<string>("HttpMethod")
                         .IsRequired()
                         .HasColumnType("varchar(6)")
@@ -110,14 +114,22 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("LastTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("Md5Comparison")
+                        .IsRequired()
+                        .HasColumnType("varchar(32)")
+                        .HasMaxLength(32);
+
                     b.Property<string>("Referrer")
                         .HasColumnType("nvarchar(1000)")
                         .HasMaxLength(1000);
 
-                    b.Property<DateTime>("Time")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
+                    b.Property<int>("Repeated")
+                        .HasColumnType("int");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -140,6 +152,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Md5Comparison")
+                        .IsUnique();
 
                     b.ToTable("RequestLogs");
                 });
