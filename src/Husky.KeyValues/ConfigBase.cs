@@ -6,7 +6,7 @@ namespace Husky
 {
 	public abstract partial class ConfigBase
 	{
-		protected ConfigBase(KeyValueManager keyValues, IConfiguration? appSettings) {
+		protected ConfigBase(IKeyValueManager keyValues, IConfiguration? appSettings) {
 			_keyValues = keyValues;
 			_appSettings = appSettings;
 
@@ -38,7 +38,7 @@ namespace Husky
 			}
 		}
 
-		private readonly KeyValueManager _keyValues;
+		private readonly IKeyValueManager _keyValues;
 		private readonly IConfiguration? _appSettings;
 
 		public void Reload() => _keyValues.Reload();

@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.KeyValues
 {
-	public class KeyValueManager
+	public class KeyValueManager : IKeyValueManager
 	{
 		public KeyValueManager(IServiceProvider svc, IMemoryCache cache) {
 			_svc = svc;
@@ -81,30 +81,30 @@ namespace Husky.KeyValues
 			AddOrUpdate(key, value);
 
 			using var scope = _svc.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
-			db.AddOrUpdate(new KeyValue {
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			db.Normalize().AddOrUpdate(new KeyValue {
 				Key = key,
 				Value = value
 			});
-			db.SaveChanges();
+			db.Normalize().SaveChanges();
 		}
 
 		public void SaveAll() {
 			using var scope = _svc.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			var fromDb = db.KeyValues.ToList();
 			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
 			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
 			fromDb.ForEach(x => x.Value = Get(x.Key));
-			db.AddRange(added);
+			db.KeyValues.AddRange(added);
 
-			db.SaveChanges();
+			db.Normalize().SaveChanges();
 		}
 
 		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
 			using var scope = _svc.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<KeyValueDbContext>();
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			return db.KeyValues.AsNoTracking().ToList();
 		});
 
