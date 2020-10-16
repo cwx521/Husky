@@ -2,6 +2,7 @@ using Husky.DataAudit.Data;
 using Husky.Diagnostics.Data;
 using Husky.KeyValues.Data;
 using Husky.Mail.Data;
+using Husky.Principal.Administration.Data;
 using Husky.TwoFactor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +21,7 @@ namespace Husky.Tests
 			services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
 			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
 			services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
+			services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
 
 			/*
 			add-migration  Init_DataAudit  -context AuditDbContext -project Husky.DataAudit -o Data/Migrations
@@ -27,6 +29,7 @@ namespace Husky.Tests
 			add-migration  Init_Mail  -context MailDbContext -project Husky.Mail -o Data/Migrations
 			add-migration  Init_Diagnostics  -context DiagnosticsDbContext -project Husky.Diagnostics -o Data/Migrations
 			add-migration  Init_TwoFactor  -context TwoFactorDbContext -project Husky.TwoFactor -o Data/Migrations
+			add-migration  Init_Admins  -context AdminsDbContext -project Husky.Principal.Administration -o Data/Migrations
 			*/
 		}
 

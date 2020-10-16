@@ -11,20 +11,20 @@ namespace Husky.Mail.Data
 
 		public Guid? SmtpId { get; set; }
 
-		[MaxLength(200)]
+		[StringLength(200)]
 		public string Subject { get; set; } = null!;
 
 		public string Body { get; set; } = null!;
 
 		public bool IsHtml { get; set; }
 
-		[MaxLength(2000)]
+		[StringLength(2000)]
 		public string To { get; set; } = null!;
 
-		[MaxLength(2000)]
+		[StringLength(2000)]
 		public string? Cc { get; set; }
 
-		[MaxLength(500)]
+		[StringLength(500)]
 		public string? Exception { get; set; }
 
 		public bool IsSuccessful { get; set; }

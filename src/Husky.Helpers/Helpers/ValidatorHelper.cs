@@ -8,25 +8,25 @@ namespace Husky
 {
 	public static class ValidatorHelper
 	{
-		public static Result Validate<T>(T instance) {
+		public static Result<T> Validate<T>(T instance) {
 			var validationResults = new List<ValidationResult>();
 
 			if ( Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true) ) {
-				return new Success();
+				return new Success<T>(instance);
 			}
-			return new Failure(validationResults.First().ErrorMessage);
+			return new Failure<T>(validationResults.First().ErrorMessage);
 		}
 
-		public static Result Validate<T, TProperty>(T instance, Expression<Func<T, TProperty>> propertyToValidate) {
+		public static Result<T> Validate<T, TProperty>(T instance, Expression<Func<T, TProperty>> propertyToValidate) {
 			var propertyName = propertyToValidate.Body.ToString().RightBy(".", true);
 			var propertyValue = propertyToValidate.Compile().Invoke(instance);
 			var validationContext = new ValidationContext(instance) { MemberName = propertyName };
 			var validationResults = new List<ValidationResult>();
 
 			if ( Validator.TryValidateProperty(propertyValue, validationContext, validationResults) ) {
-				return new Success();
+				return new Success<T>(instance);
 			}
-			return new Failure(validationResults.First().ErrorMessage);
+			return new Failure<T>(validationResults.First().ErrorMessage);
 		}
 	}
 }

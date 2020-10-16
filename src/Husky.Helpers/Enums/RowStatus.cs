@@ -11,10 +11,7 @@
 		[Label("停用", CssClass = "text-warning")]
 		Suspended,
 
-		[Label("用户删除", CssClass = "text-danger")]
-		DeletedByUser,
-
-		[Label("管理删除", CssClass = "text-danger")]
-		DeletedByAdmin
+		[Label("已删除", CssClass = "text-danger")]
+		Deleted = 9
 	}
 }

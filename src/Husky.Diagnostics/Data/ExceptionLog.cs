@@ -9,19 +9,19 @@ namespace Husky.Diagnostics.Data
 		[Key]
 		public int Id { get; set; }
 
-		[MaxLength(32), Column(TypeName = "varchar(32)")]
+		[StringLength(32), Column(TypeName = "varchar(32)")]
 		public string Md5Comparison { get; set; } = null!;
 
-		[MaxLength(4000), Column(TypeName = "varchar(4000)")]
+		[StringLength(4000), Column(TypeName = "varchar(4000)")]
 		public string? Url { get; set; }
 
-		[MaxLength(6), Column(TypeName = "varchar(6)")]
+		[StringLength(6), Column(TypeName = "varchar(6)")]
 		public string? HttpMethod { get; set; }
 
-		[MaxLength(200), Column(TypeName = "varchar(200)")]
+		[StringLength(200), Column(TypeName = "varchar(200)")]
 		public string ExceptionType { get; set; } = null!;
 
-		[MaxLength(1000)]
+		[StringLength(1000)]
 		public string? Message { get; set; }
 
 		public string? Source { get; set; }
@@ -30,13 +30,13 @@ namespace Husky.Diagnostics.Data
 
 		public int? UserId { get; set; }
 
-		[MaxLength(100)]
+		[StringLength(100)]
 		public string? UserName { get; set; }
 
-		[MaxLength(1000), Column(TypeName = "varchar(1000)")]
+		[StringLength(1000), Column(TypeName = "varchar(1000)")]
 		public string? UserAgent { get; set; }
 
-		[MaxLength(39), Column(TypeName = "varchar(39)")]
+		[StringLength(39), Column(TypeName = "varchar(39)")]
 		public string? UserIp { get; set; }
 
 		public int Count { get; set; } = 1;

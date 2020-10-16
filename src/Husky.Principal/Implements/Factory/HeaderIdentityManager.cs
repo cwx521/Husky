@@ -7,7 +7,7 @@ namespace Husky.Principal.Implements
 	{
 		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Header);
+			_options = options ?? new IdentityOptions();
 		}
 
 		private readonly HttpContext _httpContext;
@@ -18,21 +18,17 @@ namespace Husky.Principal.Implements
 			if ( string.IsNullOrEmpty(header) ) {
 				return null;
 			}
-			var identity = _options.Encryptor.Decrypt(header, _options.Token);
-			if ( identity == null || identity.IsAnonymous ) {
-				return null;
-			}
-			return identity;
+			return _options.Encryptor.Decrypt(header, _options.Token);
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( identity.IsAnonymous ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
-			}
-			_httpContext.Response.Headers.Add(_options.Key, _options.Encryptor.Encrypt(identity, _options.Token));
+			_httpContext.Response.Headers.Add(
+				_options.Key,
+				_options.Encryptor.Encrypt(identity, _options.Token)
+			);
 		}
 
 		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.Key);

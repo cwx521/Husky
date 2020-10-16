@@ -10,12 +10,12 @@ namespace Husky.Mail.Data
 
 		public int MailId { get; set; }
 
-		[MaxLength(100)]
+		[StringLength(100)]
 		public string Name { get; set; } = null!;
 
 		public byte[] ContentStream { get; set; } = null!;
 
-		[MaxLength(32)]
+		[StringLength(32)]
 		public string ContentType { get; set; } = null!;
 
 		[DefaultValueSql("getdate()"), NeverUpdate]

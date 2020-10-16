@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace Husky.Principal.Implements
@@ -7,34 +8,28 @@ namespace Husky.Principal.Implements
 	{
 		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Session);
+			_options = options ?? new IdentityOptions();
 		}
 
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
 		IIdentity? IIdentityManager.ReadIdentity() {
-			var combined = _httpContext.Session.GetString(_options.Key);
-			if ( !string.IsNullOrEmpty(combined) ) {
-				var i = combined.IndexOf('|');
-				if ( i > 0 ) {
-					return new Identity {
-						Id = combined.Substring(0, i).AsInt(),
-						DisplayName = combined.Substring(i + 1)
-					};
-				}
+			if ( !_httpContext.Session.Keys.Contains(_options.Key) ) {
+				return null;
 			}
-			return null;
+			var encrypted = _httpContext.Session.GetString(_options.Key);
+			return _options.Encryptor.Decrypt(encrypted, _options.Token);
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( identity.IsAnonymous ) {
-				throw new ArgumentNullException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not a athenticated value.");
-			}
-			_httpContext.Session.SetString(_options.Key, string.Concat(identity.Id, '|', identity.DisplayName));
+			_httpContext.Session.SetString(
+				_options.Key,
+				_options.Encryptor.Encrypt(identity, _options.Token)
+			);
 		}
 
 		void IIdentityManager.DeleteIdentity() => _httpContext.Session.Remove(_options.Key);

@@ -5,19 +5,22 @@
 using Husky.EF;
 using Microsoft.EntityFrameworkCore;
 
-namespace Husky.Diagnostics.Data
+namespace Husky.Principal.Administration.Data
 {
-	public class DiagnosticsDbContext : DbContext
+	public class AdminsDbContext : DbContext, IAdminsDbContext
 	{
-		public DiagnosticsDbContext(DbContextOptions<DiagnosticsDbContext> options) : base(options) {
+		public AdminsDbContext(DbContextOptions<AdminsDbContext> options) : base(options) {
 		}
 
-		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-		public DbSet<RequestLog> RequestLogs { get; set; }
+		public DbContext Normalize() => this;
+
+		public DbSet<Admin> Admins { get; set; }
+		public DbSet<AdminRole> AdminRoles { get; set; }
+		public DbSet<AdminInRole> AdminInRoles { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyHuskyAnnotations();
-			modelBuilder.Entity<ExceptionLog>().HasIndex(x => x.Md5Comparison).IsUnique(false).IsClustered(false);
+			modelBuilder.OnAdminsModelCreating();
 		}
 	}
 }

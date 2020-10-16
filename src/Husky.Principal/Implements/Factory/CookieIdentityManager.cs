@@ -7,7 +7,7 @@ namespace Husky.Principal.Implements
 	{
 		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
 			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-			_options = (options ?? new IdentityOptions()).SolveUnassignedOptions(IdentityCarrier.Cookie);
+			_options = options ?? new IdentityOptions();
 		}
 
 		private readonly HttpContext _httpContext;
@@ -19,9 +19,11 @@ namespace Husky.Principal.Implements
 				return null;
 			}
 			var identity = _options.Encryptor.Decrypt(cookie, _options.Token);
-			if ( identity == null || identity.IsAnonymous || (_options.SessionMode && IsSessionLost()) ) {
-				_httpContext.Response.Cookies.Delete(_options.Key);
+			if ( identity == null ) {
 				return null;
+			}
+			if ( _options.SessionMode && IsSessionLost() ) {
+				identity.Id = 0;
 			}
 			return identity;
 		}
@@ -29,9 +31,6 @@ namespace Husky.Principal.Implements
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
-			}
-			if ( identity.IsAnonymous ) {
-				throw new ArgumentException($"{nameof(identity)}.{nameof(identity.Id)} '{identity.Id}' is not an authenticated value.");
 			}
 			if ( !_httpContext.Response.HasStarted ) {
 				_httpContext.Response.Cookies.Append(
@@ -42,14 +41,14 @@ namespace Husky.Principal.Implements
 					}
 				);
 				if ( _options.SessionMode ) {
-					SetSession();
+					PlantSession();
 				}
 			}
 		}
 
-		private readonly string _sessionKey = "HUSKY_AUTH_SESSION_";
+		private readonly string _sessionKey = "HUSKY_AUTH_BROWSER_LIFE_";
 
-		private void SetSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
+		private void PlantSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
 		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
 
 		void IIdentityManager.DeleteIdentity() {

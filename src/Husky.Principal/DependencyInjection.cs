@@ -13,20 +13,20 @@ namespace Husky
 
 			husky.Services
 				.AddScoped<IIdentityManager>(svc => {
-					var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
+					var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 					switch ( carrier ) {
 						default: throw new ArgumentOutOfRangeException(nameof(carrier));
-						case IdentityCarrier.Cookie: return new CookieIdentityManager(http, options);
-						case IdentityCarrier.Header: return new HeaderIdentityManager(http, options);
-						case IdentityCarrier.Session: return new SessionIdentityManager(http, options);
+						case IdentityCarrier.Cookie: return new CookieIdentityManager(httpContext, options);
+						case IdentityCarrier.Header: return new HeaderIdentityManager(httpContext, options);
+						case IdentityCarrier.Session: return new SessionIdentityManager(httpContext, options);
 					}
 				})
 				.AddScoped<IPrincipalUser>(svc => {
-					var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
+					var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 					var identityManager = svc.GetRequiredService<IIdentityManager>();
-					if ( !(http.Items[key] is IPrincipalUser principal) ) {
+					if ( !(httpContext.Items[key] is IPrincipalUser principal) ) {
 						principal = new PrincipalUser(identityManager, svc);
-						http.Items.Add(key, principal);
+						httpContext.Items.Add(key, principal);
 					}
 					return principal;
 				});

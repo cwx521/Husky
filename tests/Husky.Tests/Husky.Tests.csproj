@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\src\Husky.Diagnostics\Husky.Diagnostics.csproj" />
     <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
     <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Principal.Administration\Husky.Principal.Administration.csproj" />
     <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />
   </ItemGroup>
 

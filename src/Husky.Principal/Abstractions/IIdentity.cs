@@ -4,8 +4,9 @@
 	{
 		int Id { get; set; }
 		string DisplayName { get; set; }
+		bool IsConsolidated { get; set; }
 
-		bool IsAuthenticated { get; }
 		bool IsAnonymous { get; }
+		bool IsAuthenticated { get; }
 	}
 }

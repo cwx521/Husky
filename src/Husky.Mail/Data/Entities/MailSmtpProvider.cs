@@ -14,20 +14,20 @@ namespace Husky.Mail.Data
 		[Required, MaxLength(100), Column(TypeName = "varchar(100)")]
 		public string Host { get; set; } = null!;
 
-		[MaxLength(50), Column(TypeName = "varchar(50)")]
+		[StringLength(50), Column(TypeName = "varchar(50)")]
 		public string CredentialName { get; set; } = null!;
 
 		public int Port { get; set; } = 25;
 
 		public bool Ssl { get; set; }
 
-		[MaxLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
+		[StringLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
 		public string PasswordEncrypted { get; set; } = null!;
 
-		[MaxLength(50), Column(TypeName = "varchar(50)")]
+		[StringLength(50), Column(TypeName = "varchar(50)")]
 		public string SenderMailAddress { get; set; } = null!;
 
-		[MaxLength(50), Column(TypeName = "varchar(50)")]
+		[StringLength(50), Column(TypeName = "varchar(50)")]
 		public string SenderDisplayName { get; set; } = null!;
 
 		public bool IsInUse { get; set; }

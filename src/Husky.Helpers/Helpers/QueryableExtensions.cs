@@ -38,6 +38,12 @@ namespace Husky
 
 		#endregion
 
+		#region Select
+
+		public static Expression<Func<T, TReturn>> SelectProperty<T, TReturn>(string propertyName) => Selector<T, TReturn>(propertyName);
+
+		#endregion
+
 		#region Supports
 
 		private static IOrderedQueryable<T> _OrderBy<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderBy(Selector<T, TProp>(propertyPath));
