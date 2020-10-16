@@ -26,7 +26,6 @@ namespace Husky
 			if ( Validator.TryValidateProperty(propertyValue, validationContext, validationResults) ) {
 				return new Success();
 			}
-
 			return new Failure(validationResults.First().ErrorMessage);
 		}
 	}

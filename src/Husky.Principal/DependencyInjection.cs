@@ -29,16 +29,7 @@ namespace Husky
 						http.Items.Add(key, principal);
 					}
 					return principal;
-				})
-				.AddScoped<IPrincipalAdmin>(svc => {
-					 var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
-					 var identityManager = svc.GetRequiredService<IIdentityManager>();
-					 if ( !(http.Items[key] is IPrincipalAdmin principal) ) {
-						 principal = new PrincipalUser(identityManager, svc);
-						 http.Items.Add(key, principal);
-					 }
-					 return principal;
-				 });
+				});
 
 			return husky;
 		}

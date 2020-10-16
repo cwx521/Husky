@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
 {
-	public class PrincipalUser : Identity, IIdentity, IPrincipalUser, IPrincipalAdmin
+	public class PrincipalUser : Identity, IIdentity, IPrincipalUser
 	{
 		private PrincipalUser(IServiceProvider serviceProvider) {
 			ServiceProvider = serviceProvider;
