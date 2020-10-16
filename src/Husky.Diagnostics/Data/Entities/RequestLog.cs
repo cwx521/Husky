@@ -32,7 +32,7 @@ namespace Husky.Diagnostics.Data
 		[StringLength(39), Column(TypeName = "varchar(39)")]
 		public string? UserIp { get; set; }
 
-		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]
+		[StringLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = false)]
 		public string Md5Comparison { get; set; } = null!;
 
 		public int Repeated { get; set; } = 1;

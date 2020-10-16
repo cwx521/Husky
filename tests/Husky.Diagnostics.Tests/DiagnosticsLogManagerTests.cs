@@ -29,7 +29,7 @@ namespace Husky.Diagnostics.Tests
 			}
 			catch ( Exception e ) {
 				exception = e;
-				db.LogException(e, principal, null);
+				db.LogException(e, principal, null).Wait();
 			}
 
 			Assert.AreEqual(db.ExceptionLogs.Count(), 1);
@@ -43,7 +43,7 @@ namespace Husky.Diagnostics.Tests
 			Assert.AreEqual(a.Source, exception.Source);
 
 			//Log the same exception again
-			db.LogException(exception, null, null);
+			db.LogException(exception, null, null).Wait();
 
 			Assert.AreEqual(db.ExceptionLogs.Count(), 1);
 

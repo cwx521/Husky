@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Husky.Diagnostics.Data;
 using Husky.Principal;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ namespace Husky.Diagnostics
 {
 	public static class DiagnosticsLogManager
 	{
-		public static void LogException(this IDiagnosticsDbContext db, Exception e, IPrincipalUser? principal, HttpContext? httpContext = null) {
+		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, IPrincipalUser? principal, HttpContext? httpContext = null) {
 			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 
 			var log = new ExceptionLog {
@@ -36,10 +37,10 @@ namespace Husky.Diagnostics
 				repeating.Repeated++;
 				repeating.LastTime = DateTime.Now;
 			}
-			db.Normalize().SaveChanges();
+			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static void LogException(this IServiceProvider serviceProvider, Exception e) {
+		public static async Task LogException(this IServiceProvider serviceProvider, Exception e) {
 			using var scope = serviceProvider.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
 
@@ -52,10 +53,10 @@ namespace Husky.Diagnostics
 			}
 			catch { }
 
-			db.LogException(e, principal, httpContext);
+			await db.LogException(e, principal, httpContext);
 		}
 
-		public static void LogRequest(this IDiagnosticsDbContext db, IPrincipalUser principal, HttpContext? httpContext = null) {
+		public static async Task LogRequest(this IDiagnosticsDbContext db, IPrincipalUser principal, HttpContext? httpContext = null) {
 			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 			if ( httpContext != null ) {
 
@@ -72,7 +73,8 @@ namespace Husky.Diagnostics
 				};
 				log.ComputeMd5Comparison();
 
-				var repeating = db.RequestLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison && x.LastTime > DateTime.Now.AddSeconds(30));
+				var countAsRepeatedIfVisitAgainWithinSeconds = 60;	//todo: move to a config
+				var repeating = db.RequestLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison && x.LastTime > DateTime.Now.AddSeconds(-countAsRepeatedIfVisitAgainWithinSeconds));
 				if ( repeating == null ) {
 					db.RequestLogs.Add(log);
 				}
@@ -81,7 +83,7 @@ namespace Husky.Diagnostics
 					repeating.LastTime = DateTime.Now;
 				}
 
-				db.Normalize().SaveChanges();
+				await db.Normalize().SaveChangesAsync();
 			}
 		}
 	}

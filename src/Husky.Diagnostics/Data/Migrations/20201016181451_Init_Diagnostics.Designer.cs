@@ -154,7 +154,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .IsUnique();
+                        .IsUnique(false);
 
                     b.ToTable("RequestLogs");
                 });

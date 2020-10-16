@@ -1,4 +1,5 @@
-﻿using Husky.Diagnostics.Data;
+﻿using System.Threading.Tasks;
+using Husky.Diagnostics.Data;
 using Husky.Principal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -6,25 +7,25 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Diagnostics
 {
-	public class RequestLogHandlerFilter : IPageFilter
+	public class RequestLogHandlerFilter : IAsyncPageFilter
 	{
-		public void OnPageHandlerSelected(PageHandlerSelectedContext context) {
+
+		public Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context) {
+			return Task.CompletedTask;
 		}
 
-		public void OnPageHandlerExecuted(PageHandlerExecutedContext context) {
-		}
-
-		public void OnPageHandlerExecuting(PageHandlerExecutingContext context) {
+		public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next) {
 			var db = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
 			var httpContext = context.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>().HttpContext;
 			var principal = context.HttpContext.RequestServices.GetService<IPrincipalUser>();
 
 			if ( !httpContext.Request.Query.ContainsKey("no_log") ) {
 				try {
-					db.LogRequest(principal, httpContext);
+					await db.LogRequest(principal, httpContext);
 				}
 				catch { }
 			}
+			await next.Invoke();
 		}
 	}
 }
