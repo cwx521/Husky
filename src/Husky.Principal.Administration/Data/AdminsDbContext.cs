@@ -2,7 +2,6 @@
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8603 // Possible null reference return.
 
-using Husky.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Administration.Data
@@ -20,7 +19,7 @@ namespace Husky.Principal.Administration.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyAdditionalCustomizedAnnotations();
-			modelBuilder.OnAdminsModelCreating();
+			modelBuilder.OnAdminsDbModelCreating();
 		}
 	}
 }

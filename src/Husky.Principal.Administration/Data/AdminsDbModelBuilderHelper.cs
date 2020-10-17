@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Administration.Data
 {
-	public static class AdminsModelBuilderHelper
+	public static class AdminsDbModelBuilderHelper
 	{
-		public static void OnAdminsModelCreating(this ModelBuilder modelBuilder) {
+		public static void OnAdminsDbModelCreating(this ModelBuilder modelBuilder) {
 
 			//Indexes
 			modelBuilder.Entity<AdminInRole>().HasKey(x => new { x.AdminId, x.RoleId });

@@ -10,7 +10,10 @@ namespace Husky.Mail
 			}
 			var ok = TryParse(mailAddressString, out var mailAddress);
 			if ( !ok ) {
-				throw new FormatException($"'{mailAddressString}' is an invalid mail box address. A valid format should be like 'Your Name<youraccount@domain.com>'.");
+				throw new FormatException(
+					$"'{mailAddressString}' is an invalid mail box address. " +
+					$"A valid format should be like 'Your Name<youraccount@domain.com>'."
+				);
 			}
 			return mailAddress!;
 		}

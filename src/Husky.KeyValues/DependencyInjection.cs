@@ -24,7 +24,7 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddKeyValueManagerOwnImplementation<TImplementKeyValueManager>(this HuskyDI husky)
+		public static HuskyDI AddKeyValueManagerWithOwnImplement<TImplementKeyValueManager>(this HuskyDI husky)
 			where TImplementKeyValueManager : class, IKeyValueManager {
 			husky.Services.AddSingleton<IKeyValueManager, TImplementKeyValueManager>();
 			return husky;

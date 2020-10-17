@@ -11,14 +11,15 @@ namespace Husky.Mail.Data
 
 		public Guid? SmtpId { get; set; }
 
-		[StringLength(200)]
+		[StringLength(200), Required]
 		public string Subject { get; set; } = null!;
 
+		[Required]
 		public string Body { get; set; } = null!;
 
 		public bool IsHtml { get; set; }
 
-		[StringLength(2000)]
+		[StringLength(2000), Required]
 		public string To { get; set; } = null!;
 
 		[StringLength(2000)]

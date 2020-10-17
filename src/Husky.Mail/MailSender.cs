@@ -13,12 +13,12 @@ namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender(MailDbContext mailDbContext, ISmtpProvider? givenSmtp = null) {
-			_mailDbContext = mailDbContext;
+		public MailSender(IMailDbContext mailDb, ISmtpProvider? givenSmtp = null) {
+			_mailDb = mailDb;
 			_smtp = givenSmtp;
 		}
 
-		private readonly MailDbContext _mailDbContext;
+		private readonly IMailDbContext _mailDb;
 		private readonly ISmtpProvider? _smtp;
 
 		public async Task SendAsync(string subject, string content, params string[] recipients) {
@@ -45,13 +45,13 @@ namespace Husky.Mail
 				mailRecord.SmtpId = internalSmtp.Id;
 			}
 
-			_mailDbContext.Add(mailRecord);
-			await _mailDbContext.SaveChangesAsync();
+			_mailDb.MailRecords.Add(mailRecord);
+			await _mailDb.Normalize().SaveChangesAsync();
 
 			using var client = new SmtpClient();
 			client.MessageSent += async (object? sender, MessageSentEventArgs e) => {
 				mailRecord.IsSuccessful = true;
-				await _mailDbContext.SaveChangesAsync();
+				await _mailDb.Normalize().SaveChangesAsync();
 				await Task.Run(() => {
 					onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
 				});
@@ -67,19 +67,19 @@ namespace Husky.Mail
 			}
 			catch ( Exception ex ) {
 				mailRecord.Exception = ex.Message.Left(200);
-				await _mailDbContext.SaveChangesAsync();
+				await _mailDb.Normalize().SaveChangesAsync();
 			}
 		}
 
 		private static int _increment = 0;
 
 		private MailSmtpProvider GetInternalSmtpProvider() {
-			var haveSmtpCount = _mailDbContext.MailSmtpProviders.Count(x => x.IsInUse);
+			var haveSmtpCount = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( haveSmtpCount == 0 ) {
 				throw new Exception("SMTP account is not configured yet.");
 			}
 			var skip = _increment++ % haveSmtpCount;
-			return _mailDbContext.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
+			return _mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 		}
 
 		private MailRecord CreateMailRecord(MailMessage mailMessage) {
@@ -100,11 +100,10 @@ namespace Husky.Mail
 		}
 
 		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
-			var mail = new MimeMessage {
+			var mail = new MimeMessage();
 
-				// Subject
-				Subject = mailMessage.Subject
-			};
+			// Subject
+			mail.Subject = mailMessage.Subject;
 			// From
 			mail.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
 			// To
