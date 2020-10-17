@@ -11,11 +11,11 @@ namespace Husky.Principal
 				: principal.Id.ToString();
 		}
 
-		public static CacheDataContainer CacheData(this IPrincipalUser principal) {
+		public static CacheDataBag CacheData(this IPrincipalUser principal) {
 			var key = principal.CacheKey();
 			var cache = principal.ServiceProvider.GetRequiredService<IMemoryCache>();
-			var pool = new CacheDataPool<CacheDataContainer>(cache);
-			var dataBag = new CacheDataContainer(principal);
+			var pool = new CacheDataPool<CacheDataBag>(cache);
+			var dataBag = new CacheDataBag(principal);
 			if ( principal.IsAuthenticated ) {
 				pool.Drop(principal.AnonymousId.ToString());
 			}
@@ -24,7 +24,7 @@ namespace Husky.Principal
 
 		public static void AbandonCache(this IPrincipalUser principal) {
 			var cache = principal.ServiceProvider.GetRequiredService<IMemoryCache>();
-			var pool = new CacheDataPool<CacheDataContainer>(cache);
+			var pool = new CacheDataPool<CacheDataBag>(cache);
 			pool.Drop(principal.Id.ToString());
 			pool.Drop(principal.AnonymousId.ToString());
 		}

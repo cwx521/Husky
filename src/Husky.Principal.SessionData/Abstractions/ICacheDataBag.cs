@@ -2,7 +2,7 @@
 
 namespace Husky.Principal
 {
-	public interface ICacheDataContainer
+	public interface ICacheDataBag
 	{
 		string Key { get; }
 		DateTime ActiveTime { get; set; }

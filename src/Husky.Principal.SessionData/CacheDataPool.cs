@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Husky.Principal
 {
-	internal class CacheDataPool<T> where T : class, ICacheDataContainer
+	internal class CacheDataPool<T> where T : class, ICacheDataBag
 	{
 		internal CacheDataPool(IMemoryCache cache) {
 			_cache = cache;
