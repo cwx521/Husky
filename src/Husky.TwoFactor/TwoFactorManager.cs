@@ -24,53 +24,7 @@ namespace Husky.TwoFactor
 		private readonly AliyunSmsSender? _aliyunSmsSender;
 		private readonly IMailSender? _mailSender;
 
-		public async Task<Result> RequestCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
-			return await RequestCode(mobileNumber, overrideAliyunSmsTemplateCode, overrideAliyunSmsSignName, null);
-		}
-
-		public async Task<Result> RequestCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
-			return await RequestCode(emailAddress, null, null, messageTemplateWithCodeArg0);
-		}
-
-		public async Task<Result> VerifyCode(string sentTo, string code, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
-			if ( sentTo == null ) {
-				throw new ArgumentNullException(nameof(sentTo));
-			}
-			if ( code == null ) {
-				throw new ArgumentNullException(nameof(code));
-			}
-
-			var record = _twoFactorDb.TwoFactorCodes
-				.Where(x => x.IsUsed == false)
-				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
-				.Where(x => x.SentTo == sentTo)
-				.Where(x => _me.IsAnonymous || x.UserId == _me.Id)
-				.OrderByDescending(x => x.Id)
-				.FirstOrDefault();
-
-			if ( record == null ) {
-				return new Failure("验证码匹配失败");
-			}
-			if ( record.ErrorTimes > 10 || string.Compare(code, record.Code, true) != 0 ) {
-				record.ErrorTimes++;
-				await _twoFactorDb.Normalize().SaveChangesAsync();
-				return new Failure("验证码输入错误");
-			}
-			if ( setIntoUsedAfterVerifying ) {
-				record.IsUsed = true;
-				await _twoFactorDb.Normalize().SaveChangesAsync();
-			}
-			return new Success();
-		}
-
-		public async Task<Result> VerifyCode(TwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
-			if ( model == null ) {
-				throw new ArgumentNullException(nameof(model));
-			}
-			return await VerifyCode(model.SendTo, model.Code, setIntoUsedAfterVerifying, withinMinutes);
-		}
-
-		private async Task<Result> RequestCode(string mobileNumberOrEmailAddress, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null, string? messageTemplateWithCodeArg0 = null) {
+		public async Task<Result> RequestCode(string mobileNumberOrEmailAddress, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null, string? messageTemplateWithCodeArg0 = null) {
 			if ( mobileNumberOrEmailAddress == null ) {
 				throw new ArgumentNullException(nameof(mobileNumberOrEmailAddress));
 			}
@@ -124,6 +78,52 @@ namespace Husky.TwoFactor
 			}
 
 			return new Success();
+		}
+
+		public async Task<Result> RequestCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
+			return await RequestCode(mobileNumber, overrideAliyunSmsTemplateCode, overrideAliyunSmsSignName, null);
+		}
+
+		public async Task<Result> RequestCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
+			return await RequestCode(emailAddress, null, null, messageTemplateWithCodeArg0);
+		}
+
+		public async Task<Result> VerifyCode(string sentTo, string code, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
+			if ( sentTo == null ) {
+				throw new ArgumentNullException(nameof(sentTo));
+			}
+			if ( code == null ) {
+				throw new ArgumentNullException(nameof(code));
+			}
+
+			var record = _twoFactorDb.TwoFactorCodes
+				.Where(x => x.IsUsed == false)
+				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
+				.Where(x => x.SentTo == sentTo)
+				.Where(x => _me.IsAnonymous || x.UserId == _me.Id)
+				.OrderByDescending(x => x.Id)
+				.FirstOrDefault();
+
+			if ( record == null ) {
+				return new Failure("验证码匹配失败");
+			}
+			if ( record.ErrorTimes > 10 || string.Compare(code, record.Code, true) != 0 ) {
+				record.ErrorTimes++;
+				await _twoFactorDb.Normalize().SaveChangesAsync();
+				return new Failure("验证码输入错误");
+			}
+			if ( setIntoUsedAfterVerifying ) {
+				record.IsUsed = true;
+				await _twoFactorDb.Normalize().SaveChangesAsync();
+			}
+			return new Success();
+		}
+
+		public async Task<Result> VerifyCode(TwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
+			if ( model == null ) {
+				throw new ArgumentNullException(nameof(model));
+			}
+			return await VerifyCode(model.SendTo, model.Code, setIntoUsedAfterVerifying, withinMinutes);
 		}
 	}
 }
