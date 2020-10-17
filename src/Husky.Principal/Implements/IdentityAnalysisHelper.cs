@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Husky.Principal.Implements
+﻿namespace Husky.Principal.Implements
 {
-	internal static class IdentityAnalysisHelper
+	public static class IdentityAnalysisHelper
 	{
-		public static IIdentity GetIdentity(string anonymous, string logon, IdentityOptions options) {
-			var identity = new Identity();
-			identity.AnonymousId = anonymous.AsGuid(identity.AnonymousId);
+		public const string AnonymousKey = "HUSKY_AUTH_ANONYMOUS";
 
-			if ( string.IsNullOrEmpty(logon) ) {
+		internal static IIdentity GetIdentity(string primaryStorage, string secondaryStorage, IdentityOptions options) {
+			var identity = new Identity();
+			identity.AnonymousId = secondaryStorage.AsGuid(identity.AnonymousId);
+
+			if ( string.IsNullOrEmpty(primaryStorage) ) {
 				return identity;
 			}
-			var decrypted = options.Encryptor.Decrypt(logon, options.Token);
+
+			var decrypted = options.Encryptor.Decrypt(primaryStorage, options.Token);
 			if ( decrypted == null ) {
 				return identity;
 			}

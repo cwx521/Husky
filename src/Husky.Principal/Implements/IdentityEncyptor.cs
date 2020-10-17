@@ -12,33 +12,38 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(token));
 			}
 
-			var iv = Crypto.SHA1(identity.Id + identity.DisplayName + identity.IsConsolidated + token);
-			return Crypto.Encrypt($"{identity.Id}|{identity.DisplayName}|{identity.IsConsolidated}", iv, token) + iv;
+			var str = identity.ToString()!;
+			var iv = Crypto.SHA1(str + token);
+			return Crypto.Encrypt(str, iv, token) + iv;
 		}
 
-		public IIdentity? Decrypt(string encrypted, string token) {
-			if ( encrypted == null ) {
-				throw new ArgumentNullException(nameof(encrypted));
-			}
+		public IIdentity? Decrypt(string? encrypted, string token) {
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			try {
+			if ( encrypted != null ) {
 				//iv is a Crypto.SHA1 result
 				const int ivLength = 40;
+				const int guidLength = 36;
 
-				var iv = encrypted[^ivLength..];
-				var str = Crypto.Decrypt(encrypted[..^ivLength], iv, token);
-				var splitAt = str.IndexOf('|');
-				var splitAtLast = str.LastIndexOf('|');
+				try {
+					var iv = encrypted[^ivLength..];
+					var decrypted = Crypto.Decrypt(encrypted[..^ivLength], iv, token);
 
-				return new Identity {
-					Id = str[0..splitAt].AsInt(),
-					DisplayName = str[(splitAt + 1)..splitAtLast],
-					IsConsolidated = str[(splitAtLast + 1)..].AsBool()
-				};
-			}
-			catch {
+					var anonymousId = decrypted[0..guidLength];
+					var remained = decrypted[(guidLength + 1)..];
+
+					var splitAt = remained.IndexOf('|');
+					var splitAtLast = remained.LastIndexOf('|');
+
+					return new Identity {
+						AnonymousId = anonymousId.AsGuid(Guid.NewGuid()),
+						Id = remained[0..splitAt].AsInt(),
+						DisplayName = remained[(splitAt + 1)..splitAtLast],
+						IsConsolidated = remained[(splitAtLast + 1)..].AsBool()
+					};
+				}
+				catch { }
 			}
 			return null;
 		}

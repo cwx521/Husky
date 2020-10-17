@@ -14,7 +14,8 @@ namespace Husky
 			return context!;
 		}
 
-		public static TDbContext CreateDbContext<TDbContext>(this DbContextOptionsBuilder<TDbContext> optionsBuilder) where TDbContext : DbContext {
+		public static TDbContext CreateDbContext<TDbContext>(this DbContextOptionsBuilder<TDbContext> optionsBuilder)
+			where TDbContext : DbContext {
 			var contextType = optionsBuilder.Options.ContextType;
 			var context = Activator.CreateInstance(contextType, optionsBuilder.Options) as TDbContext;
 			return context!;

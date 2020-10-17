@@ -17,22 +17,22 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddTwoFactor<TTwoFactorDbContextImplement>(this HuskyDI husky)
-			where TTwoFactorDbContextImplement : class, ITwoFactorDbContext {
+		public static HuskyDI AddTwoFactor<TDbContext>(this HuskyDI husky)
+			where TDbContext : DbContext, ITwoFactorDbContext {
 			husky.Services
-				.AddScoped<ITwoFactorDbContext, TTwoFactorDbContextImplement>()
+				.AddScoped<ITwoFactorDbContext, TDbContext>()
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 
 			return husky;
 		}
 
-		public static HuskyDI AddTwoFactorWithOwnImplement<TTwoFactorImplement>(this HuskyDI husky)
+		public static HuskyDI MapTwoFactor<TTwoFactorImplement>(this HuskyDI husky)
 			where TTwoFactorImplement : class, ITwoFactorManager {
 			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>();
 			return husky;
 		}
 
-		public static HuskyDI AddTwoFactorWithOwnImplement<TTwoFactorImplement>(this HuskyDI husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
+		public static HuskyDI MapTwoFactor<TTwoFactorImplement>(this HuskyDI husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
 			where TTwoFactorImplement : class, ITwoFactorManager {
 			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>(implementationFactory);
 			return husky;

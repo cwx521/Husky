@@ -12,20 +12,26 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddQQLbs(this HuskyDI husky, QQLbsSettings settings) {
-			husky.Services.AddSingleton<ILbs>(new QQLbsService(settings));
+		public static HuskyDI AddQQLbs(this HuskyDI husky, QQLbsSettings options) {
+			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));
 			return husky;
 		}
 
-		public static HuskyDI AddLbs<TImpelement>(this HuskyDI husky)
-			where TImpelement : class, ILbs {
-			husky.Services.AddSingleton<ILbs, TImpelement>();
+		public static HuskyDI AddQQLbs(this HuskyDI husky, Action<QQLbsSettings> setOptions) {
+			var options = new QQLbsSettings();
+			setOptions(options);
+			return husky.AddQQLbs(options);
+		}
+
+		public static HuskyDI MapLbs<TLbsImpelement>(this HuskyDI husky)
+			where TLbsImpelement : class, ILbs {
+			husky.Services.AddSingleton<ILbs, TLbsImpelement>();
 			return husky;
 		}
 
-		public static HuskyDI AddLbs<TImpelement>(this HuskyDI husky, Func<IServiceProvider, TImpelement> implementationFactory)
-			where TImpelement : class, ILbs {
-			husky.Services.AddSingleton<ILbs, TImpelement>(implementationFactory);
+		public static HuskyDI MapLbs<TLbsImpelement>(this HuskyDI husky, Func<IServiceProvider, TLbsImpelement> implementationFactory)
+			where TLbsImpelement : class, ILbs {
+			husky.Services.AddSingleton<ILbs, TLbsImpelement>(implementationFactory);
 			return husky;
 		}
 	}

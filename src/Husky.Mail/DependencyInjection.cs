@@ -16,21 +16,21 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddMailSender<TMailDbContextImplement>(this HuskyDI husky)
-			where TMailDbContextImplement : class, IMailDbContext {
+		public static HuskyDI AddMailSender<TDbContext>(this HuskyDI husky)
+			where TDbContext : DbContext, IMailDbContext {
 			husky.Services
-				.AddScoped<IMailDbContext, TMailDbContextImplement>()
+				.AddScoped<IMailDbContext, TDbContext>()
 				.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}
 
-		public static HuskyDI AddMailSenderWithOwnImplement<TMailSenderImplement>(this HuskyDI husky)
+		public static HuskyDI MapMailSender<TMailSenderImplement>(this HuskyDI husky)
 			where TMailSenderImplement : class, IMailSender {
 			husky.Services.AddScoped<IMailSender, TMailSenderImplement>();
 			return husky;
 		}
 
-		public static HuskyDI AddMailSenderWithOwnImplement<TMailSenderImplement>(this HuskyDI husky, Func<IServiceProvider, TMailSenderImplement> implementationFactory)
+		public static HuskyDI MapMailSender<TMailSenderImplement>(this HuskyDI husky, Func<IServiceProvider, TMailSenderImplement> implementationFactory)
 			where TMailSenderImplement : class, IMailSender {
 			husky.Services.AddScoped<IMailSender, TMailSenderImplement>(implementationFactory);
 			return husky;

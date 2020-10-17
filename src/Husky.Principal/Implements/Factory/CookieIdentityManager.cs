@@ -13,18 +13,21 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		private readonly string _anonymousKey = "HUSKY_AUTH_ANONYMOUS";
-		private readonly string _browserLifeKey = "HUSKY_AUTH_BROWSER_LIFE";
 
 		IIdentity IIdentityManager.ReadIdentity() {
-			_httpContext.Request.Cookies.TryGetValue(_anonymousKey, out var anonymous);
-			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var logon);
+			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var primary);
 
-			var identity = IdentityAnalysisHelper.GetIdentity(anonymous, logon, _options);
-			if ( _options.SessionMode && IsSessionLost() ) {
-				identity.Id = 0;
+			if ( !_options.DedicateAnonymousIdStorage ) {
+				return _options.Encryptor.Decrypt(primary, _options.Token) ?? new Identity();
 			}
-			return identity;
+			else {
+				_httpContext.Request.Cookies.TryGetValue(IdentityAnalysisHelper.AnonymousKey, out var secondary);
+				var identity = IdentityAnalysisHelper.GetIdentity(primary, secondary,  _options);
+				if ( _options.SessionMode && IsSessionLost() ) {
+					identity.Id = 0;
+				}
+				return identity;
+			}
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
@@ -39,16 +42,19 @@ namespace Husky.Principal.Implements
 						Expires = _options.Expires
 					}
 				);
-				_httpContext.Response.Cookies.Append(
-					key: _anonymousKey,
-					value: identity.AnonymousId.ToString()
-				);
+				if ( _options.DedicateAnonymousIdStorage ) {
+					_httpContext.Response.Cookies.Append(
+						key: IdentityAnalysisHelper.AnonymousKey,
+						value: identity.AnonymousId.ToString()
+					);
+				}
 				if ( _options.SessionMode ) {
 					PlantSession();
 				}
 			}
 		}
 
+		private readonly string _browserLifeKey = "HUSKY_AUTH_BROWSER_LIFE";
 		private void PlantSession() => _httpContext.Response.Cookies.Append(_browserLifeKey, DateTime.Now.Ticks.ToString());
 		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_browserLifeKey);
 

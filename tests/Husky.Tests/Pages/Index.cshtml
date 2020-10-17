@@ -2,8 +2,7 @@
 @model IndexPageModel
 
 <div>@_me.DisplayName</div>
-<p>Index: @PageContext.ActionDescriptor.Id</p>
-<p>see Hello: <a href="/hello">Hello Page</a></p>
+<p>AnonymousId: @_me.AnonymousId</p>
 
 <form method="post" asp-page="@PageContext.ActionDescriptor.DisplayName">
     <button type="submit">Submit</button>

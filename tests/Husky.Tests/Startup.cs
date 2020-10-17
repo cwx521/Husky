@@ -34,7 +34,7 @@ namespace Husky.Tests
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			services.Husky()
-				.AddPrincipal(IdentityCarrier.Cookie)
+				.AddPrincipal()
 				.AddDiagnostics(x => x.UseSqlServer(connstr).Migrate());
 
 			/*
@@ -50,6 +50,7 @@ namespace Husky.Tests
 		public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 			app.UseDeveloperExceptionPage();
 			app.UseHttpsRedirection();
+			app.UseSession();
 			app.UseStaticFiles();
 			app.UseRouting();
 			app.UseAuthorization();

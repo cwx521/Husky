@@ -7,8 +7,8 @@ namespace Husky
 {
 	public static class ConnectionStrings
 	{
-		public static string LookFor<TContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
-			where TContext : DbContext {
+		public static string LookFor<TDbContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
+			where TDbContext : DbContext {
 
 			//try looking for the first found connection string by this sequence
 
@@ -16,7 +16,7 @@ namespace Husky
 				nameOfConnectionString,
 				"Dev",
 				"Test",
-				typeof(TContext).Name.Replace("DbContext", ""),
+				typeof(TDbContext).Name.Replace("DbContext", ""),
 				"Default"
 			};
 			var connstr = lookForNames

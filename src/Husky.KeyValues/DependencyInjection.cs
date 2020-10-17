@@ -16,21 +16,21 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddKeyValueManager<TKeyValueDbContextImplement>(this HuskyDI husky)
-			where TKeyValueDbContextImplement : class, IKeyValueDbContext {
+		public static HuskyDI AddKeyValueManager<TDbContext>(this HuskyDI husky)
+			where TDbContext : DbContext, IKeyValueDbContext {
 			husky.Services
-				.AddScoped<IKeyValueDbContext, TKeyValueDbContextImplement>()
+				.AddScoped<IKeyValueDbContext, TDbContext>()
 				.AddScoped<IKeyValueManager, KeyValueManager>();
 			return husky;
 		}
 
-		public static HuskyDI AddKeyValueManagerWithOwnImplement<TKeyValueManagerImplement>(this HuskyDI husky)
+		public static HuskyDI MapKeyValueManager<TKeyValueManagerImplement>(this HuskyDI husky)
 			where TKeyValueManagerImplement : class, IKeyValueManager {
 			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>();
 			return husky;
 		}
 
-		public static HuskyDI AddKeyValueManagerWithOwnImplement<TKeyValueManagerImplement>(this HuskyDI husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
+		public static HuskyDI MapKeyValueManager<TKeyValueManagerImplement>(this HuskyDI husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
 			where TKeyValueManagerImplement : class, IKeyValueManager {
 			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>(implementationFactory);
 			return husky;

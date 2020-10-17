@@ -16,29 +16,23 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddPrincipalAdmin<TPrincipalAdminImplement>(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction)
-			where TPrincipalAdminImplement : class, IPrincipalAdmin {
+		public static HuskyDI AddPrincipalAdmin<TDbContext>(this HuskyDI husky)
+			where TDbContext : DbContext, IAdminsDbContext {
 			husky.Services
-				.AddDbContextPool<AdminsDbContext>(optionsAction)
-				.AddScoped<IAdminsDbContext, AdminsDbContext>()
-				.AddScoped<IPrincipalAdmin, TPrincipalAdminImplement>();
-			return husky;
-		}
-
-		public static HuskyDI AddPrincipalAdmin<TAdminsDbContextImplement>(this HuskyDI husky)
-			where TAdminsDbContextImplement : class, IAdminsDbContext {
-			husky.Services
-				.AddScoped<IAdminsDbContext, TAdminsDbContextImplement>()
+				.AddScoped<IAdminsDbContext, TDbContext>()
 				.AddScoped<IPrincipalAdmin, PrincipalAdmin>();
 			return husky;
 		}
 
-		public static HuskyDI AddPrincipalAdmin<TAdminsDbContext, TPrincipalAdmin>(this HuskyDI husky)
-			where TAdminsDbContext : class, IAdminsDbContext
-			where TPrincipalAdmin : class, IPrincipalAdmin {
-			husky.Services
-				.AddScoped<IAdminsDbContext, TAdminsDbContext>()
-				.AddScoped<IPrincipalAdmin, TPrincipalAdmin>();
+		public static HuskyDI MapPrincipalAdmin<TPrincipalAdminImplement>(this HuskyDI husky)
+			where TPrincipalAdminImplement : class, IPrincipalAdmin {
+			husky.Services.AddScoped<IPrincipalAdmin, TPrincipalAdminImplement>();
+			return husky;
+		}
+
+		public static HuskyDI MapPrincipalAdmin<TPrincipalAdminImplement>(this HuskyDI husky, Func<IServiceProvider, TPrincipalAdminImplement> implementationFactory)
+			where TPrincipalAdminImplement : class, IPrincipalAdmin {
+			husky.Services.AddScoped<IPrincipalAdmin, TPrincipalAdminImplement>(implementationFactory);
 			return husky;
 		}
 	}

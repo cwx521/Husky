@@ -13,20 +13,26 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		private readonly string _anonymousKey = "HUSKY_AUTH_ANONYMOUS";
-
 		IIdentity IIdentityManager.ReadIdentity() {
-			var anonymous = _httpContext.Request.Headers[_anonymousKey];
-			var logon = _httpContext.Request.Headers[_options.Key];
-			return IdentityAnalysisHelper.GetIdentity(anonymous, logon, _options);
+			var primary = _httpContext.Request.Headers[_options.Key];
+
+			if ( !_options.DedicateAnonymousIdStorage ) {
+				return _options.Encryptor.Decrypt(primary, _options.Token) ?? new Identity();
+			}
+			else {
+				var secondary = _httpContext.Request.Headers[IdentityAnalysisHelper.AnonymousKey];
+				return IdentityAnalysisHelper.GetIdentity(primary, secondary, _options);
+			}
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			_httpContext.Response.Headers.Add(_options.Key, _options.Encryptor.Encrypt(identity, _options.Token));
-			_httpContext.Response.Headers.Add(_anonymousKey, identity.AnonymousId.ToString());
+			if ( _options.DedicateAnonymousIdStorage ) {
+				_httpContext.Response.Headers[IdentityAnalysisHelper.AnonymousKey] = identity.AnonymousId.ToString();
+			}
+			_httpContext.Response.Headers[_options.Key] = _options.Encryptor.Encrypt(identity, _options.Token);
 		}
 
 		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.Key);
