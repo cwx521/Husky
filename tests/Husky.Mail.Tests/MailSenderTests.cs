@@ -15,19 +15,21 @@ namespace Husky.Mail.Tests
 		public void SendAsyncTest() {
 			Crypto.PermanentToken = Crypto.RandomString();
 
-			var _smtp = new MailSmtpProvider {
+			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),
 				Host = "smtp.live.com",
 				Port = 25,
 				Ssl = false,
 				SenderDisplayName = "Weixing Chen",
 				SenderMailAddress = "chenwx521@hotmail.com",
-				CredentialName = "",
+				CredentialName = "chenwx521@hotmail.com",
 				Password = "",
 				IsInUse = true
 			};
 
-			if ( string.IsNullOrEmpty(_smtp.CredentialName) || string.IsNullOrEmpty(_smtp.Password) ) {
+			//Config CredentialName&Password before running this test
+
+			if ( string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password) ) {
 				return;
 			}
 
@@ -39,9 +41,7 @@ namespace Husky.Mail.Tests
 			db.Database.EnsureDeleted();
 			db.Database.Migrate();
 
-			//Config CredentialName&Password before running this test
-
-			db.Add(_smtp);
+			db.Add(smtp);
 			db.SaveChanges();
 
 			var sender = new MailSender(db);
@@ -79,7 +79,7 @@ namespace Husky.Mail.Tests
 			Assert.AreEqual(mailRecord.Subject, mail.Subject);
 			Assert.AreEqual(mailRecord.Body, mail.Body);
 			Assert.AreEqual(mailRecord.IsHtml, mail.IsHtml);
-			Assert.AreEqual(mailRecord.Smtp.Id, _smtp.Id);
+			Assert.AreEqual(mailRecord.Smtp.Id, smtp.Id);
 			Assert.AreEqual(mailRecord.To, string.Join(";", mail.To.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Cc, string.Join(";", mail.Cc.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Attachments.Count, mail.Attachments.Count);

@@ -11,7 +11,7 @@ namespace Husky.Mail.Data
 		[Key]
 		public Guid Id { get; set; } = Guid.NewGuid();
 
-		[MaxLength(100), Column(TypeName = "varchar(100)"), Required]
+		[StringLength(100), Column(TypeName = "varchar(100)"), Required]
 		public string Host { get; set; } = null!;
 
 		[StringLength(50), Column(TypeName = "varchar(50)"), Required, Unique]
