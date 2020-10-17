@@ -1,6 +1,6 @@
 ﻿namespace Husky.Principal
 {
-	public enum SessionDataBag
+	public enum CacheDataBag
 	{
 		Both,
 		Anonymous,

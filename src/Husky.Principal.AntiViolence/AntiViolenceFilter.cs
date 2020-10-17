@@ -24,10 +24,6 @@ namespace Husky.Principal.AntiViolence
 		}
 
 		private void OnExecuting(FilterContext context) {
-			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
-			if ( principal.IsAnonymous ) {
-				return;
-			}
 			if ( context.HttpContext.Request.Method == "GET" ) {
 				return;
 			}
@@ -37,6 +33,7 @@ namespace Husky.Principal.AntiViolence
 			// todo: put this to configuration
 			const int ms = 300;
 
+			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
 			var antiViolence = new AntiViolenceBlocker(principal);
 
 			if ( antiViolence.GetTimer().AddMilliseconds(ms) < DateTime.Now ) {

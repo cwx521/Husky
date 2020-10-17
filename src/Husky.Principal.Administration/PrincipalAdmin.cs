@@ -37,7 +37,7 @@ namespace Husky.Principal.Administration
 				return null;
 			}
 
-			return (AdminViewModel?)Principal.SessionData().GetOrAdd(AdminDataKey, key => {
+			return (AdminViewModel?)Principal.CacheData().GetOrAdd(AdminDataKey, key => {
 				using var scope = Principal.ServiceProvider.CreateScope();
 				var db = scope.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 
