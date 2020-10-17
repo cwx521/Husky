@@ -1,7 +1,11 @@
-﻿namespace Husky.Principal
+﻿using System;
+
+namespace Husky.Principal
 {
 	public class Identity : IIdentity
 	{
+		public virtual Guid AnonymousId { get; set; } = Guid.NewGuid();
+
 		public virtual int Id { get; set; }
 		public virtual string DisplayName { get; set; } = null!;
 		public virtual bool IsConsolidated { get; set; }

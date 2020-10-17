@@ -2,26 +2,25 @@
 
 namespace Husky.Principal
 {
-	public class PrincipalUser : Identity, IIdentity, IPrincipalUser
+	public class PrincipalUser : Identity, IIdentity, IIdentityAnonymous, IPrincipalUser
 	{
 		public PrincipalUser(IIdentityManager identityManager, IServiceProvider serviceProvider) {
 			var identity = identityManager.ReadIdentity();
 
-			if ( identity != null ) {
-				Id = identity.Id;
-				DisplayName = identity.DisplayName;
-				IsConsolidated = identity.IsConsolidated;
-
-				identityManager.SaveIdentity(identity);
-			}
+			AnonymousId = identity.AnonymousId;
+			Id = identity.Id;
+			DisplayName = identity.DisplayName;
+			IsConsolidated = identity.IsConsolidated;
 
 			ServiceProvider = serviceProvider;
 			IdentityManager = identityManager;
+
+			identityManager.SaveIdentity(identity);
 		}
 
-		private PrincipalUser(IServiceProvider serviceProvider) {
-			ServiceProvider = serviceProvider;
-		}
+		public IServiceProvider ServiceProvider { get; }
+		public IIdentityManager? IdentityManager { get; }
+
 
 		public static PrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
 			return new PrincipalUser(serviceProvider) {
@@ -39,7 +38,8 @@ namespace Husky.Principal
 			};
 		}
 
-		public IServiceProvider ServiceProvider { get; }
-		public IIdentityManager? IdentityManager { get; }
+		private PrincipalUser(IServiceProvider serviceProvider) {
+			ServiceProvider = serviceProvider;
+		}
 	}
 }

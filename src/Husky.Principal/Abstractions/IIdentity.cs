@@ -1,6 +1,6 @@
 ﻿namespace Husky.Principal
 {
-	public interface IIdentity
+	public interface IIdentity : IIdentityAnonymous
 	{
 		int Id { get; set; }
 		string DisplayName { get; set; }

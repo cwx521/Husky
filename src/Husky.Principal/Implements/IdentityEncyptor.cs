@@ -44,6 +44,6 @@ namespace Husky.Principal.Implements
 		}
 
 		string IIdentityEncyptor.Encrypt(IIdentity identity, string token) => Encrypt(identity, token);
-		IIdentity? IIdentityEncyptor.Decrypt(string encryptedString, string token) => Decrypt(encryptedString, token);
+		IIdentity? IIdentityEncyptor.Decrypt(string encrypted, string token) => Decrypt(encrypted, token);
 	}
 }

@@ -2,7 +2,7 @@
 {
 	public interface IIdentityManager
 	{
-		IIdentity? ReadIdentity();
+		IIdentity ReadIdentity();
 		void SaveIdentity(IIdentity identity);
 		void DeleteIdentity();
 	}

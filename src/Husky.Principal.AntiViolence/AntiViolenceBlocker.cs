@@ -11,8 +11,6 @@ namespace Husky.Principal.AntiViolence
 
 		private readonly IPrincipalUser _me;
 
-		public const string ViewName = "_AntiViolence";
-
 		internal DateTime GetTimer() {
 			return _me.Id != 0 && _me.SessionData() is SessionDataContainer sessionData
 				? (DateTime)sessionData.GetOrAdd(nameof(AntiViolenceBlocker), key => DateTime.Now.AddDays(-1))

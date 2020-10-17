@@ -13,15 +13,14 @@ namespace Husky.Principal.Implements
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-		IIdentity? IIdentityManager.ReadIdentity() {
-			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var cookie);
-			if ( string.IsNullOrEmpty(cookie) ) {
-				return null;
-			}
-			var identity = _options.Encryptor.Decrypt(cookie, _options.Token);
-			if ( identity == null ) {
-				return null;
-			}
+		private readonly string _anonymousKey = "HUSKY_AUTH_ANONYMOUS";
+		private readonly string _browserLifeKey = "HUSKY_AUTH_BROWSER_LIFE";
+
+		IIdentity IIdentityManager.ReadIdentity() {
+			_httpContext.Request.Cookies.TryGetValue(_anonymousKey, out var anonymous);
+			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var logon);
+
+			var identity = IdentityAnalysisHelper.GetIdentity(anonymous, logon, _options);
 			if ( _options.SessionMode && IsSessionLost() ) {
 				identity.Id = 0;
 			}
@@ -40,20 +39,22 @@ namespace Husky.Principal.Implements
 						Expires = _options.Expires
 					}
 				);
+				_httpContext.Response.Cookies.Append(
+					key: _anonymousKey,
+					value: identity.AnonymousId.ToString()
+				);
 				if ( _options.SessionMode ) {
 					PlantSession();
 				}
 			}
 		}
 
-		private readonly string _sessionKey = "HUSKY_AUTH_BROWSER_LIFE_";
-
-		private void PlantSession() => _httpContext.Response.Cookies.Append(_sessionKey, DateTime.Now.Ticks.ToString());
-		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_sessionKey);
+		private void PlantSession() => _httpContext.Response.Cookies.Append(_browserLifeKey, DateTime.Now.Ticks.ToString());
+		private bool IsSessionLost() => !_httpContext.Request.Cookies.ContainsKey(_browserLifeKey);
 
 		void IIdentityManager.DeleteIdentity() {
 			_httpContext.Response.Cookies.Delete(_options.Key);
-			_httpContext.Response.Cookies.Delete(_sessionKey);
+			_httpContext.Response.Cookies.Delete(_browserLifeKey);
 		}
 	}
 }
