@@ -10,6 +10,7 @@ namespace Husky.AliyunSms
 	{
 		public AliyunSmsSender(AliyunSmsSettings settings) {
 			_settings = settings;
+			DefaultProfile.AddEndpoint(_settings.EndPointRegion, _settings.EndPointRegion, _settings.Product, _settings.Domain);
 		}
 
 		private readonly AliyunSmsSettings _settings;
@@ -26,12 +27,9 @@ namespace Husky.AliyunSms
 				TemplateParam = JsonConvert.SerializeObject(argument.Parameters)
 			};
 
-			const string endPointRegion = "cn-hangzhou";
-			DefaultProfile.AddEndpoint(endPointRegion, endPointRegion, "Dysmsapi", "dysmsapi.aliyuncs.com");
-
 			await Task.Run(() => {
 				try {
-					var profile = DefaultProfile.GetProfile(endPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
+					var profile = DefaultProfile.GetProfile(_settings.EndPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
 					var client = new DefaultAcsClient(profile);
 					client.GetAcsResponse(request);
 				}

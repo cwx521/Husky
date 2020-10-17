@@ -13,9 +13,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddDiagnostics<TImplement>(this HuskyDI husky)
-			where TImplement : class, IDiagnosticsDbContext {
-			husky.Services.AddScoped<IDiagnosticsDbContext, TImplement>();
+		public static HuskyDI AddDiagnostics<TDiagnosticsDbContextImplement>(this HuskyDI husky)
+			where TDiagnosticsDbContextImplement : class, IDiagnosticsDbContext {
+			husky.Services.AddScoped<IDiagnosticsDbContext, TDiagnosticsDbContextImplement>();
 			return husky;
 		}
 	}

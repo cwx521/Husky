@@ -31,7 +31,7 @@ namespace Husky.Lbs.QQLbs
 			using var client = new WebClient();
 
 			var ipString = ip.MapToIPv4().ToString();
-			var url = $"{_settings.IpApiUrl}?key={_settings.Key}&ip={ipString}";
+			var url = $"{_settings.QueryIpApi}?key={_settings.Key}&ip={ipString}";
 			var json = await client.DownloadStringTaskAsync(url);
 			if ( json == null ) {
 				return null;

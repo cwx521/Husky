@@ -24,9 +24,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddMailSenderWithOwnImplement<TImplementMailSender>(this HuskyDI husky)
-			where TImplementMailSender : class, IMailSender {
-			husky.Services.AddSingleton<IMailSender, TImplementMailSender>();
+		public static HuskyDI AddMailSenderWithOwnImplement<TMailSenderImplement>(this HuskyDI husky)
+			where TMailSenderImplement : class, IMailSender {
+			husky.Services.AddScoped<IMailSender, TMailSenderImplement>();
 			return husky;
 		}
 	}
