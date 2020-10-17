@@ -1,4 +1,5 @@
 using Husky.Diagnostics;
+using Husky.Principal.AntiViolence;
 using Husky.Principal.Implements;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace Husky.Tests
 			services.AddRazorPages().AddMvcOptions(mvc => {
 				mvc.Filters.Add<ExceptionLogHandlerFilter>();
 				mvc.Filters.Add<RequestLogHandlerFilter>();
+				mvc.Filters.Add<AntiViolenceFilter>();
 			});
 			services.AddSession();
 			services.AddSingleton<IMemoryCache, MemoryCache>();

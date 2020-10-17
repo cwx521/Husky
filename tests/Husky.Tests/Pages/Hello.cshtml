@@ -1,14 +1,13 @@
-﻿@page "~/"
-@model IndexPageModel
+﻿@page "~/hello"
+@model HelloPageModel
 
 <div>@_me.DisplayName</div>
-<p>Index: @PageContext.ActionDescriptor.Id</p>
-<p>see Hello: <a href="/hello">Hello Page</a></p>
+<p>Hello: @PageContext.ActionDescriptor.Id</p>
+<p>see Index: <a href="/">Index Page</a></p>
 
 <form method="post" asp-page="@PageContext.ActionDescriptor.DisplayName">
     <button type="submit">Submit</button>
     @if ( Request.Method == "POST" ) {
         <div>Submitted</div>
-        <div>@Model.TellHim</div>
     }
 </form>

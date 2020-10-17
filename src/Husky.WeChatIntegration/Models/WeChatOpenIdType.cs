@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public enum WeChatAppIdSecretType
+	public enum WeChatOpenIdType
 	{
 		[Label("微信开放平台")]
 		OpenPlatform,

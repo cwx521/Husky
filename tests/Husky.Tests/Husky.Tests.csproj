@@ -18,7 +18,17 @@
     <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
     <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />
     <ProjectReference Include="..\..\src\Husky.Principal.Administration\Husky.Principal.Administration.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj" />
     <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\Index - Copy - Copy.cshtml.cs">
+      <DependentUpon>Index - Copy.cshtml.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Index - Copy.cshtml.cs">
+      <DependentUpon>Index.cshtml.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

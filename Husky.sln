@@ -55,7 +55,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Projects", "2. Projects"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Administration", "src\Husky.Principal.Administration\Husky.Principal.Administration.csproj", "{8AD67D26-A670-4FBB-B4ED-8D291E461C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.TwoFactor.Tests", "tests\Husky.TwoFactor.Tests\Husky.TwoFactor.Tests.csproj", "{0CD726C6-CE19-4B7F-9B45-463E42050AFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.TwoFactor.Tests", "tests\Husky.TwoFactor.Tests\Husky.TwoFactor.Tests.csproj", "{0CD726C6-CE19-4B7F-9B45-463E42050AFF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Users", "src\Husky.Principal.Users\Husky.Principal.Users.csproj", "{5F316519-5794-4B82-B7E9-DB0DFF89B997}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.AntiViolence", "src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj", "{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +167,14 @@ Global
 		{0CD726C6-CE19-4B7F-9B45-463E42050AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CD726C6-CE19-4B7F-9B45-463E42050AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CD726C6-CE19-4B7F-9B45-463E42050AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F316519-5794-4B82-B7E9-DB0DFF89B997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F316519-5794-4B82-B7E9-DB0DFF89B997}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F316519-5794-4B82-B7E9-DB0DFF89B997}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F316519-5794-4B82-B7E9-DB0DFF89B997}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +205,8 @@ Global
 		{FC5742B8-0A23-408E-9CCB-48F6D14118C2} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{8AD67D26-A670-4FBB-B4ED-8D291E461C57} = {9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}
 		{0CD726C6-CE19-4B7F-9B45-463E42050AFF} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
+		{5F316519-5794-4B82-B7E9-DB0DFF89B997} = {9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}
+		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526} = {9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}
