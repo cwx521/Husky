@@ -5,6 +5,6 @@ namespace Husky.Lbs
 {
 	public interface ILbs
 	{
-		Task<GeoLocation?> Query(IPAddress ip);
+		Task<GeoLocation?> QueryFromIp(IPAddress ip);
 	}
 }

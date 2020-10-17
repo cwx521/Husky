@@ -13,7 +13,7 @@ namespace Husky.Tests
 			Assert.AreEqual("招商银行", result.BankName);
 
 			var fakeFankCard = "Fake";
-			var nullResult = BankCardHelper.GetBandCardInfo(fakeFankCard);
+			var nullResult = BankCardHelper.GetBandCardInfo(fakeFankCard).Result;
 			Assert.IsNull(nullResult);
 		}
 	}

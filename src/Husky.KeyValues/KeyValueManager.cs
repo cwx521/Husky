@@ -24,6 +24,14 @@ namespace Husky.KeyValues
 		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
 		public bool Exists(string key) => Items.Any(x => x.Key == key);
 
+		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
+			using var scope = _svc.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			return db.KeyValues.AsNoTracking().ToList();
+		});
+
+		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
+
 
 		public string? Get(string key) => Find(key)?.Value;
 		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
@@ -101,13 +109,5 @@ namespace Husky.KeyValues
 
 			db.Normalize().SaveChanges();
 		}
-
-		private List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
-			using var scope = _svc.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
-			return db.KeyValues.AsNoTracking().ToList();
-		});
-
-		private KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 	}
 }

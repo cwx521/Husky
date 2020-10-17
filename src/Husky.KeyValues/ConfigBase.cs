@@ -41,10 +41,12 @@ namespace Husky
 		private readonly IKeyValueManager _keyValues;
 		private readonly IConfiguration? _appSettings;
 
+
 		public void Reload() => _keyValues.Reload();
 		public void Save(string key, string value) => _keyValues.Save(key, value);
 		public void Save<T>(string key, T value) where T : struct => _keyValues.Save(key, value);
 		public void SaveAll() => _keyValues.SaveAll();
+
 
 		[NotMapped] public virtual bool IsTestEnv => _appSettings?.GetValue<bool>("IsTestEnv") ?? false;
 		[NotMapped] public virtual string? PermanentToken => _appSettings?.GetValue<string>("Security:PermanentToken");

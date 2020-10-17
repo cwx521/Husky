@@ -1,34 +1,37 @@
-﻿using System;
+﻿//APIs document: https://lbs.qq.com/service/webService/webServiceGuide/webServiceGcoder
+
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Husky.Lbs
+namespace Husky.Lbs.QQLbs
 {
-	public class QQLbs : ILbs
+	public class QQLbsService : ILbs
 	{
-		public QQLbs(string key) {
+		public QQLbsService(string key) {
 			if ( string.IsNullOrEmpty(key) ) {
 				throw new ArgumentNullException(nameof(key));
 			}
-			_key = key;
+			_settings = new QQLbsSettings {
+				Key = key
+			};
 		}
 
-		public QQLbs(QQLbsSettings settings) {
+		public QQLbsService(QQLbsSettings settings) {
 			if ( settings == null ) {
 				throw new ArgumentNullException(nameof(settings));
 			}
-			_key = settings.Key;
+			_settings = settings;
 		}
 
-		private readonly string _key;
+		private readonly QQLbsSettings _settings;
 
-		public async Task<GeoLocation?> Query(IPAddress ip) {
+		public async Task<GeoLocation?> QueryFromIp(IPAddress ip) {
 			using var client = new WebClient();
 
 			var ipString = ip.MapToIPv4().ToString();
-			var url = $"http://apis.map.qq.com/ws/location/v1/ip?key={_key}&ip={ipString}";
-
+			var url = $"{_settings.IpApiUrl}?key={_settings.Key}&ip={ipString}";
 			var json = await client.DownloadStringTaskAsync(url);
 			if ( json == null ) {
 				return null;

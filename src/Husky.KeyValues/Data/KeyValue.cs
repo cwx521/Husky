@@ -5,7 +5,7 @@ namespace Husky.KeyValues.Data
 {
 	public class KeyValue
 	{
-		[Key, Column(TypeName = "varchar(50)")]
+		[Key, StringLength(50), Column(TypeName = "varchar(50)"), Required]
 		public string Key { get; set; } = null!;
 
 		[StringLength(2000)]

@@ -6,6 +6,7 @@ namespace Husky.KeyValues.Data
 	{
 		public KeyValueDbContext(DbContextOptions<KeyValueDbContext> options) : base(options) {
 		}
+
 		public DbContext Normalize() => this;
 
 		public DbSet<KeyValue> KeyValues { get; set; } = null!;
