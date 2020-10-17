@@ -29,5 +29,11 @@ namespace Husky
 			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>();
 			return husky;
 		}
+
+		public static HuskyDI AddKeyValueManagerWithOwnImplement<TKeyValueManagerImplement>(this HuskyDI husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
+			where TKeyValueManagerImplement : class, IKeyValueManager {
+			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>(implementationFactory);
+			return husky;
+		}
 	}
 }

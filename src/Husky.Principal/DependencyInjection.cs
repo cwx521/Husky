@@ -36,8 +36,8 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddPrincipal(this HuskyDI husky, Func<IServiceProvider, IPrincipalUser> implement) {
-			husky.Services.AddScoped<IPrincipalUser>(implement);
+		public static HuskyDI AddPrincipal(this HuskyDI husky, Func<IServiceProvider, IPrincipalUser> implementationFactory) {
+			husky.Services.AddScoped<IPrincipalUser>(implementationFactory);
 			return husky;
 		}
 

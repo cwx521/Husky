@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor
 {
-	public sealed partial class TwoFactorManager
+	public sealed partial class TwoFactorManager : ITwoFactorManager
 	{
 		public TwoFactorManager(IPrincipalUser principal, ITwoFactorDbContext twoFactorDb, AliyunSmsSender? aliyunSmsSender, IMailSender? mailSender) {
 			_me = principal;
@@ -24,7 +24,7 @@ namespace Husky.TwoFactor
 		private readonly AliyunSmsSender? _aliyunSmsSender;
 		private readonly IMailSender? _mailSender;
 
-		public async Task<Result> RequestCode(string mobileNumberOrEmailAddress, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null, string? messageTemplateWithCodeArg0 = null) {
+		public async Task<Result> SendCode(string mobileNumberOrEmailAddress, string? messageTemplateWithCodeArg0 = null, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
 			if ( mobileNumberOrEmailAddress == null ) {
 				throw new ArgumentNullException(nameof(mobileNumberOrEmailAddress));
 			}
@@ -80,12 +80,18 @@ namespace Husky.TwoFactor
 			return new Success();
 		}
 
-		public async Task<Result> RequestCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
-			return await RequestCode(mobileNumber, overrideAliyunSmsTemplateCode, overrideAliyunSmsSignName, null);
+		public async Task<Result> SendCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
+			if ( !mobileNumber.IsMainlandMobile() ) {
+				return new Failure($"无法发送到 '{mobileNumber}'");
+			}
+			return await SendCode(mobileNumber, null, overrideAliyunSmsTemplateCode, overrideAliyunSmsSignName);
 		}
 
-		public async Task<Result> RequestCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
-			return await RequestCode(emailAddress, null, null, messageTemplateWithCodeArg0);
+		public async Task<Result> SendCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
+			if ( !emailAddress.IsEmail() ) {
+				return new Failure($"无法发送到 '{emailAddress}'");
+			}
+			return await SendCode(emailAddress, messageTemplateWithCodeArg0, null, null);
 		}
 
 		public async Task<Result> VerifyCode(string sentTo, string code, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {

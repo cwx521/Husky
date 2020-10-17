@@ -11,10 +11,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatAppConfig _wechatConfig;
 
-		public WeChatUserInfo? GetUserInfo(WeChatUserAccessToken token) {
+		public WeChatUserResult? GetUserInfo(WeChatUserAccessToken token) {
 			return GetUserInfo(token.OpenId, token.AccessToken);
 		}
-		public WeChatUserInfo? GetUserInfo(string openId, string accessToken) {
+		public WeChatUserResult? GetUserInfo(string openId, string accessToken) {
 			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
 			using ( var client = new WebClient() ) {
 				var json = client.DownloadString(url);
@@ -22,7 +22,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				if ( d.errcode != null && d.errcode != 0 ) {
 					return null;
 				}
-				return new WeChatUserInfo {
+				return new WeChatUserResult {
 					OpenId = d.openid,
 					UnionId = d.unionid,
 					NickName = d.nickname,

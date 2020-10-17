@@ -14,20 +14,20 @@ namespace Husky.WeChatIntegration
 		public string? MerchantSecret { get; set; }
 
 		internal void RequireOpenPlatformSettings() {
-			_ = OpenPlatformAppId ?? throw new ArgumentException($"{nameof(OpenPlatformAppId)} 没有配置");
-			_ = OpenPlatformAppSecret ?? throw new ArgumentException($"{nameof(OpenPlatformAppSecret)} 没有配置");
+			_ = OpenPlatformAppId ?? throw new ArgumentException($"缺少 {nameof(OpenPlatformAppId)} 配置");
+			_ = OpenPlatformAppSecret ?? throw new ArgumentException($"缺少 {nameof(OpenPlatformAppSecret)} 配置");
 		}
 		internal void RequireMobilePlatformSettings() {
-			_ = MobilePlatformAppId ?? throw new ArgumentException($"{nameof(MobilePlatformAppId)} 没有配置");
-			_ = MobilePlatformAppSecret ?? throw new ArgumentException($"{nameof(MobilePlatformAppSecret)} 没有配置");
+			_ = MobilePlatformAppId ?? throw new ArgumentException($"缺少 {nameof(MobilePlatformAppId)} 配置");
+			_ = MobilePlatformAppSecret ?? throw new ArgumentException($"缺少 {nameof(MobilePlatformAppSecret)} 配置");
 		}
 		internal void RequireMiniProgramSettings() {
-			_ = MiniProgramAppId ?? throw new ArgumentException($"{nameof(MiniProgramAppId)} 没有配置");
-			_ = MiniProgramAppSecret ?? throw new ArgumentException($"{nameof(MiniProgramAppSecret)} 没有配置");
+			_ = MiniProgramAppId ?? throw new ArgumentException($"缺少 {nameof(MiniProgramAppId)} 配置");
+			_ = MiniProgramAppSecret ?? throw new ArgumentException($"缺少 {nameof(MiniProgramAppSecret)} 配置");
 		}
 		internal void RequireMerchantSettings() {
-			_ = MerchantId ?? throw new ArgumentException($"{nameof(MerchantId)} 没有配置");
-			_ = MerchantSecret ?? throw new ArgumentException($"{nameof(MerchantSecret)} 没有配置");
+			_ = MerchantId ?? throw new ArgumentException($"缺少 {nameof(MerchantId)} 配置");
+			_ = MerchantSecret ?? throw new ArgumentException($"缺少 {nameof(MerchantSecret)} 配置");
 		}
 	}
 }

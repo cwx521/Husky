@@ -6,11 +6,11 @@ namespace Husky.WeChatIntegration
 {
 	public class CertifiedWebClient : WebClient
 	{
-		internal CertifiedWebClient(string findValue) : base() {
-			_findValue = findValue;
+		internal CertifiedWebClient(string subjectName) : base() {
+			_subjectName = subjectName;
 		}
 
-		private readonly string _findValue;
+		private readonly string _subjectName;
 
 		protected override WebRequest GetWebRequest(Uri address) {
 			var request = (HttpWebRequest)base.GetWebRequest(address);
@@ -18,7 +18,7 @@ namespace Husky.WeChatIntegration
 			using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
 			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
-			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, _findValue, false);
+			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, _subjectName, false);
 			if ( certs != null && certs.Count != 0 ) {
 				request.ClientCertificates.Add(certs[0]);
 			}

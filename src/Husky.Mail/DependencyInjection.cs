@@ -29,5 +29,11 @@ namespace Husky
 			husky.Services.AddScoped<IMailSender, TMailSenderImplement>();
 			return husky;
 		}
+
+		public static HuskyDI AddMailSenderWithOwnImplement<TMailSenderImplement>(this HuskyDI husky, Func<IServiceProvider, TMailSenderImplement> implementationFactory)
+			where TMailSenderImplement : class, IMailSender {
+			husky.Services.AddScoped<IMailSender, TMailSenderImplement>(implementationFactory);
+			return husky;
+		}
 	}
 }

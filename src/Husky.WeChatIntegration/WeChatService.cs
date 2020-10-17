@@ -9,17 +9,17 @@ namespace Husky.WeChatIntegration
 		public WeChatService(WeChatAppConfig wechatConfig, IHttpContextAccessor http, IMemoryCache cache) {
 			_http = http;
 			_cache = cache;
-			WechatAppConfig = wechatConfig;
+			Config = wechatConfig;
 		}
 
 		private readonly IHttpContextAccessor _http;
 		private readonly IMemoryCache _cache;
 
-		public WeChatAppConfig WechatAppConfig { get; }
+		public WeChatAppConfig Config { get; }
 
-		public WeChatUserService UserService() => new WeChatUserService(WechatAppConfig);
-		public WeChatLoginService LoginService() => new WeChatLoginService(WechatAppConfig);
-		public WeChatJsApiService JsApiService() => new WeChatJsApiService(WechatAppConfig, _http, _cache);
-		public WeChatPayService PayService() => new WeChatPayService(WechatAppConfig);
+		public WeChatUserService UserService() => new WeChatUserService(Config);
+		public WeChatLoginService LoginService() => new WeChatLoginService(Config);
+		public WeChatJsApiService JsApiService() => new WeChatJsApiService(Config, _http, _cache);
+		public WeChatPayService PayService() => new WeChatPayService(Config);
 	}
 }

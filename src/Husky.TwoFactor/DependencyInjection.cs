@@ -12,7 +12,7 @@ namespace Husky
 			husky.Services
 				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
 				.AddScoped<ITwoFactorDbContext, TwoFactorDbContext>()
-				.AddScoped<TwoFactorManager>();
+				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 
 			return husky;
 		}
@@ -21,8 +21,20 @@ namespace Husky
 			where TTwoFactorDbContextImplement : class, ITwoFactorDbContext {
 			husky.Services
 				.AddScoped<ITwoFactorDbContext, TTwoFactorDbContextImplement>()
-				.AddScoped<TwoFactorManager>();
+				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 
+			return husky;
+		}
+
+		public static HuskyDI AddTwoFactorWithOwnImplement<TTwoFactorImplement>(this HuskyDI husky)
+			where TTwoFactorImplement : class, ITwoFactorManager {
+			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>();
+			return husky;
+		}
+
+		public static HuskyDI AddTwoFactorWithOwnImplement<TTwoFactorImplement>(this HuskyDI husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
+			where TTwoFactorImplement : class, ITwoFactorManager {
+			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>(implementationFactory);
 			return husky;
 		}
 	}

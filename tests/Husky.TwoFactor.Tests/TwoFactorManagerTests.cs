@@ -32,7 +32,7 @@ namespace Husky.TwoFactor.Tests
 			var twoFactorManager = new TwoFactorManager(principal, testDb, smsSender, null);
 
 			var sendTo = "17751283521";
-			var sentResult = twoFactorManager.RequestCodeThroughAliyunSms(sendTo).Result;
+			var sentResult = twoFactorManager.SendCodeThroughAliyunSms(sendTo).Result;
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -82,7 +82,7 @@ namespace Husky.TwoFactor.Tests
 
 			var twoFactorManager = new TwoFactorManager(principal, twoFactorDb, null, mailSender);
 
-			var sentResult = twoFactorManager.RequestCodeThroughEmail(sendTo).Result;
+			var sentResult = twoFactorManager.SendCodeThroughEmail(sendTo).Result;
 			var row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
