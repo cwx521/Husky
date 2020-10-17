@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Husky.TwoFactor;
+using System;
 using System.Linq;
 using Husky.AliyunSms;
 using Husky.Mail;
@@ -80,6 +81,7 @@ namespace Husky.TwoFactor.Tests
 			}
 
 			var dbName = $"UnitTest_{nameof(TwoFactorManagerTests)}_{nameof(RequestCodeThroughEmailTest)}";
+
 			var dbBuilder = new DbContextOptionsBuilder<MailDbContext>();
 			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
 
@@ -116,6 +118,55 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsTrue(row.IsUsed);
 
 			mailDb.Database.EnsureDeleted();
+		}
+
+		[TestMethod()]
+		public void VerifyCodeTest() {
+			var dbName = $"UnitTest_{nameof(TwoFactorManagerTests)}_{nameof(VerifyCodeTest)}";
+			var dbBuilder = new DbContextOptionsBuilder<TwoFactorDbContext>();
+			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
+
+			using var db = dbBuilder.CreateDbContext();
+			db.Database.EnsureDeleted();
+			db.Database.Migrate();
+
+			var principal = PrincipalUser.Personate(1, "TestUser", null);
+			var row = new TwoFactorCode {
+				Code = "123456",
+				UserId = principal.Id,
+				SentTo = "chenwx521@hotmail.com"
+			};
+			db.Add(row);
+			db.SaveChanges();
+
+			Result verifyResult = null;
+
+			var twoFactorManager = new TwoFactorManager(principal, db, null, null);
+			for ( int i = 0; i < 12; i++ ) {
+				verifyResult = twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true).Result;
+				Assert.IsFalse(verifyResult.Ok);
+			}
+
+			row = db.TwoFactorCodes.First();
+			Assert.IsFalse(row.IsUsed);
+			Assert.IsTrue(row.ErrorTimes > 10);
+
+			//it still fails even the code is correct this time, because it has already failed for more than 10 times
+			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			Assert.IsFalse(verifyResult.Ok);
+
+			//reset then try a good one
+			row.ErrorTimes = 0;
+			db.SaveChanges();
+
+			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			row = db.TwoFactorCodes.First();
+			Assert.IsTrue(verifyResult.Ok);
+			Assert.IsTrue(row.IsUsed);
+
+			//if try one more time, it should fail because the code is used
+			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			Assert.IsFalse(verifyResult.Ok);
 		}
 	}
 }
