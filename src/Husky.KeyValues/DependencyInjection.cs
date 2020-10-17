@@ -12,7 +12,7 @@ namespace Husky
 			husky.Services
 				.AddDbContextPool<KeyValueDbContext>(optionsAction)
 				.AddScoped<IKeyValueDbContext, KeyValueDbContext>()
-				.AddSingleton<IKeyValueManager, KeyValueManager>();
+				.AddScoped<IKeyValueManager, KeyValueManager>();
 			return husky;
 		}
 
@@ -20,13 +20,13 @@ namespace Husky
 			where TImplementKeyValueDbContext : class, IKeyValueDbContext {
 			husky.Services
 				.AddScoped<IKeyValueDbContext, TImplementKeyValueDbContext>()
-				.AddSingleton<IKeyValueManager, KeyValueManager>();
+				.AddScoped<IKeyValueManager, KeyValueManager>();
 			return husky;
 		}
 
 		public static HuskyDI AddKeyValueManagerWithOwnImplement<TImplementKeyValueManager>(this HuskyDI husky)
 			where TImplementKeyValueManager : class, IKeyValueManager {
-			husky.Services.AddSingleton<IKeyValueManager, TImplementKeyValueManager>();
+			husky.Services.AddScoped<IKeyValueManager, TImplementKeyValueManager>();
 			return husky;
 		}
 	}

@@ -1,5 +1,4 @@
-﻿using Husky.TwoFactor;
-using System;
+﻿using System;
 using System.Linq;
 using Husky.AliyunSms;
 using Husky.Mail;
@@ -27,22 +26,14 @@ namespace Husky.TwoFactor.Tests
 				return;
 			}
 
-			var dbName = $"UnitTest_{nameof(TwoFactorManagerTests)}_{nameof(RequestCodeThroughAliyunSmsTest)}";
-			var dbBuilder = new DbContextOptionsBuilder<TwoFactorDbContext>();
-			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
-
-			using var db = dbBuilder.CreateDbContext();
-			db.Database.EnsureDeleted();
-			db.Database.Migrate();
-
-			var sendTo = "17751283521";
+			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 			var smsSender = new AliyunSmsSender(settings);
+			var twoFactorManager = new TwoFactorManager(principal, testDb, smsSender, null);
 
-			var twoFactorManager = new TwoFactorManager(principal, db, smsSender, null);
-
+			var sendTo = "17751283521";
 			var sentResult = twoFactorManager.RequestCodeThroughAliyunSms(sendTo).Result;
-			var row = db.TwoFactorCodes.FirstOrDefault();
+			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
 			Assert.IsNotNull(row);
@@ -50,12 +41,12 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsFalse(row.IsUsed);
 
 			var verifyResult = twoFactorManager.VerifyCode(sendTo, row.Code, true).Result;
-			row = db.TwoFactorCodes.FirstOrDefault();
+			row = testDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsTrue(row.IsUsed);
 
-			db.Database.EnsureDeleted();
+			testDb.Database.EnsureDeleted();
 		}
 
 		[TestMethod()]
@@ -74,28 +65,16 @@ namespace Husky.TwoFactor.Tests
 				IsInUse = true
 			};
 
-			//Config CredentialName&Password before running this test
+			//Config CredentialName & Password before running this test
 
 			if ( string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password) ) {
 				return;
 			}
 
-			var dbName = $"UnitTest_{nameof(TwoFactorManagerTests)}_{nameof(RequestCodeThroughEmailTest)}";
-
-			var dbBuilder = new DbContextOptionsBuilder<MailDbContext>();
-			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
-
-			using var mailDb = new MailDbContext(dbBuilder.Options);
-			mailDb.Database.EnsureDeleted();
-			mailDb.Database.Migrate();
+			using var mailDb = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
+			using var twoFactorDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			mailDb.Add(smtp);
 			mailDb.SaveChanges();
-
-			var dbBuilder2 = new DbContextOptionsBuilder<TwoFactorDbContext>();
-			dbBuilder2.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
-
-			using var twoFactorDb = dbBuilder2.CreateDbContext();
-			twoFactorDb.Database.Migrate();
 
 			var sendTo = "chenwx521@hotmail.com";
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
@@ -118,36 +97,31 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsTrue(row.IsUsed);
 
 			mailDb.Database.EnsureDeleted();
+			twoFactorDb.Database.EnsureDeleted();
 		}
 
 		[TestMethod()]
 		public void VerifyCodeTest() {
-			var dbName = $"UnitTest_{nameof(TwoFactorManagerTests)}_{nameof(VerifyCodeTest)}";
-			var dbBuilder = new DbContextOptionsBuilder<TwoFactorDbContext>();
-			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
-
-			using var db = dbBuilder.CreateDbContext();
-			db.Database.EnsureDeleted();
-			db.Database.Migrate();
-
+			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
+
 			var row = new TwoFactorCode {
 				Code = "123456",
 				UserId = principal.Id,
 				SentTo = "chenwx521@hotmail.com"
 			};
-			db.Add(row);
-			db.SaveChanges();
+			testDb.Add(row);
+			testDb.SaveChanges();
 
 			Result verifyResult = null;
 
-			var twoFactorManager = new TwoFactorManager(principal, db, null, null);
-			for ( int i = 0; i < 12; i++ ) {
+			var twoFactorManager = new TwoFactorManager(principal, testDb, null, null);
+			for ( var i = 0; i < 12; i++ ) {
 				verifyResult = twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true).Result;
 				Assert.IsFalse(verifyResult.Ok);
 			}
 
-			row = db.TwoFactorCodes.First();
+			row = testDb.TwoFactorCodes.First();
 			Assert.IsFalse(row.IsUsed);
 			Assert.IsTrue(row.ErrorTimes > 10);
 
@@ -157,16 +131,18 @@ namespace Husky.TwoFactor.Tests
 
 			//reset then try a good one
 			row.ErrorTimes = 0;
-			db.SaveChanges();
+			testDb.SaveChanges();
 
 			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
-			row = db.TwoFactorCodes.First();
+			row = testDb.TwoFactorCodes.First();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.IsTrue(row.IsUsed);
 
 			//if try one more time, it should fail because the code is used
 			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
 			Assert.IsFalse(verifyResult.Ok);
+
+			testDb.Database.EnsureDeleted();
 		}
 	}
 }

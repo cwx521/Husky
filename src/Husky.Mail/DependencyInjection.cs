@@ -16,7 +16,7 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddMailSender<TMailDbContextImplement>(this HuskyDI husky) 
+		public static HuskyDI AddMailSender<TMailDbContextImplement>(this HuskyDI husky)
 			where TMailDbContextImplement : class, IMailDbContext {
 			husky.Services
 				.AddScoped<IMailDbContext, TMailDbContextImplement>()

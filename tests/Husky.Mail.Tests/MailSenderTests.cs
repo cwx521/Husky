@@ -33,18 +33,12 @@ namespace Husky.Mail.Tests
 				return;
 			}
 
-			var dbName = $"UnitTest_{nameof(MailSenderTests)}_{nameof(SendAsyncTest)}";
-			var dbBuilder = new DbContextOptionsBuilder<MailDbContext>();
-			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
+			using var testDb = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 
-			using var db = new MailDbContext(dbBuilder.Options);
-			db.Database.EnsureDeleted();
-			db.Database.Migrate();
+			testDb.Add(smtp);
+			testDb.SaveChanges();
 
-			db.Add(smtp);
-			db.SaveChanges();
-
-			var sender = new MailSender(db);
+			var sender = new MailSender(testDb);
 			var mail = new MailMessage {
 				Subject = "Husky.Mail Unit Test",
 				Body = "<div style='color:blue'>Greeting</div>",
@@ -68,7 +62,7 @@ namespace Husky.Mail.Tests
 			string str = null;
 			sender.SendAsync(mail, (arg) => { i++; str = arg.MailMessage.Body; }).Wait();
 
-			var mailRecord = db.MailRecords
+			var mailRecord = testDb.MailRecords
 				.AsNoTracking()
 				.Include(x => x.Smtp)
 				.Include(x => x.Attachments)
@@ -90,7 +84,7 @@ namespace Husky.Mail.Tests
 			Assert.AreEqual(mailRecord.IsSuccessful, true);
 			Assert.IsTrue(string.IsNullOrEmpty(mailRecord.Exception));
 
-			db.Database.EnsureDeleted();
+			testDb.Database.EnsureDeleted();
 		}
 	}
 }

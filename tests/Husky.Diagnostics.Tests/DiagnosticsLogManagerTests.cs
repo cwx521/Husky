@@ -12,14 +12,7 @@ namespace Husky.Diagnostics.Tests
 	{
 		[TestMethod()]
 		public void LogExceptionTest() {
-			var dbName = $"UnitTest_{nameof(DiagnosticsLogManagerTests)}_{nameof(LogExceptionTest)}";
-			var dbBuilder = new DbContextOptionsBuilder<DiagnosticsDbContext>();
-			dbBuilder.UseSqlServer($"Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog={dbName}; Integrated Security=True");
-
-			using var db = dbBuilder.CreateDbContext();
-			db.Database.EnsureDeleted();
-			db.Database.Migrate();
-
+			using var testDb = new DbContextOptionsBuilder<DiagnosticsDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
 			Exception exception = null;
@@ -29,12 +22,12 @@ namespace Husky.Diagnostics.Tests
 			}
 			catch ( Exception e ) {
 				exception = e;
-				db.LogException(e, principal, null).Wait();
+				testDb.LogException(e, principal, null).Wait();
 			}
 
-			Assert.AreEqual(db.ExceptionLogs.Count(), 1);
+			Assert.AreEqual(testDb.ExceptionLogs.Count(), 1);
 
-			var a = db.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
+			var a = testDb.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
 			Assert.IsNotNull(a);
 			Assert.AreEqual(a.Repeated, 1);
 			Assert.AreEqual(a.UserId, principal.Id);
@@ -43,15 +36,15 @@ namespace Husky.Diagnostics.Tests
 			Assert.AreEqual(a.Source, exception.Source);
 
 			//Log the same exception again
-			db.LogException(exception, null, null).Wait();
+			testDb.LogException(exception, null, null).Wait();
 
-			Assert.AreEqual(db.ExceptionLogs.Count(), 1);
+			Assert.AreEqual(testDb.ExceptionLogs.Count(), 1);
 
-			var b = db.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
+			var b = testDb.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
 			Assert.AreEqual(b.Repeated, 2);
 			Assert.AreEqual(a.Id, b.Id);
 
-			db.Database.EnsureDeleted();
+			testDb.Database.EnsureDeleted();
 		}
 	}
 }

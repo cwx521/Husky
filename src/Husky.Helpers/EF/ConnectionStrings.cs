@@ -32,7 +32,5 @@ namespace Husky
 			}
 			return connstr;
 		}
-
-		public const string HuskyDevTestConnectionString = "Data Source=(localdb)\\MSSQLLocalDB; Initial Catalog=HuskyDevTest; Integrated Security=True";
 	}
 }
