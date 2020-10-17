@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Husky.Principal.Administration.Data;
-using Husky.Principal.SessionData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,11 +33,11 @@ namespace Husky.Principal.Administration
 		public const string AdminDataKey = "AdminData";
 
 		protected virtual AdminViewModel? InitAdminData() {
-			if ( Principal.IsAnonymous || !(Principal.SessionData() is SessionDataContainer sessionData) ) {
+			if ( Principal.IsAnonymous ) {
 				return null;
 			}
 
-			return (AdminViewModel?)sessionData.GetOrAdd(AdminDataKey, key => {
+			return (AdminViewModel?)Principal.SessionData().GetOrAdd(AdminDataKey, key => {
 				using var scope = Principal.ServiceProvider.CreateScope();
 				var db = scope.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 

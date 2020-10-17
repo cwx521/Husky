@@ -11,7 +11,7 @@ namespace Husky.Principal
 
 		private readonly IPrincipalUser _principal;
 
-		string ISessionDataContainer.Key => _principal.Id.ToString();
+		string ISessionDataContainer.Key => _principal.SessionDataKey();
 		DateTime ISessionDataContainer.ActiveTime { get; set; }
 	}
 }
