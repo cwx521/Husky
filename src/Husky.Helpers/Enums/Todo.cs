@@ -1,6 +1,6 @@
 ﻿namespace Husky
 {
-	public enum ActionAwait
+	public enum Todo
 	{
 		[Label("无需")]
 		NoNeed,

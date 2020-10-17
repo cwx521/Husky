@@ -24,7 +24,9 @@ namespace Husky
 
 	public class Result<T> : Result
 	{
-		public Result(bool ok = false, string? message = null, T data = default) : base(ok, message) { Data = data; }
+		public Result(bool ok = false, string? message = null, T data = default) : base(ok, message) {
+			Data = data;
+		}
 		public T Data { get; set; }
 	}
 

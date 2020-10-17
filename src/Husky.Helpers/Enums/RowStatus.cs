@@ -6,7 +6,7 @@
 		Active,
 
 		[Label("非活动", CssClass = "text-muted")]
-		Inactive,
+		Asleep,
 
 		[Label("停用", CssClass = "text-warning")]
 		Suspended,

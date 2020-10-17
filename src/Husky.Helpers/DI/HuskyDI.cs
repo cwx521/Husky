@@ -8,6 +8,6 @@ namespace Husky
 			Services = services;
 		}
 
-		public IServiceCollection Services { get; private set; }
+		public IServiceCollection Services { get; }
 	}
 }

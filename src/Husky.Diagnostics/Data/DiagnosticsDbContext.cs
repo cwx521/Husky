@@ -20,7 +20,7 @@ namespace Husky.Diagnostics.Data
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyHuskyAnnotations();
+			modelBuilder.ApplyAdditionalCustomizedAnnotations();
 		}
 	}
 }

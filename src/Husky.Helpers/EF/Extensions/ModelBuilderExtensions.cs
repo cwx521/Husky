@@ -7,7 +7,7 @@ namespace Husky.EF
 {
 	public static class ModelBuilderExtensions
 	{
-		public static ModelBuilder ApplyHuskyAnnotations(this ModelBuilder modelBuilder) {
+		public static ModelBuilder ApplyAdditionalCustomizedAnnotations(this ModelBuilder modelBuilder) {
 
 			modelBuilder.Model.GetEntityTypes().AsParallel().ForAll(entity => {
 				var entityBuilder = modelBuilder.Entity(entity.ClrType);

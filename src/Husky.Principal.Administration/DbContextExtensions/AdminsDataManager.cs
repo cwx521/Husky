@@ -32,7 +32,7 @@ namespace Husky.Principal.Administration
 
 			var validationResult = ValidatorHelper.Validate(row);
 			if ( !validationResult.Ok ) {
-				return validationResult;
+				return new Failure<Admin>(validationResult.Message);
 			}
 
 			await db.Normalize().SaveChangesAsync();
@@ -47,7 +47,7 @@ namespace Husky.Principal.Administration
 
 			row.DisplayName = newDisplayName;
 
-			var validationResult = ValidatorHelper.Validate(row, row => row.DisplayName);
+			var validationResult = ValidatorHelper.ValidateProperty(row, row => row.DisplayName);
 			if ( !validationResult.Ok ) {
 				return validationResult;
 			}

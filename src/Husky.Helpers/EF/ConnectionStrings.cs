@@ -7,7 +7,7 @@ namespace Husky
 {
 	public static class ConnectionStrings
 	{
-		public static string SeekConnectionString<TContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
+		public static string LookFor<TContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
 			where TContext : DbContext {
 
 			//try looking for the first found connection string by this sequence
@@ -27,7 +27,7 @@ namespace Husky
 			if ( string.IsNullOrEmpty(connstr) ) {
 				throw new Exception(
 					"Didn't find any applicable ConnectionString in appSettings.json configuration, " +
-					"these ConnectionString names have been tried: " + string.Join(", ", lookForNames)
+					"these ConnectionString names have been tried to look for: " + string.Join(", ", lookForNames)
 				);
 			}
 			return connstr;

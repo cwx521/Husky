@@ -36,10 +36,10 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void ValidateTest1() {
 			var given = new TestModel { Name = "abc", Age = 3 };
-			var result = ValidatorHelper.Validate(given, given => given.Name);
+			var result = ValidatorHelper.ValidateProperty(given, given => given.Name);
 			Assert.IsTrue(result.Ok);
 
-			result = ValidatorHelper.Validate(given, given => given.Age);
+			result = ValidatorHelper.ValidateProperty(given, given => given.Age);
 			Assert.IsFalse(result.Ok);
 		}
 	}

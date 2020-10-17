@@ -19,7 +19,7 @@ namespace Husky.Principal.Administration.Data
 		public DbSet<AdminInRole> AdminInRoles { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyHuskyAnnotations();
+			modelBuilder.ApplyAdditionalCustomizedAnnotations();
 			modelBuilder.OnAdminsModelCreating();
 		}
 	}

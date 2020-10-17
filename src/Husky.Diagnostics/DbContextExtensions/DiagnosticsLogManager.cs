@@ -43,48 +43,44 @@ namespace Husky.Diagnostics
 		public static async Task LogException(this IServiceProvider serviceProvider, Exception e) {
 			using var scope = serviceProvider.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
-
-			HttpContext? httpContext = null;
-			IPrincipalUser? principal = null;
-
-			try {
-				httpContext = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
-				principal = scope.ServiceProvider.GetService<IPrincipalUser>();
-			}
-			catch { }
-
+			var principal = scope.ServiceProvider.GetService<IPrincipalUser>();
+			var httpContext = scope.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
 			await db.LogException(e, principal, httpContext);
 		}
 
 		public static async Task LogRequest(this IDiagnosticsDbContext db, IPrincipalUser principal, HttpContext? httpContext = null) {
 			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
-			if ( httpContext != null ) {
-
-				var log = new RequestLog {
-					UserId = principal?.Id,
-					UserName = principal?.DisplayName,
-					HttpMethod = httpContext.Request.Method,
-					Data = httpContext.Request.Method == "GET" ? null : JsonConvert.SerializeObject(httpContext.Request.Form),
-					UserAgent = httpContext.Request.UserAgent(),
-					IsAjax = httpContext.Request.IsAjaxRequest(),
-					Url = httpContext.Request.FullUrl(),
-					Referrer = httpContext.Request.Headers["Referer"].ToString(),
-					UserIp = httpContext.Connection.RemoteIpAddress.ToString()
-				};
-				log.ComputeMd5Comparison();
-
-				var countAsRepeatedIfVisitAgainWithinSeconds = 60;	//todo: move to a config
-				var repeating = db.RequestLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison && x.LastTime > DateTime.Now.AddSeconds(-countAsRepeatedIfVisitAgainWithinSeconds));
-				if ( repeating == null ) {
-					db.RequestLogs.Add(log);
-				}
-				else {
-					repeating.Repeated++;
-					repeating.LastTime = DateTime.Now;
-				}
-
-				await db.Normalize().SaveChangesAsync();
+			if ( httpContext == null ) {
+				return;
 			}
+
+			var log = new RequestLog {
+				UserId = principal?.Id,
+				UserName = principal?.DisplayName,
+				HttpMethod = httpContext.Request.Method,
+				Data = httpContext.Request.HasFormContentType ? JsonConvert.SerializeObject(httpContext.Request.Form) : null,
+				UserAgent = httpContext.Request.UserAgent(),
+				IsAjax = httpContext.Request.IsAjaxRequest(),
+				Url = httpContext.Request.FullUrl(),
+				Referrer = httpContext.Request.Headers["Referer"].ToString(),
+				UserIp = httpContext.Connection.RemoteIpAddress.ToString()
+			};
+			log.ComputeMd5Comparison();
+
+			var countAsRepeatedIfVisitAgainWithinSeconds = 60;  //todo: move to a config
+			var repeating = db.RequestLogs
+				.Where(x => x.Md5Comparison == log.Md5Comparison)
+				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-countAsRepeatedIfVisitAgainWithinSeconds))
+				.FirstOrDefault();
+
+			if ( repeating == null ) {
+				db.RequestLogs.Add(log);
+			}
+			else {
+				repeating.Repeated++;
+				repeating.LastTime = DateTime.Now;
+			}
+			await db.Normalize().SaveChangesAsync();
 		}
 	}
 }

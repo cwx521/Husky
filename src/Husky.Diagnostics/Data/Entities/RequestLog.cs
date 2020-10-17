@@ -44,7 +44,7 @@ namespace Husky.Diagnostics.Data
 		public DateTime LastTime { get; set; } = DateTime.Now;
 
 
-		internal void ComputeMd5Comparison() => Md5Comparison = Crypto.MD5(string.Concat(
+		public void ComputeMd5Comparison() => Md5Comparison = Crypto.MD5(string.Concat(
 			HttpMethod,
 			Url,
 			Data,

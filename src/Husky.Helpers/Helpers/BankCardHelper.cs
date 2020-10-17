@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Husky
 {
 	public static class BankCardHelper
 	{
-		public static BandCardModel? GetBandCardInfo(string cardNumber) {
+		public static async Task<BandCardModel?> GetBandCardInfo(string cardNumber) {
 			using var client = new WebClient();
 			var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
 
 			try {
-				var json = client.DownloadString(url);
+				var json = await client.DownloadStringTaskAsync(url);
 				var obj = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( obj == null ) {

@@ -1,10 +1,5 @@
-using Husky.DataAudit.Data;
 using Husky.Diagnostics;
-using Husky.Diagnostics.Data;
-using Husky.KeyValues.Data;
-using Husky.Mail.Data;
-using Husky.Principal.Administration.Data;
-using Husky.TwoFactor.Data;
+using Husky.Principal.Implements;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +12,8 @@ namespace Husky.Tests
 	public class Startup
 	{
 		public void ConfigureServices(IServiceCollection services) {
+			Crypto.PermanentToken = "DevTest";
+
 			var connstr = "Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";
 			//services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
 			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
@@ -35,6 +32,7 @@ namespace Husky.Tests
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			services.Husky()
+				.AddPrincipal(IdentityCarrier.Cookie)
 				.AddDiagnostics(x => x.UseSqlServer(connstr).Migrate());
 
 			/*

@@ -8,7 +8,7 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void GetBandCardInfoTest() {
 			var bankCard = "5187180804030686";
-			var result = BankCardHelper.GetBandCardInfo(bankCard);
+			var result = BankCardHelper.GetBandCardInfo(bankCard).Result;
 			Assert.AreEqual(BankCardType.CreditCard, result.BankCardType);
 			Assert.AreEqual("招商银行", result.BankName);
 

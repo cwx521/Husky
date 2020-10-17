@@ -46,11 +46,12 @@ namespace Husky
 
 		#region Supports
 
+#pragma warning disable IDE1006 // Naming Styles
 		private static IOrderedQueryable<T> _OrderBy<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderBy(Selector<T, TProp>(propertyPath));
 		private static IOrderedQueryable<T> _OrderByDescending<T, TProp>(IQueryable<T> query, string propertyPath) => query.OrderByDescending(Selector<T, TProp>(propertyPath));
-
 		private static IOrderedQueryable<T> _ThenBy<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenBy(Selector<T, TProp>(propertyPath));
 		private static IOrderedQueryable<T> _ThenByDescending<T, TProp>(IOrderedQueryable<T> query, string propertyPath) => query.ThenByDescending(Selector<T, TProp>(propertyPath));
+#pragma warning restore IDE1006 // Naming Styles
 
 		private static Type GetPropertyType<T>(string propertyPath) {
 			var type = typeof(T);

@@ -18,8 +18,9 @@ namespace Husky
 			get {
 				if ( string.IsNullOrEmpty(_permanentToken) ) {
 					throw new InvalidOperationException(
-						$"{nameof(Crypto)}.{nameof(PermanentToken)} is still null or empty and has not been assigned yet, " +
-						$"It is required to set this value for security purpose."
+						$"{nameof(Crypto)}.{nameof(PermanentToken)} is still null or empty and has not been assigned yet. " +
+						$"It is required to set this value for security purpose. \n" +
+						$"(Simply set this by '{nameof(Crypto)}.{nameof(PermanentToken)} = yourValue;')"
 					);
 				}
 				return _permanentToken;
