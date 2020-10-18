@@ -22,13 +22,4 @@
     <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Pages\Index - Copy - Copy.cshtml.cs">
-      <DependentUpon>Index - Copy.cshtml.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\Index - Copy.cshtml.cs">
-      <DependentUpon>Index.cshtml.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
 </Project>

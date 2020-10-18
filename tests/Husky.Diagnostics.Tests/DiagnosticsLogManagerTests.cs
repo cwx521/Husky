@@ -15,15 +15,8 @@ namespace Husky.Diagnostics.Tests
 			using var testDb = new DbContextOptionsBuilder<DiagnosticsDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
-			Exception exception = null;
-			try {
-				//make an exception
-				typeof(string).Name.ToCharArray().GetValue(9999);
-			}
-			catch ( Exception e ) {
-				exception = e;
-				testDb.LogException(e, principal, null).Wait();
-			}
+			var exception = new Exception("Oops");
+			testDb.LogException(exception, principal, null).Wait();
 
 			Assert.AreEqual(testDb.ExceptionLogs.Count(), 1);
 

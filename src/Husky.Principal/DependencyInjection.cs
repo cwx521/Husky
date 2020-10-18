@@ -21,9 +21,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddIdentityManager(this HuskyDI husky, Action<IdentityOptions> setOptions) {
+		public static HuskyDI AddIdentityManager(this HuskyDI husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
-			setOptions(options);
+			setupAction(options);
 			return husky.AddIdentityManager(options);
 		}
 
@@ -44,9 +44,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddPrincipal(this HuskyDI husky, Action<IdentityOptions> setOptions) {
+		public static HuskyDI AddPrincipal(this HuskyDI husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
-			setOptions(options);
+			setupAction(options);
 			return husky.AddPrincipal(options);
 		}
 

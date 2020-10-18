@@ -17,9 +17,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddQQLbs(this HuskyDI husky, Action<QQLbsSettings> setOptions) {
+		public static HuskyDI AddQQLbs(this HuskyDI husky, Action<QQLbsSettings> setupAction) {
 			var options = new QQLbsSettings();
-			setOptions(options);
+			setupAction(options);
 			return husky.AddQQLbs(options);
 		}
 
