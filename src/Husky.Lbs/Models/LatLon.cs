@@ -1,4 +1,6 @@
-﻿namespace Husky.Lbs
+﻿using System;
+
+namespace Husky.Lbs
 {
 	public struct LatLon : ILatLon
 	{

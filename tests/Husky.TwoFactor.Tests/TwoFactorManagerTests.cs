@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Husky.AliyunSms;
 using Husky.Mail;
 using Husky.Mail.Data;
@@ -14,7 +15,7 @@ namespace Husky.TwoFactor.Tests
 	public class TwoFactorManagerTests
 	{
 		[TestMethod()]
-		public void RequestCodeThroughAliyunSmsTest() {
+		public async Task RequestCodeThroughAliyunSmsTest() {
 			var settings = new AliyunSmsSettings {
 				DefaultSignName = "星翼软件",
 				DefaultTemplateCode = "SMS_170155854",
@@ -32,7 +33,7 @@ namespace Husky.TwoFactor.Tests
 			var twoFactorManager = new TwoFactorManager(principal, testDb, smsSender, null);
 
 			var sendTo = "17751283521";
-			var sentResult = twoFactorManager.SendCodeThroughAliyunSms(sendTo).Result;
+			var sentResult = await twoFactorManager.SendCodeThroughAliyunSms(sendTo);
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -40,7 +41,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = twoFactorManager.VerifyCode(sendTo, row.Code, true).Result;
+			var verifyResult = await twoFactorManager.VerifyCode(sendTo, row.Code, true);
 			row = testDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -50,7 +51,7 @@ namespace Husky.TwoFactor.Tests
 		}
 
 		[TestMethod()]
-		public void RequestCodeThroughEmailTest() {
+		public async Task RequestCodeThroughEmailTest() {
 			Crypto.PermanentToken = Crypto.RandomString();
 
 			var smtp = new MailSmtpProvider {
@@ -82,7 +83,7 @@ namespace Husky.TwoFactor.Tests
 
 			var twoFactorManager = new TwoFactorManager(principal, twoFactorDb, null, mailSender);
 
-			var sentResult = twoFactorManager.SendCodeThroughEmail(sendTo).Result;
+			var sentResult = await twoFactorManager.SendCodeThroughEmail(sendTo);
 			var row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -90,7 +91,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = twoFactorManager.VerifyCode(sendTo, row.Code, true).Result;
+			var verifyResult = await twoFactorManager.VerifyCode(sendTo, row.Code, true);
 			row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -101,7 +102,7 @@ namespace Husky.TwoFactor.Tests
 		}
 
 		[TestMethod()]
-		public void VerifyCodeTest() {
+		public async Task VerifyCodeTest() {
 			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
@@ -117,7 +118,7 @@ namespace Husky.TwoFactor.Tests
 
 			var twoFactorManager = new TwoFactorManager(principal, testDb, null, null);
 			for ( var i = 0; i < 12; i++ ) {
-				verifyResult = twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true).Result;
+				verifyResult = await twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true);
 				Assert.IsFalse(verifyResult.Ok);
 			}
 
@@ -126,20 +127,20 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsTrue(row.ErrorTimes > 10);
 
 			//it still fails even the code is correct this time, because it has already failed for more than 10 times
-			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
 			Assert.IsFalse(verifyResult.Ok);
 
 			//reset then try a good one
 			row.ErrorTimes = 0;
 			testDb.SaveChanges();
 
-			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
 			row = testDb.TwoFactorCodes.First();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.IsTrue(row.IsUsed);
 
 			//if try one more time, it should fail because the code is used
-			verifyResult = twoFactorManager.VerifyCode(row.SentTo, row.Code, true).Result;
+			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
 			Assert.IsFalse(verifyResult.Ok);
 
 			testDb.Database.EnsureDeleted();

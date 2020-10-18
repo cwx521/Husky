@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Tests
 {
@@ -6,14 +7,14 @@ namespace Husky.Tests
 	public class BankCardHelperTests
 	{
 		[TestMethod()]
-		public void GetBandCardInfoTest() {
+		public async Task GetBandCardInfoTest() {
 			var bankCard = "5187180804030686";
-			var result = BankCardHelper.GetBandCardInfo(bankCard).Result;
+			var result = await BankCardHelper.GetBandCardInfo(bankCard);
 			Assert.AreEqual(BankCardType.CreditCard, result.BankCardType);
 			Assert.AreEqual("招商银行", result.BankName);
 
 			var fakeFankCard = "Fake";
-			var nullResult = BankCardHelper.GetBandCardInfo(fakeFankCard).Result;
+			var nullResult = await BankCardHelper.GetBandCardInfo(fakeFankCard);
 			Assert.IsNull(nullResult);
 		}
 	}

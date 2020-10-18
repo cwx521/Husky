@@ -32,7 +32,6 @@ namespace Husky.Lbs.QQLbs
 				Lon = x.location.lng,
 				LatLonType = LatLonType.Tencent,
 
-				Nation = x.ad_info.nation,
 				Province = x.ad_info.province,
 				City = x.ad_info.city,
 				District = x.ad_info.district,
@@ -53,7 +52,6 @@ namespace Husky.Lbs.QQLbs
 				DisplayAddress = x.address,
 				DisplayAddressAlternate = x.formatted_addresses?.recommend,
 
-				Nation = x.address_component.nation,
 				Province = x.address_component.province,
 				City = x.address_component.city,
 				District = x.address_component.district,
@@ -79,15 +77,10 @@ namespace Husky.Lbs.QQLbs
 				throw new ArgumentException("坐标系不一致");
 			}
 			if ( mode == DistanceMode.Straight ) {
-				return new Distance {
-					From = from,
-					To = to,
-					Mode = mode,
-					Meters = GetStraightDistance(from, to)
-				};
+				return to.StraightDistanceTo(from);
 			}
 
-			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" + 
+			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" +
 					  $"?key={_settings.Key}" +
 					  $"&mode={mode.ToLower()}" +
 					  $"&from={from.Lat},{from.Lon}" +
@@ -110,12 +103,7 @@ namespace Husky.Lbs.QQLbs
 			}
 
 			if ( mode == DistanceMode.Straight ) {
-				return toMany.Select(to => new Distance {
-					From = from,
-					To = to,
-					Mode = mode,
-					Meters = GetStraightDistance(from, to)
-				}).ToArray();
+				return toMany.Select(to => to.StraightDistanceTo(from)).ToArray();
 			}
 
 			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" +
@@ -184,18 +172,6 @@ namespace Husky.Lbs.QQLbs
 					LatLonType = LatLonType.Baidu
 				};
 			});
-		}
-
-		public static int GetStraightDistance(ILatLon p1, ILatLon p2) {
-			if ( p1.LatLonType != p2.LatLonType ) {
-				throw new ArgumentException("坐标系不一致");
-			}
-			var radLat1 = p1.Lat * Math.PI / 180.0;
-			var radLat2 = p2.Lat * Math.PI / 180.0;
-			var a = radLat1 - radLat2;
-			var b = p1.Lon * Math.PI / 180.0 - p2.Lon * Math.PI / 180.0;
-			var s = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(a / 2), 2) + Math.Cos(radLat1) * Math.Cos(radLat2) * Math.Pow(Math.Sin(b / 2), 2)));
-			return (int)Math.Round(s * 6378.137 * 1000);
 		}
 
 		private async Task<dynamic?> GetApiResult(string url) {
