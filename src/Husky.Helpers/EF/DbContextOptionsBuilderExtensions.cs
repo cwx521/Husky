@@ -6,6 +6,7 @@ namespace Husky
 {
 	public static class DbContextOptionsBuilderExtensions
 	{
+		private static readonly object _lock = new object();
 		private static readonly List<Type> _migrated = new List<Type>();
 
 		public static DbContext CreateDbContext(this DbContextOptionsBuilder optionsBuilder) {
@@ -35,8 +36,10 @@ namespace Husky
 			}
 
 			if ( !_migrated.Contains(contextType) ) {
-				context.Database.Migrate();
-				_migrated.Add(contextType);
+				lock ( _lock ) {
+					context.Database.Migrate();
+					_migrated.Add(contextType);
+				}
 			}
 			return context;
 		}
