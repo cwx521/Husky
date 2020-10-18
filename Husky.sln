@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay.Tests", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration.Tests", "tests\Husky.WeChatIntegration.Tests\Husky.WeChatIntegration.Tests.csproj", "{FC5742B8-0A23-408E-9CCB-48F6D14118C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Infrastructure", "2. Infrastructure", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. UIOutput", "2. UIOutput", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Administration", "src\Husky.Principal.Administration\Husky.Principal.Administration.csproj", "{8AD67D26-A670-4FBB-B4ED-8D291E461C57}"
 EndProject
@@ -186,7 +186,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AD6318C8-B2B0-4739-A96F-EEB8A97A2769} = {9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}
 		{A64B3FE1-25F0-4860-8925-108C7F00E5FB} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{AC438400-6285-41C4-9207-05AD2C953C9F} = {FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}
