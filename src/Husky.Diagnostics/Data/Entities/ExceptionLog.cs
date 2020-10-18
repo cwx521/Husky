@@ -25,6 +25,8 @@ namespace Husky.Diagnostics.Data
 
 		public string? StackTrace { get; set; }
 
+		public Guid? AnonymousId { get; set; }
+
 		public int? UserId { get; set; }
 
 		[StringLength(100)]

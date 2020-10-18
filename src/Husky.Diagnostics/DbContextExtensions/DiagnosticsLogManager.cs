@@ -22,6 +22,7 @@ namespace Husky.Diagnostics
 				Source = e.Source,
 				StackTrace = e.StackTrace,
 				Url = httpContext?.Request?.GetDisplayUrl(),
+				AnonymousId = principal?.AnonymousId,
 				UserId = principal?.Id,
 				UserName = principal?.DisplayName ?? httpContext?.User?.Identity?.Name,
 				UserAgent = httpContext?.Request?.UserAgent(),
@@ -55,6 +56,7 @@ namespace Husky.Diagnostics
 			}
 
 			var log = new RequestLog {
+				AnonymousId = principal?.AnonymousId,
 				UserId = principal?.Id,
 				UserName = principal?.DisplayName,
 				HttpMethod = httpContext.Request.Method,

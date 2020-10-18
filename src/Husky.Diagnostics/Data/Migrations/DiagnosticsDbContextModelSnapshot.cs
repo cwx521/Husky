@@ -26,6 +26,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AnonymousId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ExceptionType")
                         .IsRequired()
                         .HasColumnType("varchar(200)")
@@ -97,10 +100,14 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AnonymousId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Data")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FirstTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -152,7 +159,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .IsUnique(false);
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("RequestLogs");
                 });

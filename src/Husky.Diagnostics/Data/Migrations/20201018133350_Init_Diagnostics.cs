@@ -19,6 +19,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     Message = table.Column<string>(maxLength: 1000, nullable: true),
                     Source = table.Column<string>(nullable: true),
                     StackTrace = table.Column<string>(nullable: true),
+                    AnonymousId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
                     UserName = table.Column<string>(maxLength: 100, nullable: true),
                     UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
@@ -43,6 +44,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     Referrer = table.Column<string>(maxLength: 1000, nullable: true),
                     Data = table.Column<string>(nullable: true),
                     HttpMethod = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false),
+                    AnonymousId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
                     UserName = table.Column<string>(maxLength: 100, nullable: true),
                     IsAjax = table.Column<bool>(nullable: false),
@@ -67,8 +69,8 @@ namespace Husky.Diagnostics.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RequestLogs_Md5Comparison",
                 table: "RequestLogs",
-                column: "Md5Comparison",
-                unique: false);
+                column: "Md5Comparison")
+                .Annotation("SqlServer:Clustered", false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

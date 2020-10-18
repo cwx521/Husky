@@ -19,6 +19,8 @@ namespace Husky.Diagnostics.Data
 		[StringLength(6), Column(TypeName = "varchar(6)")]
 		public string HttpMethod { get; set; } = null!;
 
+		public Guid? AnonymousId { get; set; }
+
 		public int? UserId { get; set; }
 
 		[StringLength(100)]
@@ -48,6 +50,7 @@ namespace Husky.Diagnostics.Data
 			HttpMethod,
 			Url,
 			Data,
+			AnonymousId,
 			UserId,
 			IsAjax,
 			UserAgent,

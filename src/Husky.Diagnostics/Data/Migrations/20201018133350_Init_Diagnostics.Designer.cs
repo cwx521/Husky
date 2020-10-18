@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20201016181451_Init_Diagnostics")]
+    [Migration("20201018133350_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid?>("AnonymousId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ExceptionType")
                         .IsRequired()
@@ -99,10 +102,14 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AnonymousId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Data")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FirstTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -154,7 +161,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .IsUnique(false);
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("RequestLogs");
                 });
