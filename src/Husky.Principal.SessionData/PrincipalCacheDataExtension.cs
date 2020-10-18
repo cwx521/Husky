@@ -11,14 +11,18 @@ namespace Husky.Principal
 				: principal.Id.ToString();
 		}
 
+		internal static string CacheKeyDroppable(this IPrincipalUser principal) {
+			return principal.IsAuthenticated
+				? principal.AnonymousId.ToString()
+				: principal.Id.ToString();
+		}
+
 		public static CacheDataBag CacheData(this IPrincipalUser principal) {
 			var key = principal.CacheKey();
 			var cache = principal.ServiceProvider.GetRequiredService<IMemoryCache>();
 			var pool = new CacheDataPool<CacheDataBag>(cache);
 			var dataBag = new CacheDataBag(principal);
-			if ( principal.IsAuthenticated ) {
-				pool.Drop(principal.AnonymousId.ToString());
-			}
+			pool.Drop(principal.CacheKeyDroppable());
 			return pool.PickOrCreate(key, dataBag);
 		}
 
