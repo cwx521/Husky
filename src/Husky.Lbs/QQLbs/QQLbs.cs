@@ -28,10 +28,11 @@ namespace Husky.Lbs.QQLbs
 			var x = await GetApiResult(url);
 
 			return x == null ? null : new Address {
-				Lat = x.location.lat,
-				Lon = x.location.lng,
-				LatLonType = LatLonType.Tencent,
-
+				LatLon = new LatLon {
+					Lat = x.location.lat,
+					Lon = x.location.lng,
+					LatLonType = LatLonType.Tencent
+				},
 				Province = x.ad_info.province,
 				City = x.ad_info.city,
 				District = x.ad_info.district
@@ -39,14 +40,20 @@ namespace Husky.Lbs.QQLbs
 
 		}
 
-		public async Task<IAddress?> GetAddress(ILatLon latlon) {
+		public async Task<IAddress?> GetAddress(LatLon latlon) {
+			if ( (int)latlon.LatLonType != (int)LatLonType.Tencent ) {
+				latlon = await ConvertToTencentLatLon(latlon) ?? latlon;
+			}
+
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon.Lat},{latlon.Lon}";
 			var x = await GetApiResult(url);
 
 			return x == null ? null : new Address {
-				Lat = x.ad_info.location.lat,
-				Lon = x.ad_info.location.lng,
-				LatLonType = LatLonType.Tencent,
+				LatLon = new LatLon {
+					Lat = x.location.lat,
+					Lon = x.location.lng,
+					LatLonType = LatLonType.Tencent
+				},
 
 				DisplayAddress = x.address,
 				DisplayAddressAlternate = x.formatted_addresses?.recommend,
@@ -59,20 +66,23 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<ILatLon?> GetLatLon(string address) {
+		public async Task<LatLon?> GetLatLon(string address) {
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&address={address}";
 			var x = await GetApiResult(url);
 
-			return x == null ? (ILatLon?)null : new LatLon {
+			return x == null ? (LatLon?)null : new LatLon {
 				Lat = x.location.lat,
 				Lon = x.location.lng,
 				LatLonType = LatLonType.Tencent
 			};
 		}
 
-		public async Task<IDistance?> GetDistance(ILatLon from, ILatLon to, DistanceMode mode = DistanceMode.Driving) {
-			if ( from.LatLonType != to.LatLonType ) {
-				throw new ArgumentException("坐标系不一致");
+		public async Task<IDistance?> GetDistance(LatLon from, LatLon to, DistanceMode mode = DistanceMode.Driving) {
+			if ( (int)from.LatLonType != (int)LatLonType.Tencent ) {
+				from = await ConvertToTencentLatLon(from) ?? from;
+			}
+			if ( (int)to.LatLonType != (int)LatLonType.Tencent ) {
+				to = await ConvertToTencentLatLon(to) ?? to;
 			}
 			if ( mode == DistanceMode.Straight ) {
 				return to.StraightDistanceTo(from);
@@ -95,7 +105,7 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<IDistance[]?> GetDistances(ILatLon from, IEnumerable<ILatLon> toMany, DistanceMode mode = DistanceMode.Driving) {
+		public async Task<IDistance[]?> GetDistances(LatLon from, IEnumerable<LatLon> toMany, DistanceMode mode = DistanceMode.Driving) {
 			if ( toMany.Any(x => x.LatLonType != from.LatLonType) ) {
 				throw new ArgumentException("坐标系不一致");
 			}
@@ -129,7 +139,7 @@ namespace Husky.Lbs.QQLbs
 			return results;
 		}
 
-		public async Task<ILatLon?> ConvertToTencentLatLon(ILatLon latlon) {
+		public async Task<LatLon?> ConvertToTencentLatLon(LatLon latlon) {
 			if ( (int)latlon.LatLonType == (int)LatLonType.Tencent ) {
 				latlon.LatLonType = LatLonType.Tencent;
 				return latlon;
@@ -155,7 +165,7 @@ namespace Husky.Lbs.QQLbs
 			return null;
 		}
 
-		public async Task<ILatLon?> ConvertToBaiduLatLon(ILatLon latlon) {
+		public async Task<LatLon?> ConvertToBaiduLatLon(LatLon latlon) {
 			if ( (int)latlon.LatLonType == (int)LatLonType.Baidu ) {
 				latlon.LatLonType = LatLonType.Baidu;
 				return latlon;

@@ -1,10 +1,8 @@
 ﻿namespace Husky.Lbs
 {
-	public class Address : ILatLon, IAddress
+	public class Address : IAddress
 	{
-		public float Lat { get; set; }
-		public float Lon { get; set; }
-		public LatLonType LatLonType { get; set; }
+		public LatLon? LatLon { get; set; }
 
 		public string? DisplayAddress { get; set; }
 		public string? DisplayAddressAlternate { get; set; }

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Husky.Lbs
+﻿namespace Husky.Lbs
 {
-	public struct LatLon : ILatLon
+	public struct LatLon
 	{
 		public LatLon(float latitude, float longitude) {
 			Lat = latitude;

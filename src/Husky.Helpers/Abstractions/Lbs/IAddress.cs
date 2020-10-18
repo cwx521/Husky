@@ -2,6 +2,8 @@
 {
 	public interface IAddress
 	{
+		LatLon? LatLon { get; set; }
+
 		string? DisplayAddress { get; set; }
 		string? DisplayAddressAlternate { get; set; }
 
