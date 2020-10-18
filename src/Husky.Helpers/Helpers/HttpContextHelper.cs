@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Husky
 {
@@ -17,7 +18,7 @@ namespace Husky
 		}
 
 		public static string Url(this HttpRequest httpRequest) {
-			return httpRequest.PathBase + httpRequest.Path + httpRequest.QueryString.Value;
+			return httpRequest.PathBase + httpRequest.Path + Regex.Replace(httpRequest.QueryString.Value, @"[\?&]_=\d+$", "");
 		}
 
 		public static string FullUrl(this HttpRequest httpRequest) {

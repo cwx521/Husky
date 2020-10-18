@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Husky.Diagnostics.Data;
 using Husky.Principal;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,12 +56,14 @@ namespace Husky.Diagnostics
 				return;
 			}
 
+			var antiforgery = httpContext.RequestServices.GetService<IAntiforgery>()?.GetTokens(httpContext).FormFieldName ?? "__RequestVerificationToken";
+
 			var log = new RequestLog {
 				AnonymousId = principal?.AnonymousId,
 				UserId = principal?.Id,
 				UserName = principal?.DisplayName,
 				HttpMethod = httpContext.Request.Method,
-				Data = httpContext.Request.HasFormContentType ? JsonConvert.SerializeObject(httpContext.Request.Form) : null,
+				Data = httpContext.Request.HasFormContentType ? JsonConvert.SerializeObject(httpContext.Request.Form.Where(x => x.Key != antiforgery)) : null,
 				UserAgent = httpContext.Request.UserAgent(),
 				IsAjax = httpContext.Request.IsAjaxRequest(),
 				Url = httpContext.Request.FullUrl(),
