@@ -61,11 +61,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Users", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.AntiViolence", "src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj", "{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. UtilityServices", "3. UtilityServices", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Services", "3. Services", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Principal", "4. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. TBD", "5. TBD", "{FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. TBD", "0. TBD", "{FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

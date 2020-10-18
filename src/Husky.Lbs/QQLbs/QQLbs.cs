@@ -34,8 +34,7 @@ namespace Husky.Lbs.QQLbs
 
 				Province = x.ad_info.province,
 				City = x.ad_info.city,
-				District = x.ad_info.district,
-				ZipCode = x.adcode
+				District = x.ad_info.district
 			};
 
 		}
@@ -56,8 +55,7 @@ namespace Husky.Lbs.QQLbs
 				City = x.address_component.city,
 				District = x.address_component.district,
 				Street = x.address_component.street,
-				StreetNumber = x.address_component.street_number,
-				ZipCode = x.ad_info.adcode
+				StreetNumber = x.address_component.street_number
 			};
 		}
 

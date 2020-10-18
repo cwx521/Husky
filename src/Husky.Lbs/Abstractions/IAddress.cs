@@ -10,6 +10,5 @@
 		string? District { get; set; }
 		string? Street { get; set; }
 		string? StreetNumber { get; set; }
-		int? ZipCode { get; set; }
 	}
 }

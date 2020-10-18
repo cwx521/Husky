@@ -41,7 +41,7 @@ namespace Husky.Principal.AntiViolence
 			}
 			else {
 				antiViolence.SetTimer(DateTime.Now.AddMilliseconds(ms));
-				context.ModelState.AddModelError("", "操作太快了，慢一点儿");
+				context.ModelState.AddModelError("", "太快了，慢一点儿");
 			}
 		}
 	}

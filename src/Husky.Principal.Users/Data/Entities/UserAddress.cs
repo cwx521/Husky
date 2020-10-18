@@ -20,8 +20,14 @@ namespace Husky.Principal.Users.Data
 		[StringLength(16)]
 		public string? District { get; set; }
 
+		[StringLength(50)]
+		public string? Street { get; set; }
+
 		[StringLength(100)]
-		public string? DetailAddress { get; set; }
+		public string? DisplayAddress { get; set; }
+
+		[StringLength(100)]
+		public string? DisplayAddressAlternate { get; set; }
 
 		[StringLength(16)]
 		public string? ContactName { get; set; }
@@ -30,10 +36,10 @@ namespace Husky.Principal.Users.Data
 		public string? ContactPhoneNumber { get; set; }
 
 		[Column(TypeName = "decimal(11, 6)")]
-		public decimal? Lon { get; set; }
+		public float Lon { get; set; }
 
 		[Column(TypeName = "decimal(11, 6)")]
-		public decimal? Lat { get; set; }
+		public float Lat { get; set; }
 
 		public bool IsDefault { get; set; }
 
@@ -50,7 +56,6 @@ namespace Husky.Principal.Users.Data
 
 		// calculation
 
-		public string FullAddress => Province + City + District + DetailAddress;
-		public string FullAddressSplitBySpace => string.Join(" ", Province, City, District, DetailAddress);
+		public string FullAddress => DisplayAddress ?? DisplayAddressAlternate ?? (Province + City + District + Street);
 	}
 }
