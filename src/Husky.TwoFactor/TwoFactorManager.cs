@@ -125,7 +125,7 @@ namespace Husky.TwoFactor
 			return new Success();
 		}
 
-		public async Task<Result> VerifyCode(TwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
+		public async Task<Result> VerifyCode(ITwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
 			if ( model == null ) {
 				throw new ArgumentNullException(nameof(model));
 			}

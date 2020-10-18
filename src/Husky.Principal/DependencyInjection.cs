@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddIdentityManager(this HuskyDI husky, IdentityOptions? options = null) {
+		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.Services.AddScoped<IIdentityManager>(svc => {
 				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				switch ( options?.Carrier ) {
@@ -21,13 +21,13 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddIdentityManager(this HuskyDI husky, Action<IdentityOptions> setupAction) {
+		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
 			setupAction(options);
 			return husky.AddIdentityManager(options);
 		}
 
-		public static HuskyDI AddPrincipal(this HuskyDI husky, IdentityOptions? options = null) {
+		public static HuskyInjector AddPrincipal(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.AddIdentityManager(options);
 			husky.Services.AddScoped(serviceProvider => {
 
@@ -44,19 +44,19 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddPrincipal(this HuskyDI husky, Action<IdentityOptions> setupAction) {
+		public static HuskyInjector AddPrincipal(this HuskyInjector husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
 			setupAction(options);
 			return husky.AddPrincipal(options);
 		}
 
-		public static HuskyDI MapPrincipal<TPrincipalImplement>(this HuskyDI husky)
+		public static HuskyInjector MapPrincipal<TPrincipalImplement>(this HuskyInjector husky)
 			where TPrincipalImplement : class, IPrincipalUser {
 			husky.Services.AddScoped<IPrincipalUser, TPrincipalImplement>();
 			return husky;
 		}
 
-		public static HuskyDI MapPrincipal<TPrincipalImplement>(this HuskyDI husky, Func<IServiceProvider, TPrincipalImplement> implementationFactory)
+		public static HuskyInjector MapPrincipal<TPrincipalImplement>(this HuskyInjector husky, Func<IServiceProvider, TPrincipalImplement> implementationFactory)
 			where TPrincipalImplement : class, IPrincipalUser {
 			husky.Services.AddScoped<IPrincipalUser, TPrincipalImplement>(implementationFactory);
 			return husky;

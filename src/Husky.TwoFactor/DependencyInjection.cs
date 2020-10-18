@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddTwoFactor(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyInjector AddTwoFactor(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
 				.AddScoped<ITwoFactorDbContext, TwoFactorDbContext>()
@@ -17,7 +17,7 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddTwoFactor<TDbContext>(this HuskyDI husky)
+		public static HuskyInjector AddTwoFactor<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, ITwoFactorDbContext {
 			husky.Services
 				.AddScoped<ITwoFactorDbContext, TDbContext>()
@@ -26,13 +26,13 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI MapTwoFactor<TTwoFactorImplement>(this HuskyDI husky)
+		public static HuskyInjector MapTwoFactor<TTwoFactorImplement>(this HuskyInjector husky)
 			where TTwoFactorImplement : class, ITwoFactorManager {
 			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>();
 			return husky;
 		}
 
-		public static HuskyDI MapTwoFactor<TTwoFactorImplement>(this HuskyDI husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
+		public static HuskyInjector MapTwoFactor<TTwoFactorImplement>(this HuskyInjector husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
 			where TTwoFactorImplement : class, ITwoFactorManager {
 			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>(implementationFactory);
 			return husky;

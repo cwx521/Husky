@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddKeyValueManager(this HuskyDI husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyInjector AddKeyValueManager(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<KeyValueDbContext>(optionsAction)
 				.AddScoped<IKeyValueDbContext, KeyValueDbContext>()
@@ -16,7 +16,7 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI AddKeyValueManager<TDbContext>(this HuskyDI husky)
+		public static HuskyInjector AddKeyValueManager<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, IKeyValueDbContext {
 			husky.Services
 				.AddScoped<IKeyValueDbContext, TDbContext>()
@@ -24,13 +24,13 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyDI MapKeyValueManager<TKeyValueManagerImplement>(this HuskyDI husky)
+		public static HuskyInjector MapKeyValueManager<TKeyValueManagerImplement>(this HuskyInjector husky)
 			where TKeyValueManagerImplement : class, IKeyValueManager {
 			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>();
 			return husky;
 		}
 
-		public static HuskyDI MapKeyValueManager<TKeyValueManagerImplement>(this HuskyDI husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
+		public static HuskyInjector MapKeyValueManager<TKeyValueManagerImplement>(this HuskyInjector husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
 			where TKeyValueManagerImplement : class, IKeyValueManager {
 			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>(implementationFactory);
 			return husky;

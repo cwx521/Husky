@@ -17,6 +17,6 @@ namespace Husky.TwoFactor
 
 		Task<Result> VerifyCode(string sentTo, string code, bool setIntoUsedAfterVerifying, int withinMinutes = 15);
 
-		Task<Result> VerifyCode(TwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15);
+		Task<Result> VerifyCode(ITwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15);
 	}
 }

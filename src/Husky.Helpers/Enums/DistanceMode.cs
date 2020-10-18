@@ -1,4 +1,4 @@
-﻿namespace Husky.Lbs
+﻿namespace Husky
 {
 	public enum DistanceMode
 	{

@@ -1,16 +1,10 @@
 ﻿using System;
+using Husky.Lbs;
 
-namespace Husky.Lbs
+namespace Husky
 {
 	public static class LatLonHelper
 	{
-		public static IDistance StraightDistanceTo(this ILatLon one, ILatLon another) => new Distance {
-			From = one,
-			To = another,
-			Mode = DistanceMode.Straight,
-			Meters = one.StraightMetersTo(another)
-		};
-
 		public static int StraightMetersTo(this ILatLon p1, ILatLon p2) {
 			if ( p1.LatLonType != p2.LatLonType ) {
 				throw new ArgumentException("坐标系不一致");

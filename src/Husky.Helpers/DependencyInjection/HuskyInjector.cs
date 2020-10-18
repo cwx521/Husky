@@ -2,9 +2,9 @@
 
 namespace Husky
 {
-	public class HuskyDI
+	public class HuskyInjector
 	{
-		internal HuskyDI(IServiceCollection services) {
+		internal HuskyInjector(IServiceCollection services) {
 			Services = services;
 		}
 

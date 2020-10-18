@@ -5,12 +5,12 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyDI AddAlipay(this HuskyDI husky, AlipayOptions options) {
+		public static HuskyInjector AddAlipay(this HuskyInjector husky, AlipayOptions options) {
 			husky.Services.AddAlipay(x => x.SetOption(options));
 			return husky;
 		}
 
-		public static HuskyDI AddAlipay(this HuskyDI husky, Action<AlipayOptions> options) {
+		public static HuskyInjector AddAlipay(this HuskyInjector husky, Action<AlipayOptions> options) {
 			husky.Services.AddAlipay(options);
 			return husky;
 		}
