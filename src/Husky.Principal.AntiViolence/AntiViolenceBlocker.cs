@@ -16,7 +16,7 @@ namespace Husky.Principal.AntiViolence
 
 		internal void SetTimer(DateTime? time = null) {
 			var val = time ?? DateTime.Now;
-			_me.CacheData()?.AddOrUpdate(nameof(AntiViolenceBlocker), val, (key, old) => val);
+			_me.CacheData().AddOrUpdate(nameof(AntiViolenceBlocker), val, (key, old) => val);
 		}
 
 		public void ClearTimer() {
