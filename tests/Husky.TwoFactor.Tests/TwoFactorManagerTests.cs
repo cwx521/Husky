@@ -15,6 +15,8 @@ namespace Husky.TwoFactor.Tests
 	[TestClass()]
 	public class TwoFactorManagerTests
 	{
+		//attention: fill the required values to run this test
+
 		[TestMethod()]
 		public async Task RequestCodeThroughAliyunSmsTest() {
 			var settings = new AliyunSmsSettings {

@@ -8,6 +8,8 @@ namespace Husky.Alipay.Tests
 	[TestClass()]
 	public class AlipayServiceHelperTests
 	{
+		//attention: fill the required values to run this test
+
 		private readonly AlipayOptions _alipayOptions = new AlipayOptions {
 			Uid = "",
 			AppId = "",

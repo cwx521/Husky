@@ -8,6 +8,8 @@ namespace Husky.Lbs.QQLbs.Tests
 	[TestClass()]
 	public class QQLbsServiceTests
 	{
+		//attention: fill the required values to run this test
+
 		private readonly string _key = "";
 
 		[TestMethod()]

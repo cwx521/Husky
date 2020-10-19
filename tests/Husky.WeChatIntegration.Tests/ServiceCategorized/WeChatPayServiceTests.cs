@@ -6,6 +6,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 	[TestClass()]
 	public class WeChatPayServiceTests
 	{
+		//attention: fill the required values to run this test
 
 		private readonly string _openId = "ougf3wF_K0LLtG-sVrQELJ615kHk";
 

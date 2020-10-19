@@ -16,6 +16,8 @@ namespace Husky.Mail.Tests
 		public async Task SendAsyncTest() {
 			Crypto.PermanentToken = Crypto.RandomString();
 
+			//attention: fill the required values to run this test
+
 			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),
 				Host = "smtp.live.com",
@@ -27,8 +29,6 @@ namespace Husky.Mail.Tests
 				Password = "",
 				IsInUse = true
 			};
-
-			//Config CredentialName&Password before running this test
 
 			if ( string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password) ) {
 				return;

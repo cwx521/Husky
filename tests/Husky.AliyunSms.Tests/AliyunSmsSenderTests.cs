@@ -10,6 +10,8 @@ namespace Husky.AliyunSms.Tests
 	[TestClass()]
 	public class AliyunSmsSenderTests
 	{
+		//attention: fill the required values to run this test
+
 		private readonly AliyunSmsSettings _settings = new AliyunSmsSettings {
 			DefaultSignName = "星翼软件",
 			DefaultTemplateCode = "SMS_170155854",
