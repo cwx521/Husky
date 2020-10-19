@@ -19,16 +19,16 @@ namespace Husky.Lbs.QQLbs.Tests
 					Assert.IsNotNull(actual);
 					Assert.IsTrue(actual.Province.Contains("江苏"));
 					Assert.IsTrue(actual.City.Contains("苏州"));
-					Assert.AreEqual(31, Math.Floor(actual.LatLon.Value.Lat));
-					Assert.AreEqual(120, Math.Floor(actual.LatLon.Value.Lon));
-					Assert.AreEqual(LatLonType.Tencent, actual.LatLon.Value.LatLonType);
+					Assert.AreEqual(31, Math.Floor(actual.Location.Value.Lat));
+					Assert.AreEqual(120, Math.Floor(actual.Location.Value.Lon));
+					Assert.AreEqual(LatLonType.Tencent, actual.Location.Value.LatLonType);
 				};
 
 				var ip = "49.73.123.252";
 				var address = await qqLbs.GetAddress(IPAddress.Parse(ip));
 				assert((Address)address);
 
-				var lonlat = address.LatLon.Value;
+				var lonlat = address.Location.Value;
 				address = await qqLbs.GetAddress(lonlat);
 				assert((Address)address);
 			}
@@ -50,8 +50,8 @@ namespace Husky.Lbs.QQLbs.Tests
 		public async Task GetDistanceTest() {
 			if ( !string.IsNullOrEmpty(_key) ) {
 				var qqLbs = new QQLbsService(_key);
-				var latlon1 = new LatLon { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
-				var latlon2 = new LatLon { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
+				var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
+				var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
 
 				foreach ( DistanceMode i in Enum.GetValues(typeof(DistanceMode)) ) {
 					var distance = await qqLbs.GetDistance(latlon1, latlon2, i);
@@ -68,32 +68,14 @@ namespace Husky.Lbs.QQLbs.Tests
 		public async Task GetDistanceTests() {
 			if ( !string.IsNullOrEmpty(_key) ) {
 				var qqLbs = new QQLbsService(_key);
-				var latlon1 = new LatLon { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
-				var latlon2 = new LatLon { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
+				var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
+				var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
 
-				var distances = await qqLbs.GetDistances(latlon1, new LatLon[] { latlon2 }, DistanceMode.Driving);
+				var distances = await qqLbs.GetDistances(latlon1, new Location[] { latlon2 }, DistanceMode.Driving);
 				foreach ( var distance in distances ) {
 					Assert.IsTrue(Math.Abs(distance.TravelTimeEstimate.TotalMinutes - 4) < 1);
 					Assert.IsTrue(Math.Abs(distance.Meters - 1400) < 500);
 				}
-			}
-		}
-
-		[TestMethod()]
-		public async Task ConvertionTest() {
-			if ( !string.IsNullOrEmpty(_key) ) {
-				var qqLbs = new QQLbsService(_key);
-
-				var given = new LatLon {
-					Lat = 31.316641f,
-					Lon = 120.678459f,
-					LatLonType = LatLonType.Tencent
-				};
-				var converted = await qqLbs.ConvertToBaiduLatLon(given);
-				var convertedBack = await qqLbs.ConvertToTencentLatLon(converted.Value);
-
-				Assert.IsTrue(Math.Abs(given.Lat - convertedBack.Value.Lat) < 0.0005);
-				Assert.IsTrue(Math.Abs(given.Lon - convertedBack.Value.Lon) < 0.0005);
 			}
 		}
 	}

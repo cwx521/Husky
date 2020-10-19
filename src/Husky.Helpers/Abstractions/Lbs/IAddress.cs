@@ -2,7 +2,7 @@
 {
 	public interface IAddress
 	{
-		LatLon? LatLon { get; set; }
+		Location? Location { get; set; }
 
 		string? DisplayAddress { get; set; }
 		string? DisplayAddressAlternate { get; set; }

@@ -7,14 +7,11 @@ namespace Husky.Lbs
 	public interface ILbs
 	{
 		Task<IAddress?> GetAddress(IPAddress ip);
-		Task<IAddress?> GetAddress(LatLon latlon);
+		Task<IAddress?> GetAddress(Location latlon);
 
-		Task<LatLon?> GetLatLon(string address);
+		Task<Location?> GetLatLon(string address);
 
-		Task<IDistance?> GetDistance(LatLon from, LatLon to, DistanceMode mode = DistanceMode.Driving);
-		Task<IDistance[]?> GetDistances(LatLon from, IEnumerable<LatLon> toMany, DistanceMode mode = DistanceMode.Driving);
-
-		Task<LatLon?> ConvertToTencentLatLon(LatLon latlon);
-		Task<LatLon?> ConvertToBaiduLatLon(LatLon latlon);
+		Task<IDistance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving);
+		Task<IDistance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving);
 	}
 }

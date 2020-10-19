@@ -4,8 +4,8 @@ namespace Husky.Lbs
 {
 	public class Distance : IDistance
 	{
-		public LatLon From { get; set; }
-		public LatLon To { get; set; }
+		public Location From { get; set; }
+		public Location To { get; set; }
 		public int Meters { get; set; }
 		public TimeSpan TravelTimeEstimate { get; set; }
 		public DistanceMode Mode { get; set; }
@@ -13,7 +13,7 @@ namespace Husky.Lbs
 
 	public static class DistanceHelper
 	{
-		public static IDistance StraightDistanceTo(this LatLon one, LatLon another) => new Distance {
+		public static IDistance StraightDistanceTo(this Location one, Location another) => new Distance {
 			From = one,
 			To = another,
 			Mode = DistanceMode.Straight,

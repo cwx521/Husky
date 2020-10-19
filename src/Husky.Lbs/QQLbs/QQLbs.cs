@@ -28,7 +28,7 @@ namespace Husky.Lbs.QQLbs
 			var x = await GetApiResult(url);
 
 			return x == null ? null : new Address {
-				LatLon = new LatLon {
+				Location = new Location {
 					Lat = x.location.lat,
 					Lon = x.location.lng,
 					LatLonType = LatLonType.Tencent
@@ -40,16 +40,14 @@ namespace Husky.Lbs.QQLbs
 
 		}
 
-		public async Task<IAddress?> GetAddress(LatLon latlon) {
-			if ( (int)latlon.LatLonType != (int)LatLonType.Tencent ) {
-				latlon = await ConvertToTencentLatLon(latlon) ?? latlon;
-			}
+		public async Task<IAddress?> GetAddress(Location latlon) {
+			latlon = latlon.ConvertToTencentLatLon();
 
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon.Lat},{latlon.Lon}";
 			var x = await GetApiResult(url);
 
 			return x == null ? null : new Address {
-				LatLon = new LatLon {
+				Location = new Location {
 					Lat = x.location.lat,
 					Lon = x.location.lng,
 					LatLonType = LatLonType.Tencent
@@ -66,24 +64,21 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<LatLon?> GetLatLon(string address) {
+		public async Task<Location?> GetLatLon(string address) {
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&address={address}";
 			var x = await GetApiResult(url);
 
-			return x == null ? (LatLon?)null : new LatLon {
+			return x == null ? (Location?)null : new Location {
 				Lat = x.location.lat,
 				Lon = x.location.lng,
 				LatLonType = LatLonType.Tencent
 			};
 		}
 
-		public async Task<IDistance?> GetDistance(LatLon from, LatLon to, DistanceMode mode = DistanceMode.Driving) {
-			if ( (int)from.LatLonType != (int)LatLonType.Tencent ) {
-				from = await ConvertToTencentLatLon(from) ?? from;
-			}
-			if ( (int)to.LatLonType != (int)LatLonType.Tencent ) {
-				to = await ConvertToTencentLatLon(to) ?? to;
-			}
+		public async Task<IDistance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving) {
+			from = from.ConvertToTencentLatLon();
+			to = to.ConvertToTencentLatLon();
+
 			if ( mode == DistanceMode.Straight ) {
 				return to.StraightDistanceTo(from);
 			}
@@ -105,20 +100,20 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<IDistance[]?> GetDistances(LatLon from, IEnumerable<LatLon> toMany, DistanceMode mode = DistanceMode.Driving) {
-			if ( toMany.Any(x => x.LatLonType != from.LatLonType) ) {
-				throw new ArgumentException("坐标系不一致");
-			}
+		public async Task<IDistance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
+			from = from.ConvertToTencentLatLon();
 
 			if ( mode == DistanceMode.Straight ) {
 				return toMany.Select(to => to.StraightDistanceTo(from)).ToArray();
 			}
 
 			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" +
-					  $"?key={_settings.Key}&mode={mode.ToLower()}&from={from.Lat},{from.Lon}&to={string.Join(';', toMany.Select(x => x.ToString()))}";
+					  $"?key={_settings.Key}" +
+					  $"&mode={mode.ToLower()}" +
+					  $"&from={from.Lat},{from.Lon}" +
+					  $"&to={string.Join(';', toMany.Select(x => x.ConvertToTencentLatLon().ToString()))}";
 
 			var x = await GetApiResult(url);
-
 			if ( x == null ) {
 				return null;
 			}
@@ -137,49 +132,6 @@ namespace Husky.Lbs.QQLbs
 				i++;
 			}
 			return results;
-		}
-
-		public async Task<LatLon?> ConvertToTencentLatLon(LatLon latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Tencent ) {
-				latlon.LatLonType = LatLonType.Tencent;
-				return latlon;
-			}
-
-			using var client = new WebClient();
-			var url = "https://apis.map.qq.com/ws/coord/v1/translate" + $"?key={_settings.Key}&type={(int)latlon.LatLonType}&locations={latlon.Lat},{latlon.Lon}";
-
-			try {
-				var json = await client.DownloadStringTaskAsync(url);
-				var x = JsonConvert.DeserializeObject<dynamic>(json);
-
-				if ( x.status == 0 ) {
-					return new LatLon {
-						Lat = x.locations[0].lat,
-						Lon = x.locations[0].lng,
-						LatLonType = LatLonType.Tencent
-					};
-				}
-			}
-			catch {
-			}
-			return null;
-		}
-
-		public async Task<LatLon?> ConvertToBaiduLatLon(LatLon latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Baidu ) {
-				latlon.LatLonType = LatLonType.Baidu;
-				return latlon;
-			}
-			return await Task.Run(() => {
-				var xPI = Math.PI * 3000 / 180;
-				var z = Math.Sqrt(latlon.Lon * latlon.Lon + latlon.Lat * latlon.Lat) + 0.00002 * Math.Sin(latlon.Lat * xPI);
-				var theta = Math.Atan2(latlon.Lat, latlon.Lon) + 0.000003 * Math.Cos(latlon.Lon * xPI);
-				return new LatLon {
-					Lat = (float)(z * Math.Sin(theta) + 0.006),
-					Lon = (float)(z * Math.Cos(theta) + 0.0065),
-					LatLonType = LatLonType.Baidu
-				};
-			});
 		}
 
 		private async Task<dynamic?> GetApiResult(string url) {

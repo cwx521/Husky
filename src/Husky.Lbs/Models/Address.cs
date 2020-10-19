@@ -2,7 +2,7 @@
 {
 	public class Address : IAddress
 	{
-		public LatLon? LatLon { get; set; }
+		public Location? Location { get; set; }
 
 		public string? DisplayAddress { get; set; }
 		public string? DisplayAddressAlternate { get; set; }
@@ -15,6 +15,6 @@
 
 		public override string ToString() => DisplayAddressAlternate
 			?? DisplayAddress
-			?? $"{Province}{City}{District}{StreetNumber ?? StreetNumber}";
+			?? Province + City + District + (StreetNumber ?? Street);
 	}
 }
