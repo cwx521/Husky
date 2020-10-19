@@ -1,9 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Husky;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using Husky.Lbs;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Tests
 {

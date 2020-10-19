@@ -1,4 +1,4 @@
-﻿namespace Husky.AliyunSms
+﻿namespace Husky.Sms.AliyunSms
 {
 	public class AliyunSmsSettings
 	{

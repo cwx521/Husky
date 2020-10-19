@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Husky.AliyunSms;
 using Husky.Mail;
 using Husky.Mail.Data;
 using Husky.Principal;
+using Husky.Sms.AliyunSms;
 using Husky.TwoFactor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

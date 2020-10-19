@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Husky.AliyunSms;
 using Husky.Mail;
 using Husky.Principal;
+using Husky.Sms;
 using Husky.TwoFactor.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,16 +12,16 @@ namespace Husky.TwoFactor
 {
 	public sealed partial class TwoFactorManager : ITwoFactorManager
 	{
-		public TwoFactorManager(IPrincipalUser principal, ITwoFactorDbContext twoFactorDb, AliyunSmsSender? aliyunSmsSender, IMailSender? mailSender) {
+		public TwoFactorManager(IPrincipalUser principal, ITwoFactorDbContext twoFactorDb, ISmsSender? smsSender, IMailSender? mailSender) {
 			_me = principal;
 			_twoFactorDb = twoFactorDb;
-			_aliyunSmsSender = aliyunSmsSender;
+			_smsSender = smsSender;
 			_mailSender = mailSender;
 		}
 
 		private readonly IPrincipalUser _me;
 		private readonly ITwoFactorDbContext _twoFactorDb;
-		private readonly AliyunSmsSender? _aliyunSmsSender;
+		private readonly ISmsSender? _smsSender;
 		private readonly IMailSender? _mailSender;
 
 		public async Task<Result> SendCode(string mobileNumberOrEmailAddress, string? messageTemplateWithCodeArg0 = null, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
@@ -58,23 +58,23 @@ namespace Husky.TwoFactor
 
 			if ( isEmail ) {
 				if ( _mailSender == null ) {
-					throw new Exception($"缺少邮件发送服务组件 {typeof(MailSender).Assembly.GetName()}，请在 ServiceCollection 中注入添加该服务");
+					throw new Exception($"缺少邮件发送服务组件 {typeof(MailSender).Assembly.GetName()}，需在 ServiceCollection 中添加注入该服务");
 				}
 				var content = string.Format(messageTemplateWithCodeArg0 ?? "验证码：{0}", code.Code);
 				await _mailSender.SendAsync("动态验证码", content, mobileNumberOrEmailAddress);
 			}
 			else if ( isMobile ) {
-				if ( _aliyunSmsSender == null ) {
-					throw new Exception($"缺少阿里云短讯发送服务组件 {typeof(AliyunSmsSender).Assembly.GetName()}，请在 ServiceCollection 中注入添加该服务");
+				if ( _smsSender == null ) {
+					throw new Exception($"缺少阿里云短讯发送服务组件 {typeof(ISmsSender).Assembly.GetName()}，需在 ServiceCollection 中添加注入该服务");
 				}
-				var argument = new AliyunSmsArgument {
+				var argument = new SmsBody {
 					SignName = overrideAliyunSmsSignName,
 					TemplateCode = overrideAliyunSmsTemplateCode,
 					Parameters = new Dictionary<string, string> {
 						{ "code", code.Code }
 					}
 				};
-				await _aliyunSmsSender.SendAsync(argument, mobileNumberOrEmailAddress);
+				await _smsSender.SendAsync(argument, mobileNumberOrEmailAddress);
 			}
 
 			return new Success();

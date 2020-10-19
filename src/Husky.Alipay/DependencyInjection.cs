@@ -10,8 +10,8 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector AddAlipay(this HuskyInjector husky, Action<AlipayOptions> options) {
-			husky.Services.AddAlipay(options);
+		public static HuskyInjector AddAlipay(this HuskyInjector husky, Action<AlipayOptions> setupAction) {
+			husky.Services.AddAlipay(setupAction);
 			return husky;
 		}
 	}

@@ -150,7 +150,8 @@ namespace Husky.Alipay
 				OrderNo = dict["out_trade_no"],
 				AlipayTradeNo = dict["trade_no"],
 				AlipayBuyerId = dict["buyer_id"],
-				Amount = amount.As<decimal>()
+				Amount = amount.As<decimal>(),
+				OriginalResult = dict
 			};
 		}
 	}

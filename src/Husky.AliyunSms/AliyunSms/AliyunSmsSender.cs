@@ -4,9 +4,9 @@ using Aliyun.Net.SDK.Core;
 using Aliyun.Net.SDK.Core.Profile;
 using Newtonsoft.Json;
 
-namespace Husky.AliyunSms
+namespace Husky.Sms.AliyunSms
 {
-	public class AliyunSmsSender
+	public class AliyunSmsSender : ISmsSender
 	{
 		public AliyunSmsSender(AliyunSmsSettings settings) {
 			_settings = settings;
@@ -15,16 +15,16 @@ namespace Husky.AliyunSms
 
 		private readonly AliyunSmsSettings _settings;
 
-		public async Task SendAsync(AliyunSmsArgument argument, params string[] mobileNumbers) {
-			if ( mobileNumbers == null || mobileNumbers.Length == 0 ) {
+		public async Task SendAsync(ISmsBody sms, params string[] toMobileNumbers) {
+			if ( toMobileNumbers == null || toMobileNumbers.Length == 0 ) {
 				return;
 			}
 
 			var request = new SendSmsRequest {
-				PhoneNumbers = string.Join(",", mobileNumbers),
-				SignName = argument.SignName ?? _settings.DefaultSignName,
-				TemplateCode = argument.TemplateCode ?? _settings.DefaultTemplateCode,
-				TemplateParam = JsonConvert.SerializeObject(argument.Parameters)
+				PhoneNumbers = string.Join(",", toMobileNumbers),
+				SignName = sms.SignName ?? _settings.DefaultSignName,
+				TemplateCode = sms.TemplateCode ?? _settings.DefaultTemplateCode,
+				TemplateParam = JsonConvert.SerializeObject(sms.Parameters)
 			};
 
 			await Task.Run(() => {

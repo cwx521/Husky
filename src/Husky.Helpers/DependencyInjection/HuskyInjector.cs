@@ -2,6 +2,7 @@
 using Husky.KeyValues;
 using Husky.Lbs;
 using Husky.Mail;
+using Husky.Sms;
 using Husky.TwoFactor;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,11 +28,11 @@ namespace Husky
 
 
 		public HuskyInjector AddLbs<TImplement>() where TImplement : class, ILbs {
-			Services.AddSingleton<ILbs, TImplement>();
+			Services.AddScoped<ILbs, TImplement>();
 			return this;
 		}
 		public HuskyInjector AddLbs<TImplement>(Func<IServiceProvider, TImplement> implementationFactory) where TImplement : class, ILbs {
-			Services.AddSingleton<ILbs, TImplement>(implementationFactory);
+			Services.AddScoped<ILbs, TImplement>(implementationFactory);
 			return this;
 		}
 
@@ -42,6 +43,16 @@ namespace Husky
 		}
 		public HuskyInjector AddMailSender<TImplement>(Func<IServiceProvider, TImplement> implementationFactory) where TImplement : class, IMailSender {
 			Services.AddScoped<IMailSender, TImplement>(implementationFactory);
+			return this;
+		}
+
+
+		public HuskyInjector AddSmsSender<TImplement>() where TImplement : class, ISmsSender {
+			Services.AddScoped<ISmsSender, TImplement>();
+			return this;
+		}
+		public HuskyInjector AddSmsSender<TImplement>(Func<IServiceProvider, TImplement> implementationFactory) where TImplement : class, ISmsSender {
+			Services.AddScoped<ISmsSender, TImplement>(implementationFactory);
 			return this;
 		}
 

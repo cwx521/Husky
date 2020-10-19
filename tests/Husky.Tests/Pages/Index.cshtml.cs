@@ -16,11 +16,11 @@ namespace Husky.Tests.Pages
 		public string TellHim { get; private set; }
 
 		public void OnGet() {
-			//if ( _me.IsAnonymous ) {
-			//	_me.Id = 1;
-			//	_me.DisplayName = "Weixing";
-			//	_me.IdentityManager.SaveIdentity(_me);
-			//}
+			if ( _me.IsAnonymous ) {
+				_me.Id = 1;
+				_me.DisplayName = "Weixing";
+				_me.IdentityManager.SaveIdentity(_me);
+			}
 		}
 
 		public IActionResult OnPost() {

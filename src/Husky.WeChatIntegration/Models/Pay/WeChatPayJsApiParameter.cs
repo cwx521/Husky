@@ -1,5 +1,8 @@
-﻿namespace Husky.WeChatIntegration
+﻿#pragma warning disable IDE1006 // Naming Styles
+
+namespace Husky.WeChatIntegration
 {
+
 	public class WeChatPayJsApiParameter
 	{
 		public string id { get; set; } = null!;

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Husky.Sms;
+using Husky.Sms.AliyunSms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.AliyunSms.Tests
@@ -22,7 +24,7 @@ namespace Husky.AliyunSms.Tests
 
 			var sendTo = "17751283521";
 			var sender = new AliyunSmsSender(_settings);
-			var arg = new AliyunSmsArgument {
+			var arg = new SmsBody {
 				Parameters = new Dictionary<string, string> {
 					{ "code", new Random().Next(0, 1000000).ToString("D6") }
 				}
