@@ -23,17 +23,5 @@ namespace Husky
 				.AddScoped<IKeyValueManager, KeyValueManager>();
 			return husky;
 		}
-
-		public static HuskyInjector MapKeyValueManager<TKeyValueManagerImplement>(this HuskyInjector husky)
-			where TKeyValueManagerImplement : class, IKeyValueManager {
-			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>();
-			return husky;
-		}
-
-		public static HuskyInjector MapKeyValueManager<TKeyValueManagerImplement>(this HuskyInjector husky, Func<IServiceProvider, TKeyValueManagerImplement> implementationFactory)
-			where TKeyValueManagerImplement : class, IKeyValueManager {
-			husky.Services.AddScoped<IKeyValueManager, TKeyValueManagerImplement>(implementationFactory);
-			return husky;
-		}
 	}
 }

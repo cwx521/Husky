@@ -22,17 +22,5 @@ namespace Husky
 			setupAction(options);
 			return husky.AddQQLbs(options);
 		}
-
-		public static HuskyInjector MapLbs<TLbsImpelement>(this HuskyInjector husky)
-			where TLbsImpelement : class, ILbs {
-			husky.Services.AddSingleton<ILbs, TLbsImpelement>();
-			return husky;
-		}
-
-		public static HuskyInjector MapLbs<TLbsImpelement>(this HuskyInjector husky, Func<IServiceProvider, TLbsImpelement> implementationFactory)
-			where TLbsImpelement : class, ILbs {
-			husky.Services.AddSingleton<ILbs, TLbsImpelement>(implementationFactory);
-			return husky;
-		}
 	}
 }

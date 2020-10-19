@@ -4,7 +4,7 @@ namespace Husky.Lbs
 {
 	public class Distance : IDistance
 	{
-		public LatLon From { get; set; } 
+		public LatLon From { get; set; }
 		public LatLon To { get; set; }
 		public int Meters { get; set; }
 		public TimeSpan TravelTimeEstimate { get; set; }

@@ -11,7 +11,7 @@ namespace Husky.Tests.Pages
 			_me = principal;
 		}
 
-		private IPrincipalUser _me;
+		private readonly IPrincipalUser _me;
 
 		public string TellHim { get; private set; }
 

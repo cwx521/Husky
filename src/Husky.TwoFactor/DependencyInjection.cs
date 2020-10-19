@@ -25,17 +25,5 @@ namespace Husky
 
 			return husky;
 		}
-
-		public static HuskyInjector MapTwoFactor<TTwoFactorImplement>(this HuskyInjector husky)
-			where TTwoFactorImplement : class, ITwoFactorManager {
-			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>();
-			return husky;
-		}
-
-		public static HuskyInjector MapTwoFactor<TTwoFactorImplement>(this HuskyInjector husky, Func<IServiceProvider, TTwoFactorImplement> implementationFactory)
-			where TTwoFactorImplement : class, ITwoFactorManager {
-			husky.Services.AddScoped<ITwoFactorManager, TTwoFactorImplement>(implementationFactory);
-			return husky;
-		}
 	}
 }

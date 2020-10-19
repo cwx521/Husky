@@ -23,17 +23,5 @@ namespace Husky
 				.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}
-
-		public static HuskyInjector MapMailSender<TMailSenderImplement>(this HuskyInjector husky)
-			where TMailSenderImplement : class, IMailSender {
-			husky.Services.AddScoped<IMailSender, TMailSenderImplement>();
-			return husky;
-		}
-
-		public static HuskyInjector MapMailSender<TMailSenderImplement>(this HuskyInjector husky, Func<IServiceProvider, TMailSenderImplement> implementationFactory)
-			where TMailSenderImplement : class, IMailSender {
-			husky.Services.AddScoped<IMailSender, TMailSenderImplement>(implementationFactory);
-			return husky;
-		}
 	}
 }

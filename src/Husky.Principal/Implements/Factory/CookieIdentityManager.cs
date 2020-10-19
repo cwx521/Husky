@@ -22,7 +22,7 @@ namespace Husky.Principal.Implements
 			}
 			else {
 				_httpContext.Request.Cookies.TryGetValue(IdentityAnalysisHelper.AnonymousKey, out var secondary);
-				var identity = IdentityAnalysisHelper.GetIdentity(primary, secondary,  _options);
+				var identity = IdentityAnalysisHelper.GetIdentity(primary, secondary, _options);
 				if ( _options.SessionMode && IsSessionLost() ) {
 					identity.Id = 0;
 				}

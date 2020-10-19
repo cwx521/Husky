@@ -1,6 +1,5 @@
 using Husky.Diagnostics;
 using Husky.Principal.AntiViolence;
-using Husky.Principal.Implements;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
