@@ -7,6 +7,7 @@
     <Authors>chenwx521@hotmail.com</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
+    <RootNamespace>Husky.Sms.AliyunSms</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -14,6 +15,10 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aliyun.Net.SDK.Dysmsapi" Version="1.0.3" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
