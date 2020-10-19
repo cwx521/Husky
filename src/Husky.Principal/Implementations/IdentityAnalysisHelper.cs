@@ -1,8 +1,8 @@
 ﻿namespace Husky.Principal.Implements
 {
-	public static class IdentityAnalysisHelper
+	internal static class IdentityHelper
 	{
-		public const string AnonymousKey = "HUSKY_AUTH_ANONYMOUS";
+		internal const string AnonymousKey = "HUSKY_AUTH_ANONYMOUS";
 
 		internal static IIdentity GetIdentity(string primaryStorage, string secondaryStorage, IdentityOptions options) {
 			var identity = new Identity();

@@ -20,8 +20,8 @@ namespace Husky.Principal.Implements
 				return _options.Encryptor.Decrypt(primary, _options.Token) ?? new Identity();
 			}
 			else {
-				var secondary = _httpContext.Request.Headers[IdentityAnalysisHelper.AnonymousKey];
-				return IdentityAnalysisHelper.GetIdentity(primary, secondary, _options);
+				var secondary = _httpContext.Request.Headers[IdentityHelper.AnonymousKey];
+				return IdentityHelper.GetIdentity(primary, secondary, _options);
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace Husky.Principal.Implements
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if ( _options.DedicateAnonymousIdStorage ) {
-				_httpContext.Response.Headers[IdentityAnalysisHelper.AnonymousKey] = identity.AnonymousId.ToString();
+				_httpContext.Response.Headers[IdentityHelper.AnonymousKey] = identity.AnonymousId.ToString();
 			}
 			_httpContext.Response.Headers[_options.Key] = _options.Encryptor.Encrypt(identity, _options.Token);
 		}

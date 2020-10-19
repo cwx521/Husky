@@ -7,10 +7,10 @@ namespace Husky.Principal
 		public PrincipalUser(IIdentityManager identityManager, IServiceProvider serviceProvider) {
 			var identity = identityManager.ReadIdentity();
 
-			AnonymousId = identity.AnonymousId;
 			Id = identity.Id;
 			DisplayName = identity.DisplayName;
 			IsConsolidated = identity.IsConsolidated;
+			AnonymousId = identity.AnonymousId;
 
 			ServiceProvider = serviceProvider;
 			IdentityManager = identityManager;

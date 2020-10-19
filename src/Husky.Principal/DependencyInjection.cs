@@ -50,15 +50,15 @@ namespace Husky
 			return husky.AddPrincipal(options);
 		}
 
-		public static HuskyInjector MapPrincipal<TPrincipalImplement>(this HuskyInjector husky)
-			where TPrincipalImplement : class, IPrincipalUser {
-			husky.Services.AddScoped<IPrincipalUser, TPrincipalImplement>();
+		public static HuskyInjector MapPrincipal<TImplement>(this HuskyInjector husky)
+			where TImplement : class, IPrincipalUser {
+			husky.Services.AddScoped<IPrincipalUser, TImplement>();
 			return husky;
 		}
 
-		public static HuskyInjector MapPrincipal<TPrincipalImplement>(this HuskyInjector husky, Func<IServiceProvider, TPrincipalImplement> implementationFactory)
-			where TPrincipalImplement : class, IPrincipalUser {
-			husky.Services.AddScoped<IPrincipalUser, TPrincipalImplement>(implementationFactory);
+		public static HuskyInjector MapPrincipal<TImplement>(this HuskyInjector husky, Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IPrincipalUser {
+			husky.Services.AddScoped<IPrincipalUser, TImplement>(implementationFactory);
 			return husky;
 		}
 	}
