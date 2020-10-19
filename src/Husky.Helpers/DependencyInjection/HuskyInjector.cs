@@ -17,7 +17,7 @@ namespace Husky
 		public IServiceCollection Services { get; }
 
 
-		public HuskyInjector AddKeyValueManager<TImplement>() where TImplement : class, IKeyValueManager {
+		public HuskyInjector MapKeyValueManager<TImplement>() where TImplement : class, IKeyValueManager {
 			Services.AddScoped<IKeyValueManager, TImplement>();
 			return this;
 		}
@@ -27,7 +27,7 @@ namespace Husky
 		}
 
 
-		public HuskyInjector AddLbs<TImplement>() where TImplement : class, ILbs {
+		public HuskyInjector MapLbs<TImplement>() where TImplement : class, ILbs {
 			Services.AddScoped<ILbs, TImplement>();
 			return this;
 		}
@@ -37,7 +37,7 @@ namespace Husky
 		}
 
 
-		public HuskyInjector AddMailSender<TImplement>() where TImplement : class, IMailSender {
+		public HuskyInjector MapMailSender<TImplement>() where TImplement : class, IMailSender {
 			Services.AddScoped<IMailSender, TImplement>();
 			return this;
 		}
@@ -47,7 +47,7 @@ namespace Husky
 		}
 
 
-		public HuskyInjector AddSmsSender<TImplement>() where TImplement : class, ISmsSender {
+		public HuskyInjector MapSmsSender<TImplement>() where TImplement : class, ISmsSender {
 			Services.AddScoped<ISmsSender, TImplement>();
 			return this;
 		}
@@ -57,7 +57,7 @@ namespace Husky
 		}
 
 
-		public HuskyInjector AddTwoFactor<TImplement>() where TImplement : class, ITwoFactorManager {
+		public HuskyInjector MapTwoFactor<TImplement>() where TImplement : class, ITwoFactorManager {
 			Services.AddScoped<ITwoFactorManager, TImplement>();
 			return this;
 		}

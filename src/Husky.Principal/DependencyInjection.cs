@@ -11,12 +11,12 @@ namespace Husky
 		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.Services.AddScoped<IIdentityManager>(svc => {
 				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
-				switch ( options?.Carrier ) {
-					default:
-					case IdentityCarrier.Cookie: return new CookieIdentityManager(httpContext, options);
-					case IdentityCarrier.Header: return new HeaderIdentityManager(httpContext, options);
-					case IdentityCarrier.Session: return new SessionIdentityManager(httpContext, options);
-				}
+				return (options?.Carrier) switch
+				{
+					IdentityCarrier.Header => new HeaderIdentityManager(httpContext, options),
+					IdentityCarrier.Session => new SessionIdentityManager(httpContext, options),
+					_ => new CookieIdentityManager(httpContext, options),
+				};
 			});
 			return husky;
 		}
@@ -50,13 +50,13 @@ namespace Husky
 			return husky.AddPrincipal(options);
 		}
 
-		public static HuskyInjector MapPrincipal<TImplement>(this HuskyInjector husky)
+		public static HuskyInjector AddPrincipal<TImplement>(this HuskyInjector husky)
 			where TImplement : class, IPrincipalUser {
 			husky.Services.AddScoped<IPrincipalUser, TImplement>();
 			return husky;
 		}
 
-		public static HuskyInjector MapPrincipal<TImplement>(this HuskyInjector husky, Func<IServiceProvider, TImplement> implementationFactory)
+		public static HuskyInjector AddPrincipal<TImplement>(this HuskyInjector husky, Func<IServiceProvider, TImplement> implementationFactory)
 			where TImplement : class, IPrincipalUser {
 			husky.Services.AddScoped<IPrincipalUser, TImplement>(implementationFactory);
 			return husky;

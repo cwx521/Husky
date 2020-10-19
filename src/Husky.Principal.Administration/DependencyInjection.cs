@@ -24,15 +24,15 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector MapPrincipalAdmin<TPrincipalAdminImplement>(this HuskyInjector husky)
-			where TPrincipalAdminImplement : class, IPrincipalAdmin {
-			husky.Services.AddScoped<IPrincipalAdmin, TPrincipalAdminImplement>();
+		public static HuskyInjector AddPrincipalAdmin<TImplement>(this HuskyInjector husky, Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IPrincipalAdmin {
+			husky.Services.AddScoped<IPrincipalAdmin, TImplement>(implementationFactory);
 			return husky;
 		}
 
-		public static HuskyInjector MapPrincipalAdmin<TPrincipalAdminImplement>(this HuskyInjector husky, Func<IServiceProvider, TPrincipalAdminImplement> implementationFactory)
-			where TPrincipalAdminImplement : class, IPrincipalAdmin {
-			husky.Services.AddScoped<IPrincipalAdmin, TPrincipalAdminImplement>(implementationFactory);
+		public static HuskyInjector MapPrincipalAdmin<TImplement>(this HuskyInjector husky)
+			where TImplement : class, IPrincipalAdmin {
+			husky.Services.AddScoped<IPrincipalAdmin, TImplement>();
 			return husky;
 		}
 	}

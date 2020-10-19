@@ -36,13 +36,13 @@ namespace Husky.Principal.AntiViolence
 			}
 
 			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
-			var antiViolence = new AntiViolenceBlocker(principal);
+			var blocker = new AntiViolenceBlocker(principal);
 
-			if ( antiViolence.GetTimer().AddMilliseconds(ms) < DateTime.Now ) {
-				antiViolence.SetTimer();
+			if ( blocker.GetTimer().AddMilliseconds(ms) < DateTime.Now ) {
+				blocker.SetTimer();
 			}
 			else {
-				antiViolence.SetTimer(DateTime.Now.AddMilliseconds(ms));
+				blocker.SetTimer(DateTime.Now.AddMilliseconds(ms));
 				context.ModelState.AddModelError("", "太快了，慢一点儿");
 			}
 		}
