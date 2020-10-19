@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Husky.Diagnostics
 {
-	public static class DiagnosticsDbContextExtension
+	public static class DiagnosticsDbContextExtensions
 	{
 		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? httpContext, IPrincipalUser? principal) {
 			principal ??= httpContext?.RequestServices?.GetService<IPrincipalUser>();

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Husky.Diagnostics.Tests
 {
 	[TestClass()]
-	public class PrincipalUserExtensionsTests
+	public class DiagnosticsDbContextExtensionsTests
 	{
 		[TestMethod()]
 		public void LogExceptionTest() {

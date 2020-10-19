@@ -3,7 +3,7 @@
 namespace Husky.Tests
 {
 	[TestClass()]
-	public class StringTruncateTests
+	public class StringCutTests
 	{
 		[TestMethod()]
 		public void SplitWordsTest() {

@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Husky.Tests
 {
 	[TestClass()]
-	public class QueryableExtensionsTests
+	public class QueryableHelperTests
 	{
 		[TestMethod()]
 		public void WhereTest() {
