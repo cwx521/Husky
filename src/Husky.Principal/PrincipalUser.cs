@@ -22,14 +22,14 @@ namespace Husky.Principal
 		public IIdentityManager? IdentityManager { get; }
 
 
-		public static PrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
+		public static IPrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
 			return new PrincipalUser(serviceProvider) {
 				Id = identity.Id,
 				DisplayName = identity.DisplayName
 			};
 		}
 
-		public static PrincipalUser Personate(int id, string displayName, IServiceProvider serviceProvider) {
+		public static IPrincipalUser Personate(int id, string displayName, IServiceProvider serviceProvider) {
 			return new PrincipalUser(serviceProvider) {
 				Id = id,
 				DisplayName = displayName

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Husky.Diagnostics\Husky.Diagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Principal\Husky.Principal.csproj" />
   </ItemGroup>
 
 </Project>
