@@ -7,6 +7,13 @@ namespace Husky
 	{
 		private const double xPI = Math.PI * 3000 / 180;
 
+		public static Distance StraightDistanceTo(this Location one, Location another) => new Distance {
+			From = one,
+			To = another,
+			Mode = DistanceMode.Straight,
+			Meters = one.StraightMetersTo(another)
+		};
+
 		public static int StraightMetersTo(this Location p1, Location p2) {
 			if ( p1.LatLonType != p2.LatLonType ) {
 				throw new ArgumentException("坐标系不一致");

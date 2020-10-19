@@ -20,7 +20,8 @@ namespace Husky
 		public static HuskyInjector AddQQLbs(this HuskyInjector husky, Action<QQLbsSettings> setupAction) {
 			var options = new QQLbsSettings();
 			setupAction(options);
-			return husky.AddQQLbs(options);
+			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));
+			return husky;
 		}
 	}
 }

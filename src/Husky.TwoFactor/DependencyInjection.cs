@@ -13,7 +13,6 @@ namespace Husky
 				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
 				.AddScoped<ITwoFactorDbContext, TwoFactorDbContext>()
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
-
 			return husky;
 		}
 
@@ -22,7 +21,6 @@ namespace Husky
 			husky.Services
 				.AddScoped<ITwoFactorDbContext, TDbContext>()
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
-
 			return husky;
 		}
 	}

@@ -22,7 +22,7 @@ namespace Husky.Lbs.QQLbs
 
 		private readonly QQLbsSettings _settings;
 
-		public async Task<IAddress?> GetAddress(IPAddress ip) {
+		public async Task<Address?> GetAddress(IPAddress ip) {
 			var ipString = ip.MapToIPv4().ToString();
 			var url = "https://apis.map.qq.com/ws/location/v1/ip" + $"?key={_settings.Key}&ip={ipString}";
 			var x = await GetApiResult(url);
@@ -40,7 +40,7 @@ namespace Husky.Lbs.QQLbs
 
 		}
 
-		public async Task<IAddress?> GetAddress(Location latlon) {
+		public async Task<Address?> GetAddress(Location latlon) {
 			latlon = latlon.ConvertToTencentLatLon();
 
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon.Lat},{latlon.Lon}";
@@ -64,8 +64,8 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<Location?> GetLatLon(string address) {
-			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&address={address}";
+		public async Task<Location?> GetLatLon(string addressName) {
+			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&address={addressName}";
 			var x = await GetApiResult(url);
 
 			return x == null ? (Location?)null : new Location {
@@ -75,7 +75,7 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<IDistance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving) {
+		public async Task<Distance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving) {
 			from = from.ConvertToTencentLatLon();
 			to = to.ConvertToTencentLatLon();
 
@@ -100,7 +100,7 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<IDistance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
+		public async Task<Distance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
 			from = from.ConvertToTencentLatLon();
 
 			if ( mode == DistanceMode.Straight ) {
@@ -120,7 +120,7 @@ namespace Husky.Lbs.QQLbs
 
 			var n = toMany.Count();
 			var i = 0;
-			var results = new IDistance[n];
+			var results = new Distance[n];
 			foreach ( var to in toMany ) {
 				results[i] = new Distance {
 					From = from,
