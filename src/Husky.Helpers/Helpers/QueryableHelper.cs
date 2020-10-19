@@ -89,7 +89,7 @@ namespace Husky
 			}
 
 			//hack: kendo datetime format.
-			//todo: need to improve
+			//todo: polish
 			if ( typeofValue == typeof(DateTime) ) {
 				var datestr = value as string ?? value.ToString();
 				if ( datestr != null && datestr.Contains('(') && datestr.Contains(')') && datestr.Contains("GMT") ) {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Husky.KeyValues;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,10 +29,11 @@ namespace Husky.Principal.AntiViolence
 				return;
 			}
 
-			// POST too fast will be judged as violence
-			// Within milliseconds 
-			// todo: put this to configuration
-			const int ms = 300;
+			var ms = 300;
+			var keyValueManager = context.HttpContext.RequestServices.GetService<IKeyValueManager>();
+			if ( keyValueManager != null ) {
+				ms = keyValueManager.GetOrAdd("MinimumIntervalMillisecondsBetweenHttpPosts", ms);
+			}
 
 			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
 			var antiViolence = new AntiViolenceBlocker(principal);

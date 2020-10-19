@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.Diagnostics.Data;
+using Husky.KeyValues;
 using Husky.Principal;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
@@ -72,10 +73,15 @@ namespace Husky.Diagnostics
 			};
 			log.ComputeMd5Comparison();
 
-			var countAsRepeatedIfVisitAgainWithinSeconds = 60;  //todo: move to a config
+			var seconds = 60;
+			var keyValueManager = httpContext.RequestServices.GetService<IKeyValueManager>();
+			if ( keyValueManager != null ) {
+				seconds = keyValueManager.GetOrAdd("CountAsRepeatedIfVisitAgainWithinSeconds", seconds);
+			}
+
 			var repeating = db.RequestLogs
 				.Where(x => x.Md5Comparison == log.Md5Comparison)
-				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-countAsRepeatedIfVisitAgainWithinSeconds))
+				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
 				.FirstOrDefault();
 
 			if ( repeating == null ) {
