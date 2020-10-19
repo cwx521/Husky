@@ -8,5 +8,6 @@ namespace Husky.Diagnostics.Data
 
 		DbSet<ExceptionLog> ExceptionLogs { get; set; }
 		DbSet<RequestLog> RequestLogs { get; set; }
+		DbSet<OperationLog> OperationLogs { get; set; }
 	}
 }

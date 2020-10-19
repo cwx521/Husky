@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Husky.Sms;
 using Husky.Sms.AliyunSms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,7 +18,7 @@ namespace Husky.AliyunSms.Tests
 		};
 
 		[TestMethod()]
-		public void SendAsyncTest() {
+		public async Task SendAsyncTest() {
 			if ( string.IsNullOrEmpty(_settings.AccessKeySecret) ) {
 				return;
 			}
@@ -29,7 +30,7 @@ namespace Husky.AliyunSms.Tests
 					{ "code", new Random().Next(0, 1000000).ToString("D6") }
 				}
 			};
-			sender.SendAsync(arg, sendTo).Wait();
+			await sender.SendAsync(arg, sendTo);
 		}
 	}
 }

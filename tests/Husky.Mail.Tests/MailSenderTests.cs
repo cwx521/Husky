@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Husky.Mail.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,7 @@ namespace Husky.Mail.Tests
 	public class MailSenderTests
 	{
 		[TestMethod()]
-		public void SendAsyncTest() {
+		public async Task SendAsyncTest() {
 			Crypto.PermanentToken = Crypto.RandomString();
 
 			var smtp = new MailSmtpProvider {
@@ -60,7 +61,7 @@ namespace Husky.Mail.Tests
 
 			var i = 0;
 			string str = null;
-			sender.SendAsync(mail, (arg) => { i++; str = arg.MailMessage.Body; }).Wait();
+			await sender.SendAsync(mail, (arg) => { i++; str = arg.MailMessage.Body; });
 
 			var mailRecord = testDb.MailRecords
 				.AsNoTracking()

@@ -21,17 +21,16 @@ namespace Husky.Principal.Implementations
 			if ( token == null ) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			if ( encrypted != null ) {
-				//iv is a Crypto.SHA1 result
-				const int ivLength = 40;
+			if ( encrypted != null ) {				
+				const int ivLength = 40;	//iv is a Crypto.SHA1 result
 				const int guidLength = 36;
 
 				try {
 					var iv = encrypted[^ivLength..];
 					var decrypted = Crypto.Decrypt(encrypted[..^ivLength], iv, token);
 
-					var anonymousId = decrypted[0..guidLength];
-					var remained = decrypted[(guidLength + 1)..];
+					var anonymousId = decrypted[..^guidLength];
+					var remained = decrypted[0..(decrypted.Length - guidLength - 1)];
 
 					var splitAt = remained.IndexOf('|');
 					var splitAtLast = remained.LastIndexOf('|');

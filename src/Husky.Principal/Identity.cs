@@ -15,6 +15,6 @@ namespace Husky.Principal
 		public virtual bool IsAuthenticated => !IsAnonymous;
 
 		public string Serialize() => JsonConvert.SerializeObject(this);
-		public override string ToString() => $"|{Id}|{DisplayName}|{IsConsolidated}|{AnonymousId}";
+		public override string ToString() => $"{Id}|{DisplayName}|{IsConsolidated}|{AnonymousId}";
 	}
 }

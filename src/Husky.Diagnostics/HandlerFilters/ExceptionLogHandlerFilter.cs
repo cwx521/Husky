@@ -19,7 +19,7 @@ namespace Husky.Diagnostics
 					exception = exception.InnerException;
 				}
 
-				await db.LogException(exception, principal, httpContext);
+				await db.LogException(exception, httpContext, principal);
 			}
 			catch { }
 		}
