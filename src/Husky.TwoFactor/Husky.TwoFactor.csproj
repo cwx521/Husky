@@ -17,8 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Husky.Principal\Husky.Principal.csproj" />
-    <ProjectReference Include="..\Husky.AliyunSms\Husky.AliyunSms.csproj" />
-    <ProjectReference Include="..\Husky.Mail\Husky.Mail.csproj" />
   </ItemGroup>
 
 </Project>

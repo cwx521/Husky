@@ -59,7 +59,7 @@ namespace Husky.TwoFactor
 
 			if ( isEmail ) {
 				if ( _mailSender == null ) {
-					throw new Exception($"Required to inject service {typeof(MailSender).Assembly.GetName()}");
+					throw new Exception($"Required to inject service {typeof(IMailSender).Assembly.GetName()}");
 				}
 				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "验证码：{0}", code.Code);
 				await _mailSender.SendAsync("动态验证码", content, mobileNumberOrEmailAddress);

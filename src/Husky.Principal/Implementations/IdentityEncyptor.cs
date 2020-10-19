@@ -29,7 +29,7 @@ namespace Husky.Principal.Implementations
 					var iv = encrypted[^ivLength..];
 					var decrypted = Crypto.Decrypt(encrypted[..^ivLength], iv, token);
 
-					var anonymousId = decrypted[..^guidLength];
+					var anonymousId = decrypted[^guidLength..];
 					var remained = decrypted[0..(decrypted.Length - guidLength - 1)];
 
 					var splitAt = remained.IndexOf('|');

@@ -13,7 +13,6 @@ namespace Husky.Principal.Implementations
 		private readonly HttpContext _httpContext;
 		private readonly IdentityOptions _options;
 
-
 		IIdentity IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var primary);
 			_httpContext.Request.Cookies.TryGetValue(_options.AnonymousIdKey, out var secondary);
@@ -40,7 +39,10 @@ namespace Husky.Principal.Implementations
 				if ( _options.DedicateAnonymousIdStorage ) {
 					_httpContext.Response.Cookies.Append(
 						key: _options.AnonymousIdKey,
-						value: identity.AnonymousId.ToString()
+						value: identity.AnonymousId.ToString(),
+						options: new CookieOptions {
+							Expires = DateTime.Now.AddYears(10)
+						}
 					);
 				}
 				if ( _options.SessionMode ) {
