@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.TwoFactor
 {
-	public static class PrincipalTwoFactorExtension
+	public static class PrincipalUserExtension
 	{
 		public static ITwoFactorManager TwoFactor(this IPrincipalUser principal) => principal.ServiceProvider.GetRequiredService<ITwoFactorManager>();
 	}

@@ -1,17 +1,19 @@
 ﻿using System.Threading.Tasks;
+using Husky.Sms;
 
 namespace Husky.TwoFactor
 {
 	public interface ITwoFactorManager
 	{
-		Task<Result> SendCode(
-			string mobileNumberOrEmailAddress,
-			string? messageTemplateWithCodeArg0 = null,
-			string? overrideAliyunSmsTemplateCode = null,
-			string? overrideAliyunSmsSignName = null
-		);
+		Task<Result> SendCode(string mobileNumberOrEmailAddress,
+			string? overrideMessageTemplateWithCodeArg0 = null,
+			string? overrideSmsTemplateAlias = null,
+			string? overrideSmsSignName = null);
 
-		Task<Result> SendCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null);
+		Task<Result> SendCodeThroughSms(string mobileNumber,
+			string? overrideMessageTemplateWithCodeArg0 = null,
+			string? overrideSmsTemplateAlias = null,
+			string? overrideSmsSignName = null);
 
 		Task<Result> SendCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null);
 

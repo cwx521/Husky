@@ -12,19 +12,19 @@ namespace Husky.TwoFactor
 {
 	public sealed partial class TwoFactorManager : ITwoFactorManager
 	{
-		public TwoFactorManager(IPrincipalUser principal, ITwoFactorDbContext twoFactorDb, ISmsSender? smsSender, IMailSender? mailSender) {
-			_me = principal;
+		public TwoFactorManager(ITwoFactorDbContext twoFactorDb, IPrincipalUser principal, ISmsSender? smsSender, IMailSender? mailSender) {
 			_twoFactorDb = twoFactorDb;
+			_me = principal;
 			_smsSender = smsSender;
 			_mailSender = mailSender;
 		}
 
-		private readonly IPrincipalUser _me;
 		private readonly ITwoFactorDbContext _twoFactorDb;
+		private readonly IPrincipalUser _me;
 		private readonly ISmsSender? _smsSender;
 		private readonly IMailSender? _mailSender;
 
-		public async Task<Result> SendCode(string mobileNumberOrEmailAddress, string? messageTemplateWithCodeArg0 = null, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
+		public async Task<Result> SendCode(string mobileNumberOrEmailAddress, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
 			if ( mobileNumberOrEmailAddress == null ) {
 				throw new ArgumentNullException(nameof(mobileNumberOrEmailAddress));
 			}
@@ -58,33 +58,34 @@ namespace Husky.TwoFactor
 
 			if ( isEmail ) {
 				if ( _mailSender == null ) {
-					throw new Exception($"缺少邮件发送服务组件 {typeof(MailSender).Assembly.GetName()}，需在 ServiceCollection 中添加注入该服务");
+					throw new Exception($"Required to inject service {typeof(MailSender).Assembly.GetName()}");
 				}
-				var content = string.Format(messageTemplateWithCodeArg0 ?? "验证码：{0}", code.Code);
+				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "验证码：{0}", code.Code);
 				await _mailSender.SendAsync("动态验证码", content, mobileNumberOrEmailAddress);
 			}
 			else if ( isMobile ) {
 				if ( _smsSender == null ) {
-					throw new Exception($"缺少阿里云短讯发送服务组件 {typeof(ISmsSender).Assembly.GetName()}，需在 ServiceCollection 中添加注入该服务");
+					throw new Exception($"Required to inject service {typeof(ISmsSender).Assembly.GetName()}");
 				}
-				var argument = new SmsBody {
-					SignName = overrideAliyunSmsSignName,
-					TemplateCode = overrideAliyunSmsTemplateCode,
+				var shortMessage = new SmsBody {
+					SignName = overrideSmsSignName,
+					Template = overrideMessageTemplateWithCodeArg0,
+					TemplateAlias = overrideSmsTemplateAlias,
 					Parameters = new Dictionary<string, string> {
 						{ "code", code.Code }
 					}
 				};
-				await _smsSender.SendAsync(argument, mobileNumberOrEmailAddress);
+				await _smsSender.SendAsync(shortMessage, mobileNumberOrEmailAddress);
 			}
 
 			return new Success();
 		}
 
-		public async Task<Result> SendCodeThroughAliyunSms(string mobileNumber, string? overrideAliyunSmsTemplateCode = null, string? overrideAliyunSmsSignName = null) {
+		public async Task<Result> SendCodeThroughSms(string mobileNumber, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
 			if ( !mobileNumber.IsMainlandMobile() ) {
 				return new Failure($"无法发送到 '{mobileNumber}'");
 			}
-			return await SendCode(mobileNumber, null, overrideAliyunSmsTemplateCode, overrideAliyunSmsSignName);
+			return await SendCode(mobileNumber, overrideMessageTemplateWithCodeArg0, overrideSmsTemplateAlias, overrideSmsSignName);
 		}
 
 		public async Task<Result> SendCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {

@@ -18,7 +18,7 @@ namespace Husky.Sms
 		/// In case of that most of the providers only allow to send predefined contents, 
 		/// a TemplateCode represents a message Template, which predefined from a particular 3rd-party management system
 		/// </summary>
-		string? TemplateCode { get; set; }
+		string? TemplateAlias { get; set; }
 
 		/// <summary>
 		/// Message content sign

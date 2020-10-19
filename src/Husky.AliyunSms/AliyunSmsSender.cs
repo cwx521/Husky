@@ -23,7 +23,7 @@ namespace Husky.Sms.AliyunSms
 			var request = new SendSmsRequest {
 				PhoneNumbers = string.Join(",", toMobileNumbers),
 				SignName = sms.SignName ?? _settings.DefaultSignName,
-				TemplateCode = sms.TemplateCode ?? _settings.DefaultTemplateCode,
+				TemplateCode = sms.TemplateAlias ?? _settings.DefaultTemplateCode,
 				TemplateParam = JsonConvert.SerializeObject(sms.Parameters)
 			};
 

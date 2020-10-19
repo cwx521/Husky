@@ -13,7 +13,11 @@ namespace Husky.Mail
 {
 	public class MailSender : IMailSender
 	{
-		public MailSender(IMailDbContext mailDb, ISmtpProvider? givenSmtp = null) {
+		public MailSender(IMailDbContext mailDb) {
+			_mailDb = mailDb;
+		}
+
+		public MailSender(IMailDbContext mailDb, ISmtpProvider? givenSmtp) {
 			_mailDb = mailDb;
 			_smtp = givenSmtp;
 		}
@@ -38,7 +42,7 @@ namespace Husky.Mail
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
-			var smtp = _smtp ?? GetInternalSmtpProvider();
+			var smtp = _smtp ?? GetConfiguredSmtpProvider();
 			var mailRecord = CreateMailRecord(mailMessage);
 
 			if ( smtp is MailSmtpProvider internalSmtp ) {
@@ -73,12 +77,12 @@ namespace Husky.Mail
 
 		private static int _increment = 0;
 
-		private MailSmtpProvider GetInternalSmtpProvider() {
-			var haveSmtpCount = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
-			if ( haveSmtpCount == 0 ) {
+		private MailSmtpProvider GetConfiguredSmtpProvider() {
+			var availableCount = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
+			if ( availableCount == 0 ) {
 				throw new Exception("SMTP account is not configured yet.");
 			}
-			var skip = _increment++ % haveSmtpCount;
+			var skip = _increment++ % availableCount;
 			return _mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).First();
 		}
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Husky.Mail;
 using Husky.Mail.Data;
 using Husky.Principal;
+using Husky.Sms;
 using Husky.Sms.AliyunSms;
 using Husky.TwoFactor.Data;
 using Microsoft.EntityFrameworkCore;
@@ -30,10 +31,10 @@ namespace Husky.TwoFactor.Tests
 			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 			var smsSender = new AliyunSmsSender(settings);
-			var twoFactorManager = new TwoFactorManager(principal, testDb, smsSender, null);
+			var twoFactorManager = new TwoFactorManager(testDb, principal, smsSender, null);
 
 			var sendTo = "17751283521";
-			var sentResult = await twoFactorManager.SendCodeThroughAliyunSms(sendTo);
+			var sentResult = await twoFactorManager.SendCodeThroughSms(sendTo);
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -81,7 +82,7 @@ namespace Husky.TwoFactor.Tests
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 			var mailSender = new MailSender(mailDb);
 
-			var twoFactorManager = new TwoFactorManager(principal, twoFactorDb, null, mailSender);
+			var twoFactorManager = new TwoFactorManager(twoFactorDb, principal, null, mailSender);
 
 			var sentResult = await twoFactorManager.SendCodeThroughEmail(sendTo);
 			var row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
@@ -116,7 +117,7 @@ namespace Husky.TwoFactor.Tests
 
 			Result verifyResult = null;
 
-			var twoFactorManager = new TwoFactorManager(principal, testDb, null, null);
+			var twoFactorManager = new TwoFactorManager(testDb, principal, null, null);
 			for ( var i = 0; i < 12; i++ ) {
 				verifyResult = await twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true);
 				Assert.IsFalse(verifyResult.Ok);
