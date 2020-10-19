@@ -6,14 +6,14 @@ using System.Reflection;
 
 namespace Husky
 {
-	public static class QueryableExtensions
+	public static class QueryableHelper
 	{
 		#region OrderBy
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_OrderByDescending) : nameof(_OrderBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			var method = typeof(QueryableHelper).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
 			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
 		public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> query, string propertyPath) => OrderBy(query, propertyPath, SortDirection.Descending);
@@ -25,7 +25,7 @@ namespace Husky
 		public static IOrderedQueryable<T> ThenBy<T>(this IQueryable<T> query, string propertyPath, SortDirection sortDirection = SortDirection.Ascending) {
 			var propertyType = GetPropertyType<T>(propertyPath);
 			var methodName = sortDirection == SortDirection.Descending ? nameof(_ThenByDescending) : nameof(_ThenBy);
-			var method = typeof(QueryableExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
+			var method = typeof(QueryableHelper).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static)!.MakeGenericMethod(typeof(T), propertyType);
 			return (IOrderedQueryable<T>)method.Invoke(null, new object[] { query, propertyPath })!;
 		}
 		public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> query, string propertyPath) => ThenBy(query, propertyPath, SortDirection.Descending);

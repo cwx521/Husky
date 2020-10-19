@@ -53,7 +53,7 @@ namespace Husky.Principal.Administration
 
 			typeof(AdminRole).GetProperty(adminRolePropertyName)!.SetValue(adminRole, propertyValue);
 
-			var validationResult = ValidatorHelper.ValidateProperty(adminRole, QueryableExtensions.SelectProperty<AdminRole, T>(adminRolePropertyName));
+			var validationResult = ValidatorHelper.ValidateProperty(adminRole, QueryableHelper.SelectProperty<AdminRole, T>(adminRolePropertyName));
 			if ( !validationResult.Ok ) {
 				return validationResult;
 			}

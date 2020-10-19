@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Husky
 {
-	public static class StringTruncate
+	public static class StringCut
 	{
 		public static string? SplitWords(this string? str) {
 			if ( string.IsNullOrEmpty(str) ) {
