@@ -1,6 +1,6 @@
 ﻿using System;
 using Husky.Principal;
-using Husky.Principal.Implements;
+using Husky.Principal.Implementations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,0 +1,19 @@
+﻿namespace Husky.Principal.Implementations
+{
+	internal static class IdentityReader
+	{
+		internal static IIdentity GetIdentity(string primaryStorage, string secondaryStorage, IdentityOptions options) {
+			var identity = string.IsNullOrEmpty(primaryStorage)
+				? null
+				: options.Encryptor.Decrypt(primaryStorage, options.Token);
+
+			identity ??= new Identity();
+
+			if ( options.DedicateAnonymousIdStorage && secondaryStorage != null ) {
+				identity.AnonymousId = secondaryStorage.AsGuid(identity.AnonymousId);
+			}
+
+			return identity;
+		}
+	}
+}

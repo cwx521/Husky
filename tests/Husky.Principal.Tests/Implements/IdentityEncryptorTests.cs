@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Husky.Principal.Implements.Tests
+namespace Husky.Principal.Implementations.Tests
 {
 	[TestClass()]
 	public class IdentityEncryptorTests

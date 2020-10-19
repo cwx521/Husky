@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Husky.Principal.Implements
+namespace Husky.Principal.Implementations
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
@@ -16,18 +16,13 @@ namespace Husky.Principal.Implements
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.Key, out var primary);
+			_httpContext.Request.Cookies.TryGetValue(_options.AnonymousIdKey, out var secondary);
 
-			if ( !_options.DedicateAnonymousIdStorage ) {
-				return _options.Encryptor.Decrypt(primary, _options.Token) ?? new Identity();
+			var identity = IdentityReader.GetIdentity(primary, secondary, _options);
+			if ( _options.SessionMode && IsSessionLost() ) {
+				identity.Id = 0;
 			}
-			else {
-				_httpContext.Request.Cookies.TryGetValue(IdentityHelper.AnonymousKey, out var secondary);
-				var identity = IdentityHelper.GetIdentity(primary, secondary, _options);
-				if ( _options.SessionMode && IsSessionLost() ) {
-					identity.Id = 0;
-				}
-				return identity;
-			}
+			return identity;
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
@@ -44,7 +39,7 @@ namespace Husky.Principal.Implements
 				);
 				if ( _options.DedicateAnonymousIdStorage ) {
 					_httpContext.Response.Cookies.Append(
-						key: IdentityHelper.AnonymousKey,
+						key: _options.AnonymousIdKey,
 						value: identity.AnonymousId.ToString()
 					);
 				}

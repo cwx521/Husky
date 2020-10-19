@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.Principal.Implements
+namespace Husky.Principal.Implementations
 {
 	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{

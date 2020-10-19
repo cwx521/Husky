@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.Principal.Implements
+namespace Husky.Principal.Implementations
 {
 	public sealed class IdentityOptions
 	{
@@ -11,5 +11,6 @@ namespace Husky.Principal.Implements
 		public bool DedicateAnonymousIdStorage { get; set; } = false;
 		public DateTimeOffset? Expires { get; set; }
 		public IIdentityEncyptor Encryptor { get; set; } = new IdentityEncryptor();
+		internal string AnonymousIdKey => "HUSKY_AUTH_ANONYMOUS";
 	}
 }
