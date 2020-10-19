@@ -7,7 +7,7 @@ namespace Husky
 {
 	public static class ConnectionStrings
 	{
-		public static string LookFor<TDbContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
+		public static string SeekConnectionString<TDbContext>(this IConfiguration configuration, string? nameOfConnectionString = null)
 			where TDbContext : DbContext {
 
 			//try looking for the first found connection string by this sequence
