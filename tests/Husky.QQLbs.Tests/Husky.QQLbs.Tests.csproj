@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Husky.Lbs\Husky.QQLbs.csproj" />
+    <ProjectReference Include="..\..\src\Husky.QQLbs\Husky.QQLbs.csproj" />
   </ItemGroup>
 
 </Project>
