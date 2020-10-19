@@ -10,6 +10,9 @@ namespace Husky.TwoFactor.Data
 		public int Id { get; set; }
 
 		[NeverUpdate]
+		public Guid AnonymousId { get; set; }
+
+		[NeverUpdate]
 		public int UserId { get; set; }
 
 		[NeverUpdate]

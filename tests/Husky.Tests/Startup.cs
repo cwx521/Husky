@@ -1,5 +1,6 @@
 using Husky.Diagnostics;
 using Husky.Principal.AntiViolence;
+using Husky.TwoFactor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ namespace Husky.Tests
 			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
-			//services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
+			services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
 
 			//AspNet

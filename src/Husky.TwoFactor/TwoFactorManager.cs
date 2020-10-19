@@ -50,6 +50,7 @@ namespace Husky.TwoFactor
 
 			var code = new TwoFactorCode {
 				UserId = _me.Id,
+				AnonymousId = _me.AnonymousId,
 				Code = new Random().Next(0, 1000000).ToString("D6"),
 				SentTo = mobileNumberOrEmailAddress
 			};
@@ -107,7 +108,7 @@ namespace Husky.TwoFactor
 				.Where(x => x.IsUsed == false)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.SentTo == sentTo)
-				.Where(x => _me.IsAnonymous || x.UserId == _me.Id)
+				.Where(x => x.UserId == _me.Id || x.AnonymousId == _me.AnonymousId)
 				.OrderByDescending(x => x.Id)
 				.FirstOrDefault();
 
