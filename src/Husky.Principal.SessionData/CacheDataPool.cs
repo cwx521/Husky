@@ -45,15 +45,12 @@ namespace Husky.Principal
 			}
 		}
 
-		internal T PickOrCreate(string key, T whenNotExists) {
+		internal T PickOrCreate(string key, Func<string, T> setupAction) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
-			if ( whenNotExists == null ) {
-				throw new ArgumentNullException(nameof(whenNotExists));
-			}
-			if ( key != whenNotExists.Key ) {
-				throw new ArgumentException($"The Key value of {nameof(whenNotExists)} must equal to the first given parameter.", nameof(whenNotExists));
+			if ( setupAction == null ) {
+				throw new ArgumentNullException(nameof(setupAction));
 			}
 
 			var pool = EnsureGetPool();
@@ -65,11 +62,13 @@ namespace Husky.Principal
 				return bag;
 			}
 
-			whenNotExists.ActiveTime = DateTime.Now;
+			var created = setupAction(key);
+			created.ActiveTime = DateTime.Now;
+
 			lock ( _lock ) {
-				pool[key] = whenNotExists;
+				pool[key] = created;
 			}
-			return whenNotExists;
+			return created;
 		}
 
 		internal void Drop(string key) {
@@ -82,8 +81,6 @@ namespace Husky.Principal
 		}
 
 		internal void DropAll() => _cache.Remove(_cacheKey);
-
-		internal void DropTimeout(int timeoutMinutes) => DropTimeout(TimeSpan.FromMinutes(timeoutMinutes));
 
 		internal void DropTimeout(TimeSpan timeout) {
 			var pool = GetPool();
