@@ -6,7 +6,7 @@ namespace Husky.WeChatIntegration
 	{
 		public string? AppId { get; set; }
 		public string? AppSecret { get; set; }
-		public WeChatAppIdSecretType? Type { get; set; }
+		public WeChatField? Type { get; set; }
 
 
 		internal void CheckNull() {

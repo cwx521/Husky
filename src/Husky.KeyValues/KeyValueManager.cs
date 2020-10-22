@@ -15,7 +15,7 @@ namespace Husky.KeyValues
 		}
 
 		private static readonly object _lock = new object();
-		private readonly string _cacheKey = nameof(KeyValueManager) + nameof(Items);
+		private static readonly string _cacheKey = nameof(KeyValueManager) + nameof(Items);
 
 		private readonly IKeyValueDbContext _db;
 		private readonly IMemoryCache _cache;

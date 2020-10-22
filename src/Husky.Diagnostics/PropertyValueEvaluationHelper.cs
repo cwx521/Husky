@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Husky.Diagnostics
 {
-	internal static class LogPropertyValueEvaluationHelper
+	internal static class PropertyValueEvaluationHelper
 	{
 		internal static void EvaluateValuesFromHttpContext(this HttpLevelLogBase log, HttpContext http) {
 			var antiforgery = http.RequestServices.GetService<IAntiforgery>()?.GetTokens(http).FormFieldName ?? "__RequestVerificationToken";

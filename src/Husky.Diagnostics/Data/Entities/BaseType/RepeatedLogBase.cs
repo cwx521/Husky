@@ -8,6 +8,9 @@ namespace Husky.Diagnostics.Data
 	{
 		public int Repeated { get; set; } = 1;
 
+		[DefaultValueSql("getdate()")]
+		public DateTime LastTime { get; set; } = DateTime.Now;
+
 		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]
 		public string Md5Comparison { get; set; } = null!;
 

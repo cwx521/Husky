@@ -29,17 +29,16 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&appid={_wechatConfig.MobilePlatformAppId}" +
 					  $"&secret={_wechatConfig.MobilePlatformAppSecret}";
 
-				using ( var client = new WebClient() ) {
-					var json = client.DownloadString(url);
-					var d = JsonConvert.DeserializeObject<dynamic>(json);
+				using var client = new WebClient();
+				var json = client.DownloadString(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
 
-					return new WeChatGeneralAccessToken {
-						AccessToken = d.access_token,
-						ExpiresIn = d.expires_in
-					};
-				}
+				return new WeChatGeneralAccessToken {
+					AccessToken = d.access_token,
+					ExpiresIn = d.expires_in
+				};
 			});
 		}
 
@@ -50,13 +49,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var accessToken = GetMobilePlatformGeneralAccessToken();
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 
-				using ( var client = new WebClient() ) {
-					var json = client.DownloadString(url);
-					var d = JsonConvert.DeserializeObject<dynamic>(json);
+				using var client = new WebClient();
+				var json = client.DownloadString(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
-					return d.ticket;
-				}
+				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
+				return d.ticket;
 			});
 		}
 

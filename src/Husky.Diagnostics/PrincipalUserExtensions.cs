@@ -24,7 +24,7 @@ namespace Husky.Diagnostics
 			await db.LogRequest(httpContext, principal);
 		}
 
-		public static async Task LogOperation(this IPrincipalUser principal, string message, LogLevel logLevel) {
+		public static async Task LogOperation(this IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
 			var db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
 			await db.LogOperation(principal, message, logLevel);
 		}

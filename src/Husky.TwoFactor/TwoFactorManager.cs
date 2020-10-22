@@ -13,6 +13,9 @@ namespace Husky.TwoFactor
 	public sealed partial class TwoFactorManager : ITwoFactorManager
 	{
 		public TwoFactorManager(ITwoFactorDbContext twoFactorDb, IPrincipalUser principal, ISmsSender? smsSender, IMailSender? mailSender) {
+			if ( _smsSender == null && _mailSender == null ) {
+				throw new ArgumentNullException(null, $"At least to configure one of {smsSender} or {mailSender}");
+			}
 			_twoFactorDb = twoFactorDb;
 			_me = principal;
 			_smsSender = smsSender;
@@ -33,7 +36,7 @@ namespace Husky.TwoFactor
 			var isMobile = mobileNumberOrEmailAddress.IsMainlandMobile();
 
 			if ( !isEmail && !isMobile ) {
-				return new Failure($"无法发送到 '{mobileNumberOrEmailAddress}' ");
+				return new Failure($"无法送达 '{mobileNumberOrEmailAddress}'");
 			}
 
 			if ( isMobile ) {
@@ -61,9 +64,11 @@ namespace Husky.TwoFactor
 				if ( _mailSender == null ) {
 					throw new Exception($"Required to inject service {typeof(IMailSender).Assembly.GetName()}");
 				}
-				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "验证码：{0}", code.Code);
-				await _mailSender.SendAsync("动态验证码", content, mobileNumberOrEmailAddress);
+				var wrappedSignName = overrideSmsSignName == null ? null : $"【{overrideSmsSignName}】 ";
+				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "{wrappedSignName}验证码： {0}", code.Code);
+				await _mailSender.SendAsync($"{wrappedSignName}动态验证码", content, mobileNumberOrEmailAddress);
 			}
+
 			else if ( isMobile ) {
 				if ( _smsSender == null ) {
 					throw new Exception($"Required to inject service {typeof(ISmsSender).Assembly.GetName()}");
@@ -84,14 +89,14 @@ namespace Husky.TwoFactor
 
 		public async Task<Result> SendCodeThroughSms(string mobileNumber, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
 			if ( !mobileNumber.IsMainlandMobile() ) {
-				return new Failure($"无法发送到 '{mobileNumber}'");
+				return new Failure($"无法送达 '{mobileNumber}'");
 			}
 			return await SendCode(mobileNumber, overrideMessageTemplateWithCodeArg0, overrideSmsTemplateAlias, overrideSmsSignName);
 		}
 
 		public async Task<Result> SendCodeThroughEmail(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
 			if ( !emailAddress.IsEmail() ) {
-				return new Failure($"无法发送到 '{emailAddress}'");
+				return new Failure($"无法送达 '{emailAddress}'");
 			}
 			return await SendCode(emailAddress, messageTemplateWithCodeArg0, null, null);
 		}

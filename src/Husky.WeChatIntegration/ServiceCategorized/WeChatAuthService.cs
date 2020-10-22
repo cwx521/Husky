@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
-	public class WeChatLoginService
+	public class WeChatAuthService
 	{
-		public WeChatLoginService(WeChatAppConfig wechatConfig) {
+		public WeChatAuthService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
 		}
 
@@ -62,15 +62,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
-			using ( var client = new WebClient() ) {
-				var json = client.DownloadString(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
-				return new WeChatMiniProgramLoginResult {
-					OpenId = d.openid,
-					UnionId = d.unionid,
-					SessionKey = d.session_key
-				};
-			}
+			using var client = new WebClient();
+			var json = client.DownloadString(url);
+			var d = JsonConvert.DeserializeObject<dynamic>(json);
+
+			return new WeChatMiniProgramLoginResult {
+				OpenId = d.openid,
+				UnionId = d.unionid,
+				SessionKey = d.session_key
+			};
 		}
 	}
 }

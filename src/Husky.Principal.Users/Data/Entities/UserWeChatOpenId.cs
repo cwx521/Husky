@@ -11,7 +11,7 @@ namespace Husky.Principal.Users.Data
 
 		public int WeChatId { get; set; }
 
-		public WeChatOpenIdType OpenIdType { get; set; }
+		public WeChatField OpenIdType { get; set; }
 
 		[StringLength(32), Column(TypeName = "varchar(32)"), Required, Unique]
 		public string OpenIdValue { get; set; } = null!;

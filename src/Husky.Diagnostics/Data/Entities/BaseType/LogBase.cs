@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Diagnostics.Data
 {
@@ -14,9 +13,6 @@ namespace Husky.Diagnostics.Data
 		public string? UserName { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
-		public DateTime FirstTime { get; set; } = DateTime.Now;
-
-		[DefaultValueSql("getdate()")]
-		public DateTime LastTime { get; set; } = DateTime.Now;
+		public DateTime Time { get; set; } = DateTime.Now;
 	}
 }

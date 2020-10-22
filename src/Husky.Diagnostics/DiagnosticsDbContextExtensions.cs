@@ -13,8 +13,8 @@ namespace Husky.Diagnostics
 	public static class DiagnosticsDbContextExtensions
 	{
 		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? httpContext, IPrincipalUser? principal) {
-			principal ??= httpContext?.RequestServices?.GetService<IPrincipalUser>();
-			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
+			principal ??= httpContext?.RequestServices.GetService<IPrincipalUser>();
+			httpContext ??= principal?.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
 
 			var log = new ExceptionLog {
 				ExceptionType = e.GetType().FullName!,
@@ -41,9 +41,13 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogRequest(this IDiagnosticsDbContext db, HttpContext httpContext, IPrincipalUser principal) {
+		public static async Task LogRequest(this IDiagnosticsDbContext db, HttpContext httpContext, IPrincipalUser? principal) {
+			principal ??= httpContext.RequestServices.GetService<IPrincipalUser>();
+
 			var log = new RequestLog();
-			log.EvaluateValuesFromPrincipal(principal);
+			if ( principal != null ) {
+				log.EvaluateValuesFromPrincipal(principal);
+			}
 			log.EvaluateValuesFromHttpContext(httpContext);
 			log.ComputeMd5Comparison();
 
@@ -68,16 +72,18 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogOperation(this IDiagnosticsDbContext db, IPrincipalUser principal, string message, LogLevel logLevel) {
+		public static async Task LogOperation(this IDiagnosticsDbContext db, IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
 			var log = new OperationLog {
 				LogLevel = logLevel,
 				Message = message
 			};
-			log.EvaluateValuesFromPrincipal(principal);
+			if ( principal != null ) {
+				log.EvaluateValuesFromPrincipal(principal);
+			}
 			log.ComputeMd5Comparison();
 
 			var seconds = 60;
-			var keyValueManager = principal.ServiceProvider?.GetService<IKeyValueManager>();
+			var keyValueManager = principal?.ServiceProvider.GetService<IKeyValueManager>();
 			if ( keyValueManager != null ) {
 				seconds = keyValueManager.GetOrAdd("LogAsRepeatedIfOperateAgainWithinSeconds", seconds);
 			}

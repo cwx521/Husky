@@ -11,28 +11,27 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatAppConfig _wechatConfig;
 
-		public WeChatUserResult? GetUserInfo(WeChatUserAccessToken token) {
-			return GetUserInfo(token.OpenId, token.AccessToken);
-		}
+		public WeChatUserResult? GetUserInfo(WeChatUserAccessToken token) => GetUserInfo(token.OpenId, token.AccessToken);
 		public WeChatUserResult? GetUserInfo(string openId, string accessToken) {
 			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
-			using ( var client = new WebClient() ) {
-				var json = client.DownloadString(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
-				if ( d.errcode != null && d.errcode != 0 ) {
-					return null;
-				}
-				return new WeChatUserResult {
-					OpenId = d.openid,
-					UnionId = d.unionid,
-					NickName = d.nickname,
-					Sex = d.sex == 2 ? Sex.Female : Sex.Male,
-					Province = d.province,
-					City = d.city,
-					Country = d.country,
-					HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
-				};
+
+			using var client = new WebClient();
+			var json = client.DownloadString(url);
+			var d = JsonConvert.DeserializeObject<dynamic>(json);
+
+			if ( d.errcode != null && d.errcode != 0 ) {
+				return null;
 			}
+			return new WeChatUserResult {
+				OpenId = d.openid,
+				UnionId = d.unionid,
+				NickName = d.nickname,
+				Sex = d.sex == 2 ? Sex.Female : Sex.Male,
+				Province = d.province,
+				City = d.city,
+				Country = d.country,
+				HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
+			};
 		}
 
 		public WeChatUserAccessToken? GetOpenPlatformUserAccessToken(string code) {
@@ -55,7 +54,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			overrideIdSecret.CheckNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
-					  $"?appid={overrideIdSecret.AppId}&secret={overrideIdSecret.AppSecret}&code={code}&grant_type=authorization_code";
+					  $"?appid={overrideIdSecret.AppId}" +
+					  $"&secret={overrideIdSecret.AppSecret}" +
+					  $"&code={code}" +
+					  $"&grant_type=authorization_code";
+
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
 
@@ -80,24 +83,26 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			overrideIdSecret.CheckNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
-					  $"?appid={overrideIdSecret.AppId}&refresh_token={refreshToken}&grant_type=refresh_token";
+					  $"?appid={overrideIdSecret.AppId}" +
+					  $"&refresh_token={refreshToken}" +
+					  $"&grant_type=refresh_token";
+
 			return GetUserAccessTokenFromResolvedUrl(url);
 		}
 
 		private WeChatUserAccessToken? GetUserAccessTokenFromResolvedUrl(string url) {
-			using ( var client = new WebClient() ) {
-				var json = client.DownloadString(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+			using var client = new WebClient();
+			var json = client.DownloadString(url);
+			var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-				if ( d.access_token == null ) {
-					return null;
-				}
-				return new WeChatUserAccessToken {
-					AccessToken = d.access_token,
-					RefreshToken = d.refresh_token,
-					OpenId = d.openid
-				};
+			if ( d.access_token == null ) {
+				return null;
 			}
+			return new WeChatUserAccessToken {
+				AccessToken = d.access_token,
+				RefreshToken = d.refresh_token,
+				OpenId = d.openid
+			};
 		}
 	}
 }
