@@ -14,7 +14,7 @@ namespace Husky.Diagnostics
 	{
 		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? httpContext, IPrincipalUser? principal) {
 			principal ??= httpContext?.RequestServices.GetService<IPrincipalUser>();
-			httpContext ??= principal?.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext;
+			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 
 			var log = new ExceptionLog {
 				ExceptionType = e.GetType().FullName!,
@@ -83,7 +83,7 @@ namespace Husky.Diagnostics
 			log.ComputeMd5Comparison();
 
 			var seconds = 60;
-			var keyValueManager = principal?.ServiceProvider.GetService<IKeyValueManager>();
+			var keyValueManager = principal?.ServiceProvider?.GetService<IKeyValueManager>();
 			if ( keyValueManager != null ) {
 				seconds = keyValueManager.GetOrAdd("LogAsRepeatedIfOperateAgainWithinSeconds", seconds);
 			}

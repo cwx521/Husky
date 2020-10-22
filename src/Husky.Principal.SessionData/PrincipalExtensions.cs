@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
 {
-	public static class PrincipalCacheDataExtension
+	public static class PrincipalExtensions
 	{
 		private static CacheDataPool<CacheDictionaryBag>? _pool;
 

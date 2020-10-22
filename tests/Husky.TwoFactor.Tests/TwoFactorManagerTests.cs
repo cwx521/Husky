@@ -111,14 +111,13 @@ namespace Husky.TwoFactor.Tests
 			var row = new TwoFactorCode {
 				Code = "123456",
 				UserId = principal.Id,
-				SentTo = "chenwx521@hotmail.com"
+				SentTo = "17751283521"
 			};
 			testDb.Add(row);
 			testDb.SaveChanges();
 
 			Result verifyResult = null;
-
-			var twoFactorManager = new TwoFactorManager(testDb, principal, null, null);
+			var twoFactorManager = new TwoFactorManager(testDb, principal, new AliyunSmsSender(new AliyunSmsSettings()), null);
 			for ( var i = 0; i < 12; i++ ) {
 				verifyResult = await twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true);
 				Assert.IsFalse(verifyResult.Ok);

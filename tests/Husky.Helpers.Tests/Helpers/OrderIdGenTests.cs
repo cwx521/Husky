@@ -34,7 +34,7 @@ namespace Husky.Tests
 			var shouldBeFalse = OrderIdGen.TryParse(fakeOrderNo, out _);
 			Assert.IsTrue(shouldBeTrue);
 			Assert.IsFalse(shouldBeFalse);
-			Assert.IsTrue(DateTime.Now.Subtract(t1).TotalSeconds < 1);
+			Assert.IsTrue(DateTime.Now.Subtract(t1).TotalSeconds < 2);
 		}
 	}
 }

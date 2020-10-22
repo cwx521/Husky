@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Helpers", "src\Husky.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal", "src\Husky.Principal\Husky.Principal.csproj", "{A64B3FE1-25F0-4860-8925-108C7F00E5FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.SessionData", "src\Husky.Principal.SessionData\Husky.Principal.SessionData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData", "src\Husky.Principal.SessionData\Husky.Principal.CacheData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.DataAudit", "src\Husky.DataAudit\Husky.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
 EndProject
@@ -66,6 +66,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Principal", "4. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. TBD", "0. TBD", "{FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.SessionData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +183,10 @@ Global
 		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,6 +218,7 @@ Global
 		{0CD726C6-CE19-4B7F-9B45-463E42050AFF} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{5F316519-5794-4B82-B7E9-DB0DFF89B997} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
+		{19656D18-EDF0-4102-A9FE-CE6A7DD37259} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}
