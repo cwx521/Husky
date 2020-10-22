@@ -11,7 +11,7 @@ namespace Husky.Principal.AntiViolence
 		private readonly IPrincipalUser _me;
 
 		internal DateTime GetTimer() {
-			return (DateTime)_me.CacheData().GetOrAdd(nameof(AntiViolenceBlocker), key => DateTime.MinValue);
+			return (DateTime)_me.CacheData().GetOrAdd(nameof(AntiViolenceBlocker), _ => DateTime.MinValue);
 		}
 
 		internal void SetTimer(DateTime? time = null) {

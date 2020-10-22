@@ -5,7 +5,7 @@ namespace Husky.Principal
 {
 	public static class PrincipalCacheDataExtension
 	{
-		private static CacheDataPool<CacheDataBag>? _pool;
+		private static CacheDataPool<CacheDictionaryBag>? _pool;
 
 		internal static string CacheKey(this IPrincipalUser principal) {
 			return principal.IsAnonymous
@@ -19,17 +19,18 @@ namespace Husky.Principal
 				: principal.Id.ToString();
 		}
 
-		public static CacheDataBag CacheData(this IPrincipalUser principal) {
+		public static CacheDictionaryBag CacheData(this IPrincipalUser principal) {
 			var key = principal.CacheKey();
-			_pool ??= new CacheDataPool<CacheDataBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
+			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
 			_pool.Drop(principal.CacheKeyDroppable());
-			return _pool.PickOrCreate(key, key => new CacheDataBag(principal));
+			return _pool.PickOrCreate(key, key => new CacheDictionaryBag(principal));
 		}
 
 		public static void AbandonCache(this IPrincipalUser principal) {
-			_pool ??= new CacheDataPool<CacheDataBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
-			_pool.Drop(principal.Id.ToString());
-			_pool.Drop(principal.AnonymousId.ToString());
+			if ( _pool != null ) {
+				_pool.Drop(principal.Id.ToString());
+				_pool.Drop(principal.AnonymousId.ToString());
+			}
 		}
 	}
 }

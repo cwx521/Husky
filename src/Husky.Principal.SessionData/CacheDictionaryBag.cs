@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 
 namespace Husky.Principal
 {
-	public sealed class CacheDataBag : ConcurrentDictionary<string, object>, ICacheDataBag
+	public sealed class CacheDictionaryBag : ConcurrentDictionary<string, object>, ICacheDataBag
 	{
-		internal CacheDataBag(IPrincipalUser principal) {
+		internal CacheDictionaryBag(IPrincipalUser principal) {
 			_principal = principal;
 		}
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Husky.Principal
@@ -11,8 +11,7 @@ namespace Husky.Principal
 		}
 
 		private readonly IMemoryCache _cache;
-		private static readonly object _lock = new object();
-		private static readonly string _cacheKey = "Pool_" + typeof(T).FullName;
+		private static readonly string _cacheKeyOfPool = "Pool_" + typeof(T).FullName;
 
 		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
 
@@ -24,9 +23,7 @@ namespace Husky.Principal
 			if ( pool != null ) {
 				if ( pool.TryGetValue(key, out var bag) ) {
 					if ( bag.ActiveTime.Add(Timeout) > DateTime.Now ) {
-						lock ( _lock ) {
-							bag.ActiveTime = DateTime.Now;
-						}
+						bag.ActiveTime = DateTime.Now;
 						return bag;
 					}
 					Drop(key);
@@ -37,37 +34,29 @@ namespace Husky.Principal
 
 		internal void Put(T bag) {
 			DropTimeout(Timeout);
-
 			bag.ActiveTime = DateTime.Now;
-			var pool = EnsureGetPool();
-			lock ( _lock ) {
-				pool[bag.Key] = bag;
-			}
+			EnsureGetPool().AddOrUpdate(bag.Key, bag, (key, _) => bag);
 		}
 
-		internal T PickOrCreate(string key, Func<string, T> setupAction) {
+		internal T PickOrCreate(string key, Func<string, T> createBag) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
-			if ( setupAction == null ) {
-				throw new ArgumentNullException(nameof(setupAction));
+			if ( createBag == null ) {
+				throw new ArgumentNullException(nameof(createBag));
 			}
 
 			var pool = EnsureGetPool();
 
 			if ( pool.TryGetValue(key, out var bag) && bag.ActiveTime.Add(Timeout) > DateTime.Now ) {
-				lock ( _lock ) {
-					bag.ActiveTime = DateTime.Now;
-				}
+				bag.ActiveTime = DateTime.Now;
 				return bag;
 			}
 
-			var created = setupAction(key);
+			var created = createBag(key);
 			created.ActiveTime = DateTime.Now;
 
-			lock ( _lock ) {
-				pool[key] = created;
-			}
+			pool.AddOrUpdate(created.Key, created, (key, _) => created);
 			return created;
 		}
 
@@ -75,12 +64,10 @@ namespace Husky.Principal
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
-			lock ( _lock ) {
-				GetPool()?.Remove(key);
-			}
+			GetPool()?.TryRemove(key, out _);
 		}
 
-		internal void DropAll() => _cache.Remove(_cacheKey);
+		internal void DropAll() => _cache.Remove(_cacheKeyOfPool);
 
 		internal void DropTimeout(TimeSpan timeout) {
 			var pool = GetPool();
@@ -90,20 +77,18 @@ namespace Husky.Principal
 
 				foreach ( var i in keys ) {
 					if ( pool.ContainsKey(i) && pool[i].ActiveTime.Add(timeout) < DateTime.Now ) {
-						lock ( _lock ) {
-							pool.Remove(i);
-						}
+						pool.TryRemove(i, out _);
 					}
 				}
 			}
 		}
 
-		private Dictionary<string, T> GetPool() => _cache.Get<Dictionary<string, T>>(_cacheKey);
+		private ConcurrentDictionary<string, T> GetPool() => _cache.Get<ConcurrentDictionary<string, T>>(_cacheKeyOfPool);
 
-		private Dictionary<string, T> EnsureGetPool() {
-			return _cache.GetOrCreate(_cacheKey, x => {
+		private ConcurrentDictionary<string, T> EnsureGetPool() {
+			return _cache.GetOrCreate(_cacheKeyOfPool, x => {
 				x.SetSlidingExpiration(Timeout);
-				return new Dictionary<string, T>();
+				return new ConcurrentDictionary<string, T>();
 			});
 		}
 	}
