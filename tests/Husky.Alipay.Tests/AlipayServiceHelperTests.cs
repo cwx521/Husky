@@ -41,9 +41,9 @@ namespace Husky.Alipay.Tests
 			//Payment url is opened up in the default browser
 			Process.Start(new ProcessStartInfo(paymentUrl) { UseShellExecute = true });
 
-			//Use debug mode
+			//!!!!! THIS TEST REQUIRES MANUAL OPERATION, USE DEBUG MODE AND SET BREAK POINT HERE !!!!
 			//Open the url in browser
-			//Set break point here, pay manually in the opened page, then continue
+			//Pay manually in the opened page, then continue
 			var queryResult = alipay.QueryOrder(tradeModel.OrderNo);
 			Assert.AreEqual(tradeModel.Amount, queryResult.Amount);
 
