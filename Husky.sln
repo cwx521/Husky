@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Helpers", "src\Husky.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal", "src\Husky.Principal\Husky.Principal.csproj", "{A64B3FE1-25F0-4860-8925-108C7F00E5FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData", "src\Husky.Principal.SessionData\Husky.Principal.CacheData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData", "src\Husky.Principal.CacheData\Husky.Principal.CacheData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.DataAudit", "src\Husky.DataAudit\Husky.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
 EndProject
@@ -67,7 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Principal", "4. Principa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. TBD", "0. TBD", "{FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.SessionData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
