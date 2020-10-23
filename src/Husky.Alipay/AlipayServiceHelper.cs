@@ -132,13 +132,13 @@ namespace Husky.Alipay
 				return new AlipayNotifyResult { Ok = false, Message = "未收到任何参数" };
 			}
 
-			var success = form.TryGetValue("trade_status", out var status) && (status == "TRADE_SUCCESS" || status == "TRADE_FINISHED");
+			var success = form.TryGetValue("trade_status", out var status) && status == "TRADE_SUCCESS";
 			if ( !success ) {
 				return new AlipayNotifyResult { Ok = false, Message = "支付失败" };
 			}
 
 			var dict = form.ToDictionary(k => k.Key, v => v.Value.ToString());
-			var validationOk = dict.TryGetValue("trade_status", out var amount) && alipay.RSACheckV1(dict);
+			var validationOk = dict.TryGetValue("total_amount", out var amount) && alipay.RSACheckV1(dict);
 			if ( !validationOk ) {
 				return new AlipayNotifyResult { Ok = false, Message = "未通过数据加密验证" };
 			}

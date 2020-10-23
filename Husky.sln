@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Users", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.AntiViolence", "src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj", "{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Services", "1. Services", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Principal", "1. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Principal", "2. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
