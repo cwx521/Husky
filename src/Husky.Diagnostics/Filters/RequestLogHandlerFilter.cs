@@ -16,12 +16,12 @@ namespace Husky.Diagnostics
 
 		public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next) {
 			var db = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
-			var httpContext = context.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>().HttpContext;
+			var http = context.HttpContext.RequestServices.GetRequiredService<IHttpContextAccessor>().HttpContext;
 			var principal = context.HttpContext.RequestServices.GetService<IPrincipalUser>();
 
-			if ( !httpContext.Request.Query.ContainsKey("no_log") ) {
+			if ( !http.Request.Query.ContainsKey("no_log") ) {
 				try {
-					await db.LogRequest(httpContext, principal);
+					await db.LogRequest(http, principal);
 				}
 				catch { }
 			}

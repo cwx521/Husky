@@ -12,12 +12,12 @@ namespace Husky.Diagnostics
 {
 	public static class DiagnosticsDbContextExtensions
 	{
-		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? httpContext, IPrincipalUser? principal) {
-			principal ??= httpContext?.RequestServices.GetService<IPrincipalUser>();
-			httpContext ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
+		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
+			principal ??= http?.RequestServices.GetService<IPrincipalUser>();
+			http ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 
 			var log = new ExceptionLog {
-				ExceptionType = e.GetType().FullName!,
+				ExceptionType = e.GetType().Name,
 				Message = e.Message,
 				Source = e.Source,
 				StackTrace = e.StackTrace,
@@ -25,8 +25,8 @@ namespace Husky.Diagnostics
 			if ( principal != null ) {
 				log.EvaluateValuesFromPrincipal(principal);
 			}
-			if ( httpContext != null ) {
-				log.EvaluateValuesFromHttpContext(httpContext);
+			if ( http != null ) {
+				log.EvaluateValuesFromHttpContext(http);
 			}
 			log.ComputeMd5Comparison();
 
@@ -41,18 +41,22 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogRequest(this IDiagnosticsDbContext db, HttpContext httpContext, IPrincipalUser? principal) {
-			principal ??= httpContext.RequestServices.GetService<IPrincipalUser>();
+		public static async Task LogRequest(this IDiagnosticsDbContext db, HttpContext http, IPrincipalUser? principal) {
+			if ( http == null ) {
+				return;
+			}
+
+			principal ??= http.RequestServices.GetService<IPrincipalUser>();
 
 			var log = new RequestLog();
 			if ( principal != null ) {
 				log.EvaluateValuesFromPrincipal(principal);
 			}
-			log.EvaluateValuesFromHttpContext(httpContext);
+			log.EvaluateValuesFromHttpContext(http);
 			log.ComputeMd5Comparison();
 
 			var seconds = 60;
-			var keyValueManager = httpContext.RequestServices.GetService<IKeyValueManager>();
+			var keyValueManager = http.RequestServices.GetService<IKeyValueManager>();
 			if ( keyValueManager != null ) {
 				seconds = keyValueManager.GetOrAdd("LogAsRepeatedIfVisitAgainWithinSeconds", seconds);
 			}

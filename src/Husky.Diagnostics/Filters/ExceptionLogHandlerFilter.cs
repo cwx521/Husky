@@ -10,16 +10,16 @@ namespace Husky.Diagnostics
 	{
 		public async Task OnExceptionAsync(ExceptionContext context) {
 			try {
-				var httpContext = context.HttpContext;
-				var db = httpContext.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
-				var principal = httpContext.RequestServices.GetService<IPrincipalUser>();
+				var http = context.HttpContext;
+				var db = http.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
+				var principal = http.RequestServices.GetService<IPrincipalUser>();
 
 				var exception = context.Exception;
 				while ( exception.InnerException != null ) {
 					exception = exception.InnerException;
 				}
 
-				await db.LogException(exception, httpContext, principal);
+				await db.LogException(exception, http, principal);
 			}
 			catch { }
 		}
