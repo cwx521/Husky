@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -21,11 +22,12 @@ namespace Husky.Lbs.QQLbs
 		}
 
 		private readonly QQLbsSettings _settings;
+		private readonly HttpClient _httpClient = new HttpClient();
 
-		public async Task<Address?> GetAddress(IPAddress ip) {
+		public async Task<Address?> GetAddressAsync(IPAddress ip) {
 			var ipString = ip.MapToIPv4().ToString();
 			var url = "https://apis.map.qq.com/ws/location/v1/ip" + $"?key={_settings.Key}&ip={ipString}";
-			var x = await GetApiResult(url);
+			var x = await GetApiResultAsync(url);
 
 			return x == null ? null : new Address {
 				Location = new Location {
@@ -40,11 +42,11 @@ namespace Husky.Lbs.QQLbs
 
 		}
 
-		public async Task<Address?> GetAddress(Location latlon) {
+		public async Task<Address?> GetAddressAsync(Location latlon) {
 			latlon = latlon.ConvertToTencentLatLon();
 
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon.Lat},{latlon.Lon}";
-			var x = await GetApiResult(url);
+			var x = await GetApiResultAsync(url);
 
 			return x == null ? null : new Address {
 				Location = new Location {
@@ -64,9 +66,9 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<Location?> GetLatLon(string addressName) {
+		public async Task<Location?> GetLatLonAsync(string addressName) {
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&address={addressName}";
-			var x = await GetApiResult(url);
+			var x = await GetApiResultAsync(url);
 
 			return x == null ? (Location?)null : new Location {
 				Lat = x.location.lat,
@@ -75,7 +77,7 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<Distance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving) {
+		public async Task<Distance?> GetDistanceAsync(Location from, Location to, DistanceMode mode = DistanceMode.Driving) {
 			from = from.ConvertToTencentLatLon();
 			to = to.ConvertToTencentLatLon();
 
@@ -89,7 +91,7 @@ namespace Husky.Lbs.QQLbs
 					  $"&from={from.Lat},{from.Lon}" +
 					  $"&to={to.Lat},{to.Lon}";
 
-			var x = await GetApiResult(url);
+			var x = await GetApiResultAsync(url);
 
 			return x == null ? null : new Distance {
 				From = from,
@@ -100,7 +102,7 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<Distance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
+		public async Task<Distance[]?> GetDistancesAsync(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
 			from = from.ConvertToTencentLatLon();
 
 			if ( mode == DistanceMode.Straight ) {
@@ -113,7 +115,7 @@ namespace Husky.Lbs.QQLbs
 					  $"&from={from.Lat},{from.Lon}" +
 					  $"&to={string.Join(';', toMany.Select(x => x.ConvertToTencentLatLon().ToString()))}";
 
-			var x = await GetApiResult(url);
+			var x = await GetApiResultAsync(url);
 			if ( x == null ) {
 				return null;
 			}
@@ -134,11 +136,9 @@ namespace Husky.Lbs.QQLbs
 			return results;
 		}
 
-		private async Task<dynamic?> GetApiResult(string url) {
-			using var client = new WebClient();
-
+		private async Task<dynamic?> GetApiResultAsync(string url) {
 			try {
-				var json = await client.DownloadStringTaskAsync(url);
+				var json = await _httpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( d.status == 0 && d.message == "query ok" ) {

@@ -10,7 +10,7 @@ namespace Husky.Lbs.QQLbs.Tests
 	{
 		//attention: fill the required values to run this test
 
-		private readonly string _key = "";
+		private readonly string _key = "2S6BZ-APVWD-GCG4F-HLKUO-GQ5VT-EDB3Q";
 
 		[TestMethod()]
 		public async Task MarshalTest() {
@@ -27,11 +27,11 @@ namespace Husky.Lbs.QQLbs.Tests
 				};
 
 				var ip = "49.73.123.252";
-				var address = await qqLbs.GetAddress(IPAddress.Parse(ip));
+				var address = await qqLbs.GetAddressAsync(IPAddress.Parse(ip));
 				assert((Address)address);
 
 				var lonlat = address.Location.Value;
-				address = await qqLbs.GetAddress(lonlat);
+				address = await qqLbs.GetAddressAsync(lonlat);
 				assert((Address)address);
 			}
 		}
@@ -42,7 +42,7 @@ namespace Husky.Lbs.QQLbs.Tests
 				var qqLbs = new QQLbsService(_key);
 
 				var givenAddress = "江苏省苏州工业园区苏州中心";
-				var latlon = await qqLbs.GetLatLon(givenAddress);
+				var latlon = await qqLbs.GetLatLonAsync(givenAddress);
 				Assert.AreEqual(31, Math.Floor(latlon.Value.Lat));
 				Assert.AreEqual(120, Math.Floor(latlon.Value.Lon));
 			}
@@ -56,7 +56,7 @@ namespace Husky.Lbs.QQLbs.Tests
 				var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
 
 				foreach ( DistanceMode i in Enum.GetValues(typeof(DistanceMode)) ) {
-					var distance = await qqLbs.GetDistance(latlon1, latlon2, i);
+					var distance = await qqLbs.GetDistanceAsync(latlon1, latlon2, i);
 
 					if ( i == DistanceMode.Driving ) {
 						Assert.IsTrue(Math.Abs(distance.TravelTimeEstimate.TotalMinutes - 4) < 1);
@@ -67,13 +67,13 @@ namespace Husky.Lbs.QQLbs.Tests
 		}
 
 		[TestMethod()]
-		public async Task GetDistanceTests() {
+		public async Task GetDistancesTest() {
 			if ( !string.IsNullOrEmpty(_key) ) {
 				var qqLbs = new QQLbsService(_key);
 				var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
 				var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
 
-				var distances = await qqLbs.GetDistances(latlon1, new Location[] { latlon2 }, DistanceMode.Driving);
+				var distances = await qqLbs.GetDistancesAsync(latlon1, new Location[] { latlon2 }, DistanceMode.Driving);
 				foreach ( var distance in distances ) {
 					Assert.IsTrue(Math.Abs(distance.TravelTimeEstimate.TotalMinutes - 4) < 1);
 					Assert.IsTrue(Math.Abs(distance.Meters - 1400) < 500);

@@ -10,21 +10,26 @@ namespace Husky.Diagnostics
 {
 	public static class PrincipalExtensions
 	{
-		public static async Task LogException(this IPrincipalUser principal, Exception e) {
+		public static void LogException(this IPrincipalUser principal, Exception e) => LogExceptionAsync(principal, e).Wait();
+		public static void LogRequest(this IPrincipalUser principal) => LogRequestAsync(principal).Wait();
+		public static void LogOperation(this IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) => LogOperationAsync(principal, message, logLevel).Wait();
+
+
+		public static async Task LogExceptionAsync(this IPrincipalUser principal, Exception e) {
 			var db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
 			var http = principal.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-			await db.LogException(e, http, principal);
+			await db.LogExceptionAsync(e, http, principal);
 		}
 
-		public static async Task LogRequest(this IPrincipalUser principal) {
+		public static async Task LogRequestAsync(this IPrincipalUser principal) {
 			var db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
 			var http = principal.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-			await db.LogRequest(http, principal);
+			await db.LogRequestAsync(http, principal);
 		}
 
-		public static async Task LogOperation(this IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
+		public static async Task LogOperationAsync(this IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
 			var db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
-			await db.LogOperation(principal, message, logLevel);
+			await db.LogOperationAsync(principal, message, logLevel);
 		}
 	}
 }

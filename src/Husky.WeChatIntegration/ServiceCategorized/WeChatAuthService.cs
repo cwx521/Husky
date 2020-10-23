@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 
@@ -12,6 +14,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private readonly WeChatAppConfig _wechatConfig;
+		private readonly HttpClient _httpClient = new HttpClient();
 
 		public string CreateWebQrCodeLoginScript(string redirectUri, string styleSheetUrl) {
 			_wechatConfig.RequireOpenPlatformSettings();
@@ -53,7 +56,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				   $"#wechat_redirect";
 		}
 
-		public WeChatMiniProgramLoginResult ProceedMiniProgramLogin(string code) {
+		public WeChatMiniProgramLoginResult ProceedMiniProgramLogin(string code) => ProceedMiniProgramLoginAsync(code).Result;
+		public async Task<WeChatMiniProgramLoginResult> ProceedMiniProgramLoginAsync(string code) {
 			_wechatConfig.RequireMiniProgramSettings();
 
 			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
@@ -62,8 +66,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
-			using var client = new WebClient();
-			var json = client.DownloadString(url);
+			var json = await _httpClient.GetStringAsync(url);
 			var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 			return new WeChatMiniProgramLoginResult {

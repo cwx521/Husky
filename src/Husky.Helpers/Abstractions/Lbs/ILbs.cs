@@ -6,12 +6,12 @@ namespace Husky.Lbs
 {
 	public interface ILbs
 	{
-		Task<Address?> GetAddress(IPAddress ip);
-		Task<Address?> GetAddress(Location latlon);
+		Task<Address?> GetAddressAsync(IPAddress ip);
+		Task<Address?> GetAddressAsync(Location latlon);
 
-		Task<Location?> GetLatLon(string addressName);
+		Task<Location?> GetLatLonAsync(string addressName);
 
-		Task<Distance?> GetDistance(Location from, Location to, DistanceMode mode = DistanceMode.Driving);
-		Task<Distance[]?> GetDistances(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving);
+		Task<Distance?> GetDistanceAsync(Location from, Location to, DistanceMode mode = DistanceMode.Driving);
+		Task<Distance[]?> GetDistancesAsync(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving);
 	}
 }

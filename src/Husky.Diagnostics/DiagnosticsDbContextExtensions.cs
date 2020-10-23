@@ -12,7 +12,7 @@ namespace Husky.Diagnostics
 {
 	public static class DiagnosticsDbContextExtensions
 	{
-		public static async Task LogException(this IDiagnosticsDbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
+		public static async Task LogExceptionAsync(this IDiagnosticsDbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
 			principal ??= http?.RequestServices.GetService<IPrincipalUser>();
 			http ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 
@@ -41,7 +41,7 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogRequest(this IDiagnosticsDbContext db, HttpContext http, IPrincipalUser? principal) {
+		public static async Task LogRequestAsync(this IDiagnosticsDbContext db, HttpContext http, IPrincipalUser? principal) {
 			if ( http == null ) {
 				return;
 			}
@@ -76,7 +76,7 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogOperation(this IDiagnosticsDbContext db, IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
+		public static async Task LogOperationAsync(this IDiagnosticsDbContext db, IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
 			var log = new OperationLog {
 				LogLevel = logLevel,
 				Message = message

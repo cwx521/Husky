@@ -21,7 +21,7 @@ namespace Husky.Diagnostics
 
 			if ( !http.Request.Query.ContainsKey("no_log") ) {
 				try {
-					await db.LogRequest(http, principal);
+					await db.LogRequestAsync(http, principal);
 				}
 				catch { }
 			}

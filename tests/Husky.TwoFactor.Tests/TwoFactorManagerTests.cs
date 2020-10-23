@@ -35,7 +35,7 @@ namespace Husky.TwoFactor.Tests
 			var twoFactorManager = new TwoFactorManager(testDb, principal, smsSender, null);
 
 			var sendTo = "17751283521";
-			var sentResult = await twoFactorManager.SendCodeThroughSms(sendTo);
+			var sentResult = await twoFactorManager.SendCodeThroughSmsAsync(sendTo);
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -43,7 +43,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = await twoFactorManager.VerifyCode(sendTo, row.Code, true);
+			var verifyResult = await twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true);
 			row = testDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -85,7 +85,7 @@ namespace Husky.TwoFactor.Tests
 
 			var twoFactorManager = new TwoFactorManager(twoFactorDb, principal, null, mailSender);
 
-			var sentResult = await twoFactorManager.SendCodeThroughEmail(sendTo);
+			var sentResult = await twoFactorManager.SendCodeThroughEmailAsync(sendTo);
 			var row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -93,7 +93,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = await twoFactorManager.VerifyCode(sendTo, row.Code, true);
+			var verifyResult = await twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true);
 			row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -119,7 +119,7 @@ namespace Husky.TwoFactor.Tests
 			Result verifyResult = null;
 			var twoFactorManager = new TwoFactorManager(testDb, principal, new AliyunSmsSender(new AliyunSmsSettings()), null);
 			for ( var i = 0; i < 12; i++ ) {
-				verifyResult = await twoFactorManager.VerifyCode(row.SentTo, "WRONG!", true);
+				verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, "WRONG!", true);
 				Assert.IsFalse(verifyResult.Ok);
 			}
 
@@ -128,20 +128,20 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsTrue(row.ErrorTimes > 10);
 
 			//it still fails even the code is correct this time, because it has already failed for more than 10 times
-			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
+			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
 			Assert.IsFalse(verifyResult.Ok);
 
 			//reset then try a good one
 			row.ErrorTimes = 0;
 			testDb.SaveChanges();
 
-			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
+			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
 			row = testDb.TwoFactorCodes.First();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.IsTrue(row.IsUsed);
 
 			//if try one more time, it should fail because the code is used
-			verifyResult = await twoFactorManager.VerifyCode(row.SentTo, row.Code, true);
+			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
 			Assert.IsFalse(verifyResult.Ok);
 
 			testDb.Database.EnsureDeleted();

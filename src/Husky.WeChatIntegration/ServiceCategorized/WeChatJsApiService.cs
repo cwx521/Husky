@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -19,18 +20,19 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly WeChatAppConfig _wechatConfig;
 		private readonly HttpContext _http;
 		private readonly IMemoryCache _cache;
+		private readonly HttpClient _httpClient = new HttpClient();
 
-		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken() {
+		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken() => GetMobilePlatformGeneralAccessTokenAsync().Result;
+		public async Task<WeChatGeneralAccessToken> GetMobilePlatformGeneralAccessTokenAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
-			return _cache.GetOrCreate(_wechatConfig.MobilePlatformAppId + nameof(GetMobilePlatformGeneralAccessToken), entry => {
+			return await _cache.GetOrCreate(_wechatConfig.MobilePlatformAppId + nameof(GetMobilePlatformGeneralAccessTokenAsync), async entry => {
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
 					  $"&appid={_wechatConfig.MobilePlatformAppId}" +
 					  $"&secret={_wechatConfig.MobilePlatformAppSecret}";
 
-				using var client = new WebClient();
-				var json = client.DownloadString(url);
+				var json = await _httpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
@@ -42,15 +44,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
-		public string GetJsApiTicket() {
+		public string GetJsApiTicket() => GetJsApiTicketAsync().Result;
+		public async Task<string> GetJsApiTicketAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
-			return _cache.GetOrCreate(_wechatConfig.MobilePlatformAppId + nameof(GetJsApiTicket), entry => {
-				var accessToken = GetMobilePlatformGeneralAccessToken();
+			return await _cache.GetOrCreate(_wechatConfig.MobilePlatformAppId + nameof(GetJsApiTicketAsync), async entry => {
+				var accessToken = await GetMobilePlatformGeneralAccessTokenAsync();
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 
-				using var client = new WebClient();
-				var json = client.DownloadString(url);
+				var json = await _httpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
@@ -58,14 +60,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
-		public WeChatJsApiConfig CreateJsApiConfig() {
+		public WeChatJsApiConfig CreateJsApiConfig() => CreateJsApiConfigAsync().Result;
+		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
 			var config = new WeChatJsApiConfig {
 				AppId = _wechatConfig.MobilePlatformAppId!,
 				NonceStr = Crypto.RandomString(16),
 				Timestamp = DateTime.Now.Timestamp(),
-				Ticket = GetJsApiTicket(),
+				Ticket = await GetJsApiTicketAsync(),
 			};
 
 			var sb = new StringBuilder();
@@ -79,10 +82,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return config;
 		}
 
-		public string CreateJsApiScript(string enableJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow") {
+		private const string _defaultEnabledJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow";
+		public string CreateJsApiScript(string enableJsApiNames = _defaultEnabledJsApiNames) => CreateJsApiScriptAsync(enableJsApiNames).Result;
+		public async Task<string> CreateJsApiScriptAsync(string enableJsApiNames = _defaultEnabledJsApiNames) {
 			_wechatConfig.RequireMobilePlatformSettings();
 
-			var cfg = CreateJsApiConfig();
+			var cfg = await CreateJsApiConfigAsync();
 			return @"<script type='text/javascript' src='https://res2.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 				<script type='text/javascript'>
 					function configWeChatJsApi() {

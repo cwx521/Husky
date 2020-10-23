@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Husky.WeChatIntegration.Models.Pay;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
@@ -15,9 +16,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public WeChatPayService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
 			_wechatConfig.RequireMerchantSettings();
+			_certifiedWebClient = new CertifiedWebClient(_wechatConfig.MerchantId!);
+			_httpClient = new HttpClient();
 		}
 
 		private readonly WeChatAppConfig _wechatConfig;
+		private readonly CertifiedWebClient _certifiedWebClient;
+		private readonly HttpClient _httpClient;
 
 		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
@@ -41,7 +46,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayOrderModelUnifiedResult CreateUnifedOrder(WeChatPayOrderModel model) {
+		public WeChatPayOrderModelUnifiedResult CreateUnifedOrder(WeChatPayOrderModel model) => CreateUnifedOrderAsync(model).Result;
+		public async Task<WeChatPayOrderModelUnifiedResult> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 			var now = DateTime.Now;
@@ -69,7 +75,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 
 			try {
-				var xml = PostThenGetResultXml(apiUrl, parameters);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 				return new WeChatPayOrderModelUnifiedResult {
 					Ok = IsOk(xml),
 					Message = GetMessage(xml),
@@ -86,14 +92,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayOrderQueryResult QueryOrder(string appId, string orderNo) {
+		public WeChatPayOrderQueryResult QueryOrder(string appId, string orderNo) => QueryOrderAsync(appId, orderNo).Result;
+		public async Task<WeChatPayOrderQueryResult> QueryOrderAsync(string appId, string orderNo) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
 			var parameters = GetCommonParameters(appId);
 			parameters.Add("out_trade_no", orderNo);
 
 			try {
-				var xml = PostThenGetResultXml(apiUrl, parameters);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 				var tradeState = GetCdata(xml, "trade_state");
 				return new WeChatPayOrderQueryResult {
 					Ok = tradeState == "REFUND" || tradeState == "SUCCESS",
@@ -113,7 +120,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundResult Refund(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
+		public WeChatPayRefundResult Refund(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) => RefundAsync(appId, orderNo, newRefundRequestNo, totalOrderAmount, refundAmount, refundReason).Result;
+		public async Task<WeChatPayRefundResult> RefundAsync(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
 			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 			var parameters = GetCommonParameters(appId);
@@ -129,7 +137,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 
 			try {
-				var xml = PostThenGetResultXml(apiUrl, parameters, true);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, true);
 				return new WeChatPayRefundResult {
 					Ok = IsOk(xml),
 					Message = GetMessage(xml),
@@ -145,14 +153,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundQueryResult QueryRefund(string appId, string refundRequestNo) {
+		public WeChatPayRefundQueryResult QueryRefund(string appId, string refundRequestNo) => QueryRefundAsync(appId, refundRequestNo).Result;
+		public async Task<WeChatPayRefundQueryResult> QueryRefundAsync(string appId, string refundRequestNo) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
 			var parameters = GetCommonParameters(appId);
 			parameters.Add("out_refund_no", refundRequestNo);
 
 			try {
-				var xml = PostThenGetResultXml(apiUrl, parameters);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 				return new WeChatPayRefundQueryResult {
 					Ok = IsOk(xml) && (GetCdata(xml, "refund_status_0") == "SUCCESS" || GetCdata(xml, "refund_status_0") == "PROCESSING"),
 					Message = GetMessage(xml),
@@ -168,7 +177,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) {
+		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) => PostThenGetResultXmlAsync(wechatApiUrl, apiParameters, useCert).Result;
+		public async Task<string> PostThenGetResultXmlAsync(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) {
 			var sb = new StringBuilder();
 			apiParameters.Add("sign_type", "MD5");
 
@@ -193,20 +203,19 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var xml = sb.ToString();
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
-			using var webClient = useCert ? new CertifiedWebClient(_wechatConfig.MerchantId!) : new WebClient();
+			if ( useCert ) {
+				return await _certifiedWebClient.UploadStringTaskAsync(wechatApiUrl, xml);
+			}
 
-			var xmlResult = webClient.UploadString(wechatApiUrl, xml);
-			return xmlResult;
+			var response = await _httpClient.PostAsync(wechatApiUrl, new StringContent(xml));
+			return await response.Content.ReadAsStringAsync();
 		}
 
-		public string CreateNotifyRespondSuccessXml() {
-			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
-		}
-
-		public WeChatPayNotifyResult ParseNotifyResult(Stream stream) {
+		public WeChatPayNotifyResult ParseNotifyResult(Stream stream) => ParseNotifyResultAsync(stream).Result;
+		public async Task<WeChatPayNotifyResult> ParseNotifyResultAsync(Stream stream) {
 			try {
 				var bytes = new byte[(int)stream.Length];
-				stream.Read(bytes, 0, bytes.Length);
+				await stream.ReadAsync(bytes, 0, bytes.Length);
 
 				var xml = Encoding.UTF8.GetString(bytes);
 				return new WeChatPayNotifyResult {
@@ -226,6 +235,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					Message = e.Message
 				};
 			}
+		}
+
+		public string CreateNotifyRespondSuccessXml() {
+			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 		}
 
 		private Dictionary<string, string> GetCommonParameters(string wechatAppId) {

@@ -17,7 +17,7 @@ namespace Husky.Diagnostics.Tests
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
 			var exception = new Exception("Oops");
-			testDb.LogException(exception, null, null).Wait();
+			testDb.LogExceptionAsync(exception, null, null).Wait();
 			Assert.AreEqual(1, testDb.ExceptionLogs.Count());
 
 			var findRow = testDb.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
@@ -27,7 +27,7 @@ namespace Husky.Diagnostics.Tests
 			Assert.AreEqual(exception.Source, findRow.Source);
 
 			//Log the same exception again
-			testDb.LogException(exception, null, null).Wait();
+			testDb.LogExceptionAsync(exception, null, null).Wait();
 			Assert.AreEqual(1, testDb.ExceptionLogs.Count());
 
 			findRow = testDb.ExceptionLogs.FirstOrDefault(x => x.Message == exception.Message);
@@ -35,7 +35,7 @@ namespace Husky.Diagnostics.Tests
 			Assert.AreEqual(findRow.Id, findRow.Id);
 
 			//Log the same exception with principal identity this time
-			testDb.LogException(exception, null, principal).Wait();
+			testDb.LogExceptionAsync(exception, null, principal).Wait();
 			Assert.AreEqual(2, testDb.ExceptionLogs.Count());
 
 			findRow = testDb.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message && x.UserId == principal.Id);
@@ -45,7 +45,7 @@ namespace Husky.Diagnostics.Tests
 
 			//Log a different exception
 			exception = new InvalidOperationException("Boom");
-			testDb.LogException(exception, null, principal).Wait();
+			testDb.LogExceptionAsync(exception, null, principal).Wait();
 			Assert.AreEqual(3, testDb.ExceptionLogs.Count());
 
 			findRow = testDb.ExceptionLogs.SingleOrDefault(x => x.Message == exception.Message);
@@ -61,7 +61,7 @@ namespace Husky.Diagnostics.Tests
 			using var testDb = new DbContextOptionsBuilder<DiagnosticsDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
-			testDb.LogOperation(principal, "UnitTest", LogLevel.Trace).Wait();
+			testDb.LogOperationAsync(principal, "UnitTest", LogLevel.Trace).Wait();
 			Assert.AreEqual(1, testDb.OperationLogs.Count());
 
 			var findRow = testDb.OperationLogs.FirstOrDefault(x => x.Message == "UnitTest");
@@ -73,7 +73,7 @@ namespace Husky.Diagnostics.Tests
 
 			//log the same message one more time
 
-			testDb.LogOperation(principal, "UnitTest", LogLevel.Trace).Wait();
+			testDb.LogOperationAsync(principal, "UnitTest", LogLevel.Trace).Wait();
 			Assert.AreEqual(1, testDb.OperationLogs.Count());
 
 			findRow = testDb.OperationLogs.FirstOrDefault(x => x.Message == "UnitTest");
