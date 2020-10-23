@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal", "src\Husk
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData", "src\Husky.Principal.CacheData\Husky.Principal.CacheData.csproj", "{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.DataAudit", "src\Husky.DataAudit\Husky.DataAudit.csproj", "{AC438400-6285-41C4-9207-05AD2C953C9F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Diagnostics", "src\Husky.Diagnostics\Husky.Diagnostics.csproj", "{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.TwoFactor", "src\Husky.TwoFactor\Husky.TwoFactor.csproj", "{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6}"
@@ -29,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Html", "src\Husky.Htm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration", "src\Husky.WeChatIntegration\Husky.WeChatIntegration.csproj", "{008D5928-AE73-42F8-BEFE-B919CDCF6D70}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Tests", "1. Tests", "{FF52C040-869B-47F4-B5FF-C0DF5070D4ED}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Tests", "4. Tests", "{FF52C040-869B-47F4-B5FF-C0DF5070D4ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.AliyunSms.Tests", "tests\Husky.AliyunSms.Tests\Husky.AliyunSms.Tests.csproj", "{AB43E4DC-DF88-4A8F-A1CE-E0AB86DC6E0B}"
 EndProject
@@ -51,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay.Tests", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration.Tests", "tests\Husky.WeChatIntegration.Tests\Husky.WeChatIntegration.Tests.csproj", "{FC5742B8-0A23-408E-9CCB-48F6D14118C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. UIOutput", "2. UIOutput", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. UI", "3. UI", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Administration", "src\Husky.Principal.Administration\Husky.Principal.Administration.csproj", "{8AD67D26-A670-4FBB-B4ED-8D291E461C57}"
 EndProject
@@ -61,13 +59,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Users", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.AntiViolence", "src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj", "{C8F19D33-33D7-4A0F-9CCA-51DB503CE526}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Services", "3. Services", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{8FE403B3-EB09-46A2-8EC6-8D702234CFE9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Principal", "4. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Principal", "1. Principal", "{DD053C23-D07E-462D-8EC9-E47000E683FE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. TBD", "0. TBD", "{FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,10 +83,6 @@ Global
 		{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC438400-6285-41C4-9207-05AD2C953C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC438400-6285-41C4-9207-05AD2C953C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC438400-6285-41C4-9207-05AD2C953C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC438400-6285-41C4-9207-05AD2C953C9F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -194,7 +186,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A64B3FE1-25F0-4860-8925-108C7F00E5FB} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{29D64A3F-3FB1-4856-B274-8DAB2FE8AD38} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
-		{AC438400-6285-41C4-9207-05AD2C953C9F} = {FC42D97B-C5F8-456F-AF6B-FE3EEE1AB784}
 		{5FDCBC98-8A24-4DCF-A332-F7BC1D125A2A} = {8FE403B3-EB09-46A2-8EC6-8D702234CFE9}
 		{E3713A9A-0ED3-4624-8B12-F90A71EAF6F6} = {8FE403B3-EB09-46A2-8EC6-8D702234CFE9}
 		{F85DAD4C-F8B2-4FC4-A417-27398B02AFC6} = {8FE403B3-EB09-46A2-8EC6-8D702234CFE9}

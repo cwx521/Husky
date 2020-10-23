@@ -37,9 +37,9 @@ namespace Husky
 
 			if ( !_migrated.Contains(contextType) ) {
 				lock ( _lock ) {
-					context.Database.Migrate();
 					_migrated.Add(contextType);
 				}
+				context.Database.Migrate();
 			}
 			return context;
 		}

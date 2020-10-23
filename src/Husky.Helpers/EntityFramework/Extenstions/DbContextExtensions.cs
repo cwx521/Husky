@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -8,12 +7,12 @@ namespace Husky
 {
 	public static class DbContextExtensions
 	{
-		public static EntityEntry<TEntity> AddOrUpdate<TDbContext, TEntity>(this TDbContext context, TEntity entity)
+		public static EntityEntry<TEntity> AddOrUpdate<TDbContext, TEntity>(this TDbContext context, TEntity instance)
 			where TDbContext : DbContext
 			where TEntity : class {
 
 			// Find key and Build query
-			var entityEntry = context.Entry(entity);
+			var entityEntry = context.Entry(instance);
 			var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
 
 			IQueryable<TEntity> query = context.Set<TEntity>();
@@ -24,7 +23,7 @@ namespace Husky
 			// Add or Update
 			var row = query.SingleOrDefault();
 			if ( row == null ) {
-				context.Add(entity);
+				context.Add(instance);
 			}
 			else {
 				var properties = context.Entry(row).Properties;
@@ -38,37 +37,44 @@ namespace Husky
 			return entityEntry;
 		}
 
-		public static EntityEntry<TEntity> Update<TDbContext, TEntity>(this TDbContext context, TEntity entity, params string[] updatingFields)
-			where TDbContext : DbContext
-			where TEntity : class {
+		//public static EntityEntry<TEntity> Update<TDbContext, TEntity, TProperty>(this TDbContext context, TEntity instance, Expression<Func<TEntity, TProperty>> propertyToUpdate)
+		//	where TDbContext : DbContext
+		//	where TEntity : class {
+		//	var propertyName = propertyToUpdate.Body.ToString().RightBy(".", true)!;
+		//	return Update(context, instance, propertyName);
+		//}
 
-			if ( updatingFields.Length < 1 ) {
-				throw new ArgumentException(nameof(updatingFields));
-			}
+		//public static EntityEntry<TEntity> Update<TDbContext, TEntity>(this TDbContext context, TEntity instance, params string[] updatingFields)
+		//	where TDbContext : DbContext
+		//	where TEntity : class {
 
-			var entityEntry = context.Entry(entity);
-			if ( entityEntry.IsKeySet ) {
-				throw new ArgumentException($"The Primary Key data of the entity parameter is not set.", nameof(entity));
-			}
+		//	if ( updatingFields.Length < 1 ) {
+		//		throw new ArgumentException(nameof(updatingFields));
+		//	}
 
-			// Find key
-			var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
+		//	var entityEntry = context.Entry(instance);
+		//	if ( entityEntry.IsKeySet ) {
+		//		throw new ArgumentException($"The Primary Key data of the entity parameter is not set.", nameof(instance));
+		//	}
 
-			// Find entry from current ChangeTracker
-			var query = context.ChangeTracker.Entries<TEntity>().AsQueryable();
-			foreach ( var key in keyProperties ) {
-				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
-			}
+		//	// Find key
+		//	var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
 
-			//if not, then Attach
-			var updating = query.SingleOrDefault() ?? context.Attach(entity);
+		//	// Find entry from current ChangeTracker
+		//	var query = context.ChangeTracker.Entries<TEntity>().AsQueryable();
+		//	foreach ( var key in keyProperties ) {
+		//		query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
+		//	}
 
-			// Set IsModified for desired fields
-			foreach ( var field in updatingFields ) {
-				updating.Property(field).IsModified = true;
-			}
+		//	//if not, then Attach
+		//	var updating = query.SingleOrDefault() ?? context.Attach(instance);
 
-			return updating;
-		}
+		//	// Set IsModified for desired fields
+		//	foreach ( var field in updatingFields ) {
+		//		updating.Property(field).IsModified = true;
+		//	}
+
+		//	return updating;
+		//}
 	}
 }

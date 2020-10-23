@@ -49,17 +49,5 @@ namespace Husky
 			setupAction(options);
 			return husky.AddPrincipal(options);
 		}
-
-		public static HuskyInjector AddPrincipal<TImplement>(this HuskyInjector husky)
-			where TImplement : class, IPrincipalUser {
-			husky.Services.AddScoped<IPrincipalUser, TImplement>();
-			return husky;
-		}
-
-		public static HuskyInjector AddPrincipal<TImplement>(this HuskyInjector husky, Func<IServiceProvider, TImplement> implementationFactory)
-			where TImplement : class, IPrincipalUser {
-			husky.Services.AddScoped<IPrincipalUser, TImplement>(implementationFactory);
-			return husky;
-		}
 	}
 }

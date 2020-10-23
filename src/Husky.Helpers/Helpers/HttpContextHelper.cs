@@ -46,7 +46,7 @@ namespace Husky
 		}
 
 		public static bool IsLocalhost(this HttpRequest httpRequest) {
-			return httpRequest.Host.Host == "127.0.0.1" || httpRequest.Host.Host == "localhost";
+			return httpRequest.Host.Host == "127.0.0.1" || httpRequest.Host.Host == "::1" || httpRequest.Host.Host == "localhost";
 		}
 	}
 }

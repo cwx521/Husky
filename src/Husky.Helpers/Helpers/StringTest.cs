@@ -30,12 +30,12 @@ namespace Husky
 			return str != null && str.Length == 11 && Regex.IsMatch(str, MainlandMobileRegexPattern);
 		}
 
-		public static bool IsMainlandSocialNumber(this string? str, Sex? sex = null) {
+		public static bool IsMainlandSocialNumber(this string? str, Sex? sex = null, bool adultOnly = true) {
 			if ( str == null || str.Length != 18 ) return false;
 			if ( sex == Sex.Male && (str[16] - '0') % 2 == 0 ) return false;
 			if ( sex == Sex.Female && (str[16] - '0') % 2 == 1 ) return false;
 			if ( str.Substring(6, 4).AsInt() < 1930 ) return false;
-			if ( str.Substring(6, 4).AsInt() > DateTime.Now.Year - 11 ) return false;
+			if ( str.Substring(6, 4).AsInt() > DateTime.Now.Year - 16 && adultOnly ) return false;
 			if ( str.Substring(10, 2).AsInt() > 12 ) return false;
 			if ( str.Substring(12, 2).AsInt() > 31 ) return false;
 			var times = new[] { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };

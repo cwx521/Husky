@@ -20,7 +20,6 @@ namespace Husky.Tests
 			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";
 			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
 			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
-			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));

@@ -11,10 +11,10 @@ namespace Husky
 		public static Result Validate<T>(T instance) {
 			var validationResults = new List<ValidationResult>();
 
-			if ( Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true) ) {
-				return new Success();
+			if ( !Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true) ) {
+				return new Failure(validationResults.First().ErrorMessage);
 			}
-			return new Failure(validationResults.First().ErrorMessage);
+			return new Success();
 		}
 
 		public static Result ValidateProperty<T, TProperty>(T instance, Expression<Func<T, TProperty>> propertyToValidate) {
@@ -23,10 +23,10 @@ namespace Husky
 			var validationContext = new ValidationContext(instance) { MemberName = propertyName };
 			var validationResults = new List<ValidationResult>();
 
-			if ( Validator.TryValidateProperty(propertyValue, validationContext, validationResults) ) {
-				return new Success();
+			if ( !Validator.TryValidateProperty(propertyValue, validationContext, validationResults) ) {
+				return new Failure(validationResults.First().ErrorMessage);
 			}
-			return new Failure(validationResults.First().ErrorMessage);
+			return new Success();
 		}
 	}
 }
