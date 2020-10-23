@@ -11,7 +11,7 @@ namespace Husky
 		public static HuskyInjector AddMailSender(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<MailDbContext>(optionsAction)
-				.AddScoped<IMailDbContext, MailDbContext>()
+				.AddDbContext<IMailDbContext, MailDbContext>()
 				.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}
@@ -19,7 +19,7 @@ namespace Husky
 		public static HuskyInjector AddMailSender<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, IMailDbContext {
 			husky.Services
-				.AddScoped<IMailDbContext, TDbContext>()
+				.AddDbContext<IMailDbContext, TDbContext>()
 				.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}

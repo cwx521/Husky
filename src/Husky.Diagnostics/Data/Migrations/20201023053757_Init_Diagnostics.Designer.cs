@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20201019135527_Init_Diagnostics")]
+    [Migration("20201023053757_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,11 +38,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200)")
                         .HasMaxLength(200);
-
-                    b.Property<DateTime>("FirstTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("HttpMethod")
                         .HasColumnType("varchar(6)")
@@ -77,6 +72,11 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("StackTrace")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(1000)")
@@ -115,11 +115,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("FirstTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
                     b.Property<DateTime>("LastTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -140,6 +135,11 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -169,11 +169,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("Data")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FirstTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
                     b.Property<string>("HttpMethod")
                         .HasColumnType("varchar(6)")
                         .HasMaxLength(6);
@@ -182,7 +177,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -197,6 +191,11 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(1000)")

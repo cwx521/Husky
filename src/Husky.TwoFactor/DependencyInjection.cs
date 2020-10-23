@@ -11,7 +11,7 @@ namespace Husky
 		public static HuskyInjector AddTwoFactor(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
-				.AddScoped<ITwoFactorDbContext, TwoFactorDbContext>()
+				.AddDbContext<ITwoFactorDbContext, TwoFactorDbContext>()
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 			return husky;
 		}
@@ -19,7 +19,7 @@ namespace Husky
 		public static HuskyInjector AddTwoFactor<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, ITwoFactorDbContext {
 			husky.Services
-				.AddScoped<ITwoFactorDbContext, TDbContext>()
+				.AddDbContext<ITwoFactorDbContext, TDbContext>()
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 			return husky;
 		}

@@ -1,21 +1,28 @@
+using System.Collections.Generic;
 using System.Linq;
+using Husky.Diagnostics.Data;
 using Husky.Principal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Tests.Pages
 {
 	public class IndexPageModel : PageModel
 	{
-		public IndexPageModel(IPrincipalUser principal) {
+		public IndexPageModel(IPrincipalUser principal, IDiagnosticsDbContext db) {
 			_me = principal;
+			_db = db;
 		}
 
 		private readonly IPrincipalUser _me;
+		private readonly IDiagnosticsDbContext _db;
 
 		public string TellHim { get; private set; }
+		public List<RequestLog> RequestLogs { get; private set; }
 
 		public void OnGet() {
+			RequestLogs = _db.RequestLogs.AsNoTracking().ToList();
 		}
 
 		public IActionResult OnPost() {
@@ -28,6 +35,7 @@ namespace Husky.Tests.Pages
 				_me.IdentityManager.SaveIdentity(_me);
 				return Redirect("/");
 			}
+			OnGet();
 			return Page();
 		}
 	}

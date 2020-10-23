@@ -11,7 +11,7 @@ namespace Husky
 		public static HuskyInjector AddPrincipalAdmin(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<AdminsDbContext>(optionsAction)
-				.AddScoped<IAdminsDbContext, AdminsDbContext>()
+				.AddDbContext<IAdminsDbContext, AdminsDbContext>()
 				.AddScoped<IPrincipalAdmin, PrincipalAdmin>();
 			return husky;
 		}
@@ -19,7 +19,7 @@ namespace Husky
 		public static HuskyInjector AddPrincipalAdmin<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, IAdminsDbContext {
 			husky.Services
-				.AddScoped<IAdminsDbContext, TDbContext>()
+				.AddDbContext<IAdminsDbContext, TDbContext>()
 				.AddScoped<IPrincipalAdmin, PrincipalAdmin>();
 			return husky;
 		}

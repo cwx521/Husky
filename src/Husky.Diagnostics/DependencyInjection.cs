@@ -9,13 +9,13 @@ namespace Husky
 	{
 		public static HuskyInjector AddDiagnostics(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services.AddDbContextPool<DiagnosticsDbContext>(optionsAction);
-			husky.Services.AddScoped<IDiagnosticsDbContext, DiagnosticsDbContext>();
+			husky.Services.AddDbContext<IDiagnosticsDbContext, DiagnosticsDbContext>();
 			return husky;
 		}
 
 		public static HuskyInjector AddDiagnostics<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, IDiagnosticsDbContext {
-			husky.Services.AddScoped<IDiagnosticsDbContext, TDbContext>();
+			husky.Services.AddDbContext<IDiagnosticsDbContext, TDbContext>();
 			return husky;
 		}
 	}

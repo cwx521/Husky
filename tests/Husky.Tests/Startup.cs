@@ -16,8 +16,9 @@ namespace Husky.Tests
 		public void ConfigureServices(IServiceCollection services) {
 			Crypto.PermanentToken = "DevTest";
 
-			var connstr = @"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=HuskyTest; Integrated Security=True";
-			//services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
+			//(localdb)\MSSQLLocalDB
+			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True"; 
+			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
 			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
@@ -36,7 +37,7 @@ namespace Husky.Tests
 
 			services.Husky()
 				.AddPrincipal()
-				.AddDiagnostics(x => x.UseSqlServer(connstr).Migrate());
+				.AddDiagnostics<DiagnosticsDbContext>();
 
 			/*
 			add-migration  Init_DataAudit  -context AuditDbContext -project Husky.DataAudit -o Data/Migrations
