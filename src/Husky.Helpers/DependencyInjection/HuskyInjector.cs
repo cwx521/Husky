@@ -4,6 +4,7 @@ using Husky.KeyValues;
 using Husky.Lbs;
 using Husky.Mail;
 using Husky.Principal;
+using Husky.Principal.Administration;
 using Husky.Sms;
 using Husky.TwoFactor;
 using Microsoft.Extensions.DependencyInjection;
@@ -105,6 +106,18 @@ namespace Husky
 		public HuskyInjector AddPrincipal<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
 			where TImplement : class, IPrincipalUser {
 			Services.AddScoped<IPrincipalUser, TImplement>(implementationFactory);
+			return this;
+		}
+
+
+		public HuskyInjector MapPrincipalAdmin<TImplement>()
+			where TImplement : class, IPrincipalAdmin {
+			Services.AddScoped<IPrincipalAdmin, TImplement>();
+			return this;
+		}
+		public HuskyInjector AddPrincipalAdmin<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IPrincipalAdmin {
+			Services.AddScoped<IPrincipalAdmin, TImplement>(implementationFactory);
 			return this;
 		}
 	}

@@ -26,8 +26,8 @@ namespace Husky.Principal.Administration
 		public long Powers => _adminData?.Powers ?? 0;
 		public string[] Roles => _adminData?.Roles ?? new string[0];
 
-		public TEnum MapPowers<TEnum>() where TEnum : Enum => (TEnum)(object)Powers;
-		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MapPowers<TEnum>().HasFlag(power);
+		public TEnum MatchPowers<TEnum>() where TEnum : Enum => (TEnum)(object)Powers;
+		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MatchPowers<TEnum>().HasFlag(power);
 
 
 		public const string AdminDataKey = "AdminData";
