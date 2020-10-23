@@ -1,4 +1,5 @@
 ﻿using System;
+using Husky.Diagnostics;
 using Husky.KeyValues;
 using Husky.Lbs;
 using Husky.Mail;
@@ -25,6 +26,17 @@ namespace Husky
 		public HuskyInjector AddKeyValueManager<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
 			where TImplement : class, IKeyValueManager {
 			Services.AddScoped<IKeyValueManager, TImplement>(implementationFactory);
+			return this;
+		}
+
+
+		public HuskyInjector MapDiagnosticsLogger<TImplement>() where TImplement : class, IDiagnosticsLogger {
+			Services.AddScoped<IDiagnosticsLogger, TImplement>();
+			return this;
+		}
+		public HuskyInjector AddDiagnosticsLogger<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IDiagnosticsLogger {
+			Services.AddScoped<IDiagnosticsLogger, TImplement>(implementationFactory);
 			return this;
 		}
 

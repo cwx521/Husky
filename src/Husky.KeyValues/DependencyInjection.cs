@@ -10,8 +10,7 @@ namespace Husky
 	{
 		public static HuskyInjector AddKeyValueManager(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
-				.AddDbContextPool<KeyValueDbContext>(optionsAction)
-				.AddDbContext<IKeyValueDbContext, KeyValueDbContext>()
+				.AddDbContextPool<IKeyValueDbContext, KeyValueDbContext>(optionsAction)
 				.AddScoped<IKeyValueManager, KeyValueManager>();
 			return husky;
 		}

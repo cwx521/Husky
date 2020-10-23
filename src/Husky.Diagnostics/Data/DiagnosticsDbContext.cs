@@ -13,11 +13,9 @@ namespace Husky.Diagnostics.Data
 
 		public DbContext Normalize() => this;
 
-
 		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 		public DbSet<RequestLog> RequestLogs { get; set; }
 		public DbSet<OperationLog> OperationLogs { get; set; }
-
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyAdditionalCustomizedAnnotations();

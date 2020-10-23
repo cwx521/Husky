@@ -10,8 +10,7 @@ namespace Husky
 	{
 		public static HuskyInjector AddMailSender(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
-				.AddDbContextPool<MailDbContext>(optionsAction)
-				.AddDbContext<IMailDbContext, MailDbContext>()
+				.AddDbContextPool<IMailDbContext, MailDbContext>(optionsAction)
 				.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}

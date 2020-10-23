@@ -61,7 +61,7 @@ namespace Husky.Diagnostics.Tests
 			using var testDb = new DbContextOptionsBuilder<DiagnosticsDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
-			testDb.LogOperationAsync(principal, "UnitTest", LogLevel.Trace).Wait();
+			testDb.LogOperationAsync(principal, LogLevel.Trace, "UnitTest").Wait();
 			Assert.AreEqual(1, testDb.OperationLogs.Count());
 
 			var findRow = testDb.OperationLogs.FirstOrDefault(x => x.Message == "UnitTest");
@@ -73,7 +73,7 @@ namespace Husky.Diagnostics.Tests
 
 			//log the same message one more time
 
-			testDb.LogOperationAsync(principal, "UnitTest", LogLevel.Trace).Wait();
+			testDb.LogOperationAsync(principal, LogLevel.Trace, "UnitTest").Wait();
 			Assert.AreEqual(1, testDb.OperationLogs.Count());
 
 			findRow = testDb.OperationLogs.FirstOrDefault(x => x.Message == "UnitTest");

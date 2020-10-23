@@ -2,7 +2,6 @@
 using Husky.Sms;
 using Husky.Sms.AliyunSms;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Husky
 {

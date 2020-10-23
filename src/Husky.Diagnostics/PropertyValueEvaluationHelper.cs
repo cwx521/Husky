@@ -10,7 +10,7 @@ namespace Husky.Diagnostics
 {
 	internal static class PropertyValueEvaluationHelper
 	{
-		internal static void EvaluateValuesFromHttpContext(this HttpLevelLogBase log, HttpContext http) {
+		internal static void ReadValuesFromHttpContext(this HttpLevelLogBase log, HttpContext http) {
 			var antiforgery = http.RequestServices.GetService<IAntiforgery>()?.GetTokens(http).FormFieldName ?? "__RequestVerificationToken";
 
 			log.HttpMethod = http.Request.Method;
@@ -22,7 +22,7 @@ namespace Husky.Diagnostics
 			log.IsAjax = http.Request.IsAjaxRequest();
 		}
 
-		internal static void EvaluateValuesFromPrincipal(this LogBase log, IPrincipalUser principal) {
+		internal static void ReadValuesFromPrincipal(this LogBase log, IPrincipalUser principal) {
 			log.AnonymousId = principal.AnonymousId;
 			log.UserId = principal.Id;
 			log.UserName = principal.DisplayName;

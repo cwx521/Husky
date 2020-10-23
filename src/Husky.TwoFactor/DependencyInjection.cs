@@ -10,8 +10,7 @@ namespace Husky
 	{
 		public static HuskyInjector AddTwoFactor(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
-				.AddDbContextPool<TwoFactorDbContext>(optionsAction)
-				.AddDbContext<ITwoFactorDbContext, TwoFactorDbContext>()
+				.AddDbContextPool<ITwoFactorDbContext, TwoFactorDbContext>(optionsAction)
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 			return husky;
 		}

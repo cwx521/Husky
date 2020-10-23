@@ -13,7 +13,7 @@ namespace Husky.Diagnostics
 	public static class DiagnosticsDbContextExtensions
 	{
 		public static async Task LogExceptionAsync(this IDiagnosticsDbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
-			principal ??= http?.RequestServices.GetService<IPrincipalUser>();
+			principal ??= http?.RequestServices?.GetService<IPrincipalUser>();
 			http ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
 
 			var log = new ExceptionLog {
@@ -23,14 +23,18 @@ namespace Husky.Diagnostics
 				StackTrace = e.StackTrace,
 			};
 			if ( principal != null ) {
-				log.EvaluateValuesFromPrincipal(principal);
+				log.ReadValuesFromPrincipal(principal);
 			}
 			if ( http != null ) {
-				log.EvaluateValuesFromHttpContext(http);
+				log.ReadValuesFromHttpContext(http);
 			}
 			log.ComputeMd5Comparison();
 
-			var repeating = db.ExceptionLogs.FirstOrDefault(x => x.Md5Comparison == log.Md5Comparison);
+			var repeating = db.ExceptionLogs
+				.OrderByDescending(x => x.Id)
+				.Where(x => x.Md5Comparison == log.Md5Comparison)
+				.FirstOrDefault();
+
 			if ( repeating == null ) {
 				db.ExceptionLogs.Add(log);
 			}
@@ -50,9 +54,9 @@ namespace Husky.Diagnostics
 
 			var log = new RequestLog();
 			if ( principal != null ) {
-				log.EvaluateValuesFromPrincipal(principal);
+				log.ReadValuesFromPrincipal(principal);
 			}
-			log.EvaluateValuesFromHttpContext(http);
+			log.ReadValuesFromHttpContext(http);
 			log.ComputeMd5Comparison();
 
 			var seconds = 60;
@@ -62,6 +66,7 @@ namespace Husky.Diagnostics
 			}
 
 			var repeating = db.RequestLogs
+				.OrderByDescending(x => x.Id)
 				.Where(x => x.Md5Comparison == log.Md5Comparison)
 				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
 				.FirstOrDefault();
@@ -76,13 +81,13 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		public static async Task LogOperationAsync(this IDiagnosticsDbContext db, IPrincipalUser principal, string message, LogLevel logLevel = LogLevel.Warning) {
+		public static async Task LogOperationAsync(this IDiagnosticsDbContext db, IPrincipalUser? principal, LogLevel logLevel, string message) {
 			var log = new OperationLog {
 				LogLevel = logLevel,
 				Message = message
 			};
 			if ( principal != null ) {
-				log.EvaluateValuesFromPrincipal(principal);
+				log.ReadValuesFromPrincipal(principal);
 			}
 			log.ComputeMd5Comparison();
 
