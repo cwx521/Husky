@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Husky.KeyValues.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -87,6 +88,10 @@ namespace Husky.KeyValues
 		}
 
 		public void SaveAll() {
+			SaveAllAsync().Wait();
+		}
+
+		public async Task SaveAllAsync() {
 			var fromDb = _db.KeyValues.ToList();
 			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
@@ -94,7 +99,7 @@ namespace Husky.KeyValues
 			fromDb.ForEach(x => x.Value = Get(x.Key));
 			_db.KeyValues.AddRange(added);
 
-			_db.Normalize().SaveChanges();
+			await _db.Normalize().SaveChangesAsync();
 		}
 	}
 }

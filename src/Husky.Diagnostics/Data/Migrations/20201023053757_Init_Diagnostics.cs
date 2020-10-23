@@ -88,19 +88,19 @@ namespace Husky.Diagnostics.Data.Migrations
                 name: "IX_ExceptionLogs_Md5Comparison",
                 table: "ExceptionLogs",
                 column: "Md5Comparison",
-                unique: true);
+                unique: false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OperationLogs_Md5Comparison",
                 table: "OperationLogs",
                 column: "Md5Comparison",
-                unique: true);
+                unique: false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestLogs_Md5Comparison",
                 table: "RequestLogs",
                 column: "Md5Comparison",
-                unique: true);
+                unique: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

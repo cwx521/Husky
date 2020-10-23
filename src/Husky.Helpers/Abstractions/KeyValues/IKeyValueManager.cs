@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Husky.KeyValues
 {
@@ -19,5 +20,6 @@ namespace Husky.KeyValues
 
 		void Reload();
 		void SaveAll();
+		Task SaveAllAsync();
 	}
 }

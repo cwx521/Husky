@@ -1,7 +1,7 @@
 using Husky.Diagnostics;
 using Husky.Diagnostics.Data;
+using Husky.KeyValues.Data;
 using Husky.Principal.AntiViolence;
-using Husky.TwoFactor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +17,11 @@ namespace Husky.Tests
 			Crypto.PermanentToken = "DevTest";
 
 			//(localdb)\MSSQLLocalDB
-			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True"; 
+			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";
 			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
+			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
 			//services.AddDbContextPool<AuditDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
-			//services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
 			//services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
 
@@ -37,7 +37,8 @@ namespace Husky.Tests
 
 			services.Husky()
 				.AddPrincipal()
-				.AddDiagnostics<DiagnosticsDbContext>();
+				.AddDiagnostics<DiagnosticsDbContext>()
+				.AddKeyValueManager<KeyValueDbContext>();
 
 			/*
 			add-migration  Init_DataAudit  -context AuditDbContext -project Husky.DataAudit -o Data/Migrations

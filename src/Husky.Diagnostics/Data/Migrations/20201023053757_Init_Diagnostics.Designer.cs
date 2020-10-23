@@ -99,8 +99,7 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsUnique();
+                    b.HasIndex("Md5Comparison");
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -150,8 +149,7 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsUnique();
+                    b.HasIndex("Md5Comparison");
 
                     b.ToTable("OperationLogs");
                 });
@@ -218,8 +216,7 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsUnique();
+                    b.HasIndex("Md5Comparison");
 
                     b.ToTable("RequestLogs");
                 });

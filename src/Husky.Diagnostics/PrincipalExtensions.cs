@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Husky.Diagnostics
 {
-	public static class PrincipalUserExtensions
+	public static class PrincipalExtensions
 	{
 		public static async Task LogException(this IPrincipalUser principal, Exception e) {
 			var db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
