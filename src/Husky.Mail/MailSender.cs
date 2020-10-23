@@ -70,7 +70,7 @@ namespace Husky.Mail
 				await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
 			}
 			catch ( Exception ex ) {
-				mailRecord.Exception = ex.Message.Left(200);
+				mailRecord.Exception = ex.Message.Left(500);
 				await _mailDb.Normalize().SaveChangesAsync();
 			}
 		}

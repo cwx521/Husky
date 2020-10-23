@@ -27,8 +27,8 @@ namespace Husky.KeyValues
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => _db.KeyValues.AsNoTracking().ToList());
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
-		public string? Get(string key) => Find(key)?.Value;
 		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
+		public string? Get(string key) => Find(key)?.Value;
 
 		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct => GetOrAdd(key, defaultValueIfNotExist.ToString()).As<T>();
 		public string? GetOrAdd(string key, string? defaultValueIfNotExist) {
@@ -91,11 +91,11 @@ namespace Husky.KeyValues
 
 		public async Task SaveAllAsync() {
 			var fromDb = _db.KeyValues.ToList();
-			var added = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
+			var adding = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
 			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
 			fromDb.ForEach(x => x.Value = Get(x.Key));
-			_db.KeyValues.AddRange(added);
+			_db.KeyValues.AddRange(adding);
 
 			await _db.Normalize().SaveChangesAsync();
 		}

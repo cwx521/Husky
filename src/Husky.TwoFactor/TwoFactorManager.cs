@@ -39,16 +39,14 @@ namespace Husky.TwoFactor
 				return new Failure($"无法送达 '{mobileNumberOrEmailAddress}'");
 			}
 
-			if ( isMobile ) {
-				var sentWithinMinute = await _twoFactorDb.TwoFactorCodes
-					.AsNoTracking()
-					.Where(x => x.SentTo == mobileNumberOrEmailAddress)
-					.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
-					.AnyAsync();
+			var sentWithinMinute = await _twoFactorDb.TwoFactorCodes
+				.AsNoTracking()
+				.Where(x => x.SentTo == mobileNumberOrEmailAddress)
+				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
+				.AnyAsync();
 
-				if ( sentWithinMinute ) {
-					return new Failure("请求过于频繁");
-				}
+			if ( sentWithinMinute ) {
+				return new Failure("请求过于频繁，请1分钟后再试");
 			}
 
 			var code = new TwoFactorCode {
@@ -111,19 +109,19 @@ namespace Husky.TwoFactor
 
 			var record = await _twoFactorDb.TwoFactorCodes
 				.Where(x => x.IsUsed == false)
-				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.Where(x => x.SentTo == sentTo)
 				.Where(x => x.UserId == _me.Id || x.AnonymousId == _me.AnonymousId)
+				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
 				.OrderByDescending(x => x.Id)
 				.FirstOrDefaultAsync();
 
 			if ( record == null ) {
-				return new Failure("验证码匹配失败");
+				return new Failure("验证码不正确");
 			}
 			if ( record.ErrorTimes > 10 || string.Compare(code, record.Code, true) != 0 ) {
 				record.ErrorTimes++;
 				await _twoFactorDb.Normalize().SaveChangesAsync();
-				return new Failure("验证码输入错误");
+				return new Failure("验证码错误");
 			}
 			if ( setIntoUsedAfterVerifying ) {
 				record.IsUsed = true;
