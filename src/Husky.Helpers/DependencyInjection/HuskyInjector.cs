@@ -84,6 +84,19 @@ namespace Husky
 			return this;
 		}
 
+
+		public HuskyInjector MapIdentityManager<TImplement>()
+			where TImplement : class, IIdentityManager {
+			Services.AddScoped<IIdentityManager, TImplement>();
+			return this;
+		}
+		public HuskyInjector AddIdentityManager<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IIdentityManager {
+			Services.AddScoped<IIdentityManager, TImplement>(implementationFactory);
+			return this;
+		}
+
+
 		public HuskyInjector MapPrincipal<TImplement>()
 			where TImplement : class, IPrincipalUser {
 			Services.AddScoped<IPrincipalUser, TImplement>();

@@ -10,12 +10,12 @@ namespace Husky
 	{
 		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.Services.AddScoped<IIdentityManager>(svc => {
-				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
+				var http = svc.GetRequiredService<IHttpContextAccessor>();
 				return (options?.Carrier) switch
 				{
-					IdentityCarrier.Header => new HeaderIdentityManager(httpContext, options),
-					IdentityCarrier.Session => new SessionIdentityManager(httpContext, options),
-					_ => new CookieIdentityManager(httpContext, options),
+					IdentityCarrier.Header => new HeaderIdentityManager(http, options),
+					IdentityCarrier.Session => new SessionIdentityManager(http, options),
+					_ => new CookieIdentityManager(http, options),
 				};
 			});
 			return husky;
@@ -32,12 +32,12 @@ namespace Husky
 			husky.Services.AddScoped(serviceProvider => {
 
 				var key = typeof(IPrincipalUser).FullName;
-				var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+				var http = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
-				if ( !(httpContext.Items[key] is IPrincipalUser principal) ) {
+				if ( !(http.Items[key] is IPrincipalUser principal) ) {
 					var identityManager = serviceProvider.GetRequiredService<IIdentityManager>();
 					principal = new PrincipalUser(identityManager, serviceProvider);
-					httpContext.Items.Add(key, principal);
+					http.Items.Add(key, principal);
 				}
 				return principal;
 			});

@@ -5,8 +5,8 @@ namespace Husky.Principal.Implementations
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
-			_httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+		internal CookieIdentityManager(IHttpContextAccessor httpContextAccessor, IdentityOptions? options = null) {
+			_httpContext = httpContextAccessor.HttpContext;
 			_options = options ?? new IdentityOptions();
 		}
 
