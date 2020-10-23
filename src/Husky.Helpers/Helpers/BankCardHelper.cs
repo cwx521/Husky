@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
+using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -10,11 +10,11 @@ namespace Husky
 		public static BandCardModel? GetBandCardInfo(string cardNumber) => GetBandCardInfoAsync(cardNumber).Result;
 
 		public static async Task<BandCardModel?> GetBandCardInfoAsync(string cardNumber) {
-			using var httpClient = new HttpClient();
+			using var client = new WebClient();
 			var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
 
 			try {
-				var json = await httpClient.GetStringAsync(url);
+				var json = await client.DownloadStringTaskAsync(url);
 				var obj = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( obj == null ) {

@@ -10,7 +10,7 @@ namespace Husky.Lbs.QQLbs.Tests
 	{
 		//attention: fill the required values to run this test
 
-		private readonly string _key = "2S6BZ-APVWD-GCG4F-HLKUO-GQ5VT-EDB3Q";
+		private readonly string _key = "";
 
 		[TestMethod()]
 		public async Task MarshalTest() {
