@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
+    <ProjectReference Include="..\Husky.Principal.CacheData\Husky.Principal.CacheData.csproj" />
     <ProjectReference Include="..\Husky.WeChatIntegration\Husky.WeChatIntegration.csproj" />
   </ItemGroup>
 
