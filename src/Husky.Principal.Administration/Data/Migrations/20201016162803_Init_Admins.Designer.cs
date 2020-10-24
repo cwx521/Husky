@@ -37,7 +37,7 @@ namespace Husky.Principal.Administration.Data.Migrations
                         .HasColumnType("nvarchar(36)")
                         .HasMaxLength(36);
 
-                    b.Property<bool>("IsInitializer")
+                    b.Property<bool>("IsInitiator")
                         .HasColumnType("bit");
 
                     b.Property<int>("Status")

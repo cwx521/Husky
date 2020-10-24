@@ -28,7 +28,7 @@ namespace Husky.Principal.Administration.Data.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     DisplayName = table.Column<string>(maxLength: 36, nullable: false),
-                    IsInitializer = table.Column<bool>(nullable: false),
+                    IsInitiator = table.Column<bool>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },

@@ -17,7 +17,7 @@ namespace Husky.Principal.Administration.Data
 		[StringLength(36), Required]
 		public string DisplayName { get; set; } = null!;
 
-		public bool IsInitializer { get; set; }
+		public bool IsInitiator { get; set; }
 
 		public RowStatus Status { get; set; }
 
