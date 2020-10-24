@@ -30,5 +30,6 @@ namespace Husky.Principal.Users.Data
 		public UserReal? Real { get; set; }
 		public List<UserPassword> Passwords { get; set; } = new List<UserPassword>();
 		public List<UserInGroup> InGroups { get; set; } = new List<UserInGroup>();
+		public List<UserAddress> Addresses { get; set; } = new List<UserAddress>();
 	}
 }

@@ -26,13 +26,13 @@ namespace Husky.Principal.Users.Data
 		public string HeadImageUrl { get; set; } = null!;
 
 		[StringLength(24)]
+		public string? Country { get; set; }
+
+		[StringLength(24)]
 		public string? Province { get; set; }
 
 		[StringLength(24)]
 		public string? City { get; set; }
-
-		[StringLength(24)]
-		public string? Country { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;

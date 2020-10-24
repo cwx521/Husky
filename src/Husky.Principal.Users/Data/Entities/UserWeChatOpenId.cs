@@ -9,6 +9,7 @@ namespace Husky.Principal.Users.Data
 		[Key]
 		public int Id { get; set; }
 
+		[NeverUpdate]
 		public int WeChatId { get; set; }
 
 		public WeChatField OpenIdType { get; set; }

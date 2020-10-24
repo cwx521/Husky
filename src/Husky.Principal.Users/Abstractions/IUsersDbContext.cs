@@ -24,7 +24,7 @@ namespace Husky.Principal.Users.Data
 		DbSet<UserGroup> UserGroups { get; set; }
 		DbSet<UserInGroup> UserInGroups { get; set; }
 
-		DbSet<UserMessage> UserMessage { get; set; }
-		DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
+		//DbSet<UserMessage> UserMessage { get; set; }
+		//DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
 	}
 }

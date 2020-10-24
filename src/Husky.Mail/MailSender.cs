@@ -53,6 +53,7 @@ namespace Husky.Mail
 			await _mailDb.Normalize().SaveChangesAsync();
 
 			using var client = new SmtpClient();
+
 			client.MessageSent += async (object? sender, MessageSentEventArgs e) => {
 				mailRecord.IsSuccessful = true;
 				await _mailDb.Normalize().SaveChangesAsync();

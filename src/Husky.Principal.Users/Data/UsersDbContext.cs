@@ -27,8 +27,8 @@ namespace Husky.Principal.Users.Data
 		public DbSet<UserGroup> UserGroups { get; set; }
 		public DbSet<UserInGroup> UserInGroups { get; set; }
 
-		public DbSet<UserMessage> UserMessage { get; set; }
-		public DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
+		//public DbSet<UserMessage> UserMessage { get; set; }
+		//public DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyAdditionalCustomizedAnnotations();

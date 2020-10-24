@@ -13,7 +13,7 @@ namespace Husky.Principal.Users.Data
 		[StringLength(40), Column(TypeName = "varchar(40)"), Required]
 		public string Password { get; set; } = null!;
 
-		public bool IsObsoleted { get; set; }
+		public bool IsObsolete { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;

@@ -1,23 +1,28 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Lbs
 {
 	public struct Location
 	{
-		public Location(float latitude, float longitude) {
+		public Location(double latitude, double longitude) {
 			Lat = latitude;
 			Lon = longitude;
 			LatLonType = LatLonType.Tencent;
 		}
 
-		public Location(float latitude, float longitude, LatLonType type) {
+		public Location(double latitude, double longitude, LatLonType type) {
 			Lat = latitude;
 			Lon = longitude;
 			LatLonType = type;
 		}
 
-		public float Lat { get; set; }
-		public float Lon { get; set; }
+		[Column(TypeName = "decimal(9, 6)")]
+		public double Lat { get; set; }
+
+		[Column(TypeName = "decimal(9, 6)")]
+		public double Lon { get; set; }
+
 		public LatLonType LatLonType { get; set; }
 
 		public override string ToString() => $"{Lat},{Lon}";
@@ -26,7 +31,7 @@ namespace Husky.Lbs
 			if ( latlon == null ) {
 				throw new ArgumentNullException(nameof(latlon));
 			}
-			var array = latlon.Split<float>(',');
+			var array = latlon.Split<double>(',');
 			if ( array.Length != 2 || (array[0] == 0 && array[1] == 0) ) {
 				throw new FormatException();
 			}
@@ -35,7 +40,7 @@ namespace Husky.Lbs
 
 		public static bool TryParse(string latlon, out Location location) {
 			if ( latlon != null ) {
-				var array = latlon.Split<float>(',');
+				var array = latlon.Split<double>(',');
 
 				if ( array.Length == 2 && (array[0] != 0 || array[1] != 0) ) {
 					location = new Location(array[0], array[1]);

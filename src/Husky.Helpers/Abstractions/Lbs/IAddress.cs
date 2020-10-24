@@ -11,6 +11,6 @@
 		string? City { get; set; }
 		string? District { get; set; }
 		string? Street { get; set; }
-		string? StreetNumber { get; set; }
+		string? AccuratePlace { get; set; }
 	}
 }

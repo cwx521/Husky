@@ -62,7 +62,7 @@ namespace Husky.Lbs.QQLbs
 				City = x.address_component.city,
 				District = x.address_component.district,
 				Street = x.address_component.street,
-				StreetNumber = x.address_component.street_number
+				AccuratePlace = x.address_component.street_number
 			};
 		}
 

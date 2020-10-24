@@ -14,10 +14,9 @@ namespace Husky.Principal.Users.Data
 			mb.Entity<UserInGroup>().HasKey(x => new { x.UserId, x.GroupId });
 
 			//QueryFilters
-			mb.Entity<UserPassword>().HasQueryFilter(x => !x.IsObsoleted);
-			mb.Entity<UserMessage>().HasQueryFilter(x => !x.IsDeleted);
-			mb.Entity<UserAddress>().HasQueryFilter(x =>
-				x.Status == RowStatus.Active &&
+			mb.Entity<UserPassword>().HasQueryFilter(x => !x.IsObsolete);
+			//mb.Entity<UserMessage>().HasQueryFilter(x => !x.IsDeleted);
+			mb.Entity<UserAddress>().HasQueryFilter(x => x.Status == RowStatus.Active &&
 				x.City != null &&
 				x.City.Length != 0 &&
 				x.ContactName != null &&
@@ -31,9 +30,7 @@ namespace Husky.Principal.Users.Data
 				user.HasOne(x => x.Real).WithOne(x => x.User).HasForeignKey<UserReal>(x => x.UserId);
 				user.HasMany(x => x.Passwords).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 				user.HasMany(x => x.InGroups).WithOne(x => x.User).HasForeignKey(x => x.UserId);
-				user.HasMany<UserAddress>().WithOne(x => x.User).HasForeignKey(x => x.UserId);
-				user.HasMany<UserMessage>().WithOne(x => x.User).HasForeignKey(x => x.UserId);
-				user.HasMany<UserLoginRecord>().WithOne(x => x.User).HasForeignKey(x => x.UserId);
+				user.HasMany(x => x.Addresses).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 			});
 
 			//UserWeChat
@@ -41,14 +38,20 @@ namespace Husky.Principal.Users.Data
 				wechat.HasMany(x => x.OpenIds).WithOne(x => x.WeChat).HasForeignKey(x => x.WeChatId);
 			});
 
-			//UserMessage
-			mb.Entity<UserMessage>(message => {
-				message.HasOne(x => x.PublicContent).WithMany(x => x.UserMessages).HasForeignKey(x => x.PublicContentId);
-			});
-
 			//UserGroup
 			mb.Entity<UserInGroup>(userInGroup => {
 				userInGroup.HasOne(x => x.Group).WithMany().HasForeignKey(x => x.GroupId);
+			});
+
+			////UserMessage
+			//mb.Entity<UserMessage>(message => {
+			//	message.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
+			//	message.HasOne(x => x.PublicContent).WithMany(x => x.UserMessages).HasForeignKey(x => x.PublicContentId);
+			//});
+
+			//UserLoginRecord
+			mb.Entity<UserLoginRecord>(record => {
+				record.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
 			});
 		}
 	}
