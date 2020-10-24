@@ -8,7 +8,7 @@ namespace Husky.Diagnostics.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(200), Column(TypeName = "varchar(200)")]
+		[StringLength(50), Column(TypeName = "varchar(50)"), Required]
 		public string ExceptionType { get; set; } = null!;
 
 		[StringLength(1000)]

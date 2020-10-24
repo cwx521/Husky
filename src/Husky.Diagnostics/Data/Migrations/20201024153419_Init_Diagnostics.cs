@@ -15,7 +15,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnonymousId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
-                    UserName = table.Column<string>(maxLength: 100, nullable: true),
+                    UserName = table.Column<string>(maxLength: 50, nullable: true),
                     Time = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Repeated = table.Column<int>(nullable: false),
                     LastTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
@@ -27,7 +27,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
                     IsAjax = table.Column<bool>(nullable: false),
-                    ExceptionType = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
+                    ExceptionType = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Message = table.Column<string>(maxLength: 1000, nullable: true),
                     Source = table.Column<string>(nullable: true),
                     StackTrace = table.Column<string>(nullable: true)
@@ -45,7 +45,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnonymousId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
-                    UserName = table.Column<string>(maxLength: 100, nullable: true),
+                    UserName = table.Column<string>(maxLength: 50, nullable: true),
                     Time = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Repeated = table.Column<int>(nullable: false),
                     LastTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
@@ -66,7 +66,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnonymousId = table.Column<Guid>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
-                    UserName = table.Column<string>(maxLength: 100, nullable: true),
+                    UserName = table.Column<string>(maxLength: 50, nullable: true),
                     Time = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     Repeated = table.Column<int>(nullable: false),
                     LastTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
@@ -87,20 +87,20 @@ namespace Husky.Diagnostics.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ExceptionLogs_Md5Comparison",
                 table: "ExceptionLogs",
-                column: "Md5Comparison",
-                unique: false);
+                column: "Md5Comparison")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OperationLogs_Md5Comparison",
                 table: "OperationLogs",
-                column: "Md5Comparison",
-                unique: false);
+                column: "Md5Comparison")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestLogs_Md5Comparison",
                 table: "RequestLogs",
-                column: "Md5Comparison",
-                unique: false);
+                column: "Md5Comparison")
+                .Annotation("SqlServer:Clustered", false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

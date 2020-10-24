@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20201023053757_Init_Diagnostics")]
+    [Migration("20201024153419_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,8 +36,8 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("ExceptionType")
                         .IsRequired()
-                        .HasColumnType("varchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("HttpMethod")
                         .HasColumnType("varchar(6)")
@@ -47,7 +47,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -94,12 +93,13 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(39);
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison");
+                    b.HasIndex("Md5Comparison")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -144,12 +144,13 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison");
+                    b.HasIndex("Md5Comparison")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("OperationLogs");
                 });
@@ -175,6 +176,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -211,12 +213,13 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(39);
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison");
+                    b.HasIndex("Md5Comparison")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("RequestLogs");
                 });

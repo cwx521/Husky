@@ -13,24 +13,24 @@ namespace Husky.Diagnostics
 		public DiagnosticsLogger(IPrincipalUser? principal, IDiagnosticsDbContext db, IHttpContextAccessor httpContextAccessor) {
 			_me = principal;
 			_db = db;
-			_http = httpContextAccessor.HttpContext;
+			_http = httpContextAccessor;
 		}
 
 		internal DiagnosticsLogger(IPrincipalUser principal) {
 			_me = principal;
 			_db = principal.ServiceProvider.GetRequiredService<IDiagnosticsDbContext>();
-			_http = principal.ServiceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+			_http = principal.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 		}
 
 		private readonly IPrincipalUser? _me;
 		private readonly IDiagnosticsDbContext _db;
-		private readonly HttpContext _http;
+		private readonly IHttpContextAccessor _http;
 
 		public void LogException(Exception e) => LogExceptionAsync(e).Wait();
-		public async Task LogExceptionAsync(Exception e) => await _db.LogExceptionAsync(e, _http, _me);
+		public async Task LogExceptionAsync(Exception e) => await _db.LogExceptionAsync(e, _http.HttpContext, _me);
 
 		public void LogRequest() => LogRequestAsync().Wait();
-		public async Task LogRequestAsync() => await _db.LogRequestAsync(_http, _me);
+		public async Task LogRequestAsync() => await _db.LogRequestAsync(_http.HttpContext, _me);
 
 		public void LogOperation(LogLevel logLevel, string message) => LogOperationAsync(logLevel, message).Wait();
 		public async Task LogOperationAsync(LogLevel logLevel, string message) => await _db.LogOperationAsync(_me, logLevel, message);

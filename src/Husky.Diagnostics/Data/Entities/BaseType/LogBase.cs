@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Diagnostics.Data
 {
@@ -9,7 +10,7 @@ namespace Husky.Diagnostics.Data
 
 		public int? UserId { get; set; }
 
-		[StringLength(100)]
+		[StringLength(50)]
 		public string? UserName { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
