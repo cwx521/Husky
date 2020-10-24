@@ -7,7 +7,9 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public async Task<Result> SignInWithPassword(string mobileOrEmail, string passwordClearText) {
+		public Result SignInWithPassword(string mobileOrEmail, string passwordClearText) => SignInWithPasswordAsync(mobileOrEmail, passwordClearText).Result;
+
+		public async Task<Result> SignInWithPasswordAsync(string mobileOrEmail, string passwordClearText) {
 			if ( string.IsNullOrEmpty(mobileOrEmail) || string.IsNullOrEmpty(passwordClearText) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
@@ -25,27 +27,27 @@ namespace Husky.Principal.Users
 
 			var user = await query.Include(x => x.Passwords).SingleOrDefaultAsync();
 			if ( user == null ) {
-				return await AddLoginRecord(LoginResult.AccountNotFound, mobileOrEmail, null, passwordClearText);
+				return await AddLoginRecordAsync(LoginResult.AccountNotFound, mobileOrEmail, null, passwordClearText);
 			}
 
 			//todo: consider to add configuration
 			const int withinMinutes = 10;
 			const int allowAttemptTimes = 5;
 			if ( IsNeedToSuspendFurtherLoginAttemption(user.Id, TimeSpan.FromMinutes(withinMinutes), allowAttemptTimes) ) {
-				return await AddLoginRecord(LoginResult.RejectedContinuousAttemption, mobileOrEmail, user.Id);
+				return await AddLoginRecordAsync(LoginResult.RejectedContinuousAttemption, mobileOrEmail, user.Id);
 			}
 
 			if ( user.Passwords.Count == 0 || user.Passwords.All(x => x.IsObsolete || x.Password != Crypto.SHA1(passwordClearText)) ) {
-				return await AddLoginRecord(LoginResult.ErrorPassword, mobileOrEmail, user.Id, passwordClearText);
+				return await AddLoginRecordAsync(LoginResult.ErrorPassword, mobileOrEmail, user.Id, passwordClearText);
 			}
 			if ( user.Status == RowStatus.Suspended ) {
-				return await AddLoginRecord(LoginResult.RejectedAccountSuspended, mobileOrEmail, user.Id);
+				return await AddLoginRecordAsync(LoginResult.RejectedAccountSuspended, mobileOrEmail, user.Id);
 			}
 			if ( user.Status == RowStatus.Deleted ) {
-				return await AddLoginRecord(LoginResult.RejectedAccountDeleted, mobileOrEmail, user.Id);
+				return await AddLoginRecordAsync(LoginResult.RejectedAccountDeleted, mobileOrEmail, user.Id);
 			}
 			if ( user.Status != RowStatus.Active ) {
-				return await AddLoginRecord(LoginResult.RejectedAccountInactive, mobileOrEmail, user.Id);
+				return await AddLoginRecordAsync(LoginResult.RejectedAccountInactive, mobileOrEmail, user.Id);
 			}
 
 			await _db.Normalize().SaveChangesAsync();
@@ -54,7 +56,7 @@ namespace Husky.Principal.Users
 			_me.DisplayName = user.DisplayName ?? mobileOrEmail.Mask()!;
 			_me.IdentityManager?.SaveIdentity(_me);
 
-			return await AddLoginRecord(LoginResult.Success, mobileOrEmail, user.Id);
+			return await AddLoginRecordAsync(LoginResult.Success, mobileOrEmail, user.Id);
 		}
 
 		private bool IsNeedToSuspendFurtherLoginAttemption(int userId, TimeSpan withinTime, int maxAllowedAttemptionTimes = 5) {

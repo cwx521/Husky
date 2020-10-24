@@ -10,7 +10,9 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public async Task<Result> SignInWithPhone(string mobile, string verificationCode) {
+		public Result SignInWithPhone(string mobile, string verificationCode) => SignInWithPhoneAsync(mobile, verificationCode).Result;
+
+		public async Task<Result> SignInWithPhoneAsync(string mobile, string verificationCode) {
 			if ( string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(verificationCode) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
@@ -25,7 +27,7 @@ namespace Husky.Principal.Users
 
 			//验证码不通过
 			if ( !verifyResult.Ok ) {
-				return await AddLoginRecord(LoginResult.ErrorTwoFactorCode, mobile, user?.Id);
+				return await AddLoginRecordAsync(LoginResult.ErrorTwoFactorCode, mobile, user?.Id);
 			}
 
 			//如果通过手机号没找到已注册用户，判断用户当前是否已经通过其它方式登录，是的话直接使用该用户身份
@@ -49,13 +51,13 @@ namespace Husky.Principal.Users
 			else {
 				//用户记录是异常状态时，阻止获得登录身份
 				if ( user.Status == RowStatus.Suspended ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountSuspended, mobile, user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountSuspended, mobile, user.Id);
 				}
 				if ( user.Status == RowStatus.Deleted ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountDeleted, mobile, user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountDeleted, mobile, user.Id);
 				}
 				if ( user.Status != RowStatus.Active ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountInactive, mobile, user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountInactive, mobile, user.Id);
 				}
 			}
 
@@ -66,7 +68,7 @@ namespace Husky.Principal.Users
 			_me.IsConsolidated = true;
 			_me.IdentityManager?.SaveIdentity(_me);
 
-			return await AddLoginRecord(LoginResult.Success, mobile, user.Id);
+			return await AddLoginRecordAsync(LoginResult.Success, mobile, user.Id);
 		}
 	}
 }

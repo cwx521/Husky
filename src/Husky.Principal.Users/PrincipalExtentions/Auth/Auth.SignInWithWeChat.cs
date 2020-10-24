@@ -11,19 +11,19 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public async Task<Result> SignInWithWeChat(string wechatCode, WeChatAppIdSecret idSecret) {
+		public Result SignInWithWeChat(string wechatCode, WeChatAppIdSecret idSecret) => SignInWithWeChatAsync(wechatCode, idSecret).Result;
+
+		public async Task<Result> SignInWithWeChatAsync(string wechatCode, WeChatAppIdSecret idSecret) {
 			if ( idSecret.Type == null ) {
-				throw new ArgumentException($"未指明 {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Type)}");
+				throw new ArgumentException($"Unknown {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Type)}");
 			}
 
 			var wechat = _me.ServiceProvider.GetRequiredService<WeChatService>().User();
 
-			var accessToken = await wechat.GetUserAccessTokenAsync(wechatCode, idSecret);
-			if ( accessToken == null ) {
+			if ( !(await wechat.GetUserAccessTokenAsync(wechatCode, idSecret) is WeChatUserAccessToken accessToken) ) {
 				return new Failure(LoginResult.FailureWeChatRequestToken.ToLabel());
 			}
-			var wechatUser = await wechat.GetUserInfoAsync(accessToken);
-			if ( wechatUser == null ) {
+			if ( !(await wechat.GetUserInfoAsync(accessToken) is WeChatUserResult wechatUser) ) {
 				return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 			}
 
@@ -49,13 +49,13 @@ namespace Husky.Principal.Users
 			else {
 				//用户记录是异常状态时，阻止获得登录身份
 				if ( user.Status == RowStatus.Suspended ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountSuspended, "WeChatApi", user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountSuspended, "WeChatApi", user.Id);
 				}
 				if ( user.Status == RowStatus.Deleted ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountDeleted, "WeChatApi", user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountDeleted, "WeChatApi", user.Id);
 				}
 				if ( user.Status != RowStatus.Active ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountInactive, "WeChatApi", user.Id);
+					return await AddLoginRecordAsync(LoginResult.RejectedAccountInactive, "WeChatApi", user.Id);
 				}
 			}
 
@@ -86,7 +86,7 @@ namespace Husky.Principal.Users
 			_me.DisplayName = user.DisplayName!;
 			_me.IdentityManager?.SaveIdentity(_me);
 
-			return await AddLoginRecord(LoginResult.Success, "WeChatApi", user.Id);
+			return await AddLoginRecordAsync(LoginResult.Success, "WeChatApi", user.Id);
 		}
 	}
 }
