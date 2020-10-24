@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Husky.Principal.Users.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public async Task<Result> AddLoginRecord(LoginResult loginResult, string inputAccount, int? knownUserId = null, string? sickPassword = null) {
-			var ip = _http.Connection.RemoteIpAddress;
-			var ipString = ip.MapToIPv4().ToString();
+		public async Task<Result> AddLoginRecord(LoginResult loginResult, string? inputAccount, int? knownUserId = null, string? sickPassword = null) {
+			var http = _me.ServiceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
 
-			var encryptedSickPassword = string.IsNullOrEmpty(sickPassword) || inputAccount.Length == 0
+			var encryptedSickPassword = string.IsNullOrEmpty(sickPassword) || string.IsNullOrEmpty(inputAccount)
 				? sickPassword
 				: sickPassword.Length > 25
 					? sickPassword.Left(88)
@@ -20,8 +21,8 @@ namespace Husky.Principal.Users
 				UserId = knownUserId,
 				AttemptedAccount = inputAccount ?? "",
 				SickPassword = encryptedSickPassword,
-				UserAgent = _http.Request.UserAgent(),
-				Ip = ipString
+				UserAgent = http?.Request.UserAgent(),
+				Ip = http?.Connection.RemoteIpAddress.MapToIPv4().ToString()
 			});
 
 			await _db.Normalize().SaveChangesAsync();

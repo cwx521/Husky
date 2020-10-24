@@ -60,7 +60,7 @@ namespace Husky.TwoFactor
 
 			if ( isEmail ) {
 				if ( _mailSender == null ) {
-					throw new Exception($"Required to inject service {typeof(IMailSender).Assembly.GetName()}");
+					throw new Exception($"Required to inject service {nameof(IMailSender)}");
 				}
 				var wrappedSignName = overrideSmsSignName == null ? null : $"【{overrideSmsSignName}】 ";
 				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "{wrappedSignName}验证码： {0}", code.Code);
@@ -69,7 +69,7 @@ namespace Husky.TwoFactor
 
 			else if ( isMobile ) {
 				if ( _smsSender == null ) {
-					throw new Exception($"Required to inject service {typeof(ISmsSender).Assembly.GetName()}");
+					throw new Exception($"Required to inject service {nameof(IMailSender)}");
 				}
 				var shortMessage = new SmsBody {
 					SignName = overrideSmsSignName,

@@ -11,16 +11,16 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatJsApiService
 	{
-		public WeChatJsApiService(WeChatAppConfig wechatConfig, IHttpContextAccessor http, IMemoryCache cache) {
+		public WeChatJsApiService(WeChatAppConfig wechatConfig, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
 			_wechatConfig = wechatConfig;
-			_http = http.HttpContext;
+			_httpContextAccessor = httpContextAccessor;
 			_cache = cache;
 		}
 
 		private readonly WeChatAppConfig _wechatConfig;
-		private readonly HttpContext _http;
 		private readonly IMemoryCache _cache;
-		private readonly HttpClient _httpClient = new HttpClient();
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private static readonly HttpClient _httpClient = new HttpClient();
 
 		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken() => GetMobilePlatformGeneralAccessTokenAsync().Result;
 		public async Task<WeChatGeneralAccessToken> GetMobilePlatformGeneralAccessTokenAsync() {
@@ -75,7 +75,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			sb.Append("jsapi_ticket=" + config.Ticket);
 			sb.Append("&noncestr=" + config.NonceStr);
 			sb.Append("&timestamp=" + config.Timestamp.ToString());
-			sb.Append("&url=" + _http.Request.FullUrl().Split('#').First());
+			sb.Append("&url=" + _httpContextAccessor.HttpContext.Request.FullUrl().Split('#').First());
 
 			config.RawString = sb.ToString();
 			config.Signature = Crypto.SHA1(config.RawString);

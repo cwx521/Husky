@@ -16,18 +16,13 @@ namespace Husky.Principal.Users
 				throw new ArgumentException($"未指明 {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Type)}");
 			}
 
-			var wechat = _me.ServiceProvider.GetService<WeChatService>();
-			if ( wechat == null ) {
-				throw new Exception($"缺少微信服务组件 {typeof(WeChatService).Assembly.GetName()}");
-			}
+			var wechat = _me.ServiceProvider.GetRequiredService<WeChatService>().User();
 
-			var wechatUserService = wechat.User();
-
-			var accessToken = wechatUserService.GetUserAccessToken(wechatCode, idSecret);
+			var accessToken = await wechat.GetUserAccessTokenAsync(wechatCode, idSecret);
 			if ( accessToken == null ) {
 				return new Failure(LoginResult.FailureWeChatRequestToken.ToLabel());
 			}
-			var wechatUser = wechatUserService.GetUserInfo(accessToken);
+			var wechatUser = await wechat.GetUserInfoAsync(accessToken);
 			if ( wechatUser == null ) {
 				return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 			}

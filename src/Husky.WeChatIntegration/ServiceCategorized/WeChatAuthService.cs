@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -14,7 +13,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private readonly WeChatAppConfig _wechatConfig;
-		private readonly HttpClient _httpClient = new HttpClient();
+		private static HttpClient? _httpClient;
 
 		public string CreateWebQrCodeLoginScript(string redirectUri, string styleSheetUrl) {
 			_wechatConfig.RequireOpenPlatformSettings();
@@ -66,6 +65,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
+			_httpClient ??= new HttpClient();
 			var json = await _httpClient.GetStringAsync(url);
 			var d = JsonConvert.DeserializeObject<dynamic>(json);
 

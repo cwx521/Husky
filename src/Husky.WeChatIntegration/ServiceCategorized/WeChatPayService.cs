@@ -16,13 +16,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public WeChatPayService(WeChatAppConfig wechatConfig) {
 			_wechatConfig = wechatConfig;
 			_wechatConfig.RequireMerchantSettings();
-			_certifiedWebClient = new CertifiedWebClient(_wechatConfig.MerchantId!);
-			_httpClient = new HttpClient();
 		}
 
 		private readonly WeChatAppConfig _wechatConfig;
-		private readonly CertifiedWebClient _certifiedWebClient;
-		private readonly HttpClient _httpClient;
+		private static readonly HttpClient _httpClient = new HttpClient();
 
 		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
@@ -204,7 +201,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
 			if ( useCert ) {
-				return await _certifiedWebClient.UploadStringTaskAsync(wechatApiUrl, xml);
+				using var client = new CertifiedWebClient(_wechatConfig.MerchantId!);
+				return await client.UploadStringTaskAsync(wechatApiUrl, xml);
 			}
 
 			var response = await _httpClient.PostAsync(wechatApiUrl, new StringContent(xml));

@@ -1,29 +1,31 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Husky.Principal.Users.Data;
 using Husky.TwoFactor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public async Task<Result> SignInWithPhone(string mobileNumber, string verificationCode) {
-			if ( string.IsNullOrEmpty(mobileNumber) || string.IsNullOrEmpty(verificationCode) ) {
+		public async Task<Result> SignInWithPhone(string mobile, string verificationCode) {
+			if ( string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(verificationCode) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
-			if ( !mobileNumber.IsMainlandMobile() ) {
+			if ( !mobile.IsMainlandMobile() ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
 
 			//读取用户记录
-			var user = _db.Users.SingleOrDefault(x => x.Phone != null && x.Phone.Number == mobileNumber);
-			var twoFactor = _me.ServiceProvider.GetService<ITwoFactorManager>();
-			var verifyResult = await twoFactor.VerifyCodeAsync(mobileNumber, verificationCode, true);
+			var twoFactor = _me.ServiceProvider.GetRequiredService<ITwoFactorManager>();
+			var verifyResult = await twoFactor.VerifyCodeAsync(mobile, verificationCode, true);
+			var user = await _db.Users.SingleOrDefaultAsync(x => x.Phone != null && x.Phone.Number == mobile);
 
 			//验证码不通过
 			if ( !verifyResult.Ok ) {
-				return await AddLoginRecord(LoginResult.ErrorTwoFactorCode, mobileNumber, user?.Id);
+				return await AddLoginRecord(LoginResult.ErrorTwoFactorCode, mobile, user?.Id);
 			}
 
 			//如果通过手机号没找到已注册用户，判断用户当前是否已经通过其它方式登录，是的话直接使用该用户身份
@@ -38,7 +40,7 @@ namespace Husky.Principal.Users
 			if ( user == null ) {
 				user = new User {
 					Phone = new UserPhone {
-						Number = mobileNumber,
+						Number = mobile,
 						IsVerified = true
 					}
 				};
@@ -47,24 +49,24 @@ namespace Husky.Principal.Users
 			else {
 				//用户记录是异常状态时，阻止获得登录身份
 				if ( user.Status == RowStatus.Suspended ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountSuspended, mobileNumber, user.Id);
+					return await AddLoginRecord(LoginResult.RejectedAccountSuspended, mobile, user.Id);
 				}
 				if ( user.Status == RowStatus.Deleted ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountDeleted, mobileNumber, user.Id);
+					return await AddLoginRecord(LoginResult.RejectedAccountDeleted, mobile, user.Id);
 				}
 				if ( user.Status != RowStatus.Active ) {
-					return await AddLoginRecord(LoginResult.RejectedAccountInactive, mobileNumber, user.Id);
+					return await AddLoginRecord(LoginResult.RejectedAccountInactive, mobile, user.Id);
 				}
 			}
 
 			await _db.Normalize().SaveChangesAsync();
 
 			_me.Id = user.Id;
-			_me.DisplayName = user.DisplayName ?? mobileNumber.Mask()!;
+			_me.DisplayName = user.DisplayName ?? mobile.Mask()!;
 			_me.IsConsolidated = true;
 			_me.IdentityManager?.SaveIdentity(_me);
 
-			return await AddLoginRecord(LoginResult.Success, mobileNumber, user.Id);
+			return await AddLoginRecord(LoginResult.Success, mobile, user.Id);
 		}
 	}
 }

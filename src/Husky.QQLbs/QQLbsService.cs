@@ -22,7 +22,7 @@ namespace Husky.Lbs.QQLbs
 		}
 
 		private readonly QQLbsSettings _settings;
-		private readonly HttpClient _httpClient = new HttpClient();
+		private static readonly HttpClient _httpClient = new HttpClient();
 
 		public async Task<Address?> GetAddressAsync(IPAddress ip) {
 			var ipString = ip.MapToIPv4().ToString();

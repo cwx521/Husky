@@ -6,8 +6,8 @@ namespace Husky.WeChatIntegration
 {
 	public class WeChatService
 	{
-		public WeChatService(WeChatAppConfig wechatConfig, IHttpContextAccessor http, IMemoryCache cache) {
-			_http = http;
+		public WeChatService(WeChatAppConfig wechatConfig, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
+			_http = httpContextAccessor;
 			_cache = cache;
 			Config = wechatConfig;
 		}

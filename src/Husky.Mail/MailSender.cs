@@ -17,7 +17,7 @@ namespace Husky.Mail
 			_mailDb = mailDb;
 		}
 
-		public MailSender(IMailDbContext mailDb, ISmtpProvider? givenSmtp) {
+		public MailSender(IMailDbContext mailDb, ISmtpProvider givenSmtp) {
 			_mailDb = mailDb;
 			_smtp = givenSmtp;
 		}

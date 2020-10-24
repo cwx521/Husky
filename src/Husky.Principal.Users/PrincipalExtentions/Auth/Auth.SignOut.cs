@@ -7,6 +7,7 @@
 				_me.AbandonCache();
 				_me.IdentityManager?.DeleteIdentity();
 				_me.Id = 0;
+				_me.IsConsolidated = false;
 			}
 		}
 	}
