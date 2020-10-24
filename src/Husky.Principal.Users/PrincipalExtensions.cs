@@ -37,7 +37,7 @@ namespace Husky.Principal.Users
 		}
 
 		public static UserAuthManager Auth(this IPrincipalUser principal) => new UserAuthManager(principal);
-		//public static UserProfileManager Profile(this IPrincipalUser principal) => new UserProfileManager(principal);
+		public static UserProfileManager Profile(this IPrincipalUser principal) => new UserProfileManager(principal);
 		//public static UserGroupsManager Groups(this IPrincipalUser principal) => new UserGroupsManager(principal);
 		//public static UserMessagesManager Messages(this IPrincipalUser principal) => new UserMessagesManager(principal);
 	}
