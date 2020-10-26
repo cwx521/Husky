@@ -8,7 +8,6 @@ namespace Husky.Principal.Administration
 {
 	public static class AdminRolesDataManager
 	{
-		public static Result<AdminRole> CreateRole(this IAdminsDbContext db, string roleName, long powers) => CreateRoleAsync(db, roleName, powers).Result;
 		public static async Task<Result<AdminRole>> CreateRoleAsync(this IAdminsDbContext db, string roleName, long powers) {
 			if ( db.AdminRoles.Any(x => x.RoleName == roleName) ) {
 				return new Failure<AdminRole>($"管理组名称“{roleName}”已存在");
@@ -29,9 +28,8 @@ namespace Husky.Principal.Administration
 			return new Success<AdminRole>(adminRole);
 		}
 
-		public static Result DeleteRole(this IAdminsDbContext db, int roleId) => DeleteRoleAsync(db, roleId).Result;
 		public static async Task<Result> DeleteRoleAsync(this IAdminsDbContext db, int roleId) {
-			var adminRole = db.AdminRoles.Find(roleId);
+			var adminRole = await db.AdminRoles.FindAsync(roleId);
 			if ( adminRole != null ) {
 				db.AdminRoles.Remove(adminRole);
 			}
@@ -39,7 +37,6 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result ChangeRolePropValue<T>(this IAdminsDbContext db, int roleId, string adminRolePropertyName, T propertyValue) => ChangeRolePropValueAsync<T>(db, roleId, adminRolePropertyName, propertyValue).Result;
 		public static async Task<Result> ChangeRolePropValueAsync<T>(this IAdminsDbContext db, int roleId, string adminRolePropertyName, T propertyValue) {
 			var allowedPropertyNames = new[] {
 				nameof(AdminRole.RoleName),
@@ -49,7 +46,7 @@ namespace Husky.Principal.Administration
 				return new Failure("不允许修改该字段内容");
 			}
 
-			var adminRole = db.AdminRoles.Find(roleId);
+			var adminRole = await db.AdminRoles.FindAsync(roleId);
 			if ( adminRole == null ) {
 				return new Failure($"管理组#{roleId}不存在");
 			}
@@ -65,10 +62,7 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result ChangeRoleName(this IAdminsDbContext db, int roleId, string roleName) => db.ChangeRolePropValue(roleId, nameof(AdminRole.RoleName), roleName);
 		public static async Task<Result> ChangeRoleNameAsync(this IAdminsDbContext db, int roleId, string roleName) => await db.ChangeRolePropValueAsync(roleId, nameof(AdminRole.RoleName), roleName);
-
-		public static Result ChangeRolePowersAssignment(this IAdminsDbContext db, int roleId, long powers) => db.ChangeRolePropValue(roleId, nameof(AdminRole.Powers), powers);
 		public static async Task<Result> ChangeRolePowersAssignmentAsync(this IAdminsDbContext db, int roleId, long powers) => await db.ChangeRolePropValueAsync(roleId, nameof(AdminRole.Powers), powers);
 	}
 }

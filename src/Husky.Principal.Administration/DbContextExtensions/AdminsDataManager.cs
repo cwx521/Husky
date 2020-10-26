@@ -8,12 +8,11 @@ namespace Husky.Principal.Administration
 {
 	public static class AdminsDataManager
 	{
-		public static Result<Admin> CreateAdmin(this IAdminsDbContext db, int associatedUserId, string displayName) => CreateAdminAsync(db, associatedUserId, displayName).Result;
 		public static async Task<Result<Admin>> CreateAdminAsync(this IAdminsDbContext db, int associatedUserId, string displayName) {
-			var row = db.Admins
+			var row = await db.Admins
 				.Include(x => x.InRoles)
 				.Where(x => x.UserId == associatedUserId)
-				.SingleOrDefault();
+				.SingleOrDefaultAsync();
 
 			//Create if it does not exist
 			if ( row == null ) {
@@ -40,9 +39,8 @@ namespace Husky.Principal.Administration
 			return new Success<Admin>(row);
 		}
 
-		public static Result ChangeDisplayName(this IAdminsDbContext db, Guid adminId, string newDisplayName) => ChangeDisplayNameAsync(db, adminId, newDisplayName).Result;
 		public static async Task<Result> ChangeDisplayNameAsync(this IAdminsDbContext db, Guid adminId, string newDisplayName) {
-			var row = db.Admins.Find(adminId);
+			var row = await db.Admins.FindAsync(adminId);
 			if ( row == null ) {
 				return new Failure($"管理员不存在");
 			}
@@ -58,12 +56,11 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result SetAdminRoles(this IAdminsDbContext db, Guid adminId, params int[] adminRoleIdArray) => SetAdminRolesAsync(db, adminId, adminRoleIdArray).Result;
 		public static async Task<Result> SetAdminRolesAsync(this IAdminsDbContext db, Guid adminId, params int[] adminRoleIdArray) {
-			var row = db.Admins
+			var row = await db.Admins
 				.Include(x => x.InRoles)
 				.Where(x => x.Id == adminId)
-				.SingleOrDefault();
+				.SingleOrDefaultAsync();
 
 			if ( row == null ) {
 				return new Failure($"管理员不存在");
@@ -78,7 +75,6 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result GrantAdminRole(this IAdminsDbContext db, Guid adminId, int adminRoleId) => GrantAdminRoleAsync(db, adminId, adminRoleId).Result;
 		public static async Task<Result> GrantAdminRoleAsync(this IAdminsDbContext db, Guid adminId, int adminRoleId) {
 			if ( !db.Admins.Any(x => x.Id == adminId) ) {
 				return new Failure("管理员用户不存在");
@@ -92,9 +88,8 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result WithdrawAdminRole(this IAdminsDbContext db, Guid adminId, int adminRoleId) => WithdrawAdminRoleAsync(db, adminId, adminRoleId).Result;
 		public static async Task<Result> WithdrawAdminRoleAsync(this IAdminsDbContext db, Guid adminId, int adminRoleId) {
-			var row = db.AdminInRoles.SingleOrDefault(x => x.AdminId == adminId && x.RoleId == adminRoleId);
+			var row = await db.AdminInRoles.SingleOrDefaultAsync(x => x.AdminId == adminId && x.RoleId == adminRoleId);
 			if ( row != null ) {
 				db.AdminInRoles.Remove(row);
 				await db.Normalize().SaveChangesAsync();
@@ -102,9 +97,8 @@ namespace Husky.Principal.Administration
 			return new Success();
 		}
 
-		public static Result DeleteAdmin(this IAdminsDbContext db, Guid adminId, bool suspendInsteadOfDeleting = false) => DeleteAdminAsync(db, adminId, suspendInsteadOfDeleting).Result;
 		public static async Task<Result> DeleteAdminAsync(this IAdminsDbContext db, Guid adminId, bool suspendInsteadOfDeleting = false) {
-			var row = db.Admins.Find(adminId);
+			var row = await db.Admins.FindAsync(adminId);
 			if ( row != null ) {
 				row.Status = suspendInsteadOfDeleting ? RowStatus.Suspended : RowStatus.Deleted;
 				await db.Normalize().SaveChangesAsync();
