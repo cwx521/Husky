@@ -35,7 +35,7 @@ namespace Husky.Principal.Users
 				}
 			}
 
-			var userPhone = _db.UserPhones.Find(_me.Id);
+			var userPhone = await _db.UserPhones.FindAsync(_me.Id);
 			if ( userPhone == null ) {
 				userPhone = new UserPhone {
 					UserId = _me.Id

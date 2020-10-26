@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Husky.Principal.Users.Data;
 using Husky.TwoFactor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
@@ -13,7 +14,11 @@ namespace Husky.Principal.Users
 				return new Failure("需要先登录");
 			}
 
-			var oldPasswords = _db.UserPasswords.Where(x => !x.IsObsolete).Where(x => x.UserId == _me.Id).ToList();
+			var oldPasswords = await _db.UserPasswords
+				.Where(x => !x.IsObsolete)
+				.Where(x => x.UserId == _me.Id)
+				.ToListAsync();
+
 			oldPasswords.ForEach(x => x.IsObsolete = true);
 
 			_db.UserPasswords.Add(new UserPassword {
@@ -26,7 +31,7 @@ namespace Husky.Principal.Users
 		}
 
 		public async Task<Result> UseNewPasswordWithPhoneValidation(string newPassword, string verificationCode) {
-			var userPhone = _db.UserPhones.Find(_me.Id);
+			var userPhone = await _db.UserPhones.FindAsync(_me.Id);
 			if ( userPhone == null ) {
 				return new Failure("需要先绑定手机");
 			}

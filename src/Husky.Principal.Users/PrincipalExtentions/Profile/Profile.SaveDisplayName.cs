@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Husky.Principal.Users.Data;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Husky.Principal.Users
@@ -21,7 +22,8 @@ namespace Husky.Principal.Users
 				}
 			}
 
-			var user = _db.Users.Find(_me.Id);
+			var user = new User { Id = _me.Id };
+			_db.Users.Attach(user);
 			user.DisplayName = displayName;
 
 			await _db.Normalize().SaveChangesAsync();

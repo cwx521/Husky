@@ -13,7 +13,7 @@ namespace Husky.Principal.Users
 				return new Failure("身份证号码不正确");
 			}
 
-			var userReal = _db.UserReals.Find(_me.Id);
+			var userReal = await _db.UserReals.FindAsync(_me.Id);
 			if ( userReal == null ) {
 				userReal = new UserReal {
 					UserId = _me.Id

@@ -27,7 +27,7 @@ namespace Husky.Principal.Users
 				}
 			}
 
-			var userEmail = _db.UserEmails.Find(_me.Id);
+			var userEmail = await _db.UserEmails.FindAsync(_me.Id);
 			if ( userEmail == null ) {
 				userEmail = new UserEmail {
 					UserId = _me.Id,

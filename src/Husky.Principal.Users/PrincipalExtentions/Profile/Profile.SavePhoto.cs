@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Husky.Principal.Users.Data;
 
 namespace Husky.Principal.Users
 {
@@ -9,7 +10,8 @@ namespace Husky.Principal.Users
 				return new Failure("需要先登录");
 			}
 
-			var user = _db.Users.Find(_me.Id);
+			var user = new User { Id = _me.Id };
+			_db.Users.Attach(user);
 			user.PhotoUrl = photoUrl;
 
 			await _db.Normalize().SaveChangesAsync();
