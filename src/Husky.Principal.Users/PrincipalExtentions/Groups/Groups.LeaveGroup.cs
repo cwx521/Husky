@@ -16,6 +16,7 @@ namespace Husky.Principal.Users
 			}
 
 			await _db.Normalize().SaveChangesAsync();
+			_me.CacheData().TryRemove(_groupsCacheKey, out _);
 			return new Success();
 		}
 
