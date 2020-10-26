@@ -22,7 +22,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private static readonly HttpClient _httpClient = new HttpClient();
 
-		public WeChatGeneralAccessToken GetMobilePlatformGeneralAccessToken() => GetMobilePlatformGeneralAccessTokenAsync().Result;
 		public async Task<WeChatGeneralAccessToken> GetMobilePlatformGeneralAccessTokenAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
@@ -44,7 +43,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
-		public string GetJsApiTicket() => GetJsApiTicketAsync().Result;
 		public async Task<string> GetJsApiTicketAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
@@ -60,7 +58,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
-		public WeChatJsApiConfig CreateJsApiConfig() => CreateJsApiConfigAsync().Result;
 		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync() {
 			_wechatConfig.RequireMobilePlatformSettings();
 
@@ -83,7 +80,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private const string _defaultEnabledJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow";
-		public string CreateJsApiScript(string enableJsApiNames = _defaultEnabledJsApiNames) => CreateJsApiScriptAsync(enableJsApiNames).Result;
 		public async Task<string> CreateJsApiScriptAsync(string enableJsApiNames = _defaultEnabledJsApiNames) {
 			_wechatConfig.RequireMobilePlatformSettings();
 

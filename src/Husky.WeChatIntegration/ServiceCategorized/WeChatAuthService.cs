@@ -15,7 +15,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly WeChatAppConfig _wechatConfig;
 		private static HttpClient? _httpClient;
 
-		public string CreateWebQrCodeLoginScript(string redirectUri, string styleSheetUrl) {
+		public string CreateWebQrCodeLoginScript(string redirectUrl, string styleSheetUrl) {
 			_wechatConfig.RequireOpenPlatformSettings();
 
 			var targetElementId = "_" + Crypto.RandomString();
@@ -32,7 +32,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 								scope: 'snsapi_login',
 								id: '" + targetElementId + @"',
 								appid: '" + _wechatConfig.OpenPlatformAppId + @"',
-								redirect_uri: '" + redirectUri + @"',
+								redirect_uri: '" + redirectUrl + @"',
 								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatConfig.OpenPlatformAppId!) + @"',
 								href: '" + styleSheetUrl + @"',
 								style: ''
@@ -55,7 +55,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				   $"#wechat_redirect";
 		}
 
-		public WeChatMiniProgramLoginResult ProceedMiniProgramLogin(string code) => ProceedMiniProgramLoginAsync(code).Result;
 		public async Task<WeChatMiniProgramLoginResult> ProceedMiniProgramLoginAsync(string code) {
 			_wechatConfig.RequireMiniProgramSettings();
 

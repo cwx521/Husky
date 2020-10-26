@@ -43,7 +43,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayOrderModelUnifiedResult CreateUnifedOrder(WeChatPayOrderModel model) => CreateUnifedOrderAsync(model).Result;
 		public async Task<WeChatPayOrderModelUnifiedResult> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -89,7 +88,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayOrderQueryResult QueryOrder(string appId, string orderNo) => QueryOrderAsync(appId, orderNo).Result;
 		public async Task<WeChatPayOrderQueryResult> QueryOrderAsync(string appId, string orderNo) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
@@ -117,7 +115,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundResult Refund(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) => RefundAsync(appId, orderNo, newRefundRequestNo, totalOrderAmount, refundAmount, refundReason).Result;
 		public async Task<WeChatPayRefundResult> RefundAsync(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
 			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
@@ -150,7 +147,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public WeChatPayRefundQueryResult QueryRefund(string appId, string refundRequestNo) => QueryRefundAsync(appId, refundRequestNo).Result;
 		public async Task<WeChatPayRefundQueryResult> QueryRefundAsync(string appId, string refundRequestNo) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
@@ -174,7 +170,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public string PostThenGetResultXml(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) => PostThenGetResultXmlAsync(wechatApiUrl, apiParameters, useCert).Result;
 		public async Task<string> PostThenGetResultXmlAsync(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) {
 			var sb = new StringBuilder();
 			apiParameters.Add("sign_type", "MD5");
@@ -209,7 +204,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await response.Content.ReadAsStringAsync();
 		}
 
-		public WeChatPayNotifyResult ParseNotifyResult(Stream stream) => ParseNotifyResultAsync(stream).Result;
 		public async Task<WeChatPayNotifyResult> ParseNotifyResultAsync(Stream stream) {
 			try {
 				var bytes = new byte[(int)stream.Length];

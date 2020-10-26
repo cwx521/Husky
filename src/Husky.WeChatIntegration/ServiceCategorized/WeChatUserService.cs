@@ -13,9 +13,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly WeChatAppConfig _wechatConfig;
 		private static readonly HttpClient _httpClient = new HttpClient();
 
-		public WeChatUserResult? GetUserInfo(WeChatUserAccessToken token) => GetUserInfo(token.OpenId, token.AccessToken);
-		public WeChatUserResult? GetUserInfo(string openId, string accessToken) => GetUserInfoAsync(openId, accessToken).Result;
-
 		public async Task<WeChatUserResult?> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
 		public async Task<WeChatUserResult?> GetUserInfoAsync(string openId, string accessToken) {
 			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
@@ -37,10 +34,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
 			};
 		}
-
-		public WeChatUserAccessToken? GetOpenPlatformUserAccessToken(string code) => GetOpenPlatformUserAccessTokenAsync(code).Result;
-		public WeChatUserAccessToken? GetMobilePlatformUserAccessToken(string code) => GetMobilePlatformUserAccessTokenAsync(code).Result;
-		public WeChatUserAccessToken? GetUserAccessToken(string code, WeChatAppIdSecret overrideIdSecret) => GetUserAccessTokenAsync(code, overrideIdSecret).Result;
 
 		public async Task<WeChatUserAccessToken?> GetOpenPlatformUserAccessTokenAsync(string code) {
 			_wechatConfig.RequireOpenPlatformSettings();
@@ -69,11 +62,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			return await GetUserAccessTokenFromResolvedUrlAsync(url);
 		}
-
-
-		public WeChatUserAccessToken? RefreshOpenPlatformUserAccessToken(string refreshToken) => RefreshOpenPlatformUserAccessTokenAsync(refreshToken).Result;
-		public WeChatUserAccessToken? RefreshMobilePlatformUserAccessToken(string refreshToken) => RefreshMobilePlatformUserAccessTokenAsync(refreshToken).Result;
-		public WeChatUserAccessToken? RefreshUserAccessToken(string refreshToken, WeChatAppIdSecret overrideIdSecret) => RefreshUserAccessTokenAsync(refreshToken, overrideIdSecret).Result;
 
 		public async Task<WeChatUserAccessToken?> RefreshOpenPlatformUserAccessTokenAsync(string refreshToken) {
 			_wechatConfig.RequireOpenPlatformSettings();
