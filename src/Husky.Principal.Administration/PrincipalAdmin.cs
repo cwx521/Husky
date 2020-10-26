@@ -30,7 +30,7 @@ namespace Husky.Principal.Administration
 		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MatchPowers<TEnum>().HasFlag(power);
 
 
-		public const string AdminDataKey = "AdminData";
+		public const string AdminDataKey = nameof(AdminViewModel);
 
 		protected virtual AdminViewModel? InitAdminData() {
 			if ( Principal.IsAnonymous ) {

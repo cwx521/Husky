@@ -8,7 +8,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UseEmail(string newEmailAddress, string? verificationCode = null) {
+		public async Task<Result> SaveEmailAsync(string newEmailAddress, string? verificationCode = null) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}

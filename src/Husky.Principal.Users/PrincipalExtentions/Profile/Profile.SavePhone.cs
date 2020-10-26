@@ -8,7 +8,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UsePhone(string newNumber, string? verificationCode) {
+		public async Task<Result> SavePhoneAsync(string newNumber, string? verificationCode) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}

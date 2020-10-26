@@ -7,8 +7,6 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public Result SignInWithPassword(string mobileOrEmail, string passwordClearText) => SignInWithPasswordAsync(mobileOrEmail, passwordClearText).Result;
-
 		public async Task<Result> SignInWithPasswordAsync(string mobileOrEmail, string passwordClearText) {
 			if ( string.IsNullOrEmpty(mobileOrEmail) || string.IsNullOrEmpty(passwordClearText) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());

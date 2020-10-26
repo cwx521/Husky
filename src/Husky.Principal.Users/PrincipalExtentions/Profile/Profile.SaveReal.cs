@@ -5,7 +5,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UseReal(string socialIdNumber, string realName, bool isVerified = false) {
+		public async Task<Result> SaveRealAsync(string socialIdNumber, string realName, bool isVerified = false) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}

@@ -11,8 +11,6 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public Result SignInWithWeChat(string wechatCode, WeChatAppIdSecret idSecret) => SignInWithWeChatAsync(wechatCode, idSecret).Result;
-
 		public async Task<Result> SignInWithWeChatAsync(string wechatCode, WeChatAppIdSecret idSecret) {
 			if ( idSecret.Type == null ) {
 				throw new ArgumentException($"Unknown {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Type)}");

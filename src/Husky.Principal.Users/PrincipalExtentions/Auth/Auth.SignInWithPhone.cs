@@ -10,8 +10,6 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public Result SignInWithPhone(string mobile, string verificationCode) => SignInWithPhoneAsync(mobile, verificationCode).Result;
-
 		public async Task<Result> SignInWithPhoneAsync(string mobile, string verificationCode) {
 			if ( string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(verificationCode) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());

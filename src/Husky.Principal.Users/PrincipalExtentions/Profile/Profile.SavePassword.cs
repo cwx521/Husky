@@ -8,7 +8,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UseNewPassword(string newPassword) {
+		public async Task<Result> SaveNewPasswordAsync(string newPassword) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
@@ -39,7 +39,7 @@ namespace Husky.Principal.Users
 			}
 			userPhone.IsVerified = true;
 
-			return await UseNewPassword(newPassword);
+			return await SaveNewPasswordAsync(newPassword);
 		}
 	}
 }

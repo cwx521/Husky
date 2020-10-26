@@ -7,8 +7,6 @@ namespace Husky.Principal.Users
 {
 	public partial class UserAuthManager
 	{
-		public Result AddLoginRecord(LoginResult loginResult, string? inputAccount, int? knownUserId = null, string? sickPassword = null) => AddLoginRecordAsync(loginResult, inputAccount, knownUserId, sickPassword).Result;
-
 		public async Task<Result> AddLoginRecordAsync(LoginResult loginResult, string? inputAccount, int? knownUserId = null, string? sickPassword = null) {
 			var http = _me.ServiceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext;
 

@@ -6,7 +6,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UseDisplayName(string displayName, bool allowDuplication = false) {
+		public async Task<Result> SaveDisplayNameAsync(string displayName, bool allowDuplication = false) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}

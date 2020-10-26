@@ -4,7 +4,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserProfileManager
 	{
-		public async Task<Result> UsePhoto(string photoUrl) {
+		public async Task<Result> SavePhotoAsync(string photoUrl) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}

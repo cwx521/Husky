@@ -5,7 +5,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserGroupsManager
 	{
-		public async Task<Result> LeaveGroup(int groupId) {
+		public async Task<Result> LeaveGroupAsync(int groupId) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
@@ -19,6 +19,6 @@ namespace Husky.Principal.Users
 			return new Success();
 		}
 
-		public async Task<Result> LeaveGroup(UserGroup userGroup) => await LeaveGroup(userGroup.Id);
+		public async Task<Result> LeaveGroupAsync(UserGroup userGroup) => await LeaveGroupAsync(userGroup.Id);
 	}
 }

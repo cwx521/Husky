@@ -5,7 +5,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserGroupsManager
 	{
-		public async Task<Result> JoinGroup(int groupId) {
+		public async Task<Result> JoinGroupAsync(int groupId) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
@@ -19,6 +19,6 @@ namespace Husky.Principal.Users
 			return new Success();
 		}
 
-		public async Task<Result> JoinGroup(UserGroup userGroup) => await JoinGroup(userGroup.Id);
+		public async Task<Result> JoinGroupAsync(UserGroup userGroup) => await JoinGroupAsync(userGroup.Id);
 	}
 }
