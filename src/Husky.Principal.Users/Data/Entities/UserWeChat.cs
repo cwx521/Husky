@@ -11,7 +11,7 @@ namespace Husky.Principal.Users.Data
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public int UserId { get; set; }
 
-		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]
+		[StringLength(32), Column(TypeName = "varchar(32)")]
 		public string? PrivateId { get; set; }
 
 		[StringLength(32), Column(TypeName = "varchar(32)"), Unique]

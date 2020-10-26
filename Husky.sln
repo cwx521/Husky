@@ -65,6 +65,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Principal", "2. Principa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.UserMessages", "src\Husky.Principal.UserMessages\Husky.Principal.UserMessages.csproj", "{450494CC-F8F0-46B2-9A64-18F4E675A194}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,10 @@ Global
 		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19656D18-EDF0-4102-A9FE-CE6A7DD37259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450494CC-F8F0-46B2-9A64-18F4E675A194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450494CC-F8F0-46B2-9A64-18F4E675A194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450494CC-F8F0-46B2-9A64-18F4E675A194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450494CC-F8F0-46B2-9A64-18F4E675A194}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,6 +216,7 @@ Global
 		{5F316519-5794-4B82-B7E9-DB0DFF89B997} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{C8F19D33-33D7-4A0F-9CCA-51DB503CE526} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 		{19656D18-EDF0-4102-A9FE-CE6A7DD37259} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
+		{450494CC-F8F0-46B2-9A64-18F4E675A194} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}

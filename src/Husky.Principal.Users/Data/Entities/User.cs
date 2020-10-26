@@ -10,7 +10,7 @@ namespace Husky.Principal.Users.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(36), Required]
+		[StringLength(36)]
 		public string? DisplayName { get; set; }
 
 		[StringLength(500), Column(TypeName = "varchar(500)")]

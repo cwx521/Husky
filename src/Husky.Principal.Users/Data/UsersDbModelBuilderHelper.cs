@@ -15,7 +15,6 @@ namespace Husky.Principal.Users.Data
 
 			//QueryFilters
 			mb.Entity<UserPassword>().HasQueryFilter(x => !x.IsObsolete);
-			//mb.Entity<UserMessage>().HasQueryFilter(x => !x.IsDeleted);
 			mb.Entity<UserAddress>().HasQueryFilter(x => x.Status == RowStatus.Active &&
 				x.City != null &&
 				x.City.Length != 0 &&
@@ -42,12 +41,6 @@ namespace Husky.Principal.Users.Data
 			mb.Entity<UserInGroup>(userInGroup => {
 				userInGroup.HasOne(x => x.Group).WithMany().HasForeignKey(x => x.GroupId);
 			});
-
-			////UserMessage
-			//mb.Entity<UserMessage>(message => {
-			//	message.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
-			//	message.HasOne(x => x.PublicContent).WithMany(x => x.UserMessages).HasForeignKey(x => x.PublicContentId);
-			//});
 
 			//UserLoginRecord
 			mb.Entity<UserLoginRecord>(record => {

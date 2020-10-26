@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Husky.Principal.Users.Data
+namespace Husky.Principal.UserMessages.Data
 {
 	public class UserMessage
 	{
 		[Key]
 		public int Id { get; set; }
 
+		[Index(IsUnique = false)]
 		public int UserId { get; set; }
 
 		public int? PublicContentId { get; set; }
@@ -25,7 +26,6 @@ namespace Husky.Principal.Users.Data
 
 		// nav props
 
-		public User User { get; set; } = null!;
 		public UserMessagePublicContent? PublicContent { get; set; }
 	}
 }

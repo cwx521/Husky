@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Husky.Principal.Users.Data
+namespace Husky.Principal.UserMessages.Data
 {
 	public class UserMessagePublicContent
 	{
