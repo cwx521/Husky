@@ -39,14 +39,14 @@ namespace Husky.TwoFactor
 				return new Failure($"无法送达 '{mobileNumberOrEmailAddress}'");
 			}
 
-			var sentWithinMinute = await _twoFactorDb.TwoFactorCodes
+			var justSentWithinMinute = await _twoFactorDb.TwoFactorCodes
 				.AsNoTracking()
 				.Where(x => x.SentTo == mobileNumberOrEmailAddress)
 				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(-1))
 				.AnyAsync();
 
-			if ( sentWithinMinute ) {
-				return new Failure("请求过于频繁，请1分钟后再试");
+			if ( justSentWithinMinute ) {
+				return new Failure("过于频繁，请1分钟后再试");
 			}
 
 			var code = new TwoFactorCode {
@@ -66,7 +66,6 @@ namespace Husky.TwoFactor
 				var content = string.Format(overrideMessageTemplateWithCodeArg0 ?? "{wrappedSignName}验证码： {0}", code.Code);
 				await _mailSender.SendAsync($"{wrappedSignName}动态验证码", content, mobileNumberOrEmailAddress);
 			}
-
 			else if ( isMobile ) {
 				if ( _smsSender == null ) {
 					throw new Exception($"Required to inject service {nameof(IMailSender)}");
@@ -76,12 +75,11 @@ namespace Husky.TwoFactor
 					Template = overrideMessageTemplateWithCodeArg0,
 					TemplateAlias = overrideSmsTemplateAlias,
 					Parameters = new Dictionary<string, string> {
-						{ "code", code.Code }
+						["code"] = code.Code
 					}
 				};
 				await _smsSender.SendAsync(shortMessage, mobileNumberOrEmailAddress);
 			}
-
 			return new Success();
 		}
 
@@ -92,14 +90,14 @@ namespace Husky.TwoFactor
 			return await SendCodeAsync(mobileNumber, overrideMessageTemplateWithCodeArg0, overrideSmsTemplateAlias, overrideSmsSignName);
 		}
 
-		public async Task<Result> SendCodeThroughEmailAsync(string emailAddress, string? messageTemplateWithCodeArg0 = null) {
+		public async Task<Result> SendCodeThroughEmailAsync(string emailAddress, string? messageTemplateWithCodeArg0 = null, string? overrideSmsSignName = null) {
 			if ( !emailAddress.IsEmail() ) {
 				return new Failure($"无法送达 '{emailAddress}'");
 			}
-			return await SendCodeAsync(emailAddress, messageTemplateWithCodeArg0, null, null);
+			return await SendCodeAsync(emailAddress, messageTemplateWithCodeArg0, null, overrideSmsSignName);
 		}
 
-		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
+		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedIfSucceed, int withinMinutes = 15) {
 			if ( sentTo == null ) {
 				throw new ArgumentNullException(nameof(sentTo));
 			}
@@ -123,18 +121,16 @@ namespace Husky.TwoFactor
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 				return new Failure("验证码错误");
 			}
-			if ( setIntoUsedAfterVerifying ) {
+			if ( setIntoUsedIfSucceed ) {
 				record.IsUsed = true;
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 			}
 			return new Success();
 		}
 
-		public async Task<Result> VerifyCodeAsync(ITwoFactorModel model, bool setIntoUsedAfterVerifying, int withinMinutes = 15) {
-			if ( model == null ) {
-				throw new ArgumentNullException(nameof(model));
-			}
-			return await VerifyCodeAsync(model.SendTo, model.Code, setIntoUsedAfterVerifying, withinMinutes);
+		public async Task<Result> VerifyCodeAsync(ITwoFactorModel model, bool setIntoUsedIfSucceed, int withinMinutes = 15) {
+			if ( model == null ) throw new ArgumentNullException(nameof(model));
+			return await VerifyCodeAsync(model.SendTo, model.Code, setIntoUsedIfSucceed, withinMinutes);
 		}
 	}
 }

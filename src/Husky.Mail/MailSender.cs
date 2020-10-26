@@ -54,7 +54,7 @@ namespace Husky.Mail
 
 			using var client = new SmtpClient();
 
-			client.MessageSent += async (object? sender, MessageSentEventArgs e) => {
+			client.MessageSent += async (object? sender, MessageSentEventArgs? e) => {
 				mailRecord.IsSuccessful = true;
 				await _mailDb.Normalize().SaveChangesAsync();
 				await Task.Run(() => {
@@ -81,7 +81,7 @@ namespace Husky.Mail
 		private async Task<MailSmtpProvider> GetConfiguredSmtpProviderAsync() {
 			var availableCount = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( availableCount == 0 ) {
-				throw new Exception("SMTP account is not configured yet.");
+				throw new Exception("SMTP is not configured yet.");
 			}
 			var skip = _increment++ % availableCount;
 			return await _mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).FirstAsync();
@@ -108,31 +108,26 @@ namespace Husky.Mail
 		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
 			var mail = new MimeMessage();
 
-			// Subject
-			mail.Subject = mailMessage.Subject;
-			// From
 			mail.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
-			// To
 			mail.To.AddRange(mailMessage.To.Select(to => new MailboxAddress(to.Name, to.Address)));
-			// Cc
 			mail.Cc.AddRange(mailMessage.Cc.Select(cc => new MailboxAddress(cc.Name, cc.Address)));
+			mail.Subject = mailMessage.Subject;
 
-			// Body
 			var body = new TextPart(mailMessage.IsHtml ? TextFormat.Html : TextFormat.Text) {
 				Text = mailMessage.Body
 			};
+
 			if ( mailMessage.Attachments.Count == 0 ) {
 				mail.Body = body;
 			}
-			// Or: Body + Attachments
 			else {
 				var multipart = new Multipart("mixed");
 				mailMessage.Attachments.AsParallel().ForAll(x => {
 					multipart.Add(new MimePart(x.ContentType) {
+						FileName = x.Name,
 						Content = new MimeContent(x.ContentStream),
 						ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-						ContentTransferEncoding = ContentEncoding.Base64,
-						FileName = x.Name
+						ContentTransferEncoding = ContentEncoding.Base64
 					});
 				});
 				multipart.Add(body);

@@ -26,13 +26,8 @@ namespace Husky.Diagnostics
 		private readonly IDiagnosticsDbContext _db;
 		private readonly IHttpContextAccessor _http;
 
-		public void LogException(Exception e) => LogExceptionAsync(e).Wait();
 		public async Task LogExceptionAsync(Exception e) => await _db.LogExceptionAsync(e, _http.HttpContext, _me);
-
-		public void LogRequest() => LogRequestAsync().Wait();
 		public async Task LogRequestAsync() => await _db.LogRequestAsync(_http.HttpContext, _me);
-
-		public void LogOperation(LogLevel logLevel, string message) => LogOperationAsync(logLevel, message).Wait();
 		public async Task LogOperationAsync(LogLevel logLevel, string message) => await _db.LogOperationAsync(_me, logLevel, message);
 	}
 }

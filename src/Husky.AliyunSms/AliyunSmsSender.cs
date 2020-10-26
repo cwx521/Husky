@@ -26,11 +26,11 @@ namespace Husky.Sms.AliyunSms
 				TemplateCode = sms.TemplateAlias ?? _settings.DefaultTemplateCode,
 				TemplateParam = JsonConvert.SerializeObject(sms.Parameters)
 			};
+			var profile = DefaultProfile.GetProfile(_settings.EndPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
+			var client = new DefaultAcsClient(profile);
 
 			await Task.Run(() => {
 				try {
-					var profile = DefaultProfile.GetProfile(_settings.EndPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
-					var client = new DefaultAcsClient(profile);
 					client.DoAction(request);
 				}
 				catch { }

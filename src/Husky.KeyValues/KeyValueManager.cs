@@ -87,7 +87,7 @@ namespace Husky.KeyValues
 			_db.Normalize().SaveChanges();
 		}
 
-		public void SaveAll() => SaveAllAsync().Wait();
+		public void SaveAll() => SaveAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		public async Task SaveAllAsync() {
 			var fromDb = _db.KeyValues.ToList();

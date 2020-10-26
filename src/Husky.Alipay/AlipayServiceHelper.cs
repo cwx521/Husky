@@ -40,7 +40,6 @@ namespace Husky.Alipay
 			};
 		}
 
-		public static AlipayOrderQueryResult QueryOrder(this AlipayService alipay, string orderNo) => QueryOrderAsync(alipay, orderNo).Result;
 		public static async Task<AlipayOrderQueryResult> QueryOrderAsync(this AlipayService alipay, string orderNo) {
 			var model = new AlipayTradeQueryModel {
 				OutTradeNo = orderNo
@@ -68,7 +67,6 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundResult Refund(this AlipayService alipay, string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) => RefundAsync(alipay, originalOrderNo, newRefundRequestNo, refundAmount, refundReason).Result;
 		public static async Task<AlipayRefundResult> RefundAsync(this AlipayService alipay, string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
 			var model = new AlipayTradeRefundModel {
 				OutTradeNo = originalOrderNo,
@@ -98,7 +96,6 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayRefundQueryResult QueryRefund(this AlipayService alipay, string originalOrderNo, string refundRequestNo) => QueryRefundAsync(alipay, originalOrderNo, refundRequestNo).Result;
 		public static async Task<AlipayRefundQueryResult> QueryRefundAsync(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderNo,
@@ -125,9 +122,8 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static AlipayNotifyResult ParseNotifyResult(this AlipayService alipay, HttpRequest request) => ParseNotifyResultAsync(alipay, request).Result;
 		public static async Task<AlipayNotifyResult> ParseNotifyResultAsync(this AlipayService alipay, HttpRequest request) {
-			var form = await request.ReadFormAsync();
+			var form = request.HasFormContentType ? await request.ReadFormAsync() : null;
 			if ( form == null || form.Count == 0 ) {
 				return new AlipayNotifyResult { Ok = false, Message = "未收到任何参数" };
 			}
