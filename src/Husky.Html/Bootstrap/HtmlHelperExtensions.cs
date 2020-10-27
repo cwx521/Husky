@@ -6,7 +6,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Husky.Html
+namespace Husky.Html.Bootstrap
 {
 	public static partial class HtmlHelperExtensions
 	{
