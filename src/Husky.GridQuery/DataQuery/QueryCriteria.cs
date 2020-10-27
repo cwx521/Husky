@@ -20,6 +20,7 @@ namespace Husky.GridQuery
 			DefaultValueHandling = DefaultValueHandling.Ignore,
 			NullValueHandling = NullValueHandling.Ignore
 		});
+
 		public override string ToString() => Json();
 	}
 }

@@ -1,84 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
 namespace Husky.GridQuery
 {
-	public static class GridColumnSpecHelper
+	public static class GridColumnBuilder
 	{
-		private const int GridColumnDefaultWidth = 160;
+		internal const int DefaultGridColumnWidth = 160;
 
-		public static string Json(this List<GridColumnSpec> specs) {
-			return JsonConvert.SerializeObject(specs, new JsonSerializerSettings {
-				DefaultValueHandling = DefaultValueHandling.Ignore
+		public static string Json(this List<GridColumn> columns) {
+			return JsonConvert.SerializeObject(columns, new JsonSerializerSettings {
+				DefaultValueHandling = DefaultValueHandling.Ignore,
+				NullValueHandling = NullValueHandling.Ignore
 			});
 		}
 
-		public static List<GridColumnSpec> GetGridColumnSpecs<TGridModel>() => typeof(TGridModel).GetGridColumnSpecs();
-		public static List<GridColumnSpec> GetGridColumnSpecs(this Type typeOfGridModel) {
+		public static List<GridColumn> GetGridColumns<TGridModel>() => typeof(TGridModel).GetGridColumns();
+		public static List<GridColumn> GetGridColumns(this Type typeOfGridModel) {
 			if ( typeOfGridModel == null ) {
 				throw new ArgumentNullException(nameof(typeOfGridModel));
 			}
 
 			var properties = typeOfGridModel.GetProperties();
-			var columns = new List<GridColumnSpec>();
+			var columns = new List<GridColumn>();
+			var pending = new List<Tuple<GridColumn, GridColumnAttribute>>();
 
 			// read the properties and create columns one by one
 			// when attribute.DisplayAfter is set, the columns will be added later on
 			foreach ( var p in properties ) {
 				var attribute = p.GetCustomAttribute<GridColumnAttribute>();
-				if ( attribute != null && (!attribute.Visible || !string.IsNullOrEmpty(attribute.DisplayAfter)) ) {
+				if ( attribute != null && !attribute.Visible ) {
 					continue;
 				}
-				columns.Add(BuildGridColumnSpecModel(p, attribute));
+				if ( attribute != null && !string.IsNullOrEmpty(attribute.DisplayAfter) ) {
+					var tuple = new Tuple<GridColumn, GridColumnAttribute>(
+						BuildGridColumn(p, attribute),
+						attribute
+					);
+					pending.Add(tuple);
+				}
+				columns.Add(BuildGridColumn(p, attribute));
 			}
 
 			// now insert columns which have DisplayAfter
-			foreach ( var p in properties ) {
-				var attribute = p.GetCustomAttribute<GridColumnAttribute>();
-				if ( attribute == null || string.IsNullOrEmpty(attribute.DisplayAfter) ) {
-					continue;
-				}
-
-				var column = BuildGridColumnSpecModel(p, attribute);
-				var insertAt = columns.FindIndex(x => x.Field == attribute.DisplayAfter) + 1;
-				columns.Insert(insertAt, column);
+			foreach ( var each in pending ) {
+				var insertAt = columns.FindIndex(x => x.Field == each.Item2.DisplayAfter) + 1;
+				columns.Insert(insertAt, each.Item1);
 			}
 
 			// grouping
-			var result = new List<GridColumnSpec>();
+			var result = new List<GridColumn>();
 			foreach ( var col in columns ) {
-				if ( string.IsNullOrEmpty(col.Gather) ) {
+				if ( string.IsNullOrEmpty(col.Category) ) {
 					result.Add(col);
 					continue;
 				}
-				var g = result.SingleOrDefault(x => x.Title == col.Gather);
-				if ( g == null ) {
-					g = new GridColumnSpec {
-						Title = col.Gather,
-						Columns = new List<GridColumnSpec>()
+				var category = result.Find(x => x.Title == col.Category);
+				if ( category == null ) {
+					category = new GridColumn {
+						Title = col.Category,
+						Columns = new List<GridColumn>()
 					};
-					result.Add(g);
+					result.Add(category);
 				}
-				g.Columns!.Add(col);
+				category.Columns!.Add(col);
 			}
 
 			return result;
 		}
 
-		private static GridColumnSpec BuildGridColumnSpecModel(PropertyInfo property, GridColumnAttribute? attr) => new GridColumnSpec {
+		private static GridColumn BuildGridColumn(PropertyInfo property, GridColumnAttribute? attr) => new GridColumn {
 			Field = property?.Name.CamelCase(),
 			Title = attr?.Title ?? property?.Name?.SplitWords(),
-			Gather = attr?.Gather,
-			Width = (attr == null || attr.Width == 0) ? GridColumnDefaultWidth : (attr.Width != -1 ? attr.Width : (int?)null),
+			Category = attr?.Category,
+			Width = (attr == null || attr.Width == 0) ? DefaultGridColumnWidth : (attr.Width != -1 ? attr.Width : (int?)null),
 			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),
 			Format = attr?.Format,
 			Aggregates = attr?.Aggregates?.ToNameArray(),
 			Filterable = property != null && (attr?.Filterable ?? true),
 			Sortable = property != null && (attr?.Sortable ?? true),
-			EditableFlag = property != null && (attr?.Editable ?? true),
+			EditableFlag = property != null && (attr?.Editable ?? false),
 			Hidable = (attr?.Hidable ?? true),
 			Groupable = (attr?.Groupable ?? false),
 			Locked = (attr?.Locked ?? false),
@@ -107,13 +109,13 @@ namespace Husky.GridQuery
 			if ( t == typeof(DateTime) ) {
 				return "date";
 			}
-			if ( t == typeof(int) || t == typeof(uint) || t == typeof(decimal) || t == typeof(double) || t == typeof(float) ) {
+			if ( t == typeof(int) || t == typeof(long) || t == typeof(uint) || t == typeof(decimal) || t == typeof(double) || t == typeof(float) ) {
 				return "number";
 			}
 			return null;
 		}
 
-		private static GridColumnSpecEnumItem[]? GetEnumerableValues(this PropertyInfo property) {
+		private static TextValue[]? GetEnumerableValues(this PropertyInfo property) {
 			var t = !property.PropertyType.IsGenericType
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
@@ -121,10 +123,10 @@ namespace Husky.GridQuery
 			if ( !t.IsEnum ) {
 				return null;
 			}
-			var result = new List<GridColumnSpecEnumItem>();
+			var result = new List<TextValue>();
 			var values = Enum.GetValues(t);
 			foreach ( var i in values ) {
-				result.Add(new GridColumnSpecEnumItem {
+				result.Add(new TextValue {
 					Text = (i as Enum)!.ToLabel(),
 					Value = i!.GetHashCode()
 				});
@@ -136,12 +138,15 @@ namespace Husky.GridQuery
 			if ( attr == null || string.IsNullOrEmpty(fieldName) ) {
 				return null;
 			}
-			if ( !string.IsNullOrEmpty(attr.Url) && attr.KnownTemplate == GridColumnTemplate.None ) {
+			if ( !string.IsNullOrEmpty(attr.LinkUrl) && attr.KnownTemplate == null ) {
 				attr.KnownTemplate = GridColumnTemplate.HyperLink;
 			}
 			switch ( attr.KnownTemplate ) {
+				default:
+					return null;
+
 				case GridColumnTemplate.HyperLink:
-					return $"#if ({fieldName} {{# <a href='{attr.Url}'>#:{fieldName}#</a> #}} )#";
+					return $"#if ({fieldName} {{# <a href='{attr.LinkUrl}'>#:{fieldName}#</a> #}} )#";
 
 				case GridColumnTemplate.Modal:
 				case GridColumnTemplate.ModalLG:
@@ -149,7 +154,7 @@ namespace Husky.GridQuery
 				case GridColumnTemplate.ModalFull:
 					var size = attr.KnownTemplate.ToLower().Substring(5);
 					var fragment1 = $"<a " +
-						$"href='{attr.Url}' " +
+						$"href='{attr.LinkUrl}' " +
 						$"data-toggle='modal' " +
 						$"data-target='\\#modal' " +
 						$"data-modal-title='#:{fieldName} || '{fieldName}'#'" +
@@ -182,10 +187,6 @@ namespace Husky.GridQuery
 					return string.IsNullOrEmpty(attr.Format)
 						? $"#: {fieldName} == 0 ? '' : {fieldName} #"
 						: $"#: {fieldName} == 0 ? '' : kendo.toString({fieldName}, '{attr.Format}') #";
-
-				case GridColumnTemplate.None:
-				default:
-					return null;
 			}
 		}
 	}

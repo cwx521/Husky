@@ -6,14 +6,14 @@ namespace Husky.GridQuery
 	/// !!!
 	/// The field names in this model should match the Kendo Grid definitions in javascript
 	/// </summary>
-	public sealed class GridColumnSpec
+	public sealed class GridColumn
 	{
 		public string? Field { get; set; }
 		public string? Title { get; set; }
+		public string? Category { get; set; }
 		public string? Type { get; set; }
 		public string[]? Aggregates { get; set; }
-		public string? Gather { get; set; }
-		public int? Width { get; set; } = 160;
+		public int? Width { get; set; } = GridColumnBuilder.DefaultGridColumnWidth;
 		public string? Attributes { get; set; }
 		public string? Format { get; set; }
 		public string? Template { get; set; }
@@ -24,14 +24,8 @@ namespace Husky.GridQuery
 		public bool Locked { get; set; }
 		public bool Hidden { get; set; }
 		public bool EditableFlag { get; set; }
-		public GridColumnSpecEnumItem[]? Values { get; set; }
-		public List<GridColumnSpec>? Columns { get; set; }
+		public TextValue[]? Values { get; set; }
+		public List<GridColumn>? Columns { get; set; }
 
-	}
-
-	public sealed class GridColumnSpecEnumItem
-	{
-		public string Text { get; set; } = null!;
-		public int Value { get; set; }
 	}
 }

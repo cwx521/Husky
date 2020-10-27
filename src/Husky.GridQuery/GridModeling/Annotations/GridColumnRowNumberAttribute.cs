@@ -3,7 +3,7 @@
 namespace Husky.GridQuery
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-	public class GridColumnRowNumberAttribute : GridColumnAttribute
+	public sealed class GridColumnRowNumberAttribute : GridColumnAttribute
 	{
 		public GridColumnRowNumberAttribute() {
 			Width = 40;
@@ -11,7 +11,7 @@ namespace Husky.GridQuery
 			Sortable = false;
 			Locked = true;
 			Title = " ";
-			CssClass = "rownumber text-muted text-11px bg-light text-right";
+			CssClass = "rownumber small text-right text-muted bg-light";
 		}
 	}
 }

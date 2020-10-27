@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,35 +10,38 @@ namespace Husky.Html
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent RadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
+		public static IHtmlContent CustomSwitchListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
 			Expression<Func<TModel, TResult>> expression,
 			IEnumerable<SelectListItem> selectListItems,
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
-			object? htmlAttributes = null) {
+			object? htmlAttributes = null)
+			where TResult : IEnumerable {
 
 			if ( helper.ViewData.Model != null ) {
 				try {
-					// when expression = {x.Aaa.Bbb}, NullReferenceException can happen
 					var value = expression.Compile().Invoke(helper.ViewData.Model);
-					selectListItems.Where(x => x.Value == value?.ToString()).AsParallel().ForAll(x => x.Selected = true);
+					foreach ( var i in value ) {
+						selectListItems.Where(x => x.Value == i?.ToString()).AsParallel().ForAll(x => x.Selected = true);
+					}
 				}
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderBootstrapCustomControlGroup(expression, CustomControlType.Radio, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderBootstrapCustomControlGroup(expression, CustomControlType.Switch, selectListItems, layoutDirection, htmlAttributes);
 		}
 
-		public static IHtmlContent RadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
+		public static IHtmlContent CustomSwitchListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
 			Expression<Func<TModel, TResult>> expression,
 			Type enumType,
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
-			object? htmlAttributes = null) {
+			object? htmlAttributes = null)
+			where TResult : IEnumerable {
 
 			if ( enumType == null ) {
 				throw new ArgumentNullException(nameof(enumType));
 			}
-			var selectListItems = EnumHelper.ToSelectListItems(enumType);
-			return helper.RadioButtonListFor(expression, selectListItems, layoutDirection, htmlAttributes);
+			var selectListItems = EnumHelper.ToSelectListItems(enumType, useIntValue: false);
+			return helper.CustomSwitchListFor(expression, selectListItems, layoutDirection, htmlAttributes);
 		}
 	}
 }

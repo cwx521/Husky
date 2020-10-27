@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay.Tests", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration.Tests", "tests\Husky.WeChatIntegration.Tests\Husky.WeChatIntegration.Tests.csproj", "{FC5742B8-0A23-408E-9CCB-48F6D14118C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. UI", "3. UI", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Presentation", "3. Presentation", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Administration", "src\Husky.Principal.Administration\Husky.Principal.Administration.csproj", "{8AD67D26-A670-4FBB-B4ED-8D291E461C57}"
 EndProject
@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Principal", "2. Principa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.CacheData.Tests", "tests\Husky.Principal.CacheData.Tests\Husky.Principal.CacheData.Tests.csproj", "{19656D18-EDF0-4102-A9FE-CE6A7DD37259}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Husky.Principal.UserMessages", "src\Husky.Principal.UserMessages\Husky.Principal.UserMessages.csproj", "{450494CC-F8F0-46B2-9A64-18F4E675A194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.UserMessages", "src\Husky.Principal.UserMessages\Husky.Principal.UserMessages.csproj", "{450494CC-F8F0-46B2-9A64-18F4E675A194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

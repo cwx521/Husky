@@ -9,9 +9,9 @@ namespace Husky.Html
 		public static IHtmlContent BreadCrumb(this IHtmlHelper helper, params string[] items) {
 			var sb = new StringBuilder();
 
-			sb.AppendLine("<nav aria-label='breadcrumb'>");
+			sb.AppendLine("<nav>");
 			sb.AppendLine("  <ol class='breadcrumb'>");
-			sb.AppendLine("    <li class='breadcrumb-item'><a href='/'><i class='fa fa-home'></i></a></li>");
+			sb.AppendLine("    <li class='breadcrumb-item breadcrumb-item-home'><a href='/'><i class='fa fa-home'></i></a></li>");
 
 			foreach ( var item in items ) {
 				if ( !string.IsNullOrEmpty(item) ) {
