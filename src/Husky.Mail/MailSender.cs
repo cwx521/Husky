@@ -42,8 +42,8 @@ namespace Husky.Mail
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
-			var smtp = _smtp ?? await GetConfiguredSmtpProviderAsync();
-			var mailRecord = await CreateMailRecordAsync(mailMessage);
+			var smtp = _smtp ?? await GetPreconfiguredSmtpProviderAsync();
+			var mailRecord = await BuildMailRecordAsync(mailMessage);
 
 			if ( smtp is MailSmtpProvider internalSmtp ) {
 				mailRecord.SmtpId = internalSmtp.Id;
@@ -55,8 +55,10 @@ namespace Husky.Mail
 			using var client = new SmtpClient();
 
 			client.MessageSent += async (object? sender, MessageSentEventArgs? e) => {
+
 				mailRecord.IsSuccessful = true;
 				await _mailDb.Normalize().SaveChangesAsync();
+
 				await Task.Run(() => {
 					onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
 				});
@@ -78,24 +80,24 @@ namespace Husky.Mail
 
 		private static int _increment = 0;
 
-		private async Task<MailSmtpProvider> GetConfiguredSmtpProviderAsync() {
-			var availableCount = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
-			if ( availableCount == 0 ) {
+		private async Task<MailSmtpProvider> GetPreconfiguredSmtpProviderAsync() {
+			var available = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
+			if ( available == 0 ) {
 				throw new Exception("SMTP is not configured yet.");
 			}
-			var skip = _increment++ % availableCount;
+			var skip = _increment++ % available;
 			return await _mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).FirstAsync();
 		}
 
-		private async Task<MailRecord> CreateMailRecordAsync(MailMessage mailMessage) {
+		private async Task<MailRecord> BuildMailRecordAsync(MailMessage mail) {
 			var mailRecord = new MailRecord {
-				Subject = mailMessage.Subject,
-				Body = mailMessage.Body,
-				IsHtml = mailMessage.IsHtml,
-				To = string.Join(";", mailMessage.To.Select(x => x.ToString())),
-				Cc = string.Join(";", mailMessage.Cc.Select(x => x.ToString())),
+				Subject = mail.Subject,
+				Body = mail.Body,
+				IsHtml = mail.IsHtml,
+				To = string.Join(";", mail.To.Select(x => x.ToString())),
+				Cc = string.Join(";", mail.Cc.Select(x => x.ToString())),
 			};
-			foreach ( var item in mailMessage.Attachments ) {
+			foreach ( var item in mail.Attachments ) {
 				mailRecord.Attachments.Add(new MailRecordAttachment {
 					Name = item.Name,
 					ContentStream = await ReadStreamAsync(item.ContentStream),
@@ -105,24 +107,24 @@ namespace Husky.Mail
 			return mailRecord;
 		}
 
-		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mailMessage) {
-			var mail = new MimeMessage();
+		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mail) {
+			var mimeMessage = new MimeMessage();
 
-			mail.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
-			mail.To.AddRange(mailMessage.To.Select(to => new MailboxAddress(to.Name, to.Address)));
-			mail.Cc.AddRange(mailMessage.Cc.Select(cc => new MailboxAddress(cc.Name, cc.Address)));
-			mail.Subject = mailMessage.Subject;
+			mimeMessage.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
+			mimeMessage.To.AddRange(mail.To.Select(to => new MailboxAddress(to.Name, to.Address)));
+			mimeMessage.Cc.AddRange(mail.Cc.Select(cc => new MailboxAddress(cc.Name, cc.Address)));
+			mimeMessage.Subject = mail.Subject;
 
-			var body = new TextPart(mailMessage.IsHtml ? TextFormat.Html : TextFormat.Text) {
-				Text = mailMessage.Body
+			var body = new TextPart(mail.IsHtml ? TextFormat.Html : TextFormat.Text) {
+				Text = mail.Body
 			};
 
-			if ( mailMessage.Attachments.Count == 0 ) {
-				mail.Body = body;
+			if ( mail.Attachments.Count == 0 ) {
+				mimeMessage.Body = body;
 			}
 			else {
 				var multipart = new Multipart("mixed");
-				mailMessage.Attachments.AsParallel().ForAll(x => {
+				mail.Attachments.AsParallel().ForAll(x => {
 					multipart.Add(new MimePart(x.ContentType) {
 						FileName = x.Name,
 						Content = new MimeContent(x.ContentStream),
@@ -131,9 +133,10 @@ namespace Husky.Mail
 					});
 				});
 				multipart.Add(body);
-				mail.Body = multipart;
+				mimeMessage.Body = multipart;
 			}
-			return mail;
+
+			return mimeMessage;
 		}
 
 		private async Task<byte[]> ReadStreamAsync(Stream stream) {

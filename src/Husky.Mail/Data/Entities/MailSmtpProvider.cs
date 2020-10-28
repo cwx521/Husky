@@ -9,7 +9,7 @@ namespace Husky.Mail.Data
 	public partial class MailSmtpProvider : ISmtpProvider
 	{
 		[Key]
-		public Guid Id { get; set; } = Guid.NewGuid();
+		public Guid Id { get; [EditorBrowsable(EditorBrowsableState.Never)] set; } = Guid.NewGuid();
 
 		[StringLength(100), Column(TypeName = "varchar(100)"), Required]
 		public string Host { get; set; } = null!;

@@ -34,15 +34,14 @@ namespace Husky.Mail.Tests
 				return;
 			}
 
-			using var testDb = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
+			using var db = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
+			db.Add(smtp);
+			db.SaveChanges();
 
-			testDb.Add(smtp);
-			testDb.SaveChanges();
-
-			var sender = new MailSender(testDb);
+			var sender = new MailSender(db);
 			var mail = new MailMessage {
-				Subject = "Husky.Mail Unit Test",
-				Body = "<div style='color:blue'>Greeting</div>",
+				Subject = $"Husky.Mail Unit Test - {DateTime.Now:yyyy-M-d H:mm}",
+				Body = "<div style='color:navy'>Greeting</div>",
 				IsHtml = true,
 				To = new List<MailAddress> {
 					new MailAddress { Name = "Weixing", Address = "chenwx521@hotmail.com" }
@@ -59,11 +58,10 @@ namespace Husky.Mail.Tests
 				}
 			};
 
-			var i = 0;
-			string str = null;
-			await sender.SendAsync(mail, (arg) => { i++; str = arg.MailMessage.Body; });
+			string strReadFromCallback = null;
+			await sender.SendAsync(mail, arg => strReadFromCallback = arg.MailMessage.Body);
 
-			var mailRecord = testDb.MailRecords
+			var mailRecord = db.MailRecords
 				.AsNoTracking()
 				.Include(x => x.Smtp)
 				.Include(x => x.Attachments)
@@ -79,13 +77,13 @@ namespace Husky.Mail.Tests
 			Assert.AreEqual(mailRecord.Cc, string.Join(";", mail.Cc.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Attachments.Count, mail.Attachments.Count);
 			Assert.AreEqual(mailRecord.Attachments.First().Name, mail.Attachments.First().Name);
+			Assert.AreEqual(mailRecord.Attachments.First().ContentStream.Length, mail.Attachments.First().ContentStream.Length);
 
-			Assert.AreEqual(i, 1);
-			Assert.AreEqual(str, mail.Body);
+			Assert.AreEqual(mailRecord.Body, strReadFromCallback);
 			Assert.AreEqual(mailRecord.IsSuccessful, true);
 			Assert.IsTrue(string.IsNullOrEmpty(mailRecord.Exception));
 
-			testDb.Database.EnsureDeleted();
+			db.Database.EnsureDeleted();
 		}
 	}
 }

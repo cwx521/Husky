@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Husky.Sms;
-using Husky.Sms.AliyunSms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Husky.AliyunSms.Tests
+namespace Husky.Sms.AliyunSms.Tests
 {
 	[TestClass()]
 	public class AliyunSmsSenderTests
@@ -15,12 +13,12 @@ namespace Husky.AliyunSms.Tests
 		private readonly AliyunSmsSettings _settings = new AliyunSmsSettings {
 			DefaultSignName = "星翼软件",
 			DefaultTemplateCode = "SMS_170155854",
-			AccessKeyId = "LTAI4FqwMTMob4TH9MP5dfTK",
+			AccessKeyId = "",
 			AccessKeySecret = ""
 		};
 
 		[TestMethod()]
-		public async Task SendAsyncTest() {
+		public async Task SendAsyncTestAsync() {
 			if ( string.IsNullOrEmpty(_settings.AccessKeySecret) ) {
 				return;
 			}

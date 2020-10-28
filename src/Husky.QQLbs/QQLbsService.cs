@@ -45,7 +45,7 @@ namespace Husky.Lbs.QQLbs
 		public async Task<Address?> GetAddressAsync(Location latlon) {
 			latlon = latlon.ConvertToTencentLatLon();
 
-			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon.Lat},{latlon.Lon}";
+			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_settings.Key}&location={latlon}";
 			var x = await GetApiResultAsync(url);
 
 			return x == null ? null : new Address {
@@ -88,8 +88,8 @@ namespace Husky.Lbs.QQLbs
 			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" +
 					  $"?key={_settings.Key}" +
 					  $"&mode={mode.ToLower()}" +
-					  $"&from={from.Lat},{from.Lon}" +
-					  $"&to={to.Lat},{to.Lon}";
+					  $"&from={from}" +
+					  $"&to={to}";
 
 			var x = await GetApiResultAsync(url);
 
@@ -112,7 +112,7 @@ namespace Husky.Lbs.QQLbs
 			var url = "https://apis.map.qq.com/ws/distance/v1/matrix/" +
 					  $"?key={_settings.Key}" +
 					  $"&mode={mode.ToLower()}" +
-					  $"&from={from.Lat},{from.Lon}" +
+					  $"&from={from}" +
 					  $"&to={string.Join(';', toMany.Select(x => x.ConvertToTencentLatLon().ToString()))}";
 
 			var x = await GetApiResultAsync(url);
