@@ -31,7 +31,7 @@ namespace Husky
 			husky.AddIdentityManager(options);
 			husky.Services.AddScoped(serviceProvider => {
 
-				var key = typeof(IPrincipalUser).FullName;
+				var key = nameof(IPrincipalUser);
 				var http = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
 				if ( !(http.Items[key] is IPrincipalUser principal) ) {

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -13,29 +14,37 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly WeChatAppConfig _wechatConfig;
 		private static readonly HttpClient _httpClient = new HttpClient();
 
-		public async Task<WeChatUserResult?> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
-		public async Task<WeChatUserResult?> GetUserInfoAsync(string openId, string accessToken) {
+		public async Task<WeChatUserResult> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
+		public async Task<WeChatUserResult> GetUserInfoAsync(string openId, string accessToken) {
 			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
 
-			var json = await _httpClient.GetStringAsync(url);
-			var d = JsonConvert.DeserializeObject<dynamic>(json);
+			try {
+				var json = await _httpClient.GetStringAsync(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-			if ( d.errcode != null && d.errcode != 0 ) {
-				return null;
+				return new WeChatUserResult {
+					Ok = d.errcode == null || (int)d.errcode == 0,
+					Message = d.errmsg,
+
+					OpenId = d.openid,
+					UnionId = d.unionid,
+					NickName = d.nickname,
+					Sex = d.sex == 2 ? Sex.Female : Sex.Male,
+					Province = d.province,
+					City = d.city,
+					Country = d.country,
+					HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
+				};
 			}
-			return new WeChatUserResult {
-				OpenId = d.openid,
-				UnionId = d.unionid,
-				NickName = d.nickname,
-				Sex = d.sex == 2 ? Sex.Female : Sex.Male,
-				Province = d.province,
-				City = d.city,
-				Country = d.country,
-				HeadImageUrl = ((string)d.headimgurl).Replace("http://", "https://")
-			};
+			catch ( Exception e ) {
+				return new WeChatUserResult {
+					Ok = false,
+					Message = e.Message
+				};
+			}
 		}
 
-		public async Task<WeChatUserAccessToken?> GetOpenPlatformUserAccessTokenAsync(string code) {
+		public async Task<WeChatUserAccessToken> GetOpenPlatformUserAccessTokenAsync(string code) {
 			_wechatConfig.RequireOpenPlatformSettings();
 
 			return await GetUserAccessTokenAsync(code, new WeChatAppIdSecret {
@@ -43,7 +52,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _wechatConfig.OpenPlatformAppSecret
 			});
 		}
-		public async Task<WeChatUserAccessToken?> GetMobilePlatformUserAccessTokenAsync(string code) {
+		public async Task<WeChatUserAccessToken> GetMobilePlatformUserAccessTokenAsync(string code) {
 			_wechatConfig.RequireMobilePlatformSettings();
 
 			return await GetUserAccessTokenAsync(code, new WeChatAppIdSecret {
@@ -51,7 +60,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _wechatConfig.MobilePlatformAppSecret
 			});
 		}
-		public async Task<WeChatUserAccessToken?> GetUserAccessTokenAsync(string code, WeChatAppIdSecret overrideIdSecret) {
+		public async Task<WeChatUserAccessToken> GetUserAccessTokenAsync(string code, WeChatAppIdSecret overrideIdSecret) {
 			overrideIdSecret.CheckNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
@@ -63,7 +72,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await GetUserAccessTokenFromResolvedUrlAsync(url);
 		}
 
-		public async Task<WeChatUserAccessToken?> RefreshOpenPlatformUserAccessTokenAsync(string refreshToken) {
+		public async Task<WeChatUserAccessToken> RefreshOpenPlatformUserAccessTokenAsync(string refreshToken) {
 			_wechatConfig.RequireOpenPlatformSettings();
 
 			return await RefreshUserAccessTokenAsync(refreshToken, new WeChatAppIdSecret {
@@ -71,7 +80,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _wechatConfig.OpenPlatformAppSecret
 			});
 		}
-		public async Task<WeChatUserAccessToken?> RefreshMobilePlatformUserAccessTokenAsync(string refreshToken) {
+		public async Task<WeChatUserAccessToken> RefreshMobilePlatformUserAccessTokenAsync(string refreshToken) {
 			_wechatConfig.RequireMobilePlatformSettings();
 
 			return await RefreshUserAccessTokenAsync(refreshToken, new WeChatAppIdSecret {
@@ -79,7 +88,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _wechatConfig.MobilePlatformAppSecret
 			});
 		}
-		public async Task<WeChatUserAccessToken?> RefreshUserAccessTokenAsync(string refreshToken, WeChatAppIdSecret overrideIdSecret) {
+		public async Task<WeChatUserAccessToken> RefreshUserAccessTokenAsync(string refreshToken, WeChatAppIdSecret overrideIdSecret) {
 			overrideIdSecret.CheckNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
@@ -90,18 +99,26 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await GetUserAccessTokenFromResolvedUrlAsync(url);
 		}
 
-		private async Task<WeChatUserAccessToken?> GetUserAccessTokenFromResolvedUrlAsync(string url) {
-			var json = await _httpClient.GetStringAsync(url);
-			var d = JsonConvert.DeserializeObject<dynamic>(json);
+		private async Task<WeChatUserAccessToken> GetUserAccessTokenFromResolvedUrlAsync(string url) {
+			try {
+				var json = await _httpClient.GetStringAsync(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-			if ( d.access_token == null ) {
-				return null;
+				return new WeChatUserAccessToken {
+					Ok = d.errcode == null || (int)d.errcode == 0,
+					Message = d.errmsg,
+
+					AccessToken = d.access_token,
+					RefreshToken = d.refresh_token,
+					OpenId = d.openid
+				};
 			}
-			return new WeChatUserAccessToken {
-				AccessToken = d.access_token,
-				RefreshToken = d.refresh_token,
-				OpenId = d.openid
-			};
+			catch ( Exception e ) {
+				return new WeChatUserAccessToken {
+					Ok = false,
+					Message = e.Message
+				};
+			}
 		}
 	}
 }

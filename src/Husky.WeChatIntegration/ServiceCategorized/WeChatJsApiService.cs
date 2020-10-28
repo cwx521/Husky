@@ -31,15 +31,27 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&appid={_wechatConfig.MobilePlatformAppId}" +
 					  $"&secret={_wechatConfig.MobilePlatformAppSecret}";
 
-				var json = await _httpClient.GetStringAsync(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				try {
+					var json = await _httpClient.GetStringAsync(url);
+					var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
+					var ok = d.errcode == null || (int)d.errcode == 0;
+					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
 
-				return new WeChatGeneralAccessToken {
-					AccessToken = d.access_token,
-					ExpiresIn = d.expires_in
-				};
+					return new WeChatGeneralAccessToken {
+						Ok = ok,
+						Message = d.errmsg,
+
+						AccessToken = d.access_token,
+						ExpiresIn = d.expires_in
+					};
+				}
+				catch ( Exception e ) {
+					return new WeChatGeneralAccessToken {
+						Ok = false,
+						Message = e.Message
+					};
+				}
 			});
 		}
 
@@ -48,13 +60,23 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			return await _cache.GetOrCreate(_wechatConfig.MobilePlatformAppId + nameof(GetJsApiTicketAsync), async entry => {
 				var accessToken = await GetMobilePlatformGeneralAccessTokenAsync();
+				if ( !accessToken.Ok ) {
+					return accessToken.Message ?? "无法获得 access_token";
+				}
+
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
+				try {
+					var json = await _httpClient.GetStringAsync(url);
+					var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-				var json = await _httpClient.GetStringAsync(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+					var ok = d.errcode == null || (int)d.errcode == 0;
+					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
 
-				entry.SetAbsoluteExpiration(TimeSpan.FromSeconds((int)d.expires_in));
-				return d.ticket;
+					return d.ticket ?? d.errmsg;
+				}
+				catch ( Exception e ) {
+					return e.Message;
+				}
 			});
 		}
 

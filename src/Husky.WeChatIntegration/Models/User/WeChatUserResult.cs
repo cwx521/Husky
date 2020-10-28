@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatUserResult
+	public class WeChatUserResult : Result
 	{
 		public string OpenId { get; set; } = null!;
 		public string? UnionId { get; set; }

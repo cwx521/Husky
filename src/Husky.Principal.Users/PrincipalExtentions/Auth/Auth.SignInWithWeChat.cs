@@ -18,10 +18,13 @@ namespace Husky.Principal.Users
 
 			var wechat = _me.ServiceProvider.GetRequiredService<WeChatService>().User();
 
-			if ( !(await wechat.GetUserAccessTokenAsync(wechatCode, idSecret) is WeChatUserAccessToken accessToken) ) {
+			var accessToken = await wechat.GetUserAccessTokenAsync(wechatCode, idSecret);
+			if ( !accessToken.Ok ) {
 				return new Failure(LoginResult.FailureWeChatRequestToken.ToLabel());
 			}
-			if ( !(await wechat.GetUserInfoAsync(accessToken) is WeChatUserResult wechatUser) ) {
+
+			var wechatUser = await wechat.GetUserInfoAsync(accessToken);
+			if ( !wechatUser.Ok ) {
 				return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 			}
 

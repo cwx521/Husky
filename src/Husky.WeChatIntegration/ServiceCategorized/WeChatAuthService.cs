@@ -18,8 +18,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public string CreateWebQrCodeLoginScript(string redirectUrl, string styleSheetUrl) {
 			_wechatConfig.RequireOpenPlatformSettings();
 
-			var targetElementId = "_" + Crypto.RandomString();
-			var html = @"<div id='" + targetElementId + @"'></div>
+			var elementId = "_" + Crypto.RandomString();
+			var html = @"<div id='" + elementId + @"'></div>
 				<script type='text/javascript' src='https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'></script>
 				<script type='text/javascript'>
 					(function loadWxLogin() {
@@ -30,7 +30,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 							var obj = new WxLogin({
 								self_redirect: false,
 								scope: 'snsapi_login',
-								id: '" + targetElementId + @"',
+								id: '" + elementId + @"',
 								appid: '" + _wechatConfig.OpenPlatformAppId + @"',
 								redirect_uri: '" + redirectUrl + @"',
 								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatConfig.OpenPlatformAppId!) + @"',
@@ -64,15 +64,26 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
-			_httpClient ??= new HttpClient();
-			var json = await _httpClient.GetStringAsync(url);
-			var d = JsonConvert.DeserializeObject<dynamic>(json);
+			try {
+				_httpClient ??= new HttpClient();
+				var json = await _httpClient.GetStringAsync(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-			return new WeChatMiniProgramLoginResult {
-				OpenId = d.openid,
-				UnionId = d.unionid,
-				SessionKey = d.session_key
-			};
+				return new WeChatMiniProgramLoginResult {
+					Ok = d.errcode == null || (int)d.errcode == 0,
+					Message = d.errmsg,
+
+					OpenId = d.openid,
+					UnionId = d.unionid,
+					SessionKey = d.session_key
+				};
+			}
+			catch ( Exception e ) {
+				return new WeChatMiniProgramLoginResult {
+					Ok = false,
+					Message = e.Message
+				};
+			}
 		}
 	}
 }
