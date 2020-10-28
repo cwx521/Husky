@@ -4,6 +4,6 @@ namespace Husky.Sms
 {
 	public interface ISmsSender
 	{
-		Task SendAsync(ISmsBody sms, params string[] toMobileNumbers);
+		Task<Result> SendAsync(ISmsBody sms, params string[] toMobileNumbers);
 	}
 }

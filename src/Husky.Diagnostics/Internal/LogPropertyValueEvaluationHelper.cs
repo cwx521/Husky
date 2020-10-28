@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Husky.Diagnostics
 {
-	internal static class PropertyValueEvaluationHelper
+	internal static class LogPropertyValueEvaluationHelper
 	{
 		internal static void ReadValuesFromHttpContext(this HttpLevelLogBase log, HttpContext http) {
 			var antiforgery = http.RequestServices.GetService<IAntiforgery>()?.GetTokens(http).FormFieldName ?? "__RequestVerificationToken";
@@ -18,7 +18,7 @@ namespace Husky.Diagnostics
 			log.Referrer = http.Request.Headers["Referer"].ToString();
 			log.Data = http.Request.HasFormContentType ? JsonConvert.SerializeObject(http.Request.Form.Where(x => x.Key != antiforgery)) : null;
 			log.UserAgent = http.Request.UserAgent();
-			log.UserIp = http.Connection.RemoteIpAddress.ToString();
+			log.UserIp = http.Connection?.RemoteIpAddress?.ToString();
 			log.IsAjax = http.Request.IsAjaxRequest();
 		}
 

@@ -16,7 +16,7 @@ namespace Husky.KeyValues
 		}
 
 		private static readonly object _lock = new object();
-		private static readonly string _cacheKey = nameof(KeyValueManager) + nameof(Items);
+		private static readonly string _cacheKey = nameof(KeyValueManager);
 
 		private readonly IKeyValueDbContext _db;
 		private readonly IMemoryCache _cache;
@@ -30,8 +30,8 @@ namespace Husky.KeyValues
 		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
 		public string? Get(string key) => Find(key)?.Value;
 
-		public T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct => GetOrAdd(key, defaultValueIfNotExist.ToString()).As<T>();
-		public string? GetOrAdd(string key, string? defaultValueIfNotExist) {
+		public T GetOrAdd<T>(string key, T fallback) where T : struct => GetOrAdd(key, fallback.ToString()).As<T>();
+		public string? GetOrAdd(string key, string? fallback) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
 			}
@@ -43,12 +43,12 @@ namespace Husky.KeyValues
 
 			item = new KeyValue {
 				Key = key,
-				Value = defaultValueIfNotExist
+				Value = fallback
 			};
 			lock ( _lock ) {
 				Items.Add(item);
 			}
-			return defaultValueIfNotExist;
+			return fallback;
 		}
 
 		public void AddOrUpdate<T>(string key, T value) where T : struct => AddOrUpdate(key, value.ToString());

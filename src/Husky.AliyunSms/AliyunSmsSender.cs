@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using Aliyun.Net.SDK.Core;
 using Aliyun.Net.SDK.Core.Profile;
@@ -15,9 +16,9 @@ namespace Husky.Sms.AliyunSms
 
 		private readonly AliyunSmsSettings _settings;
 
-		public async Task SendAsync(ISmsBody sms, params string[] toMobileNumbers) {
+		public async Task<Result> SendAsync(ISmsBody sms, params string[] toMobileNumbers) {
 			if ( toMobileNumbers == null || toMobileNumbers.Length == 0 ) {
-				return;
+				throw new ArgumentNullException(nameof(toMobileNumbers));
 			}
 
 			var request = new SendSmsRequest {
@@ -29,11 +30,14 @@ namespace Husky.Sms.AliyunSms
 			var profile = DefaultProfile.GetProfile(_settings.EndPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
 			var client = new DefaultAcsClient(profile);
 
-			await Task.Run(() => {
+			return await Task.Run<Result>(() => {
 				try {
 					client.DoAction(request);
+					return new Success();
 				}
-				catch { }
+				catch ( Exception e ) {
+					return new Failure(e.Message);
+				}
 			});
 		}
 	}

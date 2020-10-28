@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8603 // Possible null reference return.
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.KeyValues.Data
 {
@@ -9,7 +13,7 @@ namespace Husky.KeyValues.Data
 
 		public DbContext Normalize() => this;
 
-		public DbSet<KeyValue> KeyValues { get; set; } = null!;
+		public DbSet<KeyValue> KeyValues { get; set; }
 
 	}
 }
