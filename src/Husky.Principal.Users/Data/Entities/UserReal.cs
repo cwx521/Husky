@@ -10,7 +10,7 @@ namespace Husky.Principal.Users.Data
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		public int UserId { get; set; }
 
-		[StringLength(18, MinimumLength = 18), Column(TypeName = "varchar(18)"), Unique]
+		[StringLength(18, MinimumLength = 18), Column(TypeName = "varchar(18)")]
 		public string? SocialIdNumber { get; set; }
 
 		[StringLength(24)]

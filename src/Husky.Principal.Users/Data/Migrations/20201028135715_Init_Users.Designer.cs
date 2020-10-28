@@ -306,10 +306,6 @@ namespace Husky.Principal.Users.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("SocialIdNumber")
-                        .IsUnique()
-                        .HasFilter("[SocialIdNumber] IS NOT NULL");
-
                     b.ToTable("UserReals");
                 });
 

@@ -283,13 +283,6 @@ namespace Husky.Principal.Users.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserReals_SocialIdNumber",
-                table: "UserReals",
-                column: "SocialIdNumber",
-                unique: true,
-                filter: "[SocialIdNumber] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserWeChatOpenIds_OpenIdValue",
                 table: "UserWeChatOpenIds",
                 column: "OpenIdValue",
