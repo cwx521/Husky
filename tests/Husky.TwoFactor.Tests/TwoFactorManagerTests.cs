@@ -17,7 +17,7 @@ namespace Husky.TwoFactor.Tests
 		//attention: fill the required values to run this test
 
 		[TestMethod()]
-		public async Task RequestCodeThroughAliyunSmsTest() {
+		public async Task SendCodeThroughAliyunSmsTest() {
 			var settings = new AliyunSmsSettings {
 				DefaultSignName = "星翼软件",
 				DefaultTemplateCode = "SMS_170155854",
@@ -53,7 +53,7 @@ namespace Husky.TwoFactor.Tests
 		}
 
 		[TestMethod()]
-		public async Task RequestCodeThroughEmailTest() {
+		public async Task SendCodeThroughEmailTest() {
 			Crypto.PermanentToken = Crypto.RandomString();
 
 			var smtp = new MailSmtpProvider {

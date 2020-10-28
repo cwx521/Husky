@@ -1,9 +1,10 @@
 ﻿using Husky.Principal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Diagnostics
 {
 	public static class PrincipalExtension
 	{
-		public static DiagnosticsLogger Logger(this IPrincipalUser principal) => new DiagnosticsLogger(principal);
+		public static IDiagnosticsLogger Logger(this IPrincipalUser principal) => principal.ServiceProvider.GetRequiredService<IDiagnosticsLogger>();
 	}
 }
