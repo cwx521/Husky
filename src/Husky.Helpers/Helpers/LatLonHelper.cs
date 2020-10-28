@@ -16,7 +16,7 @@ namespace Husky
 
 		public static int StraightMetersTo(this Location p1, Location p2) {
 			if ( p1.LatLonType != p2.LatLonType ) {
-				throw new ArgumentException("坐标系不一致");
+				throw new ArgumentException("This two locations are in different coordinate standards");
 			}
 			var radLat1 = p1.Lat * Math.PI / 180.0;
 			var radLat2 = p2.Lat * Math.PI / 180.0;
