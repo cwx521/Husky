@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Lbs
 {
-	public struct Location
+	public class Location
 	{
+		public Location() {
+		}
+
 		public Location(double latitude, double longitude) {
 			Lat = latitude;
 			Lon = longitude;

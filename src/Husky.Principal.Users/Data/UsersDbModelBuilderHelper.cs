@@ -2,6 +2,7 @@
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8603 // Possible null reference return.
 
+using Husky.Lbs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Users.Data
@@ -24,7 +25,7 @@ namespace Husky.Principal.Users.Data
 			//User
 			mb.Entity<User>(user => {
 				user.HasOne(x => x.Phone).WithOne(x => x.User).HasForeignKey<UserPhone>(x => x.UserId);
-				user.HasOne(x => x.Email).WithOne(x => x.User).HasForeignKey<UserPhone>(x => x.UserId);
+				user.HasOne(x => x.Email).WithOne(x => x.User).HasForeignKey<UserEmail>(x => x.UserId);
 				user.HasOne(x => x.WeChat).WithOne(x => x.User).HasForeignKey<UserWeChat>(x => x.UserId);
 				user.HasOne(x => x.Real).WithOne(x => x.User).HasForeignKey<UserReal>(x => x.UserId);
 				user.HasMany(x => x.Passwords).WithOne(x => x.User).HasForeignKey(x => x.UserId);
