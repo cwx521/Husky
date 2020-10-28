@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Husky.Sms;
 
 namespace Husky.TwoFactor
 {
@@ -15,8 +14,8 @@ namespace Husky.TwoFactor
 			string? overrideSmsTemplateAlias = null,
 			string? overrideSmsSignName = null);
 
-		Task<Result> SendCodeThroughEmailAsync(string emailAddress, 
-			string? messageTemplateWithCodeArg0 = null, 
+		Task<Result> SendCodeThroughEmailAsync(string emailAddress,
+			string? messageTemplateWithCodeArg0 = null,
 			string? overrideSmsSignName = null);
 
 		Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedIfSucceed, int withinMinutes = 15);

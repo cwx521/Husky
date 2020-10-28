@@ -6,7 +6,7 @@ namespace Husky.Principal.Users
 {
 	public partial class UserGroupsManager
 	{
-		private static string _groupsCacheKey = nameof(GetGroups);
+		private static readonly string _groupsCacheKey = nameof(GetGroups);
 
 		public UserGroup[] GetGroups() {
 			if ( _me.IsAnonymous ) {

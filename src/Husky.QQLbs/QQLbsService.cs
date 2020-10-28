@@ -39,7 +39,6 @@ namespace Husky.Lbs.QQLbs
 				City = x.ad_info.city,
 				District = x.ad_info.district
 			};
-
 		}
 
 		public async Task<Address?> GetAddressAsync(Location latlon) {
