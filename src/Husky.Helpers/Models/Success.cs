@@ -16,6 +16,5 @@
 		}
 		public Success(string? message, T data) : base(true, message, data) {
 		}
-
 	}
 }

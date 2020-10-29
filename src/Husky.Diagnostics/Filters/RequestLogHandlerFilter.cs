@@ -8,7 +8,6 @@ namespace Husky.Diagnostics
 {
 	public class RequestLogHandlerFilter : IAsyncPageFilter
 	{
-
 		public Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context) {
 			return Task.CompletedTask;
 		}

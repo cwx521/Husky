@@ -2,7 +2,7 @@
 
 namespace Husky.Alipay
 {
-	public class AlipayOrderQueryResult : Result
+	public class AlipayOrderQueryResult
 	{
 		public string? AlipayTradeNo { get; internal set; }
 		public string? AlipayBuyerUserId { get; internal set; }

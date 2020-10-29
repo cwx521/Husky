@@ -14,6 +14,5 @@ namespace Husky.KeyValues.Data
 		public DbContext Normalize() => this;
 
 		public DbSet<KeyValue> KeyValues { get; set; }
-
 	}
 }

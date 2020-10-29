@@ -46,7 +46,7 @@ namespace Husky.Alipay.Tests
 			//Open the url in browser
 			//Pay manually in the opened page, then continue
 			var queryResult = await alipay.QueryOrderAsync(tradeModel.OrderNo);
-			Assert.AreEqual(tradeModel.Amount, queryResult.Amount);
+			Assert.AreEqual(tradeModel.Amount, queryResult.Data.Amount);
 
 			var remainedAmount = tradeModel.Amount;
 
@@ -60,7 +60,7 @@ namespace Husky.Alipay.Tests
 
 			//Query refund 0.01
 			var queryRefundResult = await alipay.QueryRefundAsync(tradeModel.OrderNo, refundRequestNo);
-			Assert.AreEqual(refundAmount, queryRefundResult.RefundAmount);
+			Assert.AreEqual(refundAmount, queryRefundResult.Data.RefundAmount);
 
 			//Refund another 0.01
 			var refundAmount2 = 0.01m;
@@ -72,7 +72,7 @@ namespace Husky.Alipay.Tests
 
 			//Query another refund 0.01
 			var queryRefundResult2 = await alipay.QueryRefundAsync(tradeModel.OrderNo, refundRequestNo2);
-			Assert.AreEqual(refundAmount2, queryRefundResult2.RefundAmount);
+			Assert.AreEqual(refundAmount2, queryRefundResult2.Data.RefundAmount);
 
 			//Expected failure refund
 			var refundAmount3 = tradeModel.Amount;

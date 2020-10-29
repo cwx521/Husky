@@ -2,7 +2,7 @@
 
 namespace Husky.Alipay.Models
 {
-	public class AlipayRefundQueryResult : Result
+	public class AlipayRefundQueryResult
 	{
 		public string? RefundReason { get; internal set; }
 		public decimal RefundAmount { get; internal set; }
