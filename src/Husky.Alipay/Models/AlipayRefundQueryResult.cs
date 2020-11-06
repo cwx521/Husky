@@ -1,6 +1,6 @@
-﻿using Alipay.AopSdk.Core.Response;
+﻿using Aop.Api.Response;
 
-namespace Husky.Alipay.Models
+namespace Husky.Alipay
 {
 	public class AlipayRefundQueryResult
 	{

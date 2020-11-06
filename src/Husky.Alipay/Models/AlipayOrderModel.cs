@@ -6,8 +6,9 @@
 		public string OrderNo { get; set; } = null!;
 		public string Subject { get; set; } = null!;
 		public string? Body { get; set; }
+		public bool AllowCreditCard { get; set; } = true;
 
-		public string CallbackUrl { get; set; } = null!;
-		public string NotifyUrl { get; set; } = null!;
+		public string? NotifyUrl { get; set; } 
+		public string? CallbackUrl { get; set; } 
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Alipay.AopSdk.Core.Response;
+﻿using Aop.Api.Response;
 
 namespace Husky.Alipay
 {

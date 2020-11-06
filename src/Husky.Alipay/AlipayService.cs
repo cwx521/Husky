@@ -1,46 +1,64 @@
-﻿//API document: https://opendocs.alipay.com/apis/api_1/alipay.trade.pay
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Alipay.AopSdk.AspnetCore;
-using Alipay.AopSdk.Core.Domain;
-using Alipay.AopSdk.Core.Request;
-using Husky.Alipay.Models;
+using Aop.Api;
+using Aop.Api.Domain;
+using Aop.Api.Request;
+using Aop.Api.Util;
 using Microsoft.AspNetCore.Http;
 
 namespace Husky.Alipay
 {
-	public static class AlipayServiceHelper
+	public class AlipayService
 	{
-		public static AlipayOrderModelUnifiedResult GenerateAlipayPaymentUrl(this AlipayService alipay, AlipayOrderModel payment) {
+		public AlipayService(AlipayOptions options) {
+			_options = options;
+			_alipay = new DefaultAopClient(
+				options.GatewayUrl,
+				options.AppId,
+				options.PrivateKey,
+				options.Format,
+				options.Version,
+				options.SignType,
+				options.AlipayPublicKey,
+				options.CharSet
+			);
+		}
+
+		private readonly AlipayOptions _options;
+		private readonly DefaultAopClient _alipay;
+
+		public IAopClient OriginalClient => _alipay;
+
+		public AlipayOrderModelUnifiedResult GenerateAlipayPaymentUrl(AlipayOrderModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
 				OutTradeNo = payment.OrderNo,
 				TotalAmount = payment.Amount.ToString("f2"),
-				ProductCode = "FAST_INSTANT_TRADE_PAY"
+				ProductCode = "FAST_INSTANT_TRADE_PAY",
+				DisablePayChannels = payment.AllowCreditCard ? null : "credit_group"
 			};
 
 			var wapPayRequest = new AlipayTradeWapPayRequest();
+			wapPayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
 			wapPayRequest.SetReturnUrl(payment.CallbackUrl);
-			wapPayRequest.SetNotifyUrl(payment.NotifyUrl);
 			wapPayRequest.SetBizModel(payModel);
-			var wapPayResponse = alipay.SdkExecute(wapPayRequest);
+			var wapPayResponse = _alipay.SdkExecute(wapPayRequest);
 
 			var pagePayRequest = new AlipayTradePagePayRequest();
+			pagePayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
 			pagePayRequest.SetReturnUrl(payment.CallbackUrl);
-			pagePayRequest.SetNotifyUrl(payment.NotifyUrl);
 			pagePayRequest.SetBizModel(payModel);
-			var pagePayResponse = alipay.SdkExecute(pagePayRequest);
+			var pagePayResponse = _alipay.SdkExecute(pagePayRequest);
 
 			return new AlipayOrderModelUnifiedResult {
-				MobileWebPaymentUrl = alipay.Options.Gatewayurl + "?" + wapPayResponse.Body,
-				DesktopPagePaymentUrl = alipay.Options.Gatewayurl + "?" + pagePayResponse.Body
+				MobileWebPaymentUrl = _options.GatewayUrl + "?" + wapPayResponse.Body,
+				DesktopPagePaymentUrl = _options.GatewayUrl + "?" + pagePayResponse.Body
 			};
 		}
 
-		public static async Task<Result<AlipayOrderQueryResult>> QueryOrderAsync(this AlipayService alipay, string orderNo) {
+		public Result<AlipayOrderQueryResult> QueryOrder(string orderNo) {
 			var model = new AlipayTradeQueryModel {
 				OutTradeNo = orderNo
 			};
@@ -48,7 +66,7 @@ namespace Husky.Alipay
 			request.SetBizModel(model);
 
 			try {
-				var response = await alipay.ExecuteAsync(request);
+				var response = _alipay.Execute(request);
 				var ok = !response.IsError && response.Msg == "Success" && response.TradeStatus == "TRADE_SUCCESS";
 
 				if ( !ok ) {
@@ -69,7 +87,7 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static async Task<Result<AlipayRefundResult>> RefundAsync(this AlipayService alipay, string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
+		public Result<AlipayRefundResult> Refund(string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
 			var model = new AlipayTradeRefundModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = newRefundRequestNo,
@@ -80,7 +98,7 @@ namespace Husky.Alipay
 			request.SetBizModel(model);
 
 			try {
-				var response = await alipay.ExecuteAsync(request);
+				var response = _alipay.Execute(request);
 				var ok = !response.IsError && response.Msg == "Success";
 
 				if ( !ok ) {
@@ -99,7 +117,7 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static async Task<Result<AlipayRefundQueryResult>> QueryRefundAsync(this AlipayService alipay, string originalOrderNo, string refundRequestNo) {
+		public Result<AlipayRefundQueryResult> QueryRefund(string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = refundRequestNo
@@ -108,7 +126,7 @@ namespace Husky.Alipay
 			request.SetBizModel(model);
 
 			try {
-				var response = await alipay.ExecuteAsync(request);
+				var response = _alipay.Execute(request);
 				var ok = !response.IsError && response.Msg == "Success";
 
 				if ( !ok ) {
@@ -127,20 +145,21 @@ namespace Husky.Alipay
 			}
 		}
 
-		public static async Task<Result<AlipayNotifyResult>> ParseNotifyResultAsync(this AlipayService alipay, HttpRequest request) {
+		public async Task<Result<AlipayNotifyResult>> ParseNotifyResultAsync(HttpRequest request) {
 			var form = request.HasFormContentType ? await request.ReadFormAsync() : null;
 			if ( form == null || form.Count == 0 ) {
 				return new Failure<AlipayNotifyResult>("未收到任何参数");
 			}
 
-			var success = form.TryGetValue("trade_status", out var status) && status == "TRADE_SUCCESS";
+			var dict = form.ToDictionary(k => k.Key, v => v.Value.ToString());
+			var success = dict.TryGetValue("trade_status", out var status) && status == "TRADE_SUCCESS";
+			var readAmount = dict.TryGetValue("total_amount", out var amount);
+			var validationOk = AlipaySignature.RSACheckV1(dict, _options.AlipayPublicKey, _options.CharSet, _options.SignType, false);
+
 			if ( !success ) {
 				return new Failure<AlipayNotifyResult>("支付失败");
 			}
-
-			var dict = form.ToDictionary(k => k.Key, v => v.Value.ToString());
-			var validationOk = dict.TryGetValue("total_amount", out var amount) && alipay.RSACheckV1(dict);
-			if ( !validationOk ) {
+			if ( !readAmount || !validationOk ) {
 				return new Failure<AlipayNotifyResult>("未通过数据加密验证");
 			}
 

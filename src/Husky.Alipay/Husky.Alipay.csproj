@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alipay.AopSdk.AspnetCore" Version="2.5.0.1" />
+    <PackageReference Include="AlipaySDKNet.Standard" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
