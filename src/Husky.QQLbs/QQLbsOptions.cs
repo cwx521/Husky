@@ -1,6 +1,6 @@
 ﻿namespace Husky.Lbs.QQLbs
 {
-	public class QQLbsSettings
+	public class QQLbsOptions
 	{
 		public string Key { get; set; } = null!;
 	}

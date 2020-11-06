@@ -12,13 +12,13 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector AddQQLbs(this HuskyInjector husky, QQLbsSettings options) {
+		public static HuskyInjector AddQQLbs(this HuskyInjector husky, QQLbsOptions options) {
 			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));
 			return husky;
 		}
 
-		public static HuskyInjector AddQQLbs(this HuskyInjector husky, Action<QQLbsSettings> setupAction) {
-			var options = new QQLbsSettings();
+		public static HuskyInjector AddQQLbs(this HuskyInjector husky, Action<QQLbsOptions> setupAction) {
+			var options = new QQLbsOptions();
 			setupAction(options);
 			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));
 			return husky;

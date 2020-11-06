@@ -6,20 +6,20 @@ namespace Husky.WeChatIntegration
 {
 	public class WeChatService
 	{
-		public WeChatService(WeChatAppConfig wechatConfig, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
+		public WeChatService(WeChatOptions wechatOptions, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
 			_http = httpContextAccessor;
 			_cache = cache;
-			Config = wechatConfig;
+			Options = wechatOptions;
 		}
 
 		private readonly IHttpContextAccessor _http;
 		private readonly IMemoryCache _cache;
 
-		public WeChatAppConfig Config { get; }
+		public WeChatOptions Options { get; }
 
-		public WeChatJsApiService JsApi() => new WeChatJsApiService(Config, _http, _cache);
-		public WeChatUserService User() => new WeChatUserService(Config);
-		public WeChatAuthService Auth() => new WeChatAuthService(Config);
-		public WeChatPayService Pay() => new WeChatPayService(Config);
+		public WeChatJsApiService JsApi() => new WeChatJsApiService(Options, _http, _cache);
+		public WeChatUserService User() => new WeChatUserService(Options);
+		public WeChatAuthService Auth() => new WeChatAuthService(Options);
+		public WeChatPayService Pay() => new WeChatPayService(Options);
 	}
 }

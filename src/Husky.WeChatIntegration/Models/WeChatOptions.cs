@@ -2,7 +2,7 @@
 
 namespace Husky.WeChatIntegration
 {
-	public class WeChatAppConfig
+	public class WeChatOptions
 	{
 		public string? OpenPlatformAppId { get; set; }
 		public string? OpenPlatformAppSecret { get; set; }

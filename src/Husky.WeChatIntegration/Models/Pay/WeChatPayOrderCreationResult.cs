@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration.Models.Pay
 {
-	public class WeChatPayOrderModelUnifiedResult : Result
+	public class WeChatPayOrderCreationResult : Result
 	{
 		public string? PrepayId { get; internal set; }
 		public string? CodeUrl { get; internal set; }

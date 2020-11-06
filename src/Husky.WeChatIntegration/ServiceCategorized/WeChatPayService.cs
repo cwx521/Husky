@@ -13,25 +13,24 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatPayService
 	{
-		public WeChatPayService(WeChatAppConfig wechatConfig) {
-			_wechatConfig = wechatConfig;
-			_wechatConfig.RequireMerchantSettings();
+		public WeChatPayService(WeChatOptions options) {
+			_options = options;
+			_options.RequireMerchantSettings();
 		}
 
-		private readonly WeChatAppConfig _wechatConfig;
-		private static readonly HttpClient _httpClient = new HttpClient();
+		private readonly WeChatOptions _options;
 
 		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Timestamp();
 
 			var sb = new StringBuilder();
-			sb.Append("appId=" + _wechatConfig.MobilePlatformAppId);
+			sb.Append("appId=" + _options.MobilePlatformAppId);
 			sb.Append("&nonceStr=" + nonceStr);
 			sb.Append("&package=prepay_id=" + prepayId);
 			sb.Append("&signType=MD5");
 			sb.Append("&timeStamp=" + timeStamp);
-			sb.Append("&key=" + _wechatConfig.MerchantSecret);
+			sb.Append("&key=" + _options.MerchantSecret);
 			var paySign = Crypto.MD5(sb.ToString()).ToUpper();
 
 			return new WeChatPayJsApiParameter {
@@ -43,7 +42,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public async Task<WeChatPayOrderModelUnifiedResult> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
+		public async Task<WeChatPayOrderCreationResult> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
 			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 			var now = DateTime.Now;
@@ -72,7 +71,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
-				return new WeChatPayOrderModelUnifiedResult {
+				return new WeChatPayOrderCreationResult {
 					Ok = IsOk(xml),
 					Message = GetMessage(xml),
 					PrepayId = GetCdata(xml, "prepay_id"),
@@ -81,7 +80,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch ( Exception e ) {
-				return new WeChatPayOrderModelUnifiedResult {
+				return new WeChatPayOrderCreationResult {
 					Ok = false,
 					Message = e.Message
 				};
@@ -179,7 +178,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			foreach ( var name in orderedNames ) {
 				sb.Append(name + "=" + apiParameters[name] + "&");
 			}
-			sb.Append("key=" + _wechatConfig.MerchantSecret);
+			sb.Append("key=" + _options.MerchantSecret);
 
 			//对格式后的字符串进行加密，获得sign，把sign和值加入原Dictionary
 			var tobeSigned = sb.ToString();
@@ -196,11 +195,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
 			if ( useCert ) {
-				using var client = new CertifiedWebClient(_wechatConfig.MerchantId!);
+				using var client = new CertifiedWebClient(_options.MerchantId!);
 				return await client.UploadStringTaskAsync(wechatApiUrl, xml);
 			}
 
-			var response = await _httpClient.PostAsync(wechatApiUrl, new StringContent(xml));
+			var response = await DefaultHttpClient.Instance.PostAsync(wechatApiUrl, new StringContent(xml));
 			return await response.Content.ReadAsStringAsync();
 		}
 
@@ -236,7 +235,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private Dictionary<string, string> GetCommonParameters(string wechatAppId) {
 			return new Dictionary<string, string> {
 				{ "appid", wechatAppId },
-				{ "mch_id", _wechatConfig.MerchantId! },
+				{ "mch_id", _options.MerchantId! },
 				{ "nonce_str", Crypto.RandomString(32) },
 			};
 		}

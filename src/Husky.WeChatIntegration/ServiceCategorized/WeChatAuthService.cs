@@ -8,15 +8,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatAuthService
 	{
-		public WeChatAuthService(WeChatAppConfig wechatConfig) {
-			_wechatConfig = wechatConfig;
+		public WeChatAuthService(WeChatOptions options) {
+			_options = options;
 		}
 
-		private readonly WeChatAppConfig _wechatConfig;
+		private readonly WeChatOptions _options;
 		private static HttpClient? _httpClient;
 
 		public string CreateWebQrCodeLoginScript(string redirectUrl, string styleSheetUrl) {
-			_wechatConfig.RequireOpenPlatformSettings();
+			_options.RequireOpenPlatformSettings();
 
 			var elementId = "_" + Crypto.RandomString();
 			var html = @"<div id='" + elementId + @"'></div>
@@ -31,9 +31,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 								self_redirect: false,
 								scope: 'snsapi_login',
 								id: '" + elementId + @"',
-								appid: '" + _wechatConfig.OpenPlatformAppId + @"',
+								appid: '" + _options.OpenPlatformAppId + @"',
 								redirect_uri: '" + redirectUrl + @"',
-								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatConfig.OpenPlatformAppId!) + @"',
+								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _options.OpenPlatformAppId!) + @"',
 								href: '" + styleSheetUrl + @"',
 								style: ''
 							});
@@ -44,29 +44,28 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		public string CreateMobilePlatformAutoLoginUrl(string redirectUrl, string scope = "snsapi_userinfo") {
-			_wechatConfig.RequireMobilePlatformSettings();
+			_options.RequireMobilePlatformSettings();
 
 			return $"https://open.weixin.qq.com/connect/oauth2/authorize" +
-				   $"?appid={_wechatConfig.MobilePlatformAppId}" +
+				   $"?appid={_options.MobilePlatformAppId}" +
 				   $"&redirect_uri={HttpUtility.UrlEncode(redirectUrl)}" +
 				   $"&response_type=code" +
 				   $"&scope={scope}" +
-				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _wechatConfig.MobilePlatformAppId!)}" +
+				   $"&state={Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _options.MobilePlatformAppId!)}" +
 				   $"#wechat_redirect";
 		}
 
 		public async Task<WeChatMiniProgramLoginResult> ProceedMiniProgramLoginAsync(string code) {
-			_wechatConfig.RequireMiniProgramSettings();
+			_options.RequireMiniProgramSettings();
 
 			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
-					  $"?appid={_wechatConfig.MiniProgramAppId}" +
-					  $"&secret={_wechatConfig.MiniProgramAppSecret}" +
+					  $"?appid={_options.MiniProgramAppId}" +
+					  $"&secret={_options.MiniProgramAppSecret}" +
 					  $"&js_code={code}" +
 					  $"&grant_type=authorization_code";
 
 			try {
-				_httpClient ??= new HttpClient();
-				var json = await _httpClient.GetStringAsync(url);
+				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				return new WeChatMiniProgramLoginResult {

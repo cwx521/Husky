@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -7,14 +7,11 @@ namespace Husky
 {
 	public static class BankCardHelper
 	{
-		public static BandCardModel? GetBandCardInfo(string cardNumber) => GetBandCardInfoAsync(cardNumber).Result;
-
 		public static async Task<BandCardModel?> GetBandCardInfoAsync(string cardNumber) {
-			using var client = new WebClient();
-			var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
-
 			try {
-				var json = await client.DownloadStringTaskAsync(url);
+				var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
+				var bytes = await DefaultHttpClient.Instance.GetByteArrayAsync(url);
+				var json = Encoding.UTF8.GetString(bytes);
 				var obj = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( obj == null ) {
@@ -29,7 +26,9 @@ namespace Husky
 					BankCardType = obj.cardType == "CC" ? BankCardType.CreditCard : BankCardType.DebitCard,
 				};
 			}
-			catch { return null; }
+			catch {
+				return null;
+			}
 		}
 
 		public static Dictionary<string, string> BankAbbrNameDictionary => new Dictionary<string, string> {

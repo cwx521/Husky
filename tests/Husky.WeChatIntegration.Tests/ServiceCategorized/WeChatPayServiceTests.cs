@@ -11,7 +11,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 		private readonly string _openId = "ougf3wF_K0LLtG-sVrQELJ615kHk";
 
-		private readonly WeChatAppConfig _wechatConfig = new WeChatAppConfig {
+		private readonly WeChatOptions _wechatConfig = new WeChatOptions {
 			OpenPlatformAppId = "",
 			OpenPlatformAppSecret = "",
 

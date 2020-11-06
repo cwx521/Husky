@@ -8,8 +8,7 @@ namespace Husky.WeChatIntegration
 		public string? AppSecret { get; set; }
 		public WeChatField? Type { get; set; }
 
-
-		internal void CheckNull() {
+		internal void NotNull() {
 			_ = AppId ?? throw new ArgumentNullException(nameof(AppId));
 			_ = AppSecret ?? throw new ArgumentNullException(nameof(AppSecret));
 		}

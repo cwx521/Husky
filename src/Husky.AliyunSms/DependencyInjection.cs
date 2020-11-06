@@ -7,13 +7,13 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddAliyunSms(this HuskyInjector husky, AliyunSmsSettings options) {
+		public static HuskyInjector AddAliyunSms(this HuskyInjector husky, AliyunSmsOptions options) {
 			husky.Services.AddSingleton<ISmsSender>(new AliyunSmsSender(options));
 			return husky;
 		}
 
-		public static HuskyInjector AddAliyunSms(this HuskyInjector husky, Action<AliyunSmsSettings> setupAction) {
-			var options = new AliyunSmsSettings();
+		public static HuskyInjector AddAliyunSms(this HuskyInjector husky, Action<AliyunSmsOptions> setupAction) {
+			var options = new AliyunSmsOptions();
 			setupAction(options);
 			husky.Services.AddSingleton<ISmsSender>(new AliyunSmsSender(options));
 			return husky;

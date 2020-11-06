@@ -18,7 +18,7 @@ namespace Husky.TwoFactor.Tests
 
 		[TestMethod()]
 		public async Task SendCodeThroughAliyunSmsTest() {
-			var settings = new AliyunSmsSettings {
+			var settings = new AliyunSmsOptions {
 				DefaultSignName = "星翼软件",
 				DefaultTemplateCode = "SMS_170155854",
 				AccessKeyId = "LTAI4FqwMTMob4TH9MP5dfTK",
@@ -117,7 +117,7 @@ namespace Husky.TwoFactor.Tests
 			testDb.SaveChanges();
 
 			Result verifyResult = null;
-			var twoFactorManager = new TwoFactorManager(testDb, principal, new AliyunSmsSender(new AliyunSmsSettings()), null);
+			var twoFactorManager = new TwoFactorManager(testDb, principal, new AliyunSmsSender(new AliyunSmsOptions()), null);
 			for ( var i = 0; i < 12; i++ ) {
 				verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, "WRONG!", true);
 				Assert.IsFalse(verifyResult.Ok);

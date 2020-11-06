@@ -30,7 +30,7 @@ namespace Husky.Alipay
 
 		public IAopClient OriginalClient => _alipay;
 
-		public AlipayOrderModelUnifiedResult GenerateAlipayPaymentUrl(AlipayOrderModel payment) {
+		public AlipayOrderCreationResult GenerateAlipayPaymentUrl(AlipayOrderModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
@@ -52,7 +52,7 @@ namespace Husky.Alipay
 			pagePayRequest.SetBizModel(payModel);
 			var pagePayResponse = _alipay.SdkExecute(pagePayRequest);
 
-			return new AlipayOrderModelUnifiedResult {
+			return new AlipayOrderCreationResult {
 				MobileWebPaymentUrl = _options.GatewayUrl + "?" + wapPayResponse.Body,
 				DesktopPagePaymentUrl = _options.GatewayUrl + "?" + pagePayResponse.Body
 			};

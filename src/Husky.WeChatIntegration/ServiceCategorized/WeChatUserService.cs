@@ -7,19 +7,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatUserService
 	{
-		public WeChatUserService(WeChatAppConfig wechatConfig) {
-			_wechatConfig = wechatConfig;
+		public WeChatUserService(WeChatOptions options) {
+			_options = options;
 		}
 
-		private readonly WeChatAppConfig _wechatConfig;
-		private static readonly HttpClient _httpClient = new HttpClient();
+		private readonly WeChatOptions _options;
 
 		public async Task<WeChatUserResult> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
 		public async Task<WeChatUserResult> GetUserInfoAsync(string openId, string accessToken) {
-			var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
-
 			try {
-				var json = await _httpClient.GetStringAsync(url);
+				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
+				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				return new WeChatUserResult {
@@ -45,23 +43,23 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		public async Task<WeChatUserAccessToken> GetOpenPlatformUserAccessTokenAsync(string code) {
-			_wechatConfig.RequireOpenPlatformSettings();
+			_options.RequireOpenPlatformSettings();
 
 			return await GetUserAccessTokenAsync(code, new WeChatAppIdSecret {
-				AppId = _wechatConfig.OpenPlatformAppId,
-				AppSecret = _wechatConfig.OpenPlatformAppSecret
+				AppId = _options.OpenPlatformAppId,
+				AppSecret = _options.OpenPlatformAppSecret
 			});
 		}
 		public async Task<WeChatUserAccessToken> GetMobilePlatformUserAccessTokenAsync(string code) {
-			_wechatConfig.RequireMobilePlatformSettings();
+			_options.RequireMobilePlatformSettings();
 
 			return await GetUserAccessTokenAsync(code, new WeChatAppIdSecret {
-				AppId = _wechatConfig.MobilePlatformAppId,
-				AppSecret = _wechatConfig.MobilePlatformAppSecret
+				AppId = _options.MobilePlatformAppId,
+				AppSecret = _options.MobilePlatformAppSecret
 			});
 		}
 		public async Task<WeChatUserAccessToken> GetUserAccessTokenAsync(string code, WeChatAppIdSecret overrideIdSecret) {
-			overrideIdSecret.CheckNull();
+			overrideIdSecret.NotNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
 					  $"?appid={overrideIdSecret.AppId}" +
@@ -73,23 +71,23 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		public async Task<WeChatUserAccessToken> RefreshOpenPlatformUserAccessTokenAsync(string refreshToken) {
-			_wechatConfig.RequireOpenPlatformSettings();
+			_options.RequireOpenPlatformSettings();
 
 			return await RefreshUserAccessTokenAsync(refreshToken, new WeChatAppIdSecret {
-				AppId = _wechatConfig.OpenPlatformAppId,
-				AppSecret = _wechatConfig.OpenPlatformAppSecret
+				AppId = _options.OpenPlatformAppId,
+				AppSecret = _options.OpenPlatformAppSecret
 			});
 		}
 		public async Task<WeChatUserAccessToken> RefreshMobilePlatformUserAccessTokenAsync(string refreshToken) {
-			_wechatConfig.RequireMobilePlatformSettings();
+			_options.RequireMobilePlatformSettings();
 
 			return await RefreshUserAccessTokenAsync(refreshToken, new WeChatAppIdSecret {
-				AppId = _wechatConfig.MobilePlatformAppId,
-				AppSecret = _wechatConfig.MobilePlatformAppSecret
+				AppId = _options.MobilePlatformAppId,
+				AppSecret = _options.MobilePlatformAppSecret
 			});
 		}
 		public async Task<WeChatUserAccessToken> RefreshUserAccessTokenAsync(string refreshToken, WeChatAppIdSecret overrideIdSecret) {
-			overrideIdSecret.CheckNull();
+			overrideIdSecret.NotNull();
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/refresh_token" +
 					  $"?appid={overrideIdSecret.AppId}" +
@@ -101,7 +99,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private async Task<WeChatUserAccessToken> GetUserAccessTokenFromResolvedUrlAsync(string url) {
 			try {
-				var json = await _httpClient.GetStringAsync(url);
+				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				return new WeChatUserAccessToken {

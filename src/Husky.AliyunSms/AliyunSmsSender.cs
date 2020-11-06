@@ -9,12 +9,12 @@ namespace Husky.Sms.AliyunSms
 {
 	public class AliyunSmsSender : ISmsSender
 	{
-		public AliyunSmsSender(AliyunSmsSettings settings) {
-			_settings = settings;
-			DefaultProfile.AddEndpoint(_settings.EndPointRegion, _settings.EndPointRegion, _settings.Product, _settings.Domain);
+		public AliyunSmsSender(AliyunSmsOptions options) {
+			_options = options;
+			DefaultProfile.AddEndpoint(_options.EndPointRegion, _options.EndPointRegion, _options.Product, _options.Domain);
 		}
 
-		private readonly AliyunSmsSettings _settings;
+		private readonly AliyunSmsOptions _options;
 
 		public async Task<Result> SendAsync(ISmsBody sms, params string[] toMobileNumbers) {
 			if ( toMobileNumbers == null || toMobileNumbers.Length == 0 ) {
@@ -23,11 +23,11 @@ namespace Husky.Sms.AliyunSms
 
 			var request = new SendSmsRequest {
 				PhoneNumbers = string.Join(",", toMobileNumbers),
-				SignName = sms.SignName ?? _settings.DefaultSignName,
-				TemplateCode = sms.TemplateAlias ?? _settings.DefaultTemplateCode,
+				SignName = sms.SignName ?? _options.DefaultSignName,
+				TemplateCode = sms.TemplateAlias ?? _options.DefaultTemplateCode,
 				TemplateParam = JsonConvert.SerializeObject(sms.Parameters)
 			};
-			var profile = DefaultProfile.GetProfile(_settings.EndPointRegion, _settings.AccessKeyId, _settings.AccessKeySecret);
+			var profile = DefaultProfile.GetProfile(_options.EndPointRegion, _options.AccessKeyId, _options.AccessKeySecret);
 			var client = new DefaultAcsClient(profile);
 
 			return await Task.Run<Result>(() => {

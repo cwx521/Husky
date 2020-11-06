@@ -1,6 +1,6 @@
 ﻿namespace Husky.Sms.AliyunSms
 {
-	public class AliyunSmsSettings
+	public class AliyunSmsOptions
 	{
 		public string AccessKeyId { get; set; } = null!;
 		public string AccessKeySecret { get; set; } = null!;
