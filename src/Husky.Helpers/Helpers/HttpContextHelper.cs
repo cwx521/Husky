@@ -5,12 +5,12 @@ namespace Husky
 {
 	public static class HttpContextHelper
 	{
-		public static string RemoteIpv4(this HttpContext httpContext) {
-			return httpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+		public static string? RemoteIpv4(this HttpContext httpContext) {
+			return httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 		}
 
-		public static string RemoteIpv4(this HttpRequest httpRequest) {
-			return httpRequest.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+		public static string? RemoteIpv4(this HttpRequest httpRequest) {
+			return httpRequest.HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 		}
 
 		public static string SchemeAndHost(this HttpRequest httpRequest) {
@@ -18,7 +18,7 @@ namespace Husky
 		}
 
 		public static string Url(this HttpRequest httpRequest) {
-			return httpRequest.PathBase + httpRequest.Path + Regex.Replace(httpRequest.QueryString.Value, @"[\?&]_=\d+$", "");
+			return httpRequest.PathBase + httpRequest.Path + Regex.Replace(httpRequest.QueryString.Value ?? "", @"[\?&]_=\d+$", "");
 		}
 
 		public static string FullUrl(this HttpRequest httpRequest) {

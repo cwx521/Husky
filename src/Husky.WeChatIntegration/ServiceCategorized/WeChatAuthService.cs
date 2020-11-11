@@ -13,7 +13,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private readonly WeChatOptions _options;
-		private static HttpClient? _httpClient;
 
 		public string CreateWebQrCodeLoginScript(string redirectUrl, string styleSheetUrl) {
 			_options.RequireOpenPlatformSettings();

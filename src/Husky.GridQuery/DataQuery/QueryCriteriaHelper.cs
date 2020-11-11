@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Husky.GridQuery
 {
@@ -17,7 +17,7 @@ namespace Husky.GridQuery
 				if ( !typeof(T).GetProperties().Any(x => string.Compare(filter.Field, x.Name, true) == 0) ) {
 					if ( throwExceptionWhenFilterFieldNotExist ) {
 						throw new InvalidProgramException(
-							$"The filter '{JsonConvert.SerializeObject(filter)}' is not applicable, " +
+							$"The filter '{JsonSerializer.Serialize(filter)}' is not applicable, " +
 							$"field '{filter.Field}' does not exist."
 						);
 					}

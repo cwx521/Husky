@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using Aliyun.Net.SDK.Core;
 using Aliyun.Net.SDK.Core.Profile;
-using Newtonsoft.Json;
 
 namespace Husky.Sms.AliyunSms
 {
@@ -25,7 +25,7 @@ namespace Husky.Sms.AliyunSms
 				PhoneNumbers = string.Join(",", toMobileNumbers),
 				SignName = sms.SignName ?? _options.DefaultSignName,
 				TemplateCode = sms.TemplateAlias ?? _options.DefaultTemplateCode,
-				TemplateParam = JsonConvert.SerializeObject(sms.Parameters)
+				TemplateParam = JsonSerializer.Serialize(sms.Parameters)
 			};
 			var profile = DefaultProfile.GetProfile(_options.EndPointRegion, _options.AccessKeyId, _options.AccessKeySecret);
 			var client = new DefaultAcsClient(profile);

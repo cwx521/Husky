@@ -25,6 +25,6 @@ namespace Husky
 		public Result(bool ok = false, string? message = null, T data = default) : base(ok, message) {
 			Data = data;
 		}
-		public T Data { get; set; }
+		public T? Data { get; set; }
 	}
 }

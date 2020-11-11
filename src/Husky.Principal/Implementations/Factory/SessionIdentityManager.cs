@@ -5,8 +5,8 @@ namespace Husky.Principal.Implementations
 {
 	internal sealed class SessionIdentityManager : IIdentityManager
 	{
-		internal SessionIdentityManager(IHttpContextAccessor httpContextAccessor, IdentityOptions? options = null) {
-			_httpContext = httpContextAccessor.HttpContext;
+		internal SessionIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
+			_httpContext = httpContext;
 			_options = options ?? new IdentityOptions();
 		}
 

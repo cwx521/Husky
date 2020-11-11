@@ -10,7 +10,11 @@ namespace Husky
 	{
 		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.Services.AddScoped<IIdentityManager>(svc => {
-				var http = svc.GetRequiredService<IHttpContextAccessor>();
+				var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
+				if ( http == null ) {
+					throw new InvalidProgramException($"IHttpContextAccessor.HttpContext is null here.");
+				}
+
 				return (options?.Carrier) switch
 				{
 					IdentityCarrier.Header => new HeaderIdentityManager(http, options),
@@ -30,11 +34,14 @@ namespace Husky
 		public static HuskyInjector AddPrincipal(this HuskyInjector husky, IdentityOptions? options = null) {
 			husky.AddIdentityManager(options);
 			husky.Services.AddScoped(serviceProvider => {
-
 				var key = nameof(IPrincipalUser);
 				var http = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
-				if ( !(http.Items[key] is IPrincipalUser principal) ) {
+				if ( http == null ) {
+					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null here.");
+				}
+
+				if ( http.Items[key] is not IPrincipalUser principal ) {
 					var identityManager = serviceProvider.GetRequiredService<IIdentityManager>();
 					principal = new PrincipalUser(identityManager, serviceProvider);
 					http.Items.Add(key, principal);

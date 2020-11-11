@@ -45,7 +45,7 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		internal static async Task LogRequestAsync(this IDiagnosticsDbContext db, HttpContext http, IPrincipalUser? principal) {
+		internal static async Task LogRequestAsync(this IDiagnosticsDbContext db, HttpContext? http, IPrincipalUser? principal) {
 			if ( http == null ) {
 				return;
 			}

@@ -79,6 +79,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync() {
+			if ( _httpContextAccessor.HttpContext == null ) {
+				throw new InvalidProgramException("Can not call this method when IHttpContextAccessor.HttpContext is null.");
+			}
+
 			_options.RequireMobilePlatformSettings();
 
 			var config = new WeChatJsApiConfig {

@@ -22,7 +22,7 @@ namespace Husky.Principal.Users
 				AttemptedAccount = inputAccount ?? "",
 				SickPassword = encryptedSickPassword,
 				UserAgent = http?.Request.UserAgent(),
-				Ip = http?.Connection.RemoteIpAddress.MapToIPv4().ToString()
+				Ip = http?.RemoteIpv4()
 			});
 
 			await _db.Normalize().SaveChangesAsync();

@@ -139,7 +139,7 @@ namespace Husky
 		}
 
 		public static T[] Split<T>(this string? wellFormed, params char[] separators) where T : struct {
-			return string.IsNullOrEmpty(wellFormed) ? new T[0] : wellFormed.Split(separators).Select(x => x.As<T>()).ToArray();
+			return string.IsNullOrEmpty(wellFormed) ? Array.Empty<T>() : wellFormed.Split(separators).Select(x => x.As<T>()).ToArray();
 		}
 	}
 }

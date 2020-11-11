@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Husky.Principal
 {
@@ -14,7 +14,6 @@ namespace Husky.Principal
 		public virtual bool IsAnonymous => Id == 0;
 		public virtual bool IsAuthenticated => !IsAnonymous;
 
-		public string Serialize() => JsonConvert.SerializeObject(this);
 		public override string ToString() => $"{Id}|{DisplayName}|{IsConsolidated}|{AnonymousId}";
 	}
 }

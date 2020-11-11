@@ -122,7 +122,7 @@ namespace Husky
 				Comparison.GreaterThanOrEqual => Expression.GreaterThanOrEqual(property, exprValue),
 				Comparison.LessThan => Expression.LessThan(property, exprValue),
 				Comparison.LessThanOrEqual => Expression.LessThanOrEqual(property, exprValue),
-				Comparison.HasKeyword => Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) }), exprValue),
+				Comparison.HasKeyword => Expression.Call(property, typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string) })!, exprValue),
 				_ => throw new ArgumentOutOfRangeException(nameof(comparison)),
 			};
 
