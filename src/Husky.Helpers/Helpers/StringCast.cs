@@ -54,7 +54,7 @@ namespace Husky
 			var result = 0;
 			var charArray = hex.Reverse().ToArray();
 
-			for ( var i = 0; i < charArray.Count(); i++ ) {
+			for ( var i = 0; i < charArray.Length; i++ ) {
 				int num;
 				var c = charArray[i];
 

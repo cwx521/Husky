@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
@@ -54,7 +53,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				   $"#wechat_redirect";
 		}
 
-		public async Task<WeChatMiniProgramLoginResult> ProceedMiniProgramLoginAsync(string code) {
+		public async Task<Result<WeChatMiniProgramLoginResult>> ProceedMiniProgramLoginAsync(string code) {
 			_options.RequireMiniProgramSettings();
 
 			var url = $"https://api.weixin.qq.com/sns/jscode2session" +
@@ -67,20 +66,19 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
-				return new WeChatMiniProgramLoginResult {
-					Ok = d.errcode == null || (int)d.errcode == 0,
-					Message = d.errmsg,
-
-					OpenId = d.openid,
-					UnionId = d.unionid,
-					SessionKey = d.session_key
+				if ( d.errcode != null && (int)d.errcode != 0 ) {
+					return new Failure<WeChatMiniProgramLoginResult>(d.errmsg);
+				}
+				return new Success<WeChatMiniProgramLoginResult> {
+					Data = new WeChatMiniProgramLoginResult {
+						OpenId = d.openid,
+						UnionId = d.unionid,
+						SessionKey = d.session_key
+					}
 				};
 			}
 			catch ( Exception e ) {
-				return new WeChatMiniProgramLoginResult {
-					Ok = false,
-					Message = e.Message
-				};
+				return new Failure<WeChatMiniProgramLoginResult>(e.Message);
 			}
 		}
 	}

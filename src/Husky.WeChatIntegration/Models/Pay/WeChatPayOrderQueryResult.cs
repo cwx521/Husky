@@ -1,11 +1,11 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatPayOrderQueryResult : Result
+	public record WeChatPayOrderQueryResult 
 	{
-		public string? OpenId { get; internal set; }
-		public decimal Amount { get; internal set; }
-		public bool HasRefund { get; internal set; }
-		public string? TransactionId { get; internal set; }
-		public string? OriginalResult { get; internal set; }
+		public string? OpenId { get; internal init; }
+		public decimal Amount { get; internal init; }
+		public bool HasRefund { get; internal init; }
+		public string? TransactionId { get; internal init; }
+		public string? OriginalResult { get; internal init; }
 	}
 }

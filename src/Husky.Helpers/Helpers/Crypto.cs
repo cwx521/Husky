@@ -44,9 +44,9 @@ namespace Husky
 
 		public static string RandomString(int length = 8) {
 			const string chars = "0123456789abcdefghijklmkopqrstuvwxyzABCDEFGHIJKLMKOPQRSTUVWXYZ";
-			var salt = RandomBytes(length);
+			var seed = RandomBytes(length);
 			var builder = new StringBuilder();
-			for ( var i = 0; i < length; builder.Append(chars[salt[i++] % chars.Length]) ) ;
+			for ( var i = 0; i < length; builder.Append(chars[seed[i++] % chars.Length]) ) ;
 			return builder.ToString();
 		}
 

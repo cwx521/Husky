@@ -61,7 +61,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			var result1 = await wechatPay.CreateUnifedOrderAsync(model);
 			Assert.IsTrue(result1.Ok);
-			Assert.IsNotNull(result1.PrepayId);
+			Assert.IsNotNull(result1.Data.PrepayId);
 
 			//Native
 			model.TradeType = WeChatPayTradeType.Native;
@@ -69,7 +69,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			var result2 = await wechatPay.CreateUnifedOrderAsync(model);
 			Assert.IsTrue(result2.Ok);
-			Assert.IsNotNull(result2.PrepayId);
+			Assert.IsNotNull(result2.Data.PrepayId);
 		}
 
 		[TestMethod()]
@@ -83,8 +83,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var result = await wechatPay.QueryOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo);
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.Amount);
-			Assert.AreEqual(_openId, result.OpenId);
+			Assert.AreEqual(0.01m, result.Data.Amount);
+			Assert.AreEqual(_openId, result.Data.OpenId);
 		}
 
 		[TestMethod()]
@@ -99,7 +99,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var result = await wechatPay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, newRefundRequestNo, 0.1m, 0.01m, "UnitTest");
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.RefundAmount);
+			Assert.AreEqual(0.01m, result.Data.RefundAmount);
 		}
 
 		[TestMethod()]
@@ -114,7 +114,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var result = await wechatPay.QueryRefundAsync(_wechatConfig.MobilePlatformAppId, refundRequestNo);
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.RefundAmount);
+			Assert.AreEqual(0.01m, result.Data.RefundAmount);
 		}
 	}
 }

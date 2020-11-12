@@ -20,10 +20,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly IMemoryCache _cache;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public async Task<WeChatGeneralAccessToken> GetMobilePlatformGeneralAccessTokenAsync() {
+		public async Task<Result<WeChatGeneralAccessToken>> GetMobilePlatformGeneralAccessTokenAsync() {
 			_options.RequireMobilePlatformSettings();
 
-			return await _cache.GetOrCreate(_options.MobilePlatformAppId + nameof(GetMobilePlatformGeneralAccessTokenAsync), async entry => {
+			return await _cache.GetOrCreate<Task<Result<WeChatGeneralAccessToken>>>(_options.MobilePlatformAppId + nameof(GetMobilePlatformGeneralAccessTokenAsync), async entry => {
 				var url = $"https://api.weixin.qq.com/cgi-bin/token" +
 					  $"?grant_type=client_credential" +
 					  $"&appid={_options.MobilePlatformAppId}" +
@@ -36,19 +36,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					var ok = d.errcode == null || (int)d.errcode == 0;
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
 
-					return new WeChatGeneralAccessToken {
-						Ok = ok,
-						Message = d.errmsg,
-
-						AccessToken = d.access_token,
-						ExpiresIn = d.expires_in
+					if ( !ok ) {
+						return new Failure<WeChatGeneralAccessToken>(d.errmsg);
+					}
+					return new Success<WeChatGeneralAccessToken> {
+						Data = new WeChatGeneralAccessToken {
+							AccessToken = d.access_token,
+							ExpiresIn = d.expires_in
+						}
 					};
 				}
 				catch ( Exception e ) {
-					return new WeChatGeneralAccessToken {
-						Ok = false,
-						Message = e.Message
-					};
+					return new Failure<WeChatGeneralAccessToken>(e.Message);
 				}
 			});
 		}
@@ -57,12 +56,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			_options.RequireMobilePlatformSettings();
 
 			return await _cache.GetOrCreate(_options.MobilePlatformAppId + nameof(GetJsApiTicketAsync), async entry => {
-				var accessToken = await GetMobilePlatformGeneralAccessTokenAsync();
-				if ( !accessToken.Ok ) {
-					return accessToken.Message ?? "无法获得 access_token";
+				var result = await GetMobilePlatformGeneralAccessTokenAsync();
+				if ( !result.Ok ) {
+					return result.Message ?? "无法获得 access_token";
 				}
 
-				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
+				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={result.Data?.AccessToken}&type=jsapi";
 				try {
 					var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json);

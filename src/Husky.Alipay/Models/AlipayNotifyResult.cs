@@ -2,12 +2,12 @@
 
 namespace Husky.Alipay
 {
-	public class AlipayNotifyResult
+	public record AlipayNotifyResult
 	{
-		public string? OrderNo { get; internal set; }
-		public string? AlipayTradeNo { get; internal set; }
-		public string? AlipayBuyerId { get; internal set; }
-		public decimal Amount { get; internal set; }
-		public Dictionary<string, string>? OriginalResult { get; internal set; }
+		public string? OrderNo { get; internal init; }
+		public string? AlipayTradeNo { get; internal init; }
+		public string? AlipayBuyerId { get; internal init; }
+		public decimal Amount { get; internal init; }
+		public Dictionary<string, string>? OriginalResult { get; internal init; }
 	}
 }

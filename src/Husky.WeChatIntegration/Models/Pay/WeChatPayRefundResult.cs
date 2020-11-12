@@ -1,8 +1,8 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatPayRefundResult : Result
+	public record WeChatPayRefundResult 
 	{
-		public decimal RefundAmount { get; internal set; }
-		public string? OriginalResult { get; internal set; }
+		public decimal RefundAmount { get; internal init; }
+		public string? OriginalResult { get; internal init; }
 	}
 }

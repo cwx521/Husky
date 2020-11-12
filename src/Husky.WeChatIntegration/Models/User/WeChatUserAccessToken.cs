@@ -1,9 +1,9 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatUserAccessToken : Result
+	public record WeChatUserAccessToken
 	{
-		public string AccessToken { get; set; } = null!;
-		public string? RefreshToken { get; set; }
-		public string OpenId { get; set; } = null!;
+		public string OpenId { get; internal init; } = null!;
+		public string AccessToken { get; internal init; } = null!;
+		public string? RefreshToken { get; internal init; }
 	}
 }

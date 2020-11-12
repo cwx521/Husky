@@ -23,8 +23,8 @@ namespace Husky.Tests
 
 			var a = queryable.Where(x => x.Ok).ToList();
 			var b = queryable.Where(nameof(Result.Ok), "True", Comparison.Equal).ToList();
-			var countA = a.Count();
-			var countB = b.Count();
+			var countA = a.Count;
+			var countB = b.Count;
 			Assert.AreEqual(countA, countB);
 			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
@@ -34,8 +34,8 @@ namespace Husky.Tests
 
 			a = queryable.Where(x => x.Data > 80).ToList();
 			b = queryable.Where(nameof(Result<int>.Data), 80, Comparison.GreaterThan).ToList();
-			countA = a.Count();
-			countB = b.Count();
+			countA = a.Count;
+			countB = b.Count;
 			Assert.AreEqual(countA, countB);
 			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
@@ -45,8 +45,8 @@ namespace Husky.Tests
 
 			a = queryable.Where(x => x.Message.Contains("1")).ToList();
 			b = queryable.Where(nameof(Result.Message), "1", Comparison.HasKeyword).ToList();
-			countA = a.Count();
-			countB = b.Count();
+			countA = a.Count;
+			countB = b.Count;
 			Assert.AreEqual(countA, countB);
 			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {
 				Assert.AreEqual(a[i].Ok, b[i].Ok);
@@ -57,8 +57,8 @@ namespace Husky.Tests
 			var str = list[new Random().Next(0, list.Count)].Message = "abcde";
 			a = queryable.Where(x => x.Message.Length == str.Length).ToList();
 			b = queryable.Where("Message.Length", str.Length, Comparison.Equal).ToList();
-			countA = a.Count();
-			countB = b.Count();
+			countA = a.Count;
+			countB = b.Count;
 			Assert.AreEqual(countA, 1);
 			Assert.AreEqual(countA, countB);
 			for ( var i = 0; i < Math.Min(countA, countB); i++ ) {

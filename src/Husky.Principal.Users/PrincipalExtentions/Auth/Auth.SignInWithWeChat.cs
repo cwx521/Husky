@@ -19,20 +19,20 @@ namespace Husky.Principal.Users
 			var wechat = _me.ServiceProvider.GetRequiredService<WeChatService>().User();
 
 			var accessToken = await wechat.GetUserAccessTokenAsync(wechatCode, idSecret);
-			if ( !accessToken.Ok ) {
+			if ( !accessToken.Ok || accessToken.Data == null ) {
 				return new Failure(LoginResult.FailureWeChatRequestToken.ToLabel());
 			}
 
 			var user = _db.Users
 				.AsNoTracking()
-				.Where(x => x.WeChat != null && x.WeChat.OpenIds.Any(y => y.OpenIdValue == accessToken.OpenId))
+				.Where(x => x.WeChat != null && x.WeChat.OpenIds.Any(y => y.OpenIdValue == accessToken.Data.OpenId))
 				.SingleOrDefault();
 
 			//用户还不存在，即该微信账号第一次登录，进一步读取用户资料完成自动注册
 			if ( user == null ) {
 
-				var wechatUser = await wechat.GetUserInfoAsync(accessToken);
-				if ( !wechatUser.Ok ) {
+				var wechatUser = await wechat.GetUserInfoAsync(accessToken.Data);
+				if ( !wechatUser.Ok || wechatUser.Data == null ) {
 					return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 				}
 
@@ -40,7 +40,7 @@ namespace Husky.Principal.Users
 				user = _db.Users
 					.Include(x => x.WeChat)
 					.Where(x => x.WeChat != null)
-					.Where(x => x.WeChat!.UnionId == wechatUser.UnionId || x.WeChat.OpenIds.Any(y => y.OpenIdValue == wechatUser.OpenId))
+					.Where(x => x.WeChat!.UnionId == wechatUser.Data.UnionId || x.WeChat.OpenIds.Any(y => y.OpenIdValue == wechatUser.Data.OpenId))
 					.SingleOrDefault();
 
 				//如果通过传入微信信息没找到已注册用户，判断用户当前是否已经通过其它方式登录，是的话直接使用该用户身份
@@ -69,25 +69,25 @@ namespace Husky.Principal.Users
 				}
 
 				//更新 User 表字段
-				user.DisplayName ??= wechatUser.NickName.Left(36);
-				user.PhotoUrl ??= wechatUser.HeadImageUrl;
+				user.DisplayName ??= wechatUser.Data.NickName.Left(36);
+				user.PhotoUrl ??= wechatUser.Data.HeadImageUrl;
 
 				//更新 UserWeChat 表字段
 				user.WeChat ??= new UserWeChat();
 
-				if ( !user.WeChat.OpenIds.Any(x => x.OpenIdValue == wechatUser.OpenId) ) {
+				if ( !user.WeChat.OpenIds.Any(x => x.OpenIdValue == wechatUser.Data.OpenId) ) {
 					user.WeChat.OpenIds.Add(new UserWeChatOpenId {
 						OpenIdType = (WeChatField)(int)idSecret.Type,
-						OpenIdValue = wechatUser.OpenId
+						OpenIdValue = wechatUser.Data.OpenId
 					});
 				}
-				user.WeChat.UnionId = wechatUser.UnionId;
-				user.WeChat.NickName = wechatUser.NickName.Left(36)!;
-				user.WeChat.Sex = wechatUser.Sex;
-				user.WeChat.HeadImageUrl = wechatUser.HeadImageUrl;
-				user.WeChat.Province = wechatUser.Province?.Left(24);
-				user.WeChat.City = wechatUser.City?.Left(24);
-				user.WeChat.Country = wechatUser.Country?.Left(24);
+				user.WeChat.UnionId = wechatUser.Data.UnionId;
+				user.WeChat.NickName = wechatUser.Data.NickName.Left(36)!;
+				user.WeChat.Sex = wechatUser.Data.Sex;
+				user.WeChat.HeadImageUrl = wechatUser.Data.HeadImageUrl;
+				user.WeChat.Province = wechatUser.Data.Province?.Left(24);
+				user.WeChat.City = wechatUser.Data.City?.Left(24);
+				user.WeChat.Country = wechatUser.Data.Country?.Left(24);
 
 				await _db.Normalize().SaveChangesAsync();
 			}

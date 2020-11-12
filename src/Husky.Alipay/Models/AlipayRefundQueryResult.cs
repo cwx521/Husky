@@ -2,11 +2,11 @@
 
 namespace Husky.Alipay
 {
-	public class AlipayRefundQueryResult
+	public record AlipayRefundQueryResult
 	{
-		public string? RefundReason { get; internal set; }
-		public decimal RefundAmount { get; internal set; }
+		public string? RefundReason { get; internal init; }
+		public decimal RefundAmount { get; internal init; }
 
-		public AlipayTradeFastpayRefundQueryResponse? OriginalResult { get; internal set; }
+		public AlipayTradeFastpayRefundQueryResponse? OriginalResult { get; internal init; }
 	}
 }

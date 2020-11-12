@@ -10,10 +10,11 @@ namespace Husky
 			Ok = ok;
 			Message = message;
 		}
-		public virtual bool Ok { get; set; }
-		public virtual string? Message { get; set; }
 
-		public string ToJson() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
+		public bool Ok { get; set; }
+		public string? Message { get; set; }
+
+		public virtual string ToJson() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
 			NullValueHandling = NullValueHandling.Ignore
 		});
 

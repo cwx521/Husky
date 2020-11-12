@@ -1,9 +1,9 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public class WeChatMiniProgramLoginResult : Result
+	public record WeChatMiniProgramLoginResult
 	{
-		public string OpenId { get; set; } = null!;
-		public string SessionKey { get; set; } = null!;
-		public string? UnionId { get; set; }
+		public string OpenId { get; internal init; } = null!;
+		public string SessionKey { get; internal init; } = null!;
+		public string? UnionId { get; internal init; }
 	}
 }

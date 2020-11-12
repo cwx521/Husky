@@ -24,7 +24,7 @@ namespace Husky.GridQuery
 		public bool Locked { get; set; }
 		public bool Hidden { get; set; }
 		public bool EditableFlag { get; set; }
-		public TextValue[]? Values { get; set; }
+		public TextValuePair[]? Values { get; set; }
 		public List<GridColumn>? Columns { get; set; }
 
 	}

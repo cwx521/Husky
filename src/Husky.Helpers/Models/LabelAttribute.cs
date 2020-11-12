@@ -11,8 +11,8 @@ namespace Husky
 			CssClass = cssClass;
 		}
 
-		public string Label { get; set; }
-		public string? Description { get; set; }
-		public string? CssClass { get; set; }
+		public string Label { get; init; }
+		public string? Description { get; init; }
+		public string? CssClass { get; init; }
 	}
 }
