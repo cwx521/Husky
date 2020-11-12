@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public record WeChatUserResult 
+	public record WeChatUserResult
 	{
 		public string OpenId { get; internal init; } = null!;
 		public string? UnionId { get; internal init; }

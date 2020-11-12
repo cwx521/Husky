@@ -114,8 +114,7 @@ namespace Husky
 							;
 
 			//Get lambda expression
-			Expression lambda = comparison switch
-			{
+			Expression lambda = comparison switch {
 				Comparison.Equal => Expression.Equal(property, exprValue),
 				Comparison.NotEqual => Expression.NotEqual(property, exprValue),
 				Comparison.GreaterThan => Expression.GreaterThan(property, exprValue),

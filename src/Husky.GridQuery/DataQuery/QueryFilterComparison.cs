@@ -21,8 +21,7 @@
 	public static class QueryFilterComparisonEquality
 	{
 		public static Comparison Equality(this QueryFilterComparison comparison) {
-			return comparison switch
-			{
+			return comparison switch {
 				QueryFilterComparison.Neq => Comparison.NotEqual,
 				QueryFilterComparison.Contains => Comparison.HasKeyword,
 				QueryFilterComparison.Gt => Comparison.GreaterThan,

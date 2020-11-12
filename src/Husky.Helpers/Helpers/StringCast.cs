@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Husky
 {
@@ -20,7 +20,7 @@ namespace Husky
 			return TimeSpan.TryParse(str, out var t) ? t : defaultValue;
 		}
 
-		public static T As<T>(this string? str, T defaultValue = default) where T : struct, IConvertible {
+		public static T As<T>(this string? str, T defaultValue = default) where T : struct {
 			if ( str == null ) {
 				return default;
 			}
@@ -28,7 +28,7 @@ namespace Husky
 				if ( typeof(IConvertible).IsAssignableFrom(typeof(T)) ) {
 					return (T)Convert.ChangeType(str, typeof(T));
 				}
-				return JsonConvert.DeserializeObject<T>(str);
+				return JsonSerializer.Deserialize<T>(str);
 			}
 			catch {
 				return defaultValue;

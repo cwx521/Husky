@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Husky.Principal.Users.Data;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Husky.Principal.Users
 {

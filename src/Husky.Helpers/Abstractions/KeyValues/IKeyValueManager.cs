@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Husky.KeyValues
@@ -14,10 +13,10 @@ namespace Husky.KeyValues
 		void AddOrUpdate(string key, string? value);
 		void Save(string key, string? value);
 
-		T Get<T>(string key, T defaultValue = default) where T : struct, IConvertible;
-		T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct, IConvertible;
-		void AddOrUpdate<T>(string key, T value) where T : struct, IConvertible;
-		void Save<T>(string key, T value) where T : struct, IConvertible;
+		T Get<T>(string key, T defaultValue = default) where T : struct;
+		T GetOrAdd<T>(string key, T defaultValueIfNotExist) where T : struct;
+		void AddOrUpdate<T>(string key, T value) where T : struct;
+		void Save<T>(string key, T value) where T : struct;
 
 		void Reload();
 		void SaveAll();

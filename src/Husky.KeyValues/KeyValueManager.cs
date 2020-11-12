@@ -27,10 +27,10 @@ namespace Husky.KeyValues
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => _db.KeyValues.AsNoTracking().ToList());
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
-		public T Get<T>(string key, T defaultValue = default) where T : struct, IConvertible => Get(key).As(defaultValue);
+		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
 		public string? Get(string key) => Find(key)?.Value;
 
-		public T GetOrAdd<T>(string key, T fallback) where T : struct, IConvertible => GetOrAdd(key, fallback.ToString()).As<T>();
+		public T GetOrAdd<T>(string key, T fallback) where T : struct => GetOrAdd(key, fallback.ToString()).As<T>();
 		public string? GetOrAdd(string key, string? fallback) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
@@ -51,7 +51,7 @@ namespace Husky.KeyValues
 			return fallback;
 		}
 
-		public void AddOrUpdate<T>(string key, T value) where T : struct, IConvertible => AddOrUpdate(key, value.ToString());
+		public void AddOrUpdate<T>(string key, T value) where T : struct => AddOrUpdate(key, value.ToString());
 		public void AddOrUpdate(string key, string? value) {
 			if ( key == null ) {
 				throw new ArgumentNullException(nameof(key));
@@ -76,7 +76,7 @@ namespace Husky.KeyValues
 
 		public void Reload() => _cache.Remove(_cacheKey);
 
-		public void Save<T>(string key, T value) where T : struct, IConvertible => Save(key, value.ToString());
+		public void Save<T>(string key, T value) where T : struct => Save(key, value.ToString());
 		public void Save(string key, string? value) {
 			AddOrUpdate(key, value);
 

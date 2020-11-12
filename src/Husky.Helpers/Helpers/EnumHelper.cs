@@ -14,7 +14,7 @@ namespace Husky
 		public static string ToDescription(this Enum value) => value.GetLabel(useDescription: true, enableCss: false);
 		public static string ToDescriptionWithCss(this Enum value) => value.GetLabel(useDescription: true, enableCss: true);
 
-		public static List<SelectListItem> ToSelectListItems<TEnum>(string? optionLabel = null, bool useIntValue = false) where TEnum : struct, IConvertible => ToSelectListItems(typeof(TEnum), optionLabel, useIntValue);
+		public static List<SelectListItem> ToSelectListItems<TEnum>(string? optionLabel = null, bool useIntValue = false) where TEnum : struct => ToSelectListItems(typeof(TEnum), optionLabel, useIntValue);
 		public static List<SelectListItem> ToSelectListItems(Type enumType, string? optionLabel = null, bool useIntValue = false) {
 			if ( enumType == null ) {
 				throw new ArgumentNullException(nameof(enumType));

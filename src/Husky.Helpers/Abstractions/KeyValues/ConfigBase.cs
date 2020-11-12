@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Husky.KeyValues;
 using Microsoft.Extensions.Configuration;
 
@@ -45,7 +44,7 @@ namespace Husky
 
 		public void Reload() => _keyValues.Reload();
 		public void Save(string key, string value) => _keyValues.Save(key, value);
-		public void Save<T>(string key, T value) where T : struct, IConvertible => _keyValues.Save(key, value);
+		public void Save<T>(string key, T value) where T : struct => _keyValues.Save(key, value);
 		public void SaveAll() => _keyValues.SaveAll();
 
 

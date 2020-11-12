@@ -8,7 +8,7 @@
 		public string? Body { get; set; }
 		public bool AllowCreditCard { get; set; } = true;
 
-		public string? NotifyUrl { get; set; } 
-		public string? CallbackUrl { get; set; } 
+		public string? NotifyUrl { get; set; }
+		public string? CallbackUrl { get; set; }
 	}
 }
