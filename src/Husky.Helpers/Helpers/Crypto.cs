@@ -133,8 +133,8 @@ namespace Husky
 			return Encoding.UTF8.GetString(decrypted);
 		}
 
-		public static string Encrypt<T>(T obj, string iv, string? key) where T : struct => Encrypt(obj.ToString()!, iv, key);
-		public static T Decrypt<T>(string base64String, string iv, string? key) where T : struct => Decrypt(base64String, iv, key).As<T>();
+		public static string Encrypt<T>(T obj, string iv, string? key) where T : struct, IConvertible => Encrypt(obj.ToString()!, iv, key);
+		public static T Decrypt<T>(string base64String, string iv, string? key) where T : struct, IConvertible => Decrypt(base64String, iv, key).As<T>();
 
 		private static string Mutate(this string base64String) => base64String.Replace('+', '_').Replace('/', '-').TrimEnd('=');
 		private static string Restore(this string base64String) => base64String.Replace('_', '+').Replace('-', '/').PadRight(base64String.Length + (base64String.Length % 4 == 0 ? 0 : (4 - base64String.Length % 4)), '=');

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Husky.GridQuery
 {
@@ -24,7 +25,7 @@ namespace Husky.GridQuery
 		public bool Locked { get; set; }
 		public bool Hidden { get; set; }
 		public bool EditableFlag { get; set; }
-		public TextValuePair[]? Values { get; set; }
+		public SelectListItem[]? Values { get; set; }
 		public List<GridColumn>? Columns { get; set; }
 
 	}

@@ -50,7 +50,7 @@ namespace Husky
 			return matches.Count == 0 ? null : matches[Math.Max(matchIndex, 1) - 1].Value;
 		}
 
-		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : struct {
+		public static T Extract<T>(this string str, string pattern, int matchIndex = 1) where T : struct, IConvertible {
 			return Extract(str, pattern, matchIndex).As<T>();
 		}
 
@@ -138,7 +138,7 @@ namespace Husky
 			return str.Substring(0, i - j) + "...";
 		}
 
-		public static T[] Split<T>(this string? wellFormed, params char[] separators) where T : struct {
+		public static T[] Split<T>(this string? wellFormed, params char[] separators) where T : struct, IConvertible {
 			return string.IsNullOrEmpty(wellFormed) ? Array.Empty<T>() : wellFormed.Split(separators).Select(x => x.As<T>()).ToArray();
 		}
 	}

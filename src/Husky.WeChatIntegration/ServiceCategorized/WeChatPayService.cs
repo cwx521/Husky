@@ -247,7 +247,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private static string? GetCdata(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
-		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
+		private static T GetValue<T>(string fromXml, string nodeName) where T : struct, IConvertible => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
 		private static bool IsOk(string fromXml) => GetCdata(fromXml, "result_code") == "SUCCESS";
 		private static string? GetMessage(string fromXml) => GetCdata(fromXml, "err_code_des");
 	}

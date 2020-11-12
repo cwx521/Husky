@@ -17,18 +17,10 @@ namespace Husky
 		public static bool IsDateTime(this string? str) => DateTime.TryParse(str, out _);
 		public static bool IsIPAddress(this string? str) => IPAddress.TryParse(str, out _);
 
-		public static bool IsUrl(this string? str) {
-			return str != null && str.Length >= 6 && Uri.IsWellFormedUriString(str, UriKind.Absolute);
-		}
-		public static bool IsEmail(this string? str) {
-			return str != null && str.Length >= 6 && Regex.IsMatch(str, EmailRegexPattern);
-		}
-		public static bool IsCardNumber(this string? str) {
-			return str != null && (str.Length == 16 || str.Length == 19) && Regex.IsMatch(str, @"^\d+$");
-		}
-		public static bool IsMainlandMobile(this string? str) {
-			return str != null && str.Length == 11 && Regex.IsMatch(str, MainlandMobileRegexPattern);
-		}
+		public static bool IsUrl(this string? str) => str != null && str.Length >= 6 && Uri.IsWellFormedUriString(str, UriKind.Absolute);
+		public static bool IsEmail(this string? str) => str != null && str.Length >= 6 && Regex.IsMatch(str, EmailRegexPattern);
+		public static bool IsCardNumber(this string? str) => str != null && (str.Length == 16 || str.Length == 19) && Regex.IsMatch(str, @"^\d+$");
+		public static bool IsMainlandMobile(this string? str) => str != null && str.Length == 11 && Regex.IsMatch(str, MainlandMobileRegexPattern);
 
 		public static bool IsMainlandSocialNumber(this string? str, Sex? sex = null, bool adultOnly = true) {
 			if ( str == null || str.Length != 18 ) return false;

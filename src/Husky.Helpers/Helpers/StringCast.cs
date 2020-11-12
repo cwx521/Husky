@@ -7,10 +7,10 @@ namespace Husky
 {
 	public static class StringCast
 	{
-		public static int AsInt(this string? str, int defaultValue = 0) {
+		public static int AsInt(this string? str, int defaultValue = default) {
 			return int.TryParse(str, out var i) ? i : defaultValue;
 		}
-		public static bool AsBool(this string? str, bool defaultValue = false) {
+		public static bool AsBool(this string? str, bool defaultValue = default) {
 			return bool.TryParse(str, out var b) ? b : defaultValue;
 		}
 		public static Guid AsGuid(this string? str, Guid defaultValue = default) {
@@ -20,15 +20,9 @@ namespace Husky
 			return TimeSpan.TryParse(str, out var t) ? t : defaultValue;
 		}
 
-		public static T As<T>(this string? str, T defaultValue = default) where T : struct {
+		public static T As<T>(this string? str, T defaultValue = default) where T : struct, IConvertible {
 			if ( str == null ) {
 				return default;
-			}
-			if ( typeof(T) == typeof(Guid) ) {
-				return (T)(object)str.AsGuid((Guid)(object)defaultValue);
-			}
-			if ( typeof(T) == typeof(TimeSpan) ) {
-				return (T)(object)str.AsTimeSpan((TimeSpan)(object)defaultValue);
 			}
 			try {
 				if ( typeof(IConvertible).IsAssignableFrom(typeof(T)) ) {

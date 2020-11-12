@@ -51,10 +51,6 @@ namespace Husky.Tests
 
 			var dt = DateTime.Now;
 			Assert.AreEqual(StringCast.As<DateTime>(dt.ToString()).ToString(), dt.ToString());
-			var ts = TimeSpan.FromSeconds(120);
-			Assert.AreEqual(StringCast.As<TimeSpan>(ts.ToString()), ts);
-			var g = Guid.NewGuid();
-			Assert.AreEqual(StringCast.As<Guid>(g.ToString()), g);
 		}
 
 		[TestMethod()]

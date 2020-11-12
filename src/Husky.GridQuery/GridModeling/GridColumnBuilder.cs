@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace Husky.GridQuery
@@ -115,7 +116,7 @@ namespace Husky.GridQuery
 			return null;
 		}
 
-		private static TextValuePair[]? GetEnumerableValues(this PropertyInfo property) {
+		private static SelectListItem[]? GetEnumerableValues(this PropertyInfo property) {
 			var t = !property.PropertyType.IsGenericType
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
@@ -123,12 +124,12 @@ namespace Husky.GridQuery
 			if ( !t.IsEnum ) {
 				return null;
 			}
-			var result = new List<TextValuePair>();
+			var result = new List<SelectListItem>();
 			var values = Enum.GetValues(t);
 			foreach ( var i in values ) {
-				result.Add(new TextValuePair {
+				result.Add(new SelectListItem {
 					Text = (i as Enum)!.ToLabel(),
-					Value = i!.GetHashCode()
+					Value = i!.ToString()
 				});
 			}
 			return result.ToArray();
