@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public static partial class PrincipalUserExtensions
+	public static class PrincipalUserExtensions
 	{
 		public static UserQuickViewModel QuickView(this IPrincipalUser principal) {
 			if ( principal.Id == 0 ) {

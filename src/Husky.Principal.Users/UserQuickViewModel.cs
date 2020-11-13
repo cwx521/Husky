@@ -7,7 +7,7 @@ namespace Husky.Principal.Users
 		public string? PhoneNumber { get; set; }
 		public string? EmailAddress { get; set; }
 		public string? PhotoUrl { get; set; }
-		public DateTime RegisteredTime { get; set; }
-		public Todo AwaitChangePassword { get; internal set; }
+		public Todo AwaitChangePassword { get; set; }
+		public DateTime RegisteredTime { get; internal init; }
 	}
 }

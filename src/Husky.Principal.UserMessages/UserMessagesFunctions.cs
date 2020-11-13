@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.UserMessages
 {
-	public sealed partial class UserMessagesFunctions
+	public sealed class UserMessagesFunctions
 	{
 		internal UserMessagesFunctions(IPrincipalUser principal) {
 			_me = principal;
