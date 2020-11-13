@@ -11,15 +11,15 @@ namespace Husky.TwoFactor.Data.Migrations
                 name: "TwoFactorCodes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AnonymousId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
+                    AnonymousId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     SentTo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Code = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false),
-                    ErrorTimes = table.Column<int>(nullable: false),
-                    IsUsed = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    ErrorTimes = table.Column<int>(type: "int", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {

@@ -10,27 +10,27 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Principal.UserMessages.Data.Migrations
 {
     [DbContext(typeof(UserMessagesDbContext))]
-    [Migration("20201028135744_Init_UserMessages")]
+    [Migration("20201113162304_Init_UserMessages")]
     partial class Init_UserMessages
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Husky.Principal.UserMessages.Data.UserMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(4000)")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<DateTime>("CreatedTime")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace Husky.Principal.UserMessages.Data.Migrations
                     b.HasIndex("PublicContentId");
 
                     b.HasIndex("UserId")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                        .IsClustered(false);
 
                     b.ToTable("UserMessage");
                 });
@@ -64,12 +64,12 @@ namespace Husky.Principal.UserMessages.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(4000)")
-                        .HasMaxLength(4000);
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<DateTime>("CreatedTime")
                         .ValueGeneratedOnAdd()
@@ -86,6 +86,13 @@ namespace Husky.Principal.UserMessages.Data.Migrations
                     b.HasOne("Husky.Principal.UserMessages.Data.UserMessagePublicContent", "PublicContent")
                         .WithMany("UserMessages")
                         .HasForeignKey("PublicContentId");
+
+                    b.Navigation("PublicContent");
+                });
+
+            modelBuilder.Entity("Husky.Principal.UserMessages.Data.UserMessagePublicContent", b =>
+                {
+                    b.Navigation("UserMessages");
                 });
 #pragma warning restore 612, 618
         }

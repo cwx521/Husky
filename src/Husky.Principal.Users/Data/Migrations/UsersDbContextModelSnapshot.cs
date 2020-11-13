@@ -15,24 +15,24 @@ namespace Husky.Principal.Users.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Husky.Principal.Users.Data.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(36)")
-                        .HasMaxLength(36);
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("PhotoUrl")
-                        .HasColumnType("varchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("RegisteredTime")
                         .ValueGeneratedOnAdd()
@@ -52,24 +52,24 @@ namespace Husky.Principal.Users.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("AccuratePlace")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("ContactName")
-                        .HasColumnType("nvarchar(16)")
-                        .HasMaxLength(16);
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<string>("ContactPhoneNumber")
-                        .HasColumnType("varchar(11)")
-                        .HasMaxLength(11);
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)");
 
                     b.Property<DateTime>("CreatedTime")
                         .ValueGeneratedOnAdd()
@@ -77,40 +77,31 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("DisplayAddress")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DisplayAddressAlternate")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("District")
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("Lat")
-                        .HasColumnType("decimal(9, 6)");
-
-                    b.Property<int>("LatLonType")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Lon")
-                        .HasColumnType("decimal(9, 6)");
-
                     b.Property<string>("Province")
                         .IsRequired()
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -134,8 +125,8 @@ namespace Husky.Principal.Users.Data.Migrations
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
@@ -153,12 +144,12 @@ namespace Husky.Principal.Users.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("GroupName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -185,12 +176,12 @@ namespace Husky.Principal.Users.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("AttemptedAccount")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedTime")
                         .ValueGeneratedOnAdd()
@@ -198,21 +189,21 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Ip")
-                        .HasColumnType("varchar(39)")
-                        .HasMaxLength(39);
+                        .HasColumnType("varchar(45)");
 
                     b.Property<int>("LoginResult")
                         .HasColumnType("int");
 
                     b.Property<string>("SickPassword")
-                        .HasColumnType("varchar(88)")
-                        .HasMaxLength(88);
+                        .HasMaxLength(88)
+                        .HasColumnType("varchar(88)");
 
                     b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("UserId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -227,10 +218,9 @@ namespace Husky.Principal.Users.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedTime")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -239,8 +229,8 @@ namespace Husky.Principal.Users.Data.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(40)")
-                        .HasMaxLength(40);
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -267,8 +257,8 @@ namespace Husky.Principal.Users.Data.Migrations
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(11)")
-                        .HasMaxLength(11);
+                        .HasMaxLength(11)
+                        .HasColumnType("varchar(11)");
 
                     b.HasKey("UserId");
 
@@ -292,15 +282,15 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RealName")
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<int?>("Sex")
                         .HasColumnType("int");
 
                     b.Property<string>("SocialIdNumber")
-                        .HasColumnType("varchar(18)")
-                        .HasMaxLength(18);
+                        .HasMaxLength(18)
+                        .HasColumnType("varchar(18)");
 
                     b.HasKey("UserId");
 
@@ -313,12 +303,12 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<string>("Country")
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<DateTime>("CreatedTime")
                         .ValueGeneratedOnAdd()
@@ -327,28 +317,28 @@ namespace Husky.Principal.Users.Data.Migrations
 
                     b.Property<string>("HeadImageUrl")
                         .IsRequired()
-                        .HasColumnType("varchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("NickName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(36)")
-                        .HasMaxLength(36);
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("PrivateId")
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Province")
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.Property<int>("Sex")
                         .HasColumnType("int");
 
                     b.Property<string>("UnionId")
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.HasKey("UserId");
 
@@ -364,15 +354,15 @@ namespace Husky.Principal.Users.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("OpenIdType")
                         .HasColumnType("int");
 
                     b.Property<string>("OpenIdValue")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<int>("WeChatId")
                         .HasColumnType("int");
@@ -394,6 +384,34 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("Husky.Lbs.Location", "Location", b1 =>
+                        {
+                            b1.Property<int>("UserAddressId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .UseIdentityColumn();
+
+                            b1.Property<decimal>("Lat")
+                                .HasColumnType("decimal(9,6)");
+
+                            b1.Property<int>("LatLonType")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Lon")
+                                .HasColumnType("decimal(9,6)");
+
+                            b1.HasKey("UserAddressId");
+
+                            b1.ToTable("UserAddresses");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserAddressId");
+                        });
+
+                    b.Navigation("Location");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserEmail", b =>
@@ -403,6 +421,8 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("Husky.Principal.Users.Data.UserEmail", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserInGroup", b =>
@@ -418,13 +438,21 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserLoginRecord", b =>
                 {
                     b.HasOne("Husky.Principal.Users.Data.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserPassword", b =>
@@ -434,6 +462,8 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserPhone", b =>
@@ -443,6 +473,8 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("Husky.Principal.Users.Data.UserPhone", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserReal", b =>
@@ -452,6 +484,8 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("Husky.Principal.Users.Data.UserReal", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserWeChat", b =>
@@ -461,6 +495,8 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("Husky.Principal.Users.Data.UserWeChat", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Husky.Principal.Users.Data.UserWeChatOpenId", b =>
@@ -470,6 +506,30 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasForeignKey("WeChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("WeChat");
+                });
+
+            modelBuilder.Entity("Husky.Principal.Users.Data.User", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Email");
+
+                    b.Navigation("InGroups");
+
+                    b.Navigation("Passwords");
+
+                    b.Navigation("Phone");
+
+                    b.Navigation("Real");
+
+                    b.Navigation("WeChat");
+                });
+
+            modelBuilder.Entity("Husky.Principal.Users.Data.UserWeChat", b =>
+                {
+                    b.Navigation("OpenIds");
                 });
 #pragma warning restore 612, 618
         }

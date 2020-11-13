@@ -10,11 +10,12 @@ namespace Husky.Principal.Administration.Data
 	{
 		public static void OnAdminsDbModelCreating(this ModelBuilder modelBuilder) {
 
-			//Indexes
-			modelBuilder.Entity<AdminInRole>().HasKey(x => new { x.AdminId, x.RoleId });
-
 			//QueryFilters
 			modelBuilder.Entity<Admin>().HasQueryFilter(x => x.Status != RowStatus.Deleted);
+			modelBuilder.Entity<AdminInRole>().HasQueryFilter(x => x.Admin.Status != RowStatus.Deleted);
+
+			//Indexes
+			modelBuilder.Entity<AdminInRole>().HasKey(x => new { x.AdminId, x.RoleId });
 
 			//Relationships
 			modelBuilder.Entity<AdminInRole>(adminInRole => {

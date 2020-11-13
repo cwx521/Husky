@@ -11,10 +11,10 @@ namespace Husky.Principal.UserMessages.Data.Migrations
                 name: "UserMessagePublicContents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(maxLength: 4000, nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    Content = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -25,14 +25,14 @@ namespace Husky.Principal.UserMessages.Data.Migrations
                 name: "UserMessage",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(nullable: false),
-                    PublicContentId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(maxLength: 4000, nullable: true),
-                    IsRead = table.Column<bool>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    PublicContentId = table.Column<int>(type: "int", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {

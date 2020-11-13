@@ -15,9 +15,9 @@ namespace Husky.Principal.Administration.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Husky.Principal.Administration.Data.Admin", b =>
                 {
@@ -32,8 +32,8 @@ namespace Husky.Principal.Administration.Data.Migrations
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(36)")
-                        .HasMaxLength(36);
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<bool>("IsInitiator")
                         .HasColumnType("bit");
@@ -72,15 +72,15 @@ namespace Husky.Principal.Administration.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<long>("Powers")
                         .HasColumnType("bigint");
 
                     b.Property<string>("RoleName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(24)")
-                        .HasMaxLength(24);
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.HasKey("Id");
 
@@ -103,6 +103,20 @@ namespace Husky.Principal.Administration.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Husky.Principal.Administration.Data.Admin", b =>
+                {
+                    b.Navigation("InRoles");
+                });
+
+            modelBuilder.Entity("Husky.Principal.Administration.Data.AdminRole", b =>
+                {
+                    b.Navigation("GrantedToAdmins");
                 });
 #pragma warning restore 612, 618
         }

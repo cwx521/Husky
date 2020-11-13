@@ -11,9 +11,9 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserGroups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupName = table.Column<string>(maxLength: 50, nullable: false)
+                    GroupName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,12 +24,12 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(maxLength: 36, nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: true),
                     PhotoUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    RegisteredTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    RegisteredTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -40,24 +40,24 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserAddresses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Lat = table.Column<decimal>(type: "decimal(9, 6)", nullable: false),
-                    Lon = table.Column<decimal>(type: "decimal(9, 6)", nullable: false),
-                    LatLonType = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    DisplayAddress = table.Column<string>(maxLength: 100, nullable: true),
-                    DisplayAddressAlternate = table.Column<string>(maxLength: 100, nullable: true),
-                    Province = table.Column<string>(maxLength: 24, nullable: false),
-                    City = table.Column<string>(maxLength: 24, nullable: false),
-                    District = table.Column<string>(maxLength: 24, nullable: true),
-                    Street = table.Column<string>(maxLength: 50, nullable: true),
-                    AccuratePlace = table.Column<string>(maxLength: 50, nullable: true),
-                    ContactName = table.Column<string>(maxLength: 16, nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Location_Lat = table.Column<decimal>(type: "decimal(9,6)", nullable: true),
+                    Location_Lon = table.Column<decimal>(type: "decimal(9,6)", nullable: true),
+                    Location_LatLonType = table.Column<int>(type: "int", nullable: true),
+                    DisplayAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DisplayAddressAlternate = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Province = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
+                    District = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    AccuratePlace = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ContactName = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: true),
                     ContactPhoneNumber = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: true),
-                    IsDefault = table.Column<bool>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -74,10 +74,10 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserEmails",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     EmailAddress = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    IsVerified = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -94,8 +94,8 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserInGroups",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    GroupId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,15 +118,15 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserLoginRecords",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(nullable: true),
-                    AttemptedAccount = table.Column<string>(maxLength: 50, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    AttemptedAccount = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SickPassword = table.Column<string>(type: "varchar(88)", maxLength: 88, nullable: true),
-                    LoginResult = table.Column<int>(nullable: false),
-                    UserAgent = table.Column<string>(maxLength: 500, nullable: true),
-                    Ip = table.Column<string>(type: "varchar(39)", maxLength: 39, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    LoginResult = table.Column<int>(type: "int", nullable: false),
+                    UserAgent = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Ip = table.Column<string>(type: "varchar(45)", nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -136,19 +136,19 @@ namespace Husky.Principal.Users.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserPasswords",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Password = table.Column<string>(type: "varchar(40)", maxLength: 40, nullable: false),
-                    IsObsolete = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    IsObsolete = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -165,10 +165,10 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserPhones",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Number = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: false),
-                    IsVerified = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -185,12 +185,12 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserReals",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     SocialIdNumber = table.Column<string>(type: "varchar(18)", maxLength: 18, nullable: true),
-                    RealName = table.Column<string>(maxLength: 24, nullable: true),
-                    Sex = table.Column<int>(nullable: true),
-                    IsVerified = table.Column<bool>(nullable: false),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    RealName = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    Sex = table.Column<int>(type: "int", nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -207,16 +207,16 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserWeChats",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     PrivateId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
                     UnionId = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true),
-                    NickName = table.Column<string>(maxLength: 36, nullable: false),
-                    Sex = table.Column<int>(nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: false),
+                    Sex = table.Column<int>(type: "int", nullable: false),
                     HeadImageUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
-                    Country = table.Column<string>(maxLength: 24, nullable: true),
-                    Province = table.Column<string>(maxLength: 24, nullable: true),
-                    City = table.Column<string>(maxLength: 24, nullable: true),
-                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                    Country = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    Province = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: true),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -233,10 +233,10 @@ namespace Husky.Principal.Users.Data.Migrations
                 name: "UserWeChatOpenIds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WeChatId = table.Column<int>(nullable: false),
-                    OpenIdType = table.Column<int>(nullable: false),
+                    WeChatId = table.Column<int>(type: "int", nullable: false),
+                    OpenIdType = table.Column<int>(type: "int", nullable: false),
                     OpenIdValue = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false)
                 },
                 constraints: table =>

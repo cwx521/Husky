@@ -24,7 +24,7 @@ namespace Husky.Principal.Administration
 		public bool IsNotAdmin => !IsAdmin;
 
 		public long Powers => _adminData?.Powers ?? 0;
-		public string[] Roles => _adminData?.Roles ?? new string[0];
+		public string[] Roles => _adminData?.Roles ?? Array.Empty<string>();
 
 		public TEnum MatchPowers<TEnum>() where TEnum : Enum => (TEnum)(object)Powers;
 		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MatchPowers<TEnum>().HasFlag(power);
@@ -52,7 +52,7 @@ namespace Husky.Principal.Administration
 					Id = admin?.Id,
 					DisplayName = admin?.DisplayName,
 					Roles = admin?.InRoles.Select(x => x.Role.RoleName).ToArray(),
-					Powers = admin?.InRoles.Aggregate((long)0, (i, x) => i | x.Role.Powers)
+					Powers = admin?.InRoles.Aggregate(0L, (i, x) => i | x.Role.Powers)
 				};
 			});
 		}

@@ -47,7 +47,6 @@ namespace Husky.Tests
 				.AddKeyValueManager<KeyValueDbContext>();
 
 			/*
-			add-migration  Init_DataAudit  -context AuditDbContext -project Husky.DataAudit -o Data/Migrations
 			add-migration  Init_KeyValue  -context KeyValueDbContext -project Husky.KeyValues -o Data/Migrations
 			add-migration  Init_Mail  -context MailDbContext -project Husky.Mail -o Data/Migrations
 			add-migration  Init_Diagnostics  -context DiagnosticsDbContext -project Husky.Diagnostics -o Data/Migrations

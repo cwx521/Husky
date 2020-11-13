@@ -9,25 +9,26 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.KeyValues.Data.Migrations
 {
     [DbContext(typeof(KeyValueDbContext))]
-    [Migration("20200908062914_Init_KeyValue")]
+    [Migration("20201113155211_Init_KeyValue")]
     partial class Init_KeyValue
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Husky.KeyValues.Data.KeyValue", b =>
                 {
                     b.Property<string>("Key")
+                        .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(2000)")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.HasKey("Key");
 
