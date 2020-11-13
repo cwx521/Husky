@@ -2,7 +2,7 @@
 
 namespace Husky.Mail
 {
-	public sealed partial class MailAddress
+	public sealed class MailAddress
 	{
 		public string? Name { get; set; }
 		public string Address { get; set; } = null!;

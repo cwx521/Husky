@@ -2,10 +2,10 @@
 {
 	public enum HttpMethod
 	{
-		GET,
-		HEAD,
-		POST,
-		PUT,
-		DELETE
+		Get,
+		Head,
+		Post,
+		Put,
+		Delete
 	}
 }

@@ -36,8 +36,8 @@ namespace Husky.Alipay
 				Body = payment.Body,
 				OutTradeNo = payment.OrderNo,
 				TotalAmount = payment.Amount.ToString("f2"),
-				ProductCode = "FAST_INSTANT_TRADE_PAY",
-				DisablePayChannels = payment.AllowCreditCard ? null : "credit_group"
+				DisablePayChannels = payment.AllowCreditCard ? null : "credit_group",
+				ProductCode = "FAST_INSTANT_TRADE_PAY"
 			};
 
 			var wapPayRequest = new AlipayTradeWapPayRequest();
@@ -67,7 +67,7 @@ namespace Husky.Alipay
 
 			try {
 				var response = _alipay.Execute(request);
-				var ok = !response.IsError && response.Msg == "Success" && response.TradeStatus == "TRADE_SUCCESS";
+				var ok = response is { IsError: false, Msg: "Success", TradeStatus: "TRADE_SUCCESS" };
 
 				if ( !ok ) {
 					return new Failure<AlipayOrderQueryResult>(response.SubMsg ?? response.Msg);
@@ -77,7 +77,7 @@ namespace Husky.Alipay
 						AlipayTradeNo = response.TradeNo,
 						AlipayBuyerUserId = response.BuyerUserId,
 						AlipayBuyerLogonId = response.BuyerLogonId,
-						Amount = response.TotalAmount.As<decimal>(),
+						Amount = response.TotalAmount.AsDecimal(),
 						OriginalResult = response
 					}
 				};
@@ -99,7 +99,7 @@ namespace Husky.Alipay
 
 			try {
 				var response = _alipay.Execute(request);
-				var ok = !response.IsError && response.Msg == "Success";
+				var ok = response is { IsError: false, Msg: "Success" };
 
 				if ( !ok ) {
 					return new Failure<AlipayRefundResult>(response.SubMsg ?? response.Msg);
@@ -107,7 +107,7 @@ namespace Husky.Alipay
 				return new Success<AlipayRefundResult> {
 					Data = new AlipayRefundResult {
 						RefundAmount = ok ? refundAmount : 0,
-						AggregatedRefundAmount = response.RefundFee.As<decimal>(),
+						AggregatedRefundAmount = response.RefundFee.AsDecimal(),
 						OriginalResult = response
 					}
 				};
@@ -127,7 +127,7 @@ namespace Husky.Alipay
 
 			try {
 				var response = _alipay.Execute(request);
-				var ok = !response.IsError && response.Msg == "Success";
+				var ok = response is { IsError: false, Msg: "Success" };
 
 				if ( !ok ) {
 					return new Failure<AlipayRefundQueryResult>(response.SubMsg ?? response.Msg);
@@ -135,7 +135,7 @@ namespace Husky.Alipay
 				return new Success<AlipayRefundQueryResult> {
 					Data = new AlipayRefundQueryResult {
 						RefundReason = response.RefundReason,
-						RefundAmount = response.RefundAmount.As<decimal>(),
+						RefundAmount = response.RefundAmount.AsDecimal(),
 						OriginalResult = response
 					}
 				};
@@ -168,7 +168,7 @@ namespace Husky.Alipay
 					OrderNo = form["out_trade_no"],
 					AlipayTradeNo = form["trade_no"],
 					AlipayBuyerId = form["buyer_id"],
-					Amount = amount.As<decimal>(),
+					Amount = amount.AsDecimal(),
 					OriginalResult = dict
 				}
 			};

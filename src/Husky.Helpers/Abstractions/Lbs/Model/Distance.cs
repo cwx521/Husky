@@ -4,10 +4,10 @@ namespace Husky.Lbs
 {
 	public class Distance
 	{
-		public Location From { get; set; } = null!;
-		public Location To { get; set; } = null!;
-		public int Meters { get; set; }
-		public DistanceMode Mode { get; set; }
-		public TimeSpan TravelTimeEstimate { get; set; }
+		public Location From { get; init; } = null!;
+		public Location To { get; init; } = null!;
+		public int Meters { get; init; }
+		public DistanceMode Mode { get; init; }
+		public TimeSpan TravelTimeEstimate { get; init; }
 	}
 }

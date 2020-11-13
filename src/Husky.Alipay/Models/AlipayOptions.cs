@@ -6,11 +6,11 @@
 		public string AppId { get; set; } = null!;
 		public string PrivateKey { get; set; } = null!;
 		public string AlipayPublicKey { get; set; } = null!;
+		public string DefaultNotifyUrl { get; set; } = null!;
 		public string GatewayUrl { get; set; } = "https://openapi.alipay.com/gateway.do";
-		public string? DefaultNotifyUrl { get; set; }
 		public string SignType { get; set; } = "RSA2";
 		public string CharSet { get; set; } = "UTF-8";
-		public string Format => "json";
-		public string Version => "1.0";
+		public string Format { get; set; } = "json";
+		public string Version { get; set; } = "1.0";
 	}
 }

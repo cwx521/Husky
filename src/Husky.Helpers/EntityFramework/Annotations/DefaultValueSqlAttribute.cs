@@ -9,6 +9,6 @@ namespace Husky
 			Sql = sql;
 		}
 
-		public string Sql { get; set; } = null!;
+		public string Sql { get; init; } = null!;
 	}
 }

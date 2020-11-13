@@ -5,7 +5,7 @@ using Husky.Lbs;
 
 namespace Husky.Principal.Users.Data
 {
-	public class UserAddress : Location, IAddress
+	public class UserAddress : Location
 	{
 		[Key]
 		public int Id { get; set; }

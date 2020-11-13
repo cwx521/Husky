@@ -1,6 +1,6 @@
 ﻿namespace Husky.Lbs
 {
-	public class Address : IAddress
+	public class Address
 	{
 		public Location? Location { get; set; }
 

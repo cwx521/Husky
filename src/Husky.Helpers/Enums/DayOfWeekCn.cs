@@ -2,7 +2,7 @@
 
 namespace Husky
 {
-	public enum DayOfWeekZhcn
+	public enum DayOfWeekZh
 	{
 		[Label("星期日")]
 		Sunday = DayOfWeek.Sunday,
