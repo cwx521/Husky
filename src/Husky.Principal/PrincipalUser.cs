@@ -4,6 +4,10 @@ namespace Husky.Principal
 {
 	public class PrincipalUser : Identity, IIdentity, IIdentityAnonymous, IPrincipalUser
 	{
+		private PrincipalUser(IServiceProvider serviceProvider) {
+			ServiceProvider = serviceProvider;
+		}
+
 		public PrincipalUser(IIdentityManager identityManager, IServiceProvider serviceProvider) {
 			var identity = identityManager.ReadIdentity();
 
@@ -21,7 +25,6 @@ namespace Husky.Principal
 		public IServiceProvider ServiceProvider { get; }
 		public IIdentityManager? IdentityManager { get; }
 
-
 		public static IPrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
 			return new PrincipalUser(serviceProvider) {
 				Id = identity.Id,
@@ -34,10 +37,6 @@ namespace Husky.Principal
 				Id = id,
 				DisplayName = displayName
 			};
-		}
-
-		private PrincipalUser(IServiceProvider serviceProvider) {
-			ServiceProvider = serviceProvider;
 		}
 	}
 }

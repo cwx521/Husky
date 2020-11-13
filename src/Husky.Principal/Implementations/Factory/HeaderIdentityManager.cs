@@ -14,7 +14,7 @@ namespace Husky.Principal.Implementations
 		private readonly IdentityOptions _options;
 
 		IIdentity IIdentityManager.ReadIdentity() {
-			var primary = _httpContext.Request.Headers[_options.Key];
+			var primary = _httpContext.Request.Headers[_options.IdKey];
 			var secondary = _httpContext.Request.Headers[_options.AnonymousIdKey];
 			return IdentityReader.GetIdentity(primary, secondary, _options);
 		}
@@ -26,9 +26,9 @@ namespace Husky.Principal.Implementations
 			if ( _options.DedicateAnonymousIdStorage ) {
 				_httpContext.Response.Headers[_options.AnonymousIdKey] = identity.AnonymousId.ToString();
 			}
-			_httpContext.Response.Headers[_options.Key] = _options.Encryptor.Encrypt(identity, _options.Token);
+			_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Token);
 		}
 
-		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.Key);
+		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.IdKey);
 	}
 }
