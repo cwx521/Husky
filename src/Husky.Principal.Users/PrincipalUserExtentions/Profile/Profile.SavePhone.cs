@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserProfileManager
+	public partial class UserProfileFunctions
 	{
 		public async Task<Result> SavePhoneAsync(string newNumber, string? verificationCode) {
 			if ( _me.IsAnonymous ) {

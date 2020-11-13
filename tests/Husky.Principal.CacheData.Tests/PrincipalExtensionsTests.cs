@@ -20,12 +20,12 @@ namespace Husky.Principal.Tests
 			for ( var i = 1; i <= n; i++ ) {
 				await Task.Run(() => {
 					var principal = PrincipalUser.Personate(i, null, serviceProvider);
-					principal.CacheData().GetOrAdd("Test", _ => new Result { Ok = false, Message = Crypto.SHA256(i.ToString()) });
+					principal.Cache().GetOrAdd("Test", _ => new Result { Ok = false, Message = Crypto.SHA256(i.ToString()) });
 					if ( i % 11 == 0 ) {
 						principal.AbandonCache();
 					}
 					else if ( i % 5 == 0 ) {
-						PrincipalUser.Personate(1, null, serviceProvider).CacheData().TryGetValue("Test", out var val);
+						PrincipalUser.Personate(1, null, serviceProvider).Cache().TryGetValue("Test", out var val);
 						var data = (Result)val;
 						data.Ok = true;
 						data.Message = "Changed" + i;
@@ -35,7 +35,7 @@ namespace Husky.Principal.Tests
 
 			for ( var i = 1; i <= n; i++ ) {
 				var principal = PrincipalUser.Personate(i, null, serviceProvider);
-				var found = principal.CacheData().TryGetValue("Test", out var val);
+				var found = principal.Cache().TryGetValue("Test", out var val);
 
 				if ( i % 11 == 0 ) {
 					Assert.IsFalse(found);

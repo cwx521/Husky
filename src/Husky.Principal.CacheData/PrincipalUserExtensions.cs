@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
 {
-	public static class PrincipalExtensions
+	public static class PrincipalUserExtensions
 	{
 		private static CacheDataPool<CacheDictionaryBag>? _pool;
 
@@ -19,7 +19,7 @@ namespace Husky.Principal
 				: principal.Id.ToString();
 		}
 
-		public static CacheDictionaryBag CacheData(this IPrincipalUser principal) {
+		public static CacheDictionaryBag Cache(this IPrincipalUser principal) {
 			var key = principal.CacheKey();
 			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
 			_pool.Drop(principal.CacheKeyDroppable());

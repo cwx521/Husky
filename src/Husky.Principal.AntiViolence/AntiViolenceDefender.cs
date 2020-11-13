@@ -2,21 +2,21 @@
 
 namespace Husky.Principal.AntiViolence
 {
-	public sealed partial class AntiViolenceBlocker
+	public sealed partial class AntiViolenceDefender
 	{
-		public AntiViolenceBlocker(IPrincipalUser principal) {
+		public AntiViolenceDefender(IPrincipalUser principal) {
 			_me = principal;
 		}
 
 		private readonly IPrincipalUser _me;
 
 		internal DateTime GetTimer() {
-			return (DateTime)_me.CacheData().GetOrAdd(nameof(AntiViolenceBlocker), _ => DateTime.MinValue);
+			return (DateTime)_me.Cache().GetOrAdd(nameof(AntiViolenceDefender), _ => DateTime.MinValue);
 		}
 
 		internal void SetTimer(DateTime? time = null) {
 			var val = time ?? DateTime.Now;
-			_me.CacheData().AddOrUpdate(nameof(AntiViolenceBlocker), val, (key, old) => val);
+			_me.Cache().AddOrUpdate(nameof(AntiViolenceDefender), val, (key, old) => val);
 		}
 
 		public void ClearTimer() {

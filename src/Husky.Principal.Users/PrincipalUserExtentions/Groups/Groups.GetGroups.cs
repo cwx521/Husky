@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserGroupsManager
+	public partial class UserGroupsFunctions
 	{
 		private const string _groupsCacheKey = nameof(GetGroups);
 
@@ -14,7 +14,7 @@ namespace Husky.Principal.Users
 				return Array.Empty<UserGroup>();
 			}
 
-			return (UserGroup[])_me.CacheData().GetOrAdd(_groupsCacheKey, key => _db.UserInGroups
+			return (UserGroup[])_me.Cache().GetOrAdd(_groupsCacheKey, key => _db.UserInGroups
 				.AsNoTracking()
 				.Where(x => x.UserId == _me.Id)
 				.Select(x => x.Group)

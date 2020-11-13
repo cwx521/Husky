@@ -3,7 +3,7 @@ using Husky.Principal.Users.Data;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserGroupsManager
+	public partial class UserGroupsFunctions
 	{
 		public async Task<Result> LeaveGroupAsync(int groupId) {
 			if ( _me.IsAnonymous ) {
@@ -16,7 +16,7 @@ namespace Husky.Principal.Users
 			}
 
 			await _db.Normalize().SaveChangesAsync();
-			_me.CacheData().TryRemove(_groupsCacheKey, out _);
+			_me.Cache().TryRemove(_groupsCacheKey, out _);
 			return new Success();
 		}
 

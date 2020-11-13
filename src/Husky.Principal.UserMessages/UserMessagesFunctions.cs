@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.UserMessages
 {
-	public sealed partial class UserMessagesManager
+	public sealed partial class UserMessagesFunctions
 	{
-		internal UserMessagesManager(IPrincipalUser principal) {
+		internal UserMessagesFunctions(IPrincipalUser principal) {
 			_me = principal;
 			_db = principal.ServiceProvider.GetRequiredService<IUserMessagesDbContext>();
 		}
@@ -16,7 +16,7 @@ namespace Husky.Principal.UserMessages
 		private readonly IPrincipalUser _me;
 		private readonly IUserMessagesDbContext _db;
 
-		public async Task<Result<UserMessage>> GotNewMessage(string message) {
+		public async Task<Result<UserMessage>> NewIncomeMessage(string message) {
 			if ( _me.IsAnonymous ) {
 				return new Failure<UserMessage>("需要先登录");
 			}

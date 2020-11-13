@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserProfileManager
+	public partial class UserProfileFunctions
 	{
 		public async Task<Result> SaveEmailAsync(string newEmailAddress, string? verificationCode = null) {
 			if ( _me.IsAnonymous ) {

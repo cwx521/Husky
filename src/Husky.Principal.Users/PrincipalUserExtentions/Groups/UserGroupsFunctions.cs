@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public sealed partial class UserAuthManager
+	public sealed partial class UserGroupsFunctions
 	{
-		internal UserAuthManager(IPrincipalUser principal) {
+		internal UserGroupsFunctions(IPrincipalUser principal) {
 			_me = principal;
 			_db = principal.ServiceProvider.GetRequiredService<IUsersDbContext>();
 		}

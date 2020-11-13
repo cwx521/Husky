@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserProfileManager
+	public partial class UserProfileFunctions
 	{
 		public async Task<Result> SaveNewPasswordAsync(string newPassword) {
 			if ( _me.IsAnonymous ) {
@@ -30,7 +30,7 @@ namespace Husky.Principal.Users
 			return new Success();
 		}
 
-		public async Task<Result> UseNewPasswordWithPhoneValidation(string newPassword, string verificationCode) {
+		public async Task<Result> SaveNewPasswordWithPhoneValidation(string newPassword, string verificationCode) {
 			var userPhone = await _db.UserPhones.FindAsync(_me.Id);
 			if ( userPhone == null ) {
 				return new Failure("需要先绑定手机");

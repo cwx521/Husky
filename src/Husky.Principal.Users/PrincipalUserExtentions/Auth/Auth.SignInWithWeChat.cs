@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserAuthManager
+	public partial class UserAuthFunctions
 	{
 		public async Task<Result> SignInWithWeChatAsync(string wechatCode, WeChatAppIdSecret idSecret) {
 			if ( idSecret.Type == null ) {

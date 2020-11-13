@@ -6,14 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public static partial class PrincipalExtensions
+	public static partial class PrincipalUserExtensions
 	{
 		public static UserQuickViewModel QuickView(this IPrincipalUser principal) {
 			if ( principal.Id == 0 ) {
 				return new UserQuickViewModel();
 			}
 
-			return (UserQuickViewModel)principal.CacheData().GetOrAdd(nameof(UserQuickViewModel), key => {
+			return (UserQuickViewModel)principal.Cache().GetOrAdd(nameof(UserQuickViewModel), key => {
 				using var scope = principal.ServiceProvider.CreateScope();
 				var db = scope.ServiceProvider.GetRequiredService<IUsersDbContext>();
 
@@ -36,8 +36,8 @@ namespace Husky.Principal.Users
 			});
 		}
 
-		public static UserAuthManager Auth(this IPrincipalUser principal) => new UserAuthManager(principal);
-		public static UserProfileManager Profile(this IPrincipalUser principal) => new UserProfileManager(principal);
-		public static UserGroupsManager Groups(this IPrincipalUser principal) => new UserGroupsManager(principal);
+		public static UserAuthFunctions Auth(this IPrincipalUser principal) => new UserAuthFunctions(principal);
+		public static UserProfileFunctions Profile(this IPrincipalUser principal) => new UserProfileFunctions(principal);
+		public static UserGroupsFunctions Groups(this IPrincipalUser principal) => new UserGroupsFunctions(principal);
 	}
 }

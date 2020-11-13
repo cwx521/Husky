@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserAuthManager
+	public partial class UserAuthFunctions
 	{
 		public async Task<Result> SignInWithPasswordAsync(string mobileOrEmail, string passwordClearText) {
 			if ( string.IsNullOrEmpty(mobileOrEmail) || string.IsNullOrEmpty(passwordClearText) ) {

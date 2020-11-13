@@ -36,7 +36,7 @@ namespace Husky.Principal.AntiViolence
 			}
 
 			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
-			var blocker = new AntiViolenceBlocker(principal);
+			var blocker = new AntiViolenceDefender(principal);
 
 			if ( blocker.GetTimer().AddMilliseconds(ms) < DateTime.Now ) {
 				blocker.SetTimer();

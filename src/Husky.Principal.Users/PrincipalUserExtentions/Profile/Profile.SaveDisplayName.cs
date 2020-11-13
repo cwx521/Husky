@@ -4,7 +4,7 @@ using Husky.Principal.Users.Data;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserProfileManager
+	public partial class UserProfileFunctions
 	{
 		public async Task<Result> SaveDisplayNameAsync(string displayName, bool allowDuplication = false) {
 			if ( _me.IsAnonymous ) {

@@ -3,7 +3,7 @@ using Husky.Principal.Users.Data;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserProfileManager
+	public partial class UserProfileFunctions
 	{
 		public async Task<Result> SaveRealAsync(string socialIdNumber, string realName, bool isVerified = false) {
 			if ( _me.IsAnonymous ) {

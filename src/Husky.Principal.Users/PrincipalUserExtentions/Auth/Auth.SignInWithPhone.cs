@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Users
 {
-	public partial class UserAuthManager
+	public partial class UserAuthFunctions
 	{
 		public async Task<Result> SignInWithPhoneAsync(string mobile, string verificationCode) {
 			if ( string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(verificationCode) ) {
