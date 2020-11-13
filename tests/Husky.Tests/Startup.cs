@@ -19,7 +19,7 @@ namespace Husky.Tests
 	public class Startup
 	{
 		public void ConfigureServices(IServiceCollection services) {
-			Crypto.PermanentToken = "DevTest";
+			Crypto.SecretToken = "DevTest";
 
 			//(localdb)\MSSQLLocalDB
 			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";

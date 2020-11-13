@@ -4,12 +4,12 @@ namespace Husky
 {
 	public static class FormatHelper
 	{
-		public static string DateFormat { get; set; } = "yyyy年M月d日";
+		public static string DateFormat { get; set; } = "yyyy-M-d";
 		public static string TimeFormat { get; set; } = "HH:mm:ss";
-		public static string DateTimeFormat { get; set; } = "yyyy年M月d日 HH:mm:ss";
-		public static string ShortDateFormat { get; set; } = "M月d日";
+		public static string DateTimeFormat { get; set; } = "yyyy-M-d HH:mm:ss";
+		public static string ShortDateFormat { get; set; } = "M-d";
 		public static string ShortTimeFormat { get; set; } = "HH:mm";
-		public static string ShortDateTimeFormat { get; set; } = "M月d日 HH:mm";
+		public static string ShortDateTimeFormat { get; set; } = "M-d HH:mm";
 
 		public static long Timestamp(this DateTime datetime) => (datetime.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
 		public static DateTime ToDateTime(this long timestamp) => new DateTime((timestamp * 10000000) + 621355968000000000).ToLocalTime();

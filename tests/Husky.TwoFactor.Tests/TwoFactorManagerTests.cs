@@ -54,7 +54,7 @@ namespace Husky.TwoFactor.Tests
 
 		[TestMethod()]
 		public async Task SendCodeThroughEmailTest() {
-			Crypto.PermanentToken = Crypto.RandomString();
+			Crypto.SecretToken = Crypto.RandomString();
 
 			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),

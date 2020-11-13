@@ -6,7 +6,7 @@ namespace Husky.Principal.Implementations
 	{
 		public IdentityCarrier Carrier { get; set; } = IdentityCarrier.Cookie;
 		public string Key { get; set; } = "HUSKY_AUTH_IDENTITY";
-		public string Token { get; set; } = Crypto.PermanentToken;
+		public string Token { get; set; } = Crypto.SecretToken;
 		public bool SessionMode { get; set; } = true;
 		public bool DedicateAnonymousIdStorage { get; set; } = true;
 		public DateTimeOffset? Expires { get; set; }

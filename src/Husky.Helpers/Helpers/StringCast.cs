@@ -7,22 +7,18 @@ namespace Husky
 {
 	public static class StringCast
 	{
-		public static int AsInt(this string? str, int defaultValue = default) {
-			return int.TryParse(str, out var i) ? i : defaultValue;
-		}
-		public static bool AsBool(this string? str, bool defaultValue = default) {
-			return bool.TryParse(str, out var b) ? b : defaultValue;
-		}
-		public static Guid AsGuid(this string? str, Guid defaultValue = default) {
-			return Guid.TryParse(str, out var g) ? g : defaultValue;
-		}
-		public static TimeSpan AsTimeSpan(this string? str, TimeSpan defaultValue = default) {
-			return TimeSpan.TryParse(str, out var t) ? t : defaultValue;
-		}
+		public static int AsInt(this string? str, int defaultValue = default) => int.TryParse(str, out var i) ? i : defaultValue;
+		public static long AsInt64(this string? str, long defaultValue = default) => long.TryParse(str, out var i) ? i : defaultValue;
+		public static decimal AsDecimal(this string? str, decimal defaultValue = default) => decimal.TryParse(str, out var i) ? i : defaultValue;
+		public static bool AsBool(this string? str, bool defaultValue = default) => bool.TryParse(str, out var b) ? b : defaultValue;
+		public static Guid AsGuid(this string? str, Guid defaultValue = default) => Guid.TryParse(str, out var g) ? g : defaultValue;
 
 		public static T As<T>(this string? str, T defaultValue = default) where T : struct {
 			if ( str == null ) {
 				return default;
+			}
+			if ( typeof(T) == typeof(Guid) ) {
+				return (T)(object)str.AsGuid((Guid)(object)defaultValue);
 			}
 			try {
 				if ( typeof(IConvertible).IsAssignableFrom(typeof(T)) ) {

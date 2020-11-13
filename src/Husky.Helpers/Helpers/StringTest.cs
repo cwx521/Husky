@@ -10,7 +10,7 @@ namespace Husky
 		public const string MainlandMobileRegexPattern = @"^1[3456789]\d{9}$";
 		public const string MainlandSocialNumberRegexPattern = @"^\d{17}[0123456789X]$";
 
-		public static bool IsInt32(this string? str) => int.TryParse(str, out _);
+		public static bool IsInt(this string? str) => int.TryParse(str, out _);
 		public static bool IsInt64(this string? str) => long.TryParse(str, out _);
 		public static bool IsNumeric(this string? str) => decimal.TryParse(str, out _);
 		public static bool IsBoolean(this string? str) => bool.TryParse(str, out _);

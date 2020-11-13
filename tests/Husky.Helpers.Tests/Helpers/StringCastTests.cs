@@ -33,14 +33,6 @@ namespace Husky.Tests
 		}
 
 		[TestMethod()]
-		public void AsTimeSpanTest() {
-			var timespan = TimeSpan.FromMinutes(25);
-			var str = timespan.ToString();
-			Assert.AreEqual(StringCast.AsTimeSpan(str), timespan);
-			Assert.AreEqual(StringCast.AsTimeSpan("abc", timespan), timespan);
-		}
-
-		[TestMethod()]
 		public void AsTest() {
 			Assert.AreEqual(StringCast.As<int>("-1"), -1);
 			Assert.AreEqual(StringCast.As<long>("2343546766787981"), 2343546766787981);
@@ -51,6 +43,8 @@ namespace Husky.Tests
 
 			var dt = DateTime.Now;
 			Assert.AreEqual(StringCast.As<DateTime>(dt.ToString()).ToString(), dt.ToString());
+			var g = Guid.NewGuid();
+			Assert.AreEqual(StringCast.As<Guid>(g.ToString()), g);
 		}
 
 		[TestMethod()]

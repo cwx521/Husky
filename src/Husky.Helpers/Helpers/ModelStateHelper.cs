@@ -7,18 +7,15 @@ namespace Husky
 	public static class ModelStateHelper
 	{
 		public static List<string> GetAllErrorMessages(this ModelStateDictionary modelState) {
-			var errors = new List<string>();
-			modelState.Values.Where(x => x.Errors.Any()).ToList().ForEach(state => {
-				errors.AddRange(state.Errors.Select(x => x.ErrorMessage));
-			});
-			return errors;
+			return modelState.Values
+				.SelectMany(x => x.Errors.Select(x => x.ErrorMessage))
+				.ToList();
 		}
 
 		public static Result ToResult(this ModelStateDictionary modelState) {
-			var errors = modelState.GetAllErrorMessages();
 			return new Result {
-				Ok = errors.Count == 0,
-				Message = errors.FirstOrDefault()
+				Ok = modelState.ErrorCount == 0,
+				Message = modelState.Values.SelectMany(x => x.Errors.Select(x => x.ErrorMessage)).FirstOrDefault()
 			};
 		}
 	}

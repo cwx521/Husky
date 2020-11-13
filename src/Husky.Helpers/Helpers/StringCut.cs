@@ -7,7 +7,7 @@ namespace Husky
 {
 	public static class StringCut
 	{
-		public static string? SplitWords(this string? str) {
+		public static string? SplitWordsByCapital(this string? str) {
 			if ( string.IsNullOrEmpty(str) ) {
 				return str;
 			}
@@ -26,19 +26,23 @@ namespace Husky
 			return sb.ToString();
 		}
 
-		public static string? StripWord(this string? str, string wordToRemove) {
+		public static string? CoverWord(this string? str, string wordToCover, char replacement = '*') {
+			return string.IsNullOrEmpty(str) ? str : str.Replace(wordToCover, new string(replacement, wordToCover.Length));
+		}
+
+		public static string? RemoveWord(this string? str, string wordToRemove) {
 			return string.IsNullOrEmpty(str) ? str : str.Replace(wordToRemove, "");
 		}
 
-		public static string? StripSpace(this string? str) {
+		public static string? RemoveSpaces(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"\s+", "", RegexOptions.Multiline);
 		}
 
-		public static string? StripHtml(this string? str) {
+		public static string? RemoveHtml(this string? str) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, @"<\/?[1-6a-zA-Z]+[^>]*>", "", RegexOptions.Multiline);
 		}
 
-		public static string? StripRegEx(this string? str, string pattern, RegexOptions options = RegexOptions.None) {
+		public static string? RemoveRegex(this string? str, string pattern, RegexOptions options = RegexOptions.None) {
 			return string.IsNullOrEmpty(str) ? str : Regex.Replace(str, pattern, "", options);
 		}
 
@@ -58,12 +62,12 @@ namespace Husky
 			return Extract(str, @"-?\d+", matchIndex).AsInt();
 		}
 
-		public static string? MidBy(this string? str, string afterKeyword, string endAtKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
+		public static string? MidBy(this string? str, string afterKeyword, string beforeKeyword, bool useLastFoundAfterKeywordInsteadOfTheFirst = false) {
 			if ( afterKeyword == null ) {
 				throw new ArgumentNullException(nameof(afterKeyword));
 			}
-			if ( endAtKeyword == null ) {
-				throw new ArgumentNullException(nameof(endAtKeyword));
+			if ( beforeKeyword == null ) {
+				throw new ArgumentNullException(nameof(beforeKeyword));
 			}
 			if ( !string.IsNullOrEmpty(str) ) {
 				var i = useLastFoundAfterKeywordInsteadOfTheFirst
@@ -72,7 +76,7 @@ namespace Husky
 
 				if ( i != -1 ) {
 					i += afterKeyword.Length;
-					var j = str.IndexOf(endAtKeyword, i, StringComparison.Ordinal);
+					var j = str.IndexOf(beforeKeyword, i, StringComparison.Ordinal);
 					if ( j > i ) {
 						return str[i..j];
 					}

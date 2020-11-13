@@ -73,7 +73,7 @@ namespace Husky.GridQuery
 
 		private static GridColumn BuildGridColumn(PropertyInfo property, GridColumnAttribute? attr) => new GridColumn {
 			Field = property?.Name.CamelCase(),
-			Title = attr?.Title ?? property?.Name?.SplitWords(),
+			Title = attr?.Title ?? property?.Name?.SplitWordsByCapital(),
 			Category = attr?.Category,
 			Width = (attr == null || attr.Width == 0) ? DefaultGridColumnWidth : (attr.Width != -1 ? attr.Width : (int?)null),
 			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),

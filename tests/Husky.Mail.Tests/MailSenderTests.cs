@@ -14,7 +14,7 @@ namespace Husky.Mail.Tests
 	{
 		[TestMethod()]
 		public async Task SendAsyncTest() {
-			Crypto.PermanentToken = Crypto.RandomString();
+			Crypto.SecretToken = Crypto.RandomString();
 
 			//attention: fill the required values to run this test
 

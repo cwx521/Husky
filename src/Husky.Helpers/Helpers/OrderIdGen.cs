@@ -39,18 +39,18 @@ namespace Husky
 		//use 1 char to present Day, 1=1, 2=2, ... A=10, B=11 ...
 		private static char Day => (char)(DateTime.Now.Day + (DateTime.Now.Day < 10 ? '0' : 'A' - 10));
 
-		//use 1 char to present Day, Z=0, Y=1, X=2 ...
+		//use 1 char to present Hour, Z=0, Y=1, X=2 ...
 		private static char Hour => (char)('Z' - DateTime.Now.Hour);
 
-		//use 7 chars to present Time, the ordering of number values is obfuscated
-		private static string Time => string.Join("", TimeString());
+		//use 7 chars to present Minutes and Seconds, the ordering is obfuscated
+		private static string Time => string.Join("", TimePart());
 
-		//append a magic validation digit number, it takes one char, from 0-9
+		//append a validation digit number, which takes one char, from 0-9
 		private static int Validation(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
 
 
 		private static int _antiDup = 0;
-		private static IEnumerable<char> TimeString() {
+		private static IEnumerable<char> TimePart() {
 			var x = DateTime.Now.ToString("mmssfff").AsInt();
 			if ( x <= _antiDup ) {
 				x = _antiDup + 1;

@@ -7,36 +7,36 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public void SplitWordsTest() {
-			Assert.AreEqual(StringCut.SplitWords("HelloWorld"), "Hello World");
-			Assert.AreEqual(StringCut.SplitWords("Hello World"), "Hello World");
-			Assert.AreEqual(StringCut.SplitWords("ohHelloWorld"), "oh Hello World");
-			Assert.AreEqual(StringCut.SplitWords("ID"), "ID");
-			Assert.AreEqual(StringCut.SplitWords("IDE"), "IDE");
+			Assert.AreEqual(StringCut.SplitWordsByCapital("HelloWorld"), "Hello World");
+			Assert.AreEqual(StringCut.SplitWordsByCapital("Hello World"), "Hello World");
+			Assert.AreEqual(StringCut.SplitWordsByCapital("ohHelloWorld"), "oh Hello World");
+			Assert.AreEqual(StringCut.SplitWordsByCapital("ID"), "ID");
+			Assert.AreEqual(StringCut.SplitWordsByCapital("IDE"), "IDE");
 		}
 
 		[TestMethod()]
 		public void StripWordTest() {
-			Assert.AreEqual("HelloWorld".StripWord("oWo"), "Hellrld");
+			Assert.AreEqual("HelloWorld".RemoveWord("oWo"), "Hellrld");
 		}
 
 		[TestMethod()]
 		public void StripSpaceTest() {
-			Assert.AreEqual("\t He  l\tlo \t W\to \r\nrl\r\nd ".StripSpace(), "HelloWorld");
+			Assert.AreEqual("\t He  l\tlo \t W\to \r\nrl\r\nd ".RemoveSpaces(), "HelloWorld");
 		}
 
 		[TestMethod()]
 		public void StripHtmlTest() {
-			Assert.AreEqual("<div>Hello World</div>".StripHtml(), "Hello World");
-			Assert.AreEqual("<a>Hello</a> World".StripHtml(), "Hello World");
-			Assert.AreEqual("Hello <label>World</label>".StripHtml(), "Hello World");
-			Assert.AreEqual("Hello <span class='blue'>World</span>".StripHtml(), "Hello World");
+			Assert.AreEqual("<div>Hello World</div>".RemoveHtml(), "Hello World");
+			Assert.AreEqual("<a>Hello</a> World".RemoveHtml(), "Hello World");
+			Assert.AreEqual("Hello <label>World</label>".RemoveHtml(), "Hello World");
+			Assert.AreEqual("Hello <span class='blue'>World</span>".RemoveHtml(), "Hello World");
 		}
 
 		[TestMethod()]
 		public void StripRegExTest() {
-			Assert.AreEqual("Hello World 123".StripRegEx(@"\d+"), "Hello World ");
-			Assert.AreEqual("Hello World 123".StripRegEx(@"\s+\d+"), "Hello World");
-			Assert.AreEqual("Hello World 12".StripRegEx(@"[ol3]"), "He Wrd 12");
+			Assert.AreEqual("Hello World 123".RemoveRegex(@"\d+"), "Hello World ");
+			Assert.AreEqual("Hello World 123".RemoveRegex(@"\s+\d+"), "Hello World");
+			Assert.AreEqual("Hello World 12".RemoveRegex(@"[ol3]"), "He Wrd 12");
 
 		}
 

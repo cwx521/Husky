@@ -14,14 +14,14 @@ namespace Husky
 			Meters = one.StraightMetersTo(another)
 		};
 
-		public static int StraightMetersTo(this Location p1, Location p2) {
-			if ( p1.LatLonType != p2.LatLonType ) {
-				throw new ArgumentException("This two locations are in different coordinate standards");
+		public static int StraightMetersTo(this Location one, Location another) {
+			if ( one.LatLonType != another.LatLonType ) {
+				throw new ArgumentException("These two locations are in different coordinate standards");
 			}
-			var radLat1 = p1.Lat * Math.PI / 180.0;
-			var radLat2 = p2.Lat * Math.PI / 180.0;
+			var radLat1 = one.Lat * Math.PI / 180.0;
+			var radLat2 = another.Lat * Math.PI / 180.0;
 			var a = radLat1 - radLat2;
-			var b = p1.Lon * Math.PI / 180.0 - p2.Lon * Math.PI / 180.0;
+			var b = one.Lon * Math.PI / 180.0 - another.Lon * Math.PI / 180.0;
 			var s = 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin(a / 2), 2) + Math.Cos(radLat1) * Math.Cos(radLat2) * Math.Pow(Math.Sin(b / 2), 2)));
 			return (int)Math.Round(s * 6378.137 * 1000);
 		}

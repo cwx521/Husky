@@ -1,19 +1,16 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
 namespace Husky
 {
-	public static class HttpContextHelper
+	public static class HttpRequestHelper
 	{
-		public static string? RemoteIpv4(this HttpContext httpContext) {
-			return httpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
-		}
-
 		public static string? RemoteIpv4(this HttpRequest httpRequest) {
 			return httpRequest.HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 		}
 
-		public static string SchemeAndHost(this HttpRequest httpRequest) {
+		public static string ProtocolAndHost(this HttpRequest httpRequest) {
 			return (httpRequest.IsHttps ? "https://" : "http://") + httpRequest.Host;
 		}
 
@@ -22,7 +19,7 @@ namespace Husky
 		}
 
 		public static string FullUrl(this HttpRequest httpRequest) {
-			return httpRequest.SchemeAndHost() + httpRequest.Url();
+			return httpRequest.ProtocolAndHost() + httpRequest.Url();
 		}
 
 		public static string UserAgent(this HttpRequest httpRequest) {
@@ -31,10 +28,10 @@ namespace Husky
 
 		public static bool IsMobile(this HttpRequest httpRequest) {
 			var userAgent = httpRequest.UserAgent();
-			return userAgent.Contains("iPhone") || userAgent.Contains("Android");
+			return userAgent.Contains("iPhone", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Android", StringComparison.OrdinalIgnoreCase);
 		}
 
-		public static bool IsWeChatBrowser(this HttpRequest httpRequest) {
+		public static bool IsInWeChat(this HttpRequest httpRequest) {
 			return httpRequest.UserAgent().Contains("MicroMessenger");
 		}
 
@@ -45,7 +42,7 @@ namespace Husky
 			return httpRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
 		}
 
-		public static bool IsLocalhost(this HttpRequest httpRequest) {
+		public static bool IsLocal(this HttpRequest httpRequest) {
 			return httpRequest.Host.Host == "127.0.0.1" || httpRequest.Host.Host == "::1" || httpRequest.Host.Host == "localhost";
 		}
 	}
