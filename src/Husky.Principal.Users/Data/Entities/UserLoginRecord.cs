@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 
 namespace Husky.Principal.Users.Data
 {
@@ -22,8 +23,8 @@ namespace Husky.Principal.Users.Data
 		[StringLength(500)]
 		public string? UserAgent { get; set; }
 
-		[StringLength(39), Column(TypeName = "varchar(39)")]
-		public string? Ip { get; set; }
+		[Column(TypeName = "varchar(45)")]
+		public IPAddress? Ip { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;

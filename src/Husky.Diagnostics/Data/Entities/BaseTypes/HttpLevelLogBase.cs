@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net;
 
 namespace Husky.Diagnostics.Data
 {
@@ -19,8 +20,8 @@ namespace Husky.Diagnostics.Data
 		[StringLength(1000), Column(TypeName = "varchar(1000)")]
 		public string? UserAgent { get; set; }
 
-		[StringLength(39), Column(TypeName = "varchar(39)")]
-		public string? UserIp { get; set; }
+		[Column(TypeName = "varchar(45)")]
+		public IPAddress? UserIp { get; set; }
 
 		public bool IsAjax { get; set; }
 	}

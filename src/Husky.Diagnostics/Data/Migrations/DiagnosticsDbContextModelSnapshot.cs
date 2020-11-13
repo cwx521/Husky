@@ -15,16 +15,16 @@ namespace Husky.Diagnostics.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Husky.Diagnostics.Data.ExceptionLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -34,32 +34,33 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("ExceptionType")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("HttpMethod")
-                        .HasColumnType("varchar(6)")
-                        .HasMaxLength(6);
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
 
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Referrer")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
@@ -71,33 +72,31 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Url")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("UserAgent")
-                        .HasColumnType("varchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserIp")
-                        .HasColumnType("varchar(39)")
-                        .HasMaxLength(39);
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                        .IsClustered(false);
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -107,7 +106,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -122,13 +121,13 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
@@ -142,13 +141,13 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                        .IsClustered(false);
 
                     b.ToTable("OperationLogs");
                 });
@@ -158,7 +157,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -167,8 +166,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HttpMethod")
-                        .HasColumnType("varchar(6)")
-                        .HasMaxLength(6);
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
 
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");
@@ -180,12 +179,12 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
-                        .HasColumnType("varchar(32)")
-                        .HasMaxLength(32);
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Referrer")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
@@ -196,28 +195,27 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Url")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("UserAgent")
-                        .HasColumnType("varchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserIp")
-                        .HasColumnType("varchar(39)")
-                        .HasMaxLength(39);
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                        .IsClustered(false);
 
                     b.ToTable("RequestLogs");
                 });
