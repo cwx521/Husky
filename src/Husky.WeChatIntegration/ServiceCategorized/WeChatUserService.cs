@@ -22,7 +22,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
 					return new Failure<WeChatUserResult>(d.errmsg);
 				}
-
 				return new Success<WeChatUserResult> {
 					Data = new WeChatUserResult {
 						OpenId = d.openid,
@@ -104,7 +103,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
 					return new Failure<WeChatUserAccessToken>(d.errmsg);
 				}
-
 				return new Success<WeChatUserAccessToken> {
 					Data = new WeChatUserAccessToken {
 						AccessToken = d.access_token,

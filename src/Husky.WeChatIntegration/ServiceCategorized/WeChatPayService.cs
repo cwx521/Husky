@@ -71,13 +71,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
-				if ( !IsOk(xml) ) {
-					return new Failure<WeChatPayOrderCreationResult>(GetMessage(xml));
+
+				if ( !IsSuccess(xml) ) {
+					return new Failure<WeChatPayOrderCreationResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayOrderCreationResult> {
 					Data = new WeChatPayOrderCreationResult {
-						PrepayId = GetCdata(xml, "prepay_id"),
-						CodeUrl = GetCdata(xml, "code_url"),
+						PrepayId = GetContent(xml, "prepay_id"),
+						CodeUrl = GetContent(xml, "code_url"),
 						OriginalResult = xml
 					}
 				};
@@ -95,18 +96,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
-				var tradeState = GetCdata(xml, "trade_state");
+				var tradeState = GetContent(xml, "trade_state");
 
 				if ( tradeState != "REFUND" && tradeState != "SUCCESS" ) {
-					return new Failure<WeChatPayOrderQueryResult>(GetMessage(xml));
+					return new Failure<WeChatPayOrderQueryResult>(GetErrorDescription(xml));
 				}
 
 				return new Success<WeChatPayOrderQueryResult> {
 					Data = new WeChatPayOrderQueryResult {
 						HasRefund = tradeState == "REFUND",
-						OpenId = GetCdata(xml, "openid"),
+						OpenId = GetContent(xml, "openid"),
 						Amount = GetValue<int>(xml, "total_fee") / 100m,
-						TransactionId = GetCdata(xml, "transaction_id"),
+						TransactionId = GetContent(xml, "transaction_id"),
 						OriginalResult = xml
 					}
 				};
@@ -134,8 +135,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, true);
 
-				if ( !IsOk(xml) ) {
-					return new Failure<WeChatPayRefundResult>(GetMessage(xml));
+				if ( !IsSuccess(xml) ) {
+					return new Failure<WeChatPayRefundResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayRefundResult> {
 					Data = new WeChatPayRefundResult {
@@ -158,10 +159,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
-				if ( !IsOk(xml) || (GetCdata(xml, "refund_status_0") != "SUCCESS" && GetCdata(xml, "refund_status_0") != "PROCESSING") ) {
-					return new Failure<WeChatPayRefundQueryResult>(GetMessage(xml));
+				if ( !IsSuccess(xml) || (GetContent(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING") ) {
+					return new Failure<WeChatPayRefundQueryResult>(GetErrorDescription(xml));
 				}
-
 				return new Success<WeChatPayRefundQueryResult> {
 					Data = new WeChatPayRefundQueryResult {
 						RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100m,
@@ -187,7 +187,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			//对格式后的字符串进行加密，获得sign，把sign和值加入原Dictionary
 			var tobeSigned = sb.ToString();
-			apiParameters.Add("sign", Crypto.MD5(tobeSigned).ToUpper());
+			apiParameters.Add("sign", Crypto.MD5(tobeSigned));
 
 			//再转换成XML
 			sb.Clear();
@@ -210,21 +210,21 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public async Task<Result<WeChatPayNotifyResult>> ParseNotifyResultAsync(Stream stream) {
 			try {
-				var bytes = new byte[(int)stream.Length];
+				var bytes = new byte[stream.Length];
 				await stream.ReadAsync(bytes);
 
 				var xml = Encoding.UTF8.GetString(bytes);
 
-				if ( !IsOk(xml) ) {
-					return new Failure<WeChatPayNotifyResult>(GetMessage(xml));
+				if ( !IsSuccess(xml) ) {
+					return new Failure<WeChatPayNotifyResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayNotifyResult> {
 					Data = new WeChatPayNotifyResult {
 						Amount = GetValue<decimal>(xml, "total_fee") / 100m,
-						OpenId = GetCdata(xml, "openid")!,
-						OrderNo = GetCdata(xml, "out_trade_no")!,
-						TransactionId = GetCdata(xml, "transaction_id")!,
-						Attach = GetCdata(xml, "attach"),
+						OpenId = GetContent(xml, "openid")!,
+						OrderNo = GetContent(xml, "out_trade_no")!,
+						TransactionId = GetContent(xml, "transaction_id")!,
+						Attach = GetContent(xml, "attach"),
 						OriginalResult = xml
 					}
 				};
@@ -246,9 +246,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		private static string? GetCdata(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
+		private static string? GetContent(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
 		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
-		private static bool IsOk(string fromXml) => GetCdata(fromXml, "result_code") == "SUCCESS";
-		private static string? GetMessage(string fromXml) => GetCdata(fromXml, "err_code_des");
+		private static bool IsSuccess(string fromXml) => GetContent(fromXml, "result_code") == "SUCCESS";
+		private static string? GetErrorDescription(string fromXml) => GetContent(fromXml, "err_code_des");
 	}
 }

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Mail.Data
 {
-	public partial class MailSmtpProvider : ISmtpProvider
+	public class MailSmtpProvider : ISmtpProvider
 	{
 		[Key]
 		public Guid Id { get; [EditorBrowsable(EditorBrowsableState.Never)] set; } = Guid.NewGuid();

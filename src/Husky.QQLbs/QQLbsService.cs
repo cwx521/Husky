@@ -67,7 +67,7 @@ namespace Husky.Lbs.QQLbs
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_options.Key}&address={addressName}";
 			var x = await GetApiResultAsync(url);
 
-			return x == null ? (Location?)null : new Location {
+			return x == null ? null : new Location {
 				Lat = x.location.lat,
 				Lon = x.location.lng,
 				LatLonType = LatLonType.Tencent

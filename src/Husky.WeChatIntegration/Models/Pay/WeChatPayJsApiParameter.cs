@@ -2,14 +2,13 @@
 
 namespace Husky.WeChatIntegration
 {
-
 	public class WeChatPayJsApiParameter
 	{
-		public string id { get; set; } = null!;
-		public string nonceStr { get; set; } = null!;
-		public string package { get; set; } = null!;
-		public string signType { get; set; } = null!;
-		public long timestamp { get; set; }
-		public string paySign { get; set; } = null!;
+		public string id { get; internal set; } = null!;
+		public string nonceStr { get; internal set; } = null!;
+		public string package { get; internal set; } = null!;
+		public string signType { get; internal set; } = null!;
+		public long timestamp { get; internal set; }
+		public string paySign { get; internal set; } = null!;
 	}
 }

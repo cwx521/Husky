@@ -11,7 +11,7 @@ namespace Husky.Principal
 		}
 
 		private readonly IMemoryCache _cache;
-		private static readonly string _cacheKeyOfPool = "Pool_" + typeof(T).FullName;
+		private readonly string _cacheKeyOfPool = "Pool_" + typeof(T).FullName;
 
 		internal TimeSpan Timeout { get; set; } = TimeSpan.FromMinutes(30);
 

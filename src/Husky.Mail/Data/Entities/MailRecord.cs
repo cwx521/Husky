@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Husky.Mail.Data
 {
-	public partial class MailRecord
+	public class MailRecord
 	{
 		[Key]
 		public int Id { get; set; }

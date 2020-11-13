@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Husky.Principal.Users.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,11 +7,11 @@ namespace Husky.Principal.Users
 {
 	public partial class UserGroupsManager
 	{
-		private static readonly string _groupsCacheKey = nameof(GetGroups);
+		private const string _groupsCacheKey = nameof(GetGroups);
 
 		public UserGroup[] GetGroups() {
 			if ( _me.IsAnonymous ) {
-				return new UserGroup[0];
+				return Array.Empty<UserGroup>();
 			}
 
 			return (UserGroup[])_me.CacheData().GetOrAdd(_groupsCacheKey, key => _db.UserInGroups

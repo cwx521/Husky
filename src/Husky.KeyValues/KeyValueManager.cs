@@ -16,7 +16,7 @@ namespace Husky.KeyValues
 		}
 
 		private static readonly object _lock = new object();
-		private static readonly string _cacheKey = nameof(KeyValueManager);
+		private const string _cacheKey = nameof(KeyValueManager);
 
 		private readonly IKeyValueDbContext _db;
 		private readonly IMemoryCache _cache;
@@ -27,7 +27,7 @@ namespace Husky.KeyValues
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => _db.KeyValues.AsNoTracking().ToList());
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
-		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As(defaultValue);
+		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As<T>(defaultValue);
 		public string? Get(string key) => Find(key)?.Value;
 
 		public T GetOrAdd<T>(string key, T fallback) where T : struct => GetOrAdd(key, fallback.ToString()).As<T>();
