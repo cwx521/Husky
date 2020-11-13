@@ -12,10 +12,10 @@ namespace Husky.GridQuery
 		public static IQueryable<T> ApplyPreFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PreFilters, true);
 		public static IQueryable<T> ApplyPostFilters<T>(this IQueryable<T> query, QueryCriteria criteria) => query.ApplyFilters(criteria.PostFilters, false);
 
-		private static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, List<QueryFilter> filters, bool throwExceptionWhenFilterFieldNotExist) {
+		private static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, List<QueryFilter> filters, bool throwExceptionWhenFilterNotApplicable) {
 			foreach ( var filter in filters ) {
 				if ( !typeof(T).GetProperties().Any(x => string.Compare(filter.Field, x.Name, true) == 0) ) {
-					if ( throwExceptionWhenFilterFieldNotExist ) {
+					if ( throwExceptionWhenFilterNotApplicable ) {
 						throw new InvalidProgramException(
 							$"The filter '{JsonSerializer.Serialize(filter)}' is not applicable, " +
 							$"field '{filter.Field}' does not exist."

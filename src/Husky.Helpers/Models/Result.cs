@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Husky
 {
@@ -14,8 +15,8 @@ namespace Husky
 		public bool Ok { get; set; }
 		public string? Message { get; set; }
 
-		public virtual string ToJson() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
-			NullValueHandling = NullValueHandling.Ignore
+		public virtual string ToJson() => JsonSerializer.Serialize(this, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
 		});
 
 		public async Task ExecuteResultAsync(ActionContext context) => await new JsonResult(this).ExecuteResultAsync(context);

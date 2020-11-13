@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 
 namespace Husky.GridQuery
 {
@@ -11,9 +12,8 @@ namespace Husky.GridQuery
 		internal const int DefaultGridColumnWidth = 160;
 
 		public static string Json(this List<GridColumn> columns) {
-			return JsonConvert.SerializeObject(columns, new JsonSerializerSettings {
-				DefaultValueHandling = DefaultValueHandling.Ignore,
-				NullValueHandling = NullValueHandling.Ignore
+			return JsonSerializer.Serialize(columns, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
 			});
 		}
 

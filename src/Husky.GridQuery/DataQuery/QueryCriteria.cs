@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Husky.GridQuery
 {
 	public class QueryCriteria
 	{
-		public bool PaginationEnabled = true;
+		public bool PaginationEnabled { get; set; } = true;
 		public int Limit { get; set; } = 100;
 		public int Offset { get; set; }
 
@@ -16,9 +17,8 @@ namespace Husky.GridQuery
 		public List<QueryFilter> PostFilters { get; set; } = new List<QueryFilter>();
 
 
-		public string Json() => JsonConvert.SerializeObject(this, new JsonSerializerSettings {
-			DefaultValueHandling = DefaultValueHandling.Ignore,
-			NullValueHandling = NullValueHandling.Ignore
+		public string Json() => JsonSerializer.Serialize(this, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
 		});
 
 		public override string ToString() => Json();

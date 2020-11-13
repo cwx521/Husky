@@ -8,14 +8,14 @@
 <p>IsConsolidated: @_me.IsConsolidated</p>
 
 @foreach ( var item in Model.RequestLogs ) {
-    <p>@item.AnonymousId, @item.UserName, @item.HttpMethod, @item.Url, @item.Repeated, @item.LastTime, @item.Md5Comparison</p>
+	<p>@item.AnonymousId, @item.UserName, @item.HttpMethod, @item.Url, @item.Repeated, @item.LastTime, @item.Md5Comparison</p>
 }
 
 <form method="post" asp-page="@PageContext.ActionDescriptor.DisplayName">
-    <button type="submit">Submit</button>
-    <a href="/">Redirect</a>
-    @if ( Request.Method == "POST" ) {
-        <p>Submitted</p>
-        <p>@Model.TellHim</p>
-    }
+	<button type="submit">Submit</button>
+	<a href="/">Redirect</a>
+	@if ( Request.Method == "POST" ) {
+		<p>Submitted</p>
+		<p>@Model.TellHim</p>
+	}
 </form>
