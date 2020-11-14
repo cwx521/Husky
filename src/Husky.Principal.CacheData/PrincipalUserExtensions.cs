@@ -20,10 +20,9 @@ namespace Husky.Principal
 		}
 
 		public static CacheDictionaryBag Cache(this IPrincipalUser principal) {
-			var key = principal.CacheKey();
 			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
 			_pool.Drop(principal.CacheKeyDroppable());
-			return _pool.PickOrCreate(key, key => new CacheDictionaryBag(principal));
+			return _pool.PickOrCreate(principal.CacheKey(), _ => new CacheDictionaryBag(principal));
 		}
 
 		public static void AbandonCache(this IPrincipalUser principal) {
