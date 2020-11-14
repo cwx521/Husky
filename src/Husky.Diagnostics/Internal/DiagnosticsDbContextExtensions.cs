@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Husky.Diagnostics
 {
-	internal static class DiagnosticsDbContextExtensions
+	public static class DiagnosticsDbContextExtensions
 	{
 		internal static async Task LogExceptionAsync(this IDiagnosticsDbContext db, Exception e, HttpContext? http, IPrincipalUser? principal) {
 			principal ??= http?.RequestServices?.GetService<IPrincipalUser>();
@@ -59,11 +59,8 @@ namespace Husky.Diagnostics
 			log.ReadValuesFromHttpContext(http);
 			log.ComputeMd5Comparison();
 
-			var seconds = 60;
 			var keyValueManager = http.RequestServices.GetService<IKeyValueManager>();
-			if ( keyValueManager != null ) {
-				seconds = keyValueManager.GetOrAdd("LogAsRepeatedIfVisitAgainWithinSeconds", seconds);
-			}
+			var seconds = keyValueManager?.LogAsRepeatedIfVisitAgainWithinSeconds() ?? 60;
 
 			var repeating = db.RequestLogs
 				.OrderByDescending(x => x.Id)
@@ -91,11 +88,8 @@ namespace Husky.Diagnostics
 			}
 			log.ComputeMd5Comparison();
 
-			var seconds = 60;
 			var keyValueManager = principal?.ServiceProvider?.GetService<IKeyValueManager>();
-			if ( keyValueManager != null ) {
-				seconds = keyValueManager.GetOrAdd("LogAsRepeatedIfOperateAgainWithinSeconds", seconds);
-			}
+			var seconds = keyValueManager?.LogAsRepeatedIfOperateAgainWithinSeconds() ?? 60;
 
 			var repeating = db.OperationLogs
 				.Where(x => x.Md5Comparison == log.Md5Comparison)

@@ -30,7 +30,8 @@ namespace Husky.Sms.AliyunSms.Tests
 					{ "code", new Random().Next(0, 1000000).ToString("D6") }
 				}
 			};
-			await sender.SendAsync(arg, sendTo);
+			var result  = await sender.SendAsync(arg, sendTo);
+			Assert.IsTrue(result.Ok);
 		}
 	}
 }

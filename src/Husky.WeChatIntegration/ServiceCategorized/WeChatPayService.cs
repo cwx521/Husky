@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -208,6 +209,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await response.Content.ReadAsStringAsync();
 		}
 
+		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatPayNotifyResult>> ParseNotifyResultAsync(Stream stream) {
 			try {
 				var bytes = new byte[stream.Length];
@@ -234,6 +236,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 		}
 
+		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public string CreateNotifyRespondSuccessXml() {
 			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 		}

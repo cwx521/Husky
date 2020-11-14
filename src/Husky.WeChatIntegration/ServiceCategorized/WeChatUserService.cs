@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -13,6 +14,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly WeChatOptions _options;
 
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
+
+		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
@@ -56,6 +59,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _options.MobilePlatformAppSecret
 			});
 		}
+
+		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(string code, WeChatAppIdSecret overrideIdSecret) {
 			overrideIdSecret.NotNull();
 
@@ -84,6 +89,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _options.MobilePlatformAppSecret
 			});
 		}
+		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserAccessToken>> RefreshUserAccessTokenAsync(string refreshToken, WeChatAppIdSecret overrideIdSecret) {
 			overrideIdSecret.NotNull();
 
@@ -95,7 +101,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await GetUserAccessTokenFromResolvedUrlAsync(url);
 		}
 
-		private async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenFromResolvedUrlAsync(string url) {
+		private static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenFromResolvedUrlAsync(string url) {
 			try {
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);

@@ -14,7 +14,7 @@ namespace Husky.Diagnostics.Tests
 	[TestClass()]
 	public class DiagnosticsLoggerTests
 	{
-		private IServiceProvider BuildServiceProvider() {
+		private static IServiceProvider BuildServiceProvider() {
 			var services = new ServiceCollection();
 			services.AddScoped<IHttpContextAccessor>(x => new HttpContextAccessor { HttpContext = new DefaultHttpContext() });
 			services.AddDbContext<IDiagnosticsDbContext, DiagnosticsDbContext>(x => x.UseInMemoryDatabase("UnitTest"));

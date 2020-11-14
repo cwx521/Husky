@@ -9,7 +9,7 @@ namespace Husky.Principal.Users
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
-			if ( socialIdNumber.IsMainlandSocialNumber() ) {
+			if ( socialIdNumber.IsSocialNumber() ) {
 				return new Failure("身份证号码不正确");
 			}
 
@@ -23,7 +23,7 @@ namespace Husky.Principal.Users
 
 			userReal.SocialIdNumber = socialIdNumber;
 			userReal.RealName = realName;
-			userReal.Sex = StringTest.GetSexFromMainlandSocialNumber(socialIdNumber);
+			userReal.Sex = new SocialIdNumber(socialIdNumber).Sex;
 			userReal.IsVerified = isVerified;
 
 			await _db.Normalize().SaveChangesAsync();

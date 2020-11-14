@@ -9,6 +9,7 @@ namespace Husky.WeChatIntegration
 		public WeChatService(WeChatOptions wechatOptions, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
 			_http = httpContextAccessor;
 			_cache = cache;
+
 			Options = wechatOptions;
 		}
 

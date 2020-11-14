@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Husky.Principal.Administration.Data;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,8 @@ namespace Husky.Principal.Administration
 		public string[] Roles => _adminData?.Roles ?? Array.Empty<string>();
 
 		public TEnum MatchPowers<TEnum>() where TEnum : Enum => (TEnum)(object)Powers;
+
+		[SuppressMessage("Usage", "CA2248:Provide correct 'enum' argument to 'Enum.HasFlag'")]
 		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MatchPowers<TEnum>().HasFlag(power);
 
 

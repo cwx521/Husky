@@ -133,7 +133,7 @@ namespace Husky.Lbs.QQLbs
 			return results;
 		}
 
-		private async Task<dynamic?> GetApiResultAsync(string url) {
+		private static async Task<dynamic?> GetApiResultAsync(string url) {
 			try {
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);

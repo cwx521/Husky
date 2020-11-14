@@ -6,7 +6,7 @@ namespace Husky.Tests
 	public class StringCutTests
 	{
 		[TestMethod()]
-		public void SplitWordsTest() {
+		public void SplitWordsByCapitalTest() {
 			Assert.AreEqual(StringCut.SplitWordsByCapital("HelloWorld"), "Hello World");
 			Assert.AreEqual(StringCut.SplitWordsByCapital("Hello World"), "Hello World");
 			Assert.AreEqual(StringCut.SplitWordsByCapital("ohHelloWorld"), "oh Hello World");
@@ -15,17 +15,17 @@ namespace Husky.Tests
 		}
 
 		[TestMethod()]
-		public void StripWordTest() {
+		public void RemoveWordTest() {
 			Assert.AreEqual("HelloWorld".RemoveWord("oWo"), "Hellrld");
 		}
 
 		[TestMethod()]
-		public void StripSpaceTest() {
+		public void RemoveSpacesTest() {
 			Assert.AreEqual("\t He  l\tlo \t W\to \r\nrl\r\nd ".RemoveSpaces(), "HelloWorld");
 		}
 
 		[TestMethod()]
-		public void StripHtmlTest() {
+		public void RemoveHtmlTest() {
 			Assert.AreEqual("<div>Hello World</div>".RemoveHtml(), "Hello World");
 			Assert.AreEqual("<a>Hello</a> World".RemoveHtml(), "Hello World");
 			Assert.AreEqual("Hello <label>World</label>".RemoveHtml(), "Hello World");
@@ -33,7 +33,7 @@ namespace Husky.Tests
 		}
 
 		[TestMethod()]
-		public void StripRegExTest() {
+		public void RemoveRegexTest() {
 			Assert.AreEqual("Hello World 123".RemoveRegex(@"\d+"), "Hello World ");
 			Assert.AreEqual("Hello World 123".RemoveRegex(@"\s+\d+"), "Hello World");
 			Assert.AreEqual("Hello World 12".RemoveRegex(@"[ol3]"), "He Wrd 12");

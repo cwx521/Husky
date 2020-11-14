@@ -42,7 +42,7 @@ namespace Husky.Mail
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
-			var smtp = _smtp ?? await GetPreconfiguredSmtpProviderAsync();
+			var smtp = _smtp ?? await GetPreconfiguredSmtpProviderAsync(_mailDb);
 			var mailRecord = await BuildMailRecordAsync(mailMessage);
 
 			if ( smtp is MailSmtpProvider internalSmtp ) {
@@ -80,16 +80,16 @@ namespace Husky.Mail
 
 		private static int _increment = 0;
 
-		private async Task<MailSmtpProvider> GetPreconfiguredSmtpProviderAsync() {
-			var available = _mailDb.MailSmtpProviders.Count(x => x.IsInUse);
+		private static async Task<MailSmtpProvider> GetPreconfiguredSmtpProviderAsync(IMailDbContext mailDb) {
+			var available = mailDb.MailSmtpProviders.Count(x => x.IsInUse);
 			if ( available == 0 ) {
 				throw new Exception("SMTP is not configured yet.");
 			}
 			var skip = _increment++ % available;
-			return await _mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).FirstAsync();
+			return await mailDb.MailSmtpProviders.Where(x => x.IsInUse).AsNoTracking().Skip(skip).FirstAsync();
 		}
 
-		private async Task<MailRecord> BuildMailRecordAsync(MailMessage mail) {
+		private static async Task<MailRecord> BuildMailRecordAsync(MailMessage mail) {
 			var mailRecord = new MailRecord {
 				Subject = mail.Subject,
 				Body = mail.Body,
@@ -107,7 +107,7 @@ namespace Husky.Mail
 			return mailRecord;
 		}
 
-		private MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mail) {
+		private static MimeMessage BuildMimeMessage(ISmtpProvider smtp, MailMessage mail) {
 			var mimeMessage = new MimeMessage();
 
 			mimeMessage.From.Add(new MailboxAddress(smtp.SenderDisplayName, smtp.SenderMailAddress ?? smtp.CredentialName));
@@ -139,10 +139,10 @@ namespace Husky.Mail
 			return mimeMessage;
 		}
 
-		private async Task<byte[]> ReadStreamAsync(Stream stream) {
+		private static async Task<byte[]> ReadStreamAsync(Stream stream) {
 			var length = stream.Length;
 			var bytes = new byte[length];
-			await stream.ReadAsync(bytes, 0, (int)length);
+			await stream.ReadAsync(bytes);
 			return bytes;
 		}
 	}

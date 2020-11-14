@@ -22,6 +22,10 @@ namespace Husky
 			return httpRequest.ProtocolAndHost() + httpRequest.Url();
 		}
 
+		public static string Referer(this HttpRequest httpRequest) {
+			return httpRequest.Headers["Referer"].ToString();
+		}
+
 		public static string UserAgent(this HttpRequest httpRequest) {
 			return httpRequest.Headers["User-Agent"];
 		}

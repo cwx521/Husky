@@ -29,12 +29,8 @@ namespace Husky.Principal.AntiViolence
 				return;
 			}
 
-			var ms = 300;
 			var keyValueManager = context.HttpContext.RequestServices.GetService<IKeyValueManager>();
-			if ( keyValueManager != null ) {
-				ms = keyValueManager.GetOrAdd("MinimumIntervalMillisecondsBetweenHttpPosts", ms);
-			}
-
+			var ms = keyValueManager?.HttpPostsMinimumIntervalMilliseconds() ?? 300;
 			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
 			var blocker = new AntiViolenceDefender(principal);
 

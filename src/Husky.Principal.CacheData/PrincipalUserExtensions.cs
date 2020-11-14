@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System;
+using Husky.KeyValues;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal
@@ -6,6 +8,7 @@ namespace Husky.Principal
 	public static class PrincipalUserExtensions
 	{
 		private static CacheDataPool<CacheDictionaryBag>? _pool;
+		private static int? _timeoutSeconds;
 
 		internal static string CacheKey(this IPrincipalUser principal) {
 			return principal.IsAnonymous
@@ -20,7 +23,10 @@ namespace Husky.Principal
 		}
 
 		public static CacheDictionaryBag Cache(this IPrincipalUser principal) {
-			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>());
+			_timeoutSeconds ??= principal.ServiceProvider.GetService<IKeyValueManager>()?.PrincipalCacheDataBagWillExpireAfterSeconds() ?? 3600;
+			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>()) {
+				Timeout = TimeSpan.FromSeconds(_timeoutSeconds.Value)
+			};
 			_pool.Drop(principal.CacheKeyDroppable());
 			return _pool.PickOrCreate(principal.CacheKey(), _ => new CacheDictionaryBag(principal));
 		}

@@ -20,7 +20,7 @@ namespace Husky.Principal.Users
 				newNumber = newNumber.Substring(2);
 			}
 
-			if ( !newNumber.IsMainlandMobile() ) {
+			if ( !newNumber.IsMobileNumber() ) {
 				return new Failure("格式错误");
 			}
 			if ( _db.UserPhones.Any(x => x.UserId != _me.Id && x.Number == newNumber) ) {

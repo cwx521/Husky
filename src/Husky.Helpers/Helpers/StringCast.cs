@@ -69,7 +69,7 @@ namespace Husky
 			if ( str.Length == 2 || str.Length == 3 ) {
 				return $"{str[0]}{new string('*', str.Length - 1)}";
 			}
-			if ( str.IsMainlandMobile() ) {
+			if ( str.IsMobileNumber() ) {
 				return $"{str.Substring(0, 3)}****{str.Substring(7)}";
 			}
 			if ( str.IsEmail() ) {
@@ -79,7 +79,7 @@ namespace Husky
 			if ( str.IsCardNumber() ) {
 				return $"{str.Substring(0, 4)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
-			if ( str.IsMainlandSocialNumber() ) {
+			if ( str.IsSocialNumber() ) {
 				return $"{str.Substring(0, 6)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
 			return str;

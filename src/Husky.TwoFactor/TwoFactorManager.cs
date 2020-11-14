@@ -33,7 +33,7 @@ namespace Husky.TwoFactor
 			}
 
 			var isEmail = mobileNumberOrEmailAddress.IsEmail();
-			var isMobile = mobileNumberOrEmailAddress.IsMainlandMobile();
+			var isMobile = mobileNumberOrEmailAddress.IsMobileNumber();
 
 			if ( !isEmail && !isMobile ) {
 				return new Failure($"无法送达 '{mobileNumberOrEmailAddress}'");
@@ -84,7 +84,7 @@ namespace Husky.TwoFactor
 		}
 
 		public async Task<Result> SendCodeThroughSmsAsync(string mobileNumber, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
-			if ( !mobileNumber.IsMainlandMobile() ) {
+			if ( !mobileNumber.IsMobileNumber() ) {
 				return new Failure($"无法送达 '{mobileNumber}'");
 			}
 			return await SendCodeAsync(mobileNumber, overrideMessageTemplateWithCodeArg0, overrideSmsTemplateAlias, overrideSmsSignName);
