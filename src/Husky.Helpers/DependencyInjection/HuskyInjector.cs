@@ -1,5 +1,6 @@
 ﻿using System;
 using Husky.Diagnostics;
+using Husky.FileStore;
 using Husky.KeyValues;
 using Husky.Lbs;
 using Husky.Mail;
@@ -38,6 +39,18 @@ namespace Husky
 		public HuskyInjector AddExternalDiagnosticsLogger<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
 			where TImplement : class, IDiagnosticsLogger {
 			Services.AddScoped<IDiagnosticsLogger, TImplement>(implementationFactory);
+			return this;
+		}
+
+
+		public HuskyInjector AddExternalCloudFileStoreService<TImplement>()
+			where TImplement : class, ICloudFileStoreService {
+			Services.AddScoped<ICloudFileStoreService, TImplement>();
+			return this;
+		}
+		public HuskyInjector AddExternalCloudFileStoreService<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, ICloudFileStoreService {
+			Services.AddScoped<ICloudFileStoreService, TImplement>(implementationFactory);
 			return this;
 		}
 
