@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>eea901e7-12ef-4a25-95e4-e3262d87afff</UserSecretsId>
   </PropertyGroup>
   
   <ItemGroup>
@@ -15,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Husky.Diagnostics\Husky.Diagnostics.csproj" />
+    <ProjectReference Include="..\..\src\Husky.FileStore\Husky.FileStore.csproj" />
     <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
     <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />
     <ProjectReference Include="..\..\src\Husky.Principal.Administration\Husky.Principal.Administration.csproj" />

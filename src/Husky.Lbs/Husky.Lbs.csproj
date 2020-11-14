@@ -7,7 +7,6 @@
     <Authors>Weixing Chen</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
-    <RootNamespace>Husky.Lbs.QQLbs</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

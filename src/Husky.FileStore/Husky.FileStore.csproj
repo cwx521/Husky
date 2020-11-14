@@ -7,7 +7,6 @@
     <Authors>Weixing Chen</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
-    <RootNamespace>Husky.Sms.AliyunSms</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -17,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aliyun.Net.SDK.Dysmsapi" Version="1.0.3" />
+    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.12.0" />
   </ItemGroup>
 
   <ItemGroup>

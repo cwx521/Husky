@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -8,9 +8,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
     <Nullable>enable</Nullable>
-    <RootNamespace>Husky</RootNamespace>
-    <OutputType>Library</OutputType>
-    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,14 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Abstractions\FileStore\Models\**" />
-    <Content Remove="Abstractions\FileStore\Models\**" />
-    <EmbeddedResource Remove="Abstractions\FileStore\Models\**" />
-    <None Remove="Abstractions\FileStore\Models\**" />
+    <PackageReference Include="Aliyun.Net.SDK.Dysmsapi" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <ProjectReference Include="..\Husky.Helpers\Husky.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

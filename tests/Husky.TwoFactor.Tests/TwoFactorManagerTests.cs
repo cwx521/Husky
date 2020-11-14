@@ -21,7 +21,7 @@ namespace Husky.TwoFactor.Tests
 			var settings = new AliyunSmsOptions {
 				DefaultSignName = "星翼软件",
 				DefaultTemplateCode = "SMS_170155854",
-				AccessKeyId = "LTAI4FqwMTMob4TH9MP5dfTK",
+				AccessKeyId = "",
 				AccessKeySecret = ""
 			};
 
