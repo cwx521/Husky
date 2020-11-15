@@ -11,7 +11,6 @@ namespace Husky.FileStore
 
 		Uri SignUri(string fileName, TimeSpan expires);
 		void SetAccessControl(string fileName, StoredFileAccessControl accessControl);
-
 		void Tag(string fileName, string tagKey, string tagValue);
 		void Tag(string fileName, IDictionary<string, string> tags);
 		void TagPrincipalIdentity(string fileName, IPrincipalUser principal);

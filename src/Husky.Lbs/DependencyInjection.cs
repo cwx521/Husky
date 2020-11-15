@@ -7,17 +7,17 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddQQLbs(this HuskyInjector husky, string key) {
+		public static HuskyServiceHub AddQQLbs(this HuskyServiceHub husky, string key) {
 			husky.Services.AddSingleton<ILbs>(new QQLbsService(key));
 			return husky;
 		}
 
-		public static HuskyInjector AddQQLbs(this HuskyInjector husky, QQLbsOptions options) {
+		public static HuskyServiceHub AddQQLbs(this HuskyServiceHub husky, QQLbsOptions options) {
 			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));
 			return husky;
 		}
 
-		public static HuskyInjector AddQQLbs(this HuskyInjector husky, Action<QQLbsOptions> setupAction) {
+		public static HuskyServiceHub AddQQLbs(this HuskyServiceHub husky, Action<QQLbsOptions> setupAction) {
 			var options = new QQLbsOptions();
 			setupAction(options);
 			husky.Services.AddSingleton<ILbs>(new QQLbsService(options));

@@ -27,7 +27,7 @@ namespace Husky.TwoFactor
 		private readonly ISmsSender? _smsSender;
 		private readonly IMailSender? _mailSender;
 
-		public async Task<Result> SendCodeAsync(string mobileNumberOrEmailAddress, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
+		private async Task<Result> SendCodeAsync(string mobileNumberOrEmailAddress, string? overrideMessageTemplateWithCodeArg0 = null, string? overrideSmsTemplateAlias = null, string? overrideSmsSignName = null) {
 			if ( mobileNumberOrEmailAddress == null ) {
 				throw new ArgumentNullException(nameof(mobileNumberOrEmailAddress));
 			}
@@ -97,7 +97,7 @@ namespace Husky.TwoFactor
 			return await SendCodeAsync(emailAddress, messageTemplateWithCodeArg0, null, overrideSmsSignName);
 		}
 
-		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedIfSucceed, int withinMinutes = 15) {
+		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedIfSuccess, int codeUseableWithinMinutes = 15) {
 			if ( sentTo == null ) {
 				throw new ArgumentNullException(nameof(sentTo));
 			}
@@ -109,7 +109,7 @@ namespace Husky.TwoFactor
 				.Where(x => x.IsUsed == false)
 				.Where(x => x.SentTo == sentTo)
 				.Where(x => x.UserId == _me.Id || x.AnonymousId == _me.AnonymousId)
-				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - withinMinutes))
+				.Where(x => x.CreatedTime > DateTime.Now.AddMinutes(0 - codeUseableWithinMinutes))
 				.OrderByDescending(x => x.Id)
 				.FirstOrDefaultAsync();
 
@@ -121,17 +121,12 @@ namespace Husky.TwoFactor
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 				return new Failure("验证码错误");
 			}
-			if ( setIntoUsedIfSucceed ) {
+			if ( setIntoUsedIfSuccess ) {
 				record.IsUsed = true;
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 				_twoFactorDb.Normalize().ChangeTracker.Clear();
 			}
 			return new Success();
-		}
-
-		public async Task<Result> VerifyCodeAsync(ITwoFactorModel model, bool setIntoUsedIfSucceed, int withinMinutes = 15) {
-			if ( model == null ) throw new ArgumentNullException(nameof(model));
-			return await VerifyCodeAsync(model.SendTo, model.Code, setIntoUsedIfSucceed, withinMinutes);
 		}
 	}
 }

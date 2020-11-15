@@ -8,7 +8,7 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, IdentityOptions? options = null) {
+		public static HuskyServiceHub AddIdentityManager(this HuskyServiceHub husky, IdentityOptions? options = null) {
 			husky.Services.AddScoped<IIdentityManager>(svc => {
 				var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				if ( http == null ) {
@@ -24,13 +24,13 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector AddIdentityManager(this HuskyInjector husky, Action<IdentityOptions> setupAction) {
+		public static HuskyServiceHub AddIdentityManager(this HuskyServiceHub husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
 			setupAction(options);
 			return husky.AddIdentityManager(options);
 		}
 
-		public static HuskyInjector AddPrincipal(this HuskyInjector husky, IdentityOptions? options = null) {
+		public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, IdentityOptions? options = null) {
 			husky.AddIdentityManager(options);
 
 			husky.Services.AddScoped(serviceProvider => {
@@ -50,7 +50,7 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector AddPrincipal(this HuskyInjector husky, Action<IdentityOptions> setupAction) {
+		public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, Action<IdentityOptions> setupAction) {
 			var options = new IdentityOptions();
 			setupAction(options);
 			return husky.AddPrincipal(options);

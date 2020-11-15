@@ -6,12 +6,12 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddAlipay(this HuskyInjector husky, AlipayOptions options) {
+		public static HuskyServiceHub AddAlipay(this HuskyServiceHub husky, AlipayOptions options) {
 			husky.Services.AddSingleton(new AlipayService(options));
 			return husky;
 		}
 
-		public static HuskyInjector AddAlipay(this HuskyInjector husky, Action<AlipayOptions> setupAction) {
+		public static HuskyServiceHub AddAlipay(this HuskyServiceHub husky, Action<AlipayOptions> setupAction) {
 			var options = new AlipayOptions();
 			setupAction(options);
 			husky.Services.AddSingleton(new AlipayService(options));

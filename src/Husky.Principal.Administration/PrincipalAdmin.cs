@@ -24,13 +24,13 @@ namespace Husky.Principal.Administration
 		public bool IsAdmin => _adminData != null && _adminData.Id != Guid.Empty;
 		public bool IsNotAdmin => !IsAdmin;
 
-		public long Powers => _adminData?.Powers ?? 0;
+		public long PowerFlags => _adminData?.Powers ?? 0;
 		public string[] Roles => _adminData?.Roles ?? Array.Empty<string>();
 
-		public TEnum MatchPowers<TEnum>() where TEnum : Enum => (TEnum)(object)Powers;
+		public TEnum Powers<TEnum>() where TEnum : Enum => (TEnum)(object)PowerFlags;
 
 		[SuppressMessage("Usage", "CA2248:Provide correct 'enum' argument to 'Enum.HasFlag'")]
-		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => MatchPowers<TEnum>().HasFlag(power);
+		public bool Allow<TEnum>(TEnum power) where TEnum : Enum => Powers<TEnum>().HasFlag(power);
 
 
 		public const string AdminDataKey = nameof(AdminViewModel);

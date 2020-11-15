@@ -2,7 +2,7 @@
 
 namespace Husky.Lbs
 {
-	public class Distance
+	public record Distance
 	{
 		public Location From { get; init; } = null!;
 		public Location To { get; init; } = null!;

@@ -8,14 +8,14 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddTwoFactor(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyServiceHub AddTwoFactor(this HuskyServiceHub husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services
 				.AddDbContextPool<ITwoFactorDbContext, TwoFactorDbContext>(optionsAction)
 				.AddScoped<ITwoFactorManager, TwoFactorManager>();
 			return husky;
 		}
 
-		public static HuskyInjector AddTwoFactor<TDbContext>(this HuskyInjector husky)
+		public static HuskyServiceHub AddTwoFactor<TDbContext>(this HuskyServiceHub husky)
 			where TDbContext : DbContext, ITwoFactorDbContext {
 			husky.Services
 				.AddDbContext<ITwoFactorDbContext, TDbContext>()

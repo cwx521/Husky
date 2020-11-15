@@ -2,7 +2,6 @@
 {
 	public enum DistanceMode
 	{
-
 		[Label("汽车")]
 		Driving,
 

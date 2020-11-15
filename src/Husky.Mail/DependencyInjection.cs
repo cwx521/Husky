@@ -8,13 +8,13 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyInjector AddMailSender(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyServiceHub AddMailSender(this HuskyServiceHub husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services.AddDbContextPool<IMailDbContext, MailDbContext>(optionsAction);
 			husky.Services.AddScoped<IMailSender, MailSender>();
 			return husky;
 		}
 
-		public static HuskyInjector AddMailSender<TDbContext>(this HuskyInjector husky)
+		public static HuskyServiceHub AddMailSender<TDbContext>(this HuskyServiceHub husky)
 			where TDbContext : DbContext, IMailDbContext {
 			husky.Services.AddDbContext<IMailDbContext, TDbContext>();
 			husky.Services.AddScoped<IMailSender, MailSender>();

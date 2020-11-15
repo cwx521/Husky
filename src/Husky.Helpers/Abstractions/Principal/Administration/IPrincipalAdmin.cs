@@ -13,9 +13,9 @@ namespace Husky.Principal.Administration
 		string DisplayName { get; }
 
 		string[] Roles { get; }
-		long Powers { get; }
+		long PowerFlags { get; }
 
-		TFlaggedEnum MatchPowers<TFlaggedEnum>() where TFlaggedEnum : Enum;
-		bool Allow<TFlaggedEnum>(TFlaggedEnum power) where TFlaggedEnum : Enum;
+		TFlagsEnum Powers<TFlagsEnum>() where TFlagsEnum : Enum;
+		bool Allow<TFlagsEnum>(TFlagsEnum power) where TFlagsEnum : Enum;
 	}
 }
