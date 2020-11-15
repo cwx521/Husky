@@ -14,23 +14,25 @@ namespace Husky.FileStore.AliyunOss.Tests
 				DefaultBucketName = "",
 				Endpoint = "oss-cn-hangzhou.aliyuncs.com",
 			};
-			if ( string.IsNullOrEmpty(options.AccessKeyId) || string.IsNullOrEmpty(options.AccessKeySecret) ) {
-				return null;
-			}
-			return new AliyunOssBucket(options);
+			return string.IsNullOrEmpty(options.AccessKeyId) || string.IsNullOrEmpty(options.AccessKeySecret)
+				? null
+				: new AliyunOssBucket(options);
 		}
 
 		[TestMethod()]
 		public void MashalTest() {
-			var key = "UnitTest/" + Guid.NewGuid().ToString() + ".png";
-			var bytes = Crypto.RandomBytes();
-			using var stream = new MemoryStream(bytes);
-
 			var oss = BuildAliyunOssService();
-			oss?.Put(key, stream);
-			var uri = oss?.SignUri(key);
-			var read = oss?.Get(key);
-			oss?.Delete(key);
+			if ( oss != null ) {
+				var fileName = $"UnitTest/{Guid.NewGuid()}.jpg";
+
+				var bytes = Crypto.RandomBytes();
+				using var stream = new MemoryStream(bytes);
+				oss.Put(fileName, stream);
+
+				var uri = oss.SignUri(fileName, TimeSpan.FromMinutes(1));
+				var read = oss.Get(fileName);
+				oss.Delete(fileName);
+			}
 		}
 	}
 }

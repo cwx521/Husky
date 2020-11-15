@@ -18,14 +18,13 @@ namespace Husky.FileStore.Data
 		[StringLength(200), Required, NeverUpdate, Unique]
 		public string FileName { get; set; } = null!;
 
-		[StringLength(500)]
-		public Uri? FileUri { get; set; }
-
 		public long FileContentLength { get; set; }
 
 		public StoredFileType FileType { get; set; }
 
-		public StoredFileAt StoredAt { get; set; }
+		public StoredFileAccessControl AccessControl { get; set; }
+
+		public OssProvider StoredAt { get; set; }
 
 		public bool IsDeleted { get; set; }
 

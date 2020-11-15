@@ -21,16 +21,16 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyInjector AddCloudFileStoreService(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
+		public static HuskyInjector AddFileStoreLogger(this HuskyInjector husky, Action<DbContextOptionsBuilder> optionsAction) {
 			husky.Services.AddDbContextPool<IFileStoreDbContext, FileStoreDbContext>(optionsAction);
-			husky.Services.AddScoped<ICloudFileStoreService, CloudFileStoreService>();
+			husky.Services.AddScoped<IFileStoreLogger, FileStoreLogger>();
 			return husky;
 		}
 
-		public static HuskyInjector AddCloudFileStoreService<TDbContext>(this HuskyInjector husky)
+		public static HuskyInjector AddFileStoreLogger<TDbContext>(this HuskyInjector husky)
 			where TDbContext : DbContext, IFileStoreDbContext {
 			husky.Services.AddDbContext<IFileStoreDbContext, TDbContext>();
-			husky.Services.AddScoped<ICloudFileStoreService, CloudFileStoreService>();
+			husky.Services.AddScoped<IFileStoreLogger, FileStoreLogger>();
 			return husky;
 		}
 	}

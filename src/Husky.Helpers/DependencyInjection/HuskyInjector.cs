@@ -43,14 +43,14 @@ namespace Husky
 		}
 
 
-		public HuskyInjector AddExternalCloudFileStoreService<TImplement>()
-			where TImplement : class, ICloudFileStoreService {
-			Services.AddScoped<ICloudFileStoreService, TImplement>();
+		public HuskyInjector AddExternalFileStoreLogger<TImplement>()
+			where TImplement : class, IFileStoreLogger {
+			Services.AddScoped<IFileStoreLogger, TImplement>();
 			return this;
 		}
-		public HuskyInjector AddExternalCloudFileStoreService<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
-			where TImplement : class, ICloudFileStoreService {
-			Services.AddScoped<ICloudFileStoreService, TImplement>(implementationFactory);
+		public HuskyInjector AddExternalFileStoreLogger<TImplement>(Func<IServiceProvider, TImplement> implementationFactory)
+			where TImplement : class, IFileStoreLogger {
+			Services.AddScoped<IFileStoreLogger, TImplement>(implementationFactory);
 			return this;
 		}
 

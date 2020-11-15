@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Husky.Principal;
 
 namespace Husky.FileStore
 {
 	public interface ICloudFileBucket : IFileBucket
 	{
-		void OpenBucket(string bucketName);
-		Stream Get(string fileName);
-		Uri SignUri(string fileName, long expiresInSeconds = 100L * 365 * 24 * 60 * 60);
-		StoredFileAt StoredAt { get; }
+		OssProvider Provider { get; }
+
+		Uri SignUri(string fileName, TimeSpan expires);
+		void SetAccessControl(string fileName, StoredFileAccessControl accessControl);
+
+		void Tag(string fileName, string tagKey, string tagValue);
+		void Tag(string fileName, IDictionary<string, string> tags);
+		void TagPrincipalIdentity(string fileName, IPrincipalUser principal);
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace Husky.FileStore
 {
-	public enum StoredFileAt
+	public enum OssProvider
 	{
 		[Label("本地磁盘")]
 		LocalDisk,
