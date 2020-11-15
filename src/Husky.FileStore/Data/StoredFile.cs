@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Husky.FileStore.Data
@@ -30,5 +31,10 @@ namespace Husky.FileStore.Data
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
 		public DateTime CreatedTime { get; set; } = DateTime.Now;
+
+
+		// nav props
+
+		public List<StoredFileTag> Tags { get; set; } = new List<StoredFileTag>();
 	}
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.FileStore.Data.Migrations
 {
     [DbContext(typeof(FileStoreDbContext))]
-    [Migration("20201115100139_Init_FileStore")]
+    [Migration("20201115172359_Init_FileStore")]
     partial class Init_FileStore
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,9 +35,7 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<long>("FileContentLength")
                         .HasColumnType("bigint");
@@ -65,10 +63,48 @@ namespace Husky.FileStore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileName")
-                        .IsUnique();
-
                     b.ToTable("StoredFiles");
+                });
+
+            modelBuilder.Entity("Husky.FileStore.Data.StoredFileTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("StoredFileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoredFileId");
+
+                    b.ToTable("StoredFileTag");
+                });
+
+            modelBuilder.Entity("Husky.FileStore.Data.StoredFileTag", b =>
+                {
+                    b.HasOne("Husky.FileStore.Data.StoredFile", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("StoredFileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Husky.FileStore.Data.StoredFile", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

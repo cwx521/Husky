@@ -14,6 +14,7 @@ namespace Husky.FileStore.Data
 		public DbSet<StoredFile> StoredFiles { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
+			modelBuilder.OnFileStoreDbModelCreating();
 			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
 		}
 	}

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Husky.FileStore.Data;
 using Husky.Principal;
 
@@ -12,18 +13,21 @@ namespace Husky.FileStore
 
 		private readonly IFileStoreDbContext _db;
 
-		public void LogFilePut(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? principal) {
-			var row = new StoredFile {
+		public void LogFilePut(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string>? tags) {
+			var record = new StoredFile {
 				FileContentLength = contentLength,
 				FileName = fileName,
 				FileType = StoredFileTypeHelper.Identify(fileName),
 				StoredAt = storedAt,
-				AnonymousId = principal?.AnonymousId,
-				UserId = principal?.Id,
-				UserName = principal?.DisplayName,
+				AnonymousId = byUser?.AnonymousId,
+				UserId = byUser?.Id,
+				UserName = byUser?.DisplayName,
 				AccessControl = StoredFileAccessControl.Default
 			};
-			_db.StoredFiles.Add(row);
+			if ( tags != null ) {
+				record.Tags.AddRange(tags.Select(x => new StoredFileTag { Key = x.Key, Value = x.Value }));
+			}
+			_db.StoredFiles.Add(record);
 			_db.Normalize().SaveChanges();
 		}
 
