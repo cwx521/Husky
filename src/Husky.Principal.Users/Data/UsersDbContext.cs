@@ -1,6 +1,4 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
 
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +26,7 @@ namespace Husky.Principal.Users.Data
 		public DbSet<UserInGroup> UserInGroups { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomizedAnnotations();
+			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
 			modelBuilder.OnUsersDbModelCreating();
 		}
 	}

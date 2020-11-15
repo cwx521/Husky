@@ -10,11 +10,9 @@ namespace Husky.Principal.Administration
 	public class AdminsFunctions
 	{
 		internal AdminsFunctions(IPrincipalAdmin principalAdmin) {
-			_admin = principalAdmin;
 			_db = principalAdmin.Principal.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 		}
 
-		private readonly IPrincipalAdmin _admin;
 		private readonly IAdminsDbContext _db;
 
 		public async Task<Result<Admin>> CreateAdminAsync(int associatedUserId, string displayName) {

@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Html", "src\Husky.Htm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration", "src\Husky.WeChatIntegration\Husky.WeChatIntegration.csproj", "{008D5928-AE73-42F8-BEFE-B919CDCF6D70}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Tests", "4. Tests", "{FF52C040-869B-47F4-B5FF-C0DF5070D4ED}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Tests", "5. Tests", "{FF52C040-869B-47F4-B5FF-C0DF5070D4ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Sms.Tests", "tests\Husky.Sms.Tests\Husky.Sms.Tests.csproj", "{AB43E4DC-DF88-4A8F-A1CE-E0AB86DC6E0B}"
 EndProject
@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Alipay.Tests", "tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.WeChatIntegration.Tests", "tests\Husky.WeChatIntegration.Tests\Husky.WeChatIntegration.Tests.csproj", "{FC5742B8-0A23-408E-9CCB-48F6D14118C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. FrontEnd", "3. FrontEnd", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. FrontEnd", "4. FrontEnd", "{9E9A6BA6-07F5-42FC-9559-E55BD07E3E4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.Principal.Administration", "src\Husky.Principal.Administration\Husky.Principal.Administration.csproj", "{8AD67D26-A670-4FBB-B4ED-8D291E461C57}"
 EndProject
@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.FileStore", "src\Husk
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.FileStore.Tests", "tests\Husky.FileStore.Tests\Husky.FileStore.Tests.csproj", "{A8A63D7E-1400-4191-B43A-78BC24B1263C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbRelated", "DbRelated", "{67EFCE2C-1D79-4FB5-BD45-BF3822F7EB4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. PrincipalDbs", "3. PrincipalDbs", "{67EFCE2C-1D79-4FB5-BD45-BF3822F7EB4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,7 +233,6 @@ Global
 		{450494CC-F8F0-46B2-9A64-18F4E675A194} = {67EFCE2C-1D79-4FB5-BD45-BF3822F7EB4C}
 		{4F71B26E-518C-491E-97A4-84314401B81E} = {8FE403B3-EB09-46A2-8EC6-8D702234CFE9}
 		{A8A63D7E-1400-4191-B43A-78BC24B1263C} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
-		{67EFCE2C-1D79-4FB5-BD45-BF3822F7EB4C} = {DD053C23-D07E-462D-8EC9-E47000E683FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}

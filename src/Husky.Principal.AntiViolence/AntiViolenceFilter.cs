@@ -24,7 +24,7 @@ namespace Husky.Principal.AntiViolence
 			OnExecuting(context);
 		}
 
-		private void OnExecuting(FilterContext context) {
+		private static void OnExecuting(FilterContext context) {
 			if ( context.HttpContext.Request.Method == "GET" ) {
 				return;
 			}

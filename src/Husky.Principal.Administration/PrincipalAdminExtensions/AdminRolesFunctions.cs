@@ -10,11 +10,9 @@ namespace Husky.Principal.Administration
 	public class AdminRolesFunctions
 	{
 		internal AdminRolesFunctions(IPrincipalAdmin principalAdmin) {
-			_admin = principalAdmin;
 			_db = principalAdmin.Principal.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 		}
 
-		private readonly IPrincipalAdmin _admin;
 		private readonly IAdminsDbContext _db;
 
 		public async Task<Result<AdminRole>> CreateRoleAsync(string roleName, long powers) {

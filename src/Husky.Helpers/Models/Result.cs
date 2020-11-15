@@ -7,7 +7,9 @@ namespace Husky
 {
 	public class Result : IActionResult
 	{
-		public Result(bool ok = false, string? message = null) {
+		public Result() {
+		}
+		public Result(bool ok, string? message = null) {
 			Ok = ok;
 			Message = message;
 		}
@@ -24,9 +26,13 @@ namespace Husky
 
 	public class Result<T> : Result
 	{
-		public Result(bool ok = false, string? message = null, T data = default) : base(ok, message) {
+		public Result() {
+		}
+		public Result(bool ok, string? message = null) : base(ok, message) {
+		}
+		public Result(bool ok, string? message, T data) : base(ok, message) {
 			Data = data;
 		}
-		public T? Data { get; set; }
+		public T Data { get; set; } = default!;
 	}
 }

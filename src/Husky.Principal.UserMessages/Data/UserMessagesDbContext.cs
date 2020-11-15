@@ -17,7 +17,7 @@ namespace Husky.Principal.UserMessages.Data
 		public DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomizedAnnotations();
+			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
 			modelBuilder.OnUserMessagesDbModelCreating();
 		}
 	}

@@ -124,6 +124,7 @@ namespace Husky.TwoFactor
 			if ( setIntoUsedIfSucceed ) {
 				record.IsUsed = true;
 				await _twoFactorDb.Normalize().SaveChangesAsync();
+				_twoFactorDb.Normalize().ChangeTracker.Clear();
 			}
 			return new Success();
 		}

@@ -7,7 +7,11 @@ namespace Husky
 {
 	public static class ModelBuilderExtensions
 	{
-		public static ModelBuilder ApplyAdditionalCustomizedAnnotations(this ModelBuilder modelBuilder) {
+		public static ModelBuilder ApplyAdditionalCustomizedSqlServerAnnotations(this ModelBuilder modelBuilder, DbContext context) {
+			if ( context.Database.IsSqlServer() ) {
+				return modelBuilder;
+			}
+
 			modelBuilder.Model.GetEntityTypes().AsParallel().ForAll(entity => {
 
 				var entityBuilder = modelBuilder.Entity(entity.ClrType);
