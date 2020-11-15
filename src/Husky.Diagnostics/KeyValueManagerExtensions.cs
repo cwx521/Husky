@@ -2,12 +2,12 @@
 {
 	public static class KeyValueManagerExtensions
 	{
-		public static int LogAsRepeatedIfVisitAgainWithinSeconds(this IKeyValueManager keyValues, int defaultValueIfNotExist = 60) {
-			return keyValues.GetOrAdd(nameof(LogAsRepeatedIfVisitAgainWithinSeconds), defaultValueIfNotExist);
+		public static int LogRequestAsRepeatedIfVisitAgainWithinSeconds(this IKeyValueManager keyValues, int defaultValueIfNotExist = 60) {
+			return keyValues.GetOrAdd(nameof(LogRequestAsRepeatedIfVisitAgainWithinSeconds), defaultValueIfNotExist);
 		}
 
-		public static int LogAsRepeatedIfOperateAgainWithinSeconds(this IKeyValueManager keyValues, int defaultValueIfNotExist = 60) {
-			return keyValues.GetOrAdd(nameof(LogAsRepeatedIfOperateAgainWithinSeconds), defaultValueIfNotExist);
+		public static int LogOperationAsRepeatedIfOperateAgainWithinSeconds(this IKeyValueManager keyValues, int defaultValueIfNotExist = 60) {
+			return keyValues.GetOrAdd(nameof(LogOperationAsRepeatedIfOperateAgainWithinSeconds), defaultValueIfNotExist);
 		}
 	}
 }

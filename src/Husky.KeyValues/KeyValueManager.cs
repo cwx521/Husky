@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Husky.KeyValues.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.KeyValues
 {
 	public class KeyValueManager : IKeyValueManager
 	{
-		public KeyValueManager(IKeyValueDbContext db, IMemoryCache cache) {
-			_db = db;
+		public KeyValueManager(IServiceProvider services, IMemoryCache cache) {
+			_db = services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			_cache = cache;
 		}
 

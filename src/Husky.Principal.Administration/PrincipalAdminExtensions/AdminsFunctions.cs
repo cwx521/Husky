@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Administration
 {
-	public class AdminsAdminFunctions
+	public class AdminsFunctions
 	{
-		internal AdminsAdminFunctions(IPrincipalAdmin principalAdmin) {
+		internal AdminsFunctions(IPrincipalAdmin principalAdmin) {
 			_admin = principalAdmin;
 			_db = principalAdmin.Principal.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 		}
@@ -19,6 +19,7 @@ namespace Husky.Principal.Administration
 
 		public async Task<Result<Admin>> CreateAdminAsync(int associatedUserId, string displayName) {
 			var row = await _db.Admins
+				.IgnoreQueryFilters()
 				.Include(x => x.InRoles)
 				.Where(x => x.UserId == associatedUserId)
 				.SingleOrDefaultAsync();
@@ -86,7 +87,7 @@ namespace Husky.Principal.Administration
 
 		public async Task<Result> GrantAdminRoleAsync(Guid adminId, int adminRoleId) {
 			if ( !_db.Admins.Any(x => x.Id == adminId) ) {
-				return new Failure("管理员用户不存在");
+				return new Failure("管理员账号不存在");
 			}
 
 			_db.Normalize().AddOrUpdate(new AdminInRole {
@@ -98,17 +99,18 @@ namespace Husky.Principal.Administration
 		}
 
 		public async Task<Result> WithdrawAdminRoleAsync(Guid adminId, int adminRoleId) {
-			var row = await _db.AdminInRoles.SingleOrDefaultAsync(x => x.AdminId == adminId && x.RoleId == adminRoleId);
-			if ( row != null ) {
-				_db.AdminInRoles.Remove(row);
-				await _db.Normalize().SaveChangesAsync();
-			}
+			var match = _db.AdminInRoles.Where(x => x.AdminId == adminId && x.RoleId == adminRoleId);
+			_db.AdminInRoles.RemoveRange(match);
+			await _db.Normalize().SaveChangesAsync();
 			return new Success();
 		}
 
 		public async Task<Result> DeleteAdminAsync(Guid adminId, bool suspendInsteadOfDeleting = false) {
 			var row = await _db.Admins.FindAsync(adminId);
 			if ( row != null ) {
+				if ( row.IsInitiator ) {
+					return new Failure("不能删除初始管理员");
+				}
 				row.Status = suspendInsteadOfDeleting ? RowStatus.Suspended : RowStatus.Deleted;
 				await _db.Normalize().SaveChangesAsync();
 			}

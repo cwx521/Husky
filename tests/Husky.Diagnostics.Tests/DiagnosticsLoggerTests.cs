@@ -33,7 +33,7 @@ namespace Husky.Diagnostics.Tests
 			var http = serviceProvider.GetRequiredService<IHttpContextAccessor>();
 
 			var anonymous = PrincipalUser.Personate(0, "Anonymous", serviceProvider);
-			var logger = new DiagnosticsLogger(anonymous, db, http);
+			var logger = new DiagnosticsLogger(db, http, anonymous);
 
 			var exception = new Exception("Oops");
 
@@ -63,7 +63,7 @@ namespace Husky.Diagnostics.Tests
 
 			//log the same exception with a known user this time
 			var someone = PrincipalUser.Personate(1, "Someone", serviceProvider);
-			logger = new DiagnosticsLogger(someone, db, http);
+			logger = new DiagnosticsLogger(db, http, someone);
 
 			//a new row should be inserted and there should be 2 rows in total
 			await logger.LogExceptionAsync(exception);
@@ -102,7 +102,7 @@ namespace Husky.Diagnostics.Tests
 			var http = serviceProvider.GetRequiredService<IHttpContextAccessor>();
 			var principal = PrincipalUser.Personate(1, "Someone", serviceProvider);
 
-			var logger = new DiagnosticsLogger(principal, db, http);
+			var logger = new DiagnosticsLogger(db, http, principal);
 
 			//log an operation
 			await logger.LogOperationAsync(LogLevel.Trace, "UnitTest");

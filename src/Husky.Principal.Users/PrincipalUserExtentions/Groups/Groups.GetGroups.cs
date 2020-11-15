@@ -13,7 +13,6 @@ namespace Husky.Principal.Users
 			if ( _me.IsAnonymous ) {
 				return Array.Empty<UserGroup>();
 			}
-
 			return (UserGroup[])_me.Cache().GetOrAdd(_groupsCacheKey, key => _db.UserInGroups
 				.AsNoTracking()
 				.Where(x => x.UserId == _me.Id)

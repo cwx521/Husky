@@ -26,6 +26,9 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("AccessControl")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
 
@@ -44,10 +47,6 @@ namespace Husky.FileStore.Data.Migrations
 
                     b.Property<int>("FileType")
                         .HasColumnType("int");
-
-                    b.Property<string>("FileUri")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

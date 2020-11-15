@@ -42,13 +42,18 @@ namespace Husky.Principal.UserMessages
 				return new Failure("需要先登录");
 			}
 
-			var rows = await _db.UserMessage
+			var arr = await _db.UserMessage
 				.Where(x => x.UserId == _me.Id)
-				.Where(x => userMessageIdArray.Contains(x.Id))
 				.Where(x => x.IsRead == false)
-				.ToListAsync();
+				.Where(x => userMessageIdArray.Contains(x.Id))
+				.Select(x => x.Id)
+				.ToArrayAsync();
 
-			rows.AsParallel().ForAll(x => x.IsRead = true);
+			arr.AsParallel().ForAll(id => {
+				var row = new UserMessage { Id = id };
+				_db.UserMessage.Attach(row);
+				row.IsRead = true;
+			});
 			await _db.Normalize().SaveChangesAsync();
 
 			return new Success();
@@ -67,18 +72,23 @@ namespace Husky.Principal.UserMessages
 			return new Success();
 		}
 
-		public async Task<Result> DeleteReadMessage(params int[] userMessageIdArray) {
+		public async Task<Result> DeleteMessages(params int[] userMessageIdArray) {
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
 
-			var rows = await _db.UserMessage
+			var arr = await _db.UserMessage
 				.Where(x => x.UserId == _me.Id)
-				.Where(x => userMessageIdArray.Contains(x.Id))
 				.Where(x => x.IsRead)
-				.ToListAsync();
+				.Where(x => userMessageIdArray.Contains(x.Id))
+				.Select(x => x.Id)
+				.ToArrayAsync();
 
-			rows.AsParallel().ForAll(x => x.IsDeleted = true);
+			arr.AsParallel().ForAll(id => {
+				var row = new UserMessage { Id = id };
+				_db.UserMessage.Attach(row);
+				row.IsDeleted = true;
+			});
 			await _db.Normalize().SaveChangesAsync();
 
 			return new Success();

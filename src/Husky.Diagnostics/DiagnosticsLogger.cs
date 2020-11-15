@@ -9,7 +9,7 @@ namespace Husky.Diagnostics
 {
 	public sealed class DiagnosticsLogger : IDiagnosticsLogger
 	{
-		public DiagnosticsLogger(IPrincipalUser? principal, IDiagnosticsDbContext db, IHttpContextAccessor httpContextAccessor) {
+		public DiagnosticsLogger(IDiagnosticsDbContext db, IHttpContextAccessor httpContextAccessor, IPrincipalUser? principal) {
 			_me = principal;
 			_db = db;
 			_http = httpContextAccessor;

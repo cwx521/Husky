@@ -17,9 +17,9 @@ namespace Husky.FileStore.Data.Migrations
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     FileName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    FileUri = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     FileContentLength = table.Column<long>(type: "bigint", nullable: false),
                     FileType = table.Column<int>(type: "int", nullable: false),
+                    AccessControl = table.Column<int>(type: "int", nullable: false),
                     StoredAt = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")

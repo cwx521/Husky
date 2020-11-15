@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.FileStore.Data.Migrations
 {
     [DbContext(typeof(FileStoreDbContext))]
-    [Migration("20201114160211_Init_FileStore")]
+    [Migration("20201115100139_Init_FileStore")]
     partial class Init_FileStore
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace Husky.FileStore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<int>("AccessControl")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -46,10 +49,6 @@ namespace Husky.FileStore.Data.Migrations
 
                     b.Property<int>("FileType")
                         .HasColumnType("int");
-
-                    b.Property<string>("FileUri")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

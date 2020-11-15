@@ -2,7 +2,7 @@
 {
 	public static class PrincipalAdminExtensions
 	{
-		public static AdminsAdminFunctions Admins(this IPrincipalAdmin admin) => new AdminsAdminFunctions(admin);
-		public static AdminRolesAdminFunctions AdminRoles(this IPrincipalAdmin admin) => new AdminRolesAdminFunctions(admin);
+		public static AdminsFunctions Admins(this IPrincipalAdmin admin) => new AdminsFunctions(admin);
+		public static AdminRolesFunctions AdminRoles(this IPrincipalAdmin admin) => new AdminRolesFunctions(admin);
 	}
 }

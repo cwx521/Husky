@@ -34,11 +34,17 @@ namespace Husky.FileStore.LocalStorage
 		}
 
 		public void Delete(string fileName) {
-			File.Delete(GetPhysicalPath(fileName));
+			try {
+				File.Delete(GetPhysicalPath(fileName));
+			}
+			catch ( DirectoryNotFoundException ) { }
+			catch { throw; }
 		}
 
 		public void Delete(string[] fileNames) {
-			fileNames.AsParallel().ForAll(fileName => Delete(fileName));
+			foreach ( var fileName in fileNames ) {
+				Delete(fileName);
+			}
 		}
 
 		private string GetPhysicalPath(string fileName) => Path.Combine(_rootPath, fileName.TrimStart('/', '\\'));

@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Husky.Principal.Administration
 {
-	public class AdminRolesAdminFunctions
+	public class AdminRolesFunctions
 	{
-		internal AdminRolesAdminFunctions(IPrincipalAdmin principalAdmin) {
+		internal AdminRolesFunctions(IPrincipalAdmin principalAdmin) {
 			_admin = principalAdmin;
 			_db = principalAdmin.Principal.ServiceProvider.GetRequiredService<IAdminsDbContext>();
 		}
