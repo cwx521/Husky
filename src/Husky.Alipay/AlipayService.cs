@@ -42,13 +42,13 @@ namespace Husky.Alipay
 
 			var wapPayRequest = new AlipayTradeWapPayRequest();
 			wapPayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
-			wapPayRequest.SetReturnUrl(payment.CallbackUrl);
+			wapPayRequest.SetReturnUrl(payment.ReturnUrl);
 			wapPayRequest.SetBizModel(payModel);
 			var wapPayResponse = _alipay.SdkExecute(wapPayRequest);
 
 			var pagePayRequest = new AlipayTradePagePayRequest();
 			pagePayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
-			pagePayRequest.SetReturnUrl(payment.CallbackUrl);
+			pagePayRequest.SetReturnUrl(payment.ReturnUrl);
 			pagePayRequest.SetBizModel(payModel);
 			var pagePayResponse = _alipay.SdkExecute(pagePayRequest);
 

@@ -12,12 +12,12 @@ namespace Husky.Diagnostics.Data
 		[StringLength(1000)]
 		public string? Url { get; set; }
 
-		[StringLength(1000)]
-		public string? Referrer { get; set; }
+		[StringLength(500)]
+		public string? Referer { get; set; }
 
 		public string? Data { get; set; }
 
-		[StringLength(1000), Column(TypeName = "varchar(1000)")]
+		[StringLength(500), Column(TypeName = "varchar(500)")]
 		public string? UserAgent { get; set; }
 
 		[Column(TypeName = "varchar(45)")]

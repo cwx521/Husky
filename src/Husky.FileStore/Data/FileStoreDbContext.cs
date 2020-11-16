@@ -15,7 +15,7 @@ namespace Husky.FileStore.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.OnFileStoreDbModelCreating();
-			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
+			modelBuilder.ApplyAdditionalCustomAnnotations(this);
 		}
 	}
 }

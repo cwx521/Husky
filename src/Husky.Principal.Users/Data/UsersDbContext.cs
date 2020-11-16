@@ -26,7 +26,7 @@ namespace Husky.Principal.Users.Data
 		public DbSet<UserInGroup> UserInGroups { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
+			modelBuilder.ApplyAdditionalCustomAnnotations(this);
 			modelBuilder.OnUsersDbModelCreating();
 		}
 	}

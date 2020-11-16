@@ -60,7 +60,7 @@ namespace Husky.Diagnostics
 			log.ComputeMd5Comparison();
 
 			var keyValueManager = http.RequestServices.GetService<IKeyValueManager>();
-			var seconds = keyValueManager?.LogRequestAsRepeatedIfVisitAgainWithinSeconds() ?? 60;
+			var seconds = keyValueManager?.LogRequestAsRepeatedIfSameWithinSeconds() ?? 60;
 
 			var repeating = db.RequestLogs
 				.OrderByDescending(x => x.Id)
@@ -89,7 +89,7 @@ namespace Husky.Diagnostics
 			log.ComputeMd5Comparison();
 
 			var keyValueManager = principal?.ServiceProvider?.GetService<IKeyValueManager>();
-			var seconds = keyValueManager?.LogOperationAsRepeatedIfOperateAgainWithinSeconds() ?? 60;
+			var seconds = keyValueManager?.LogOperationAsRepeatedIfSameWithinSeconds() ?? 60;
 
 			var repeating = db.OperationLogs
 				.Where(x => x.Md5Comparison == log.Md5Comparison)

@@ -18,7 +18,7 @@ namespace Husky.Principal.Administration.Data
 		public DbSet<AdminInRole> AdminInRoles { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
+			modelBuilder.ApplyAdditionalCustomAnnotations(this);
 			modelBuilder.OnAdminsDbModelCreating();
 		}
 	}

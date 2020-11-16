@@ -11,7 +11,7 @@ namespace Husky.Diagnostics
 		public async Task OnExceptionAsync(ExceptionContext context) {
 			try {
 				var http = context.HttpContext;
-				var db = http.RequestServices.GetRequiredService<IDiagnosticsDbContext>();
+				var db = http.RequestServices.GetService<IDiagnosticsDbContext>();
 				var principal = http.RequestServices.GetService<IPrincipalUser>();
 
 				var exception = context.Exception;
@@ -19,7 +19,7 @@ namespace Husky.Diagnostics
 					exception = exception.InnerException;
 				}
 
-				await db.LogExceptionAsync(exception, http, principal);
+				await (db?.LogExceptionAsync(exception, http, principal) ?? Task.CompletedTask);
 			}
 			catch { }
 		}

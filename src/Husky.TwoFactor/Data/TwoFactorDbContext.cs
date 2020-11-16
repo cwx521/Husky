@@ -16,7 +16,7 @@ namespace Husky.TwoFactor.Data
 		public DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomizedSqlServerAnnotations(this);
+			modelBuilder.ApplyAdditionalCustomAnnotations(this);
 		}
 	}
 }

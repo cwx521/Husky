@@ -15,7 +15,7 @@ namespace Husky.Diagnostics
 
 			log.HttpMethod = http.Request.Method;
 			log.Url = http.Request.FullUrl();
-			log.Referrer = http.Request.Referer();
+			log.Referer = http.Request.Referer();
 			log.Data = http.Request.HasFormContentType ? JsonSerializer.Serialize(http.Request.Form.Where(x => x.Key != antiforgery)) : null;
 			log.UserAgent = http.Request.UserAgent();
 			log.UserIp = http.Connection?.RemoteIpAddress;
