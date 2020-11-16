@@ -10,7 +10,7 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public void NewTest() {
-			var n = 2000;
+			var n = 10000;
 			var list = new List<string>();
 			for ( var i = 0; i < n; i++ ) {
 				list.Add(OrderIdGen.New());
@@ -21,17 +21,17 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void IsValidTest() {
 			var orderNo = OrderIdGen.New();
-			var fakeOrderNo = string.Join("", orderNo.Reverse());
+			var invalidOrderNo = string.Join("", orderNo.Reverse());
 			Assert.IsTrue(OrderIdGen.IsValid(orderNo));
-			Assert.IsFalse(OrderIdGen.IsValid(fakeOrderNo));
+			Assert.IsFalse(OrderIdGen.IsValid(invalidOrderNo));
 		}
 
 		[TestMethod()]
 		public void TryParseTest() {
 			var orderNo = OrderIdGen.New();
-			var fakeOrderNo = string.Join("", orderNo.Reverse());
+			var invalidOrderNo = string.Join("", orderNo.Reverse());
 			var shouldBeTrue = OrderIdGen.TryParse(orderNo, out var t1);
-			var shouldBeFalse = OrderIdGen.TryParse(fakeOrderNo, out _);
+			var shouldBeFalse = OrderIdGen.TryParse(invalidOrderNo, out _);
 			Assert.IsTrue(shouldBeTrue);
 			Assert.IsFalse(shouldBeFalse);
 			Assert.IsTrue(DateTime.Now.Subtract(t1).TotalSeconds < 2);

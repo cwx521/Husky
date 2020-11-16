@@ -21,62 +21,65 @@ namespace Husky.Tests
 		[TestMethod()]
 		public void ToLowerTest() {
 			var str = Abc.A.ToLower();
-			Assert.AreEqual(str, "a");
+			Assert.AreEqual("a", str);
 		}
 
 		[TestMethod()]
 		public void ToUpperTest() {
 			var str = Abc.A.ToUpper();
-			Assert.AreEqual(str, "A");
+			Assert.AreEqual("A", str);
 		}
 
 		[TestMethod()]
 		public void ToLabelTest() {
 			var a = Abc.A.ToLabel();
 			var b = (Abc.B | Abc.C).ToLabel();
-			Assert.AreEqual(a, "LabelA");
-			Assert.AreEqual(b, "LabelB, LabelC");
+			Assert.AreEqual("LabelA", a);
+			Assert.AreEqual("LabelB, LabelC", b);
 		}
 
 		[TestMethod()]
 		public void ToLabelWithCssTest() {
 			var a = Abc.A.ToLabelWithCss();
 			var b = (Abc.B | Abc.C).ToLabelWithCss();
-			Assert.AreEqual(a, "<span class='text-body'>LabelA</span>");
-			Assert.AreEqual(b, "<span class='text-warning'>LabelB</span>, <span class='text-danger'>LabelC</span>");
+			Assert.AreEqual("<span class='text-body'>LabelA</span>", a);
+			Assert.AreEqual("<span class='text-warning'>LabelB</span>, <span class='text-danger'>LabelC</span>", b);
 		}
 
 		[TestMethod()]
 		public void ToDescriptionTest() {
 			var a = Abc.A.ToDescription();
 			var b = (Abc.B | Abc.C).ToDescription();
-			Assert.AreEqual(a, "Description A");
-			Assert.AreEqual(b, "Description B, Description C");
+			Assert.AreEqual("Description A", a);
+			Assert.AreEqual("Description B, Description C", b);
 		}
 
 		[TestMethod()]
 		public void ToDescriptionWithCssTest() {
 			var a = Abc.A.ToDescriptionWithCss();
 			var b = (Abc.B | Abc.C).ToDescriptionWithCss();
-			Assert.AreEqual(a, "<span class='text-body'>Description A</span>");
-			Assert.AreEqual(b, "<span class='text-warning'>Description B</span>, <span class='text-danger'>Description C</span>");
+			Assert.AreEqual("<span class='text-body'>Description A</span>", a);
+			Assert.AreEqual("<span class='text-warning'>Description B</span>, <span class='text-danger'>Description C</span>", b);
 		}
 
 		[TestMethod()]
 		public void ToSelectListItemsTest() {
 			var enumValues = Enum.GetValues(typeof(Abc));
 			var firstEnumValue = enumValues.GetValue(0);
+
 			var a = EnumHelper.ToSelectListItems(typeof(Abc));
-			Assert.AreEqual(a.Count, enumValues.Length);
-			Assert.AreEqual(a.First().Text, ((Enum)firstEnumValue).ToLabel());
-			Assert.AreEqual(a.First().Value, firstEnumValue.ToString());
+			Assert.AreEqual(enumValues.Length, a.Count);
+			Assert.AreEqual(((Enum)firstEnumValue).ToLabel(), a.First().Text);
+			Assert.AreEqual(firstEnumValue.ToString(), a.First().Value);
+
 			var b = EnumHelper.ToSelectListItems<Abc>(null, true);
-			Assert.AreEqual(b.Count, enumValues.Length);
-			Assert.AreEqual(b.First().Text, ((Enum)firstEnumValue).ToLabel());
-			Assert.AreEqual(b.First().Value, ((int)firstEnumValue).ToString());
+			Assert.AreEqual(enumValues.Length, b.Count);
+			Assert.AreEqual(((Enum)firstEnumValue).ToLabel(), b.First().Text);
+			Assert.AreEqual(((int)firstEnumValue).ToString(), b.First().Value);
+
 			var c = EnumHelper.ToSelectListItems<Abc>("Foo", true);
-			Assert.AreEqual(c.Count, enumValues.Length + 1);
-			Assert.AreEqual(c.First().Text, "Foo");
+			Assert.AreEqual(enumValues.Length + 1, c.Count);
+			Assert.AreEqual("Foo", c.First().Text);
 			Assert.IsNull(c.First().Value);
 		}
 	}

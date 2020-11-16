@@ -8,13 +8,13 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public async Task GetBandCardInfoTest() {
-			var bankCard = "5187180804030686";
+			var bankCard = "5187180008461091";
 			var result = await BankCardHelper.GetBandCardInfoAsync(bankCard);
 			Assert.AreEqual(BankCardType.CreditCard, result.BankCardType);
 			Assert.AreEqual("招商银行", result.BankName);
 
-			var fakeFankCard = "Fake";
-			var nullResult = await BankCardHelper.GetBandCardInfoAsync(fakeFankCard);
+			var fakeBankCard = "1234223432344234";
+			var nullResult = await BankCardHelper.GetBandCardInfoAsync(fakeBankCard);
 			Assert.IsNull(nullResult);
 		}
 	}

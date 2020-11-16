@@ -8,65 +8,65 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public void AsIntTest() {
-			Assert.AreEqual(StringCast.AsInt("123"), 123);
-			Assert.AreEqual(StringCast.AsInt("abc", 123), 123);
+			Assert.AreEqual(123, StringCast.AsInt("123"));
+			Assert.AreEqual(123, StringCast.AsInt("abc", 123));
 		}
 
 		[TestMethod()]
 		public void AsBoolTest() {
-			Assert.AreEqual(StringCast.AsBool("True"), true);
-			Assert.AreEqual(StringCast.AsBool("tRuE"), true);
-			Assert.AreEqual(StringCast.AsBool("falSe"), false);
-			Assert.AreEqual(StringCast.AsBool("true"), true);
-			Assert.AreEqual(StringCast.AsBool("false"), false);
-			Assert.AreEqual(StringCast.AsBool("abc", true), true);
-			Assert.AreEqual(StringCast.AsBool("abc", false), false);
-			Assert.AreEqual(StringCast.AsBool("true", false), true);
+			Assert.AreEqual(true, StringCast.AsBool("True"));
+			Assert.AreEqual(true, StringCast.AsBool("tRuE"));
+			Assert.AreEqual(false, StringCast.AsBool("falSe"));
+			Assert.AreEqual(true, StringCast.AsBool("true"));
+			Assert.AreEqual(false, StringCast.AsBool("false"));
+			Assert.AreEqual(true, StringCast.AsBool("abc", true));
+			Assert.AreEqual(false, StringCast.AsBool("abc", false));
+			Assert.AreEqual(true, StringCast.AsBool("true", false));
 		}
 
 		[TestMethod()]
 		public void AsGuidTest() {
 			var guid = Guid.NewGuid();
 			var str = guid.ToString();
-			Assert.AreEqual(StringCast.AsGuid(str), guid);
-			Assert.AreEqual(StringCast.AsGuid("abc", guid), guid);
+			Assert.AreEqual(guid, StringCast.AsGuid(str));
+			Assert.AreEqual(guid, StringCast.AsGuid("abc", guid));
 		}
 
 		[TestMethod()]
 		public void AsTest() {
-			Assert.AreEqual(StringCast.As<int>("-1"), -1);
-			Assert.AreEqual(StringCast.As<long>("2343546766787981"), 2343546766787981);
-			Assert.AreEqual(StringCast.As<bool>("true"), true);
+			Assert.AreEqual(-1, StringCast.As<int>("-1"));
+			Assert.AreEqual(2343546766787981, StringCast.As<long>("2343546766787981"));
+			Assert.AreEqual(true, StringCast.As<bool>("true"));
 
-			Assert.AreEqual(StringCast.As("abc", 1), 1);
-			Assert.AreEqual(StringCast.As("abc", true), true);
+			Assert.AreEqual(1, StringCast.As("abc", 1));
+			Assert.AreEqual(true, StringCast.As("abc", true));
 
 			var dt = DateTime.Now;
-			Assert.AreEqual(StringCast.As<DateTime>(dt.ToString()).ToString(), dt.ToString());
+			Assert.AreEqual(dt.ToString(), StringCast.As<DateTime>(dt.ToString()).ToString());
 			var g = Guid.NewGuid();
-			Assert.AreEqual(StringCast.As<Guid>(g.ToString()), g);
+			Assert.AreEqual(g, StringCast.As<Guid>(g.ToString()));
 		}
 
 		[TestMethod()]
 		public void HexToIntTest() {
-			Assert.AreEqual(StringCast.HexToInt("e"), 14);
-			Assert.AreEqual(StringCast.HexToInt("F"), 15);
-			Assert.AreEqual(StringCast.HexToInt("0xF"), 15);
-			Assert.AreEqual(StringCast.HexToInt("2F"), 2 * 16 + 15);
-			Assert.AreEqual(StringCast.HexToInt("0x2F"), 2 * 16 + 15);
+			Assert.AreEqual(14, StringCast.HexToInt("e"));
+			Assert.AreEqual(15, StringCast.HexToInt("F"));
+			Assert.AreEqual(15, StringCast.HexToInt("0xF"));
+			Assert.AreEqual(2 * 16 + 15, StringCast.HexToInt("2F"));
+			Assert.AreEqual(2 * 16 + 15, StringCast.HexToInt("0x2F"));
 		}
 
 		[TestMethod()]
 		public void MaskTest() {
-			Assert.AreEqual(StringCast.Mask("abc"), "a**");
-			Assert.AreEqual(StringCast.Mask("18888888888"), "188****8888");
-			Assert.AreEqual(StringCast.Mask("chenwx521@hotmail.com"), "c********@hotmail.com");
+			Assert.AreEqual("a**", StringCast.Mask("abc"));
+			Assert.AreEqual("188****8888", StringCast.Mask("18888888888"));
+			Assert.AreEqual("c********@hotmail.com", StringCast.Mask("chenwx521@hotmail.com"));
 		}
 
 		[TestMethod()]
 		public void BetterDisplayCardNumberTest() {
-			Assert.AreEqual(StringCast.BetterDisplayCardNumber("1234123412341234"), "1234 1234 1234 1234");
-			Assert.AreEqual(StringCast.BetterDisplayCardNumber("1234123412341234123"), "1234 1234 1234 1234 123");
+			Assert.AreEqual("1234 1234 1234 1234", StringCast.BetterDisplayCardNumber("1234123412341234"));
+			Assert.AreEqual("1234 1234 1234 1234 123", StringCast.BetterDisplayCardNumber("1234123412341234123"));
 		}
 	}
 }

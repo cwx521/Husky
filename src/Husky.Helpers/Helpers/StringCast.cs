@@ -79,7 +79,7 @@ namespace Husky
 			if ( str.IsCardNumber() ) {
 				return $"{str.Substring(0, 4)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
-			if ( str.IsSocialNumber() ) {
+			if ( str.IsSocialIdNumber() ) {
 				return $"{str.Substring(0, 6)}{new string('*', str.Length - 8)}{str.Substring(str.Length - 4)}";
 			}
 			return str;

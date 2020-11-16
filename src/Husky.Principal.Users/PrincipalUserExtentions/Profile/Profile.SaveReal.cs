@@ -9,7 +9,7 @@ namespace Husky.Principal.Users
 			if ( _me.IsAnonymous ) {
 				return new Failure("需要先登录");
 			}
-			if ( socialIdNumber.IsSocialNumber() ) {
+			if ( socialIdNumber.IsSocialIdNumber() ) {
 				return new Failure("身份证号码不正确");
 			}
 

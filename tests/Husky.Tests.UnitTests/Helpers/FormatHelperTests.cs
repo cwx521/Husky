@@ -7,11 +7,11 @@ namespace Husky.Tests
 	{
 		[TestMethod()]
 		public void TrimEndTest() {
-			Assert.AreEqual(FormatHelper.TrimEnd(12.00m), "12");
-			Assert.AreEqual(FormatHelper.TrimEnd(12.345m), "12.345");
-			Assert.AreEqual(12.30m.TrimEnd(), "12.3");
-			Assert.AreEqual(12.03m.TrimEnd(), "12.03");
-			Assert.AreEqual(12.030m.TrimEnd(), "12.03");
+			Assert.AreEqual("12", FormatHelper.TrimEnd(12.00m));
+			Assert.AreEqual("12.345", FormatHelper.TrimEnd(12.345m));
+			Assert.AreEqual("12.3", 12.30m.TrimEnd() );
+			Assert.AreEqual("12.03", 12.03m.TrimEnd());
+			Assert.AreEqual("12.03", 12.030m.TrimEnd());
 		}
 	}
 }
