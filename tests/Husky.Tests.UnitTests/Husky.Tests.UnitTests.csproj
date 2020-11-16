@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\src\Husky.Alipay\Husky.Alipay.csproj" />
     <ProjectReference Include="..\..\src\Husky.Diagnostics\Husky.Diagnostics.csproj" />
     <ProjectReference Include="..\..\src\Husky.FileStore\Husky.FileStore.csproj" />
+    <ProjectReference Include="..\..\src\Husky.Helpers\Husky.Helpers.csproj" />
     <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
     <ProjectReference Include="..\..\src\Husky.Lbs\Husky.Lbs.csproj" />
     <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />

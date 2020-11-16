@@ -35,6 +35,6 @@ namespace Husky
 		public override bool Equals(object? obj) => obj is SocialIdNumber socialIdNumber && Equals(socialIdNumber);
 		public override int GetHashCode() => base.GetHashCode();
 
-		public override string ToString() => Value.ToString();
+		public override string ToString() => Value;
 	}
 }
