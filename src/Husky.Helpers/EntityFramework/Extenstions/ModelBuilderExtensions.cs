@@ -8,7 +8,7 @@ namespace Husky
 	public static class ModelBuilderExtensions
 	{
 		public static ModelBuilder ApplyAdditionalCustomizedSqlServerAnnotations(this ModelBuilder modelBuilder, DbContext context) {
-			if ( context.Database.IsSqlServer() ) {
+			if ( !context.Database.IsRelational() ) {
 				return modelBuilder;
 			}
 
@@ -18,7 +18,7 @@ namespace Husky
 				var compositeUniqueProperties = new List<string>();
 
 				foreach ( var p in entity.ClrType.GetProperties() ) {
-					if ( p.GetCustomAttribute<DefaultValueSqlAttribute>() is DefaultValueSqlAttribute valueSql ) {
+					if ( p.GetCustomAttribute<DefaultValueSqlAttribute>() is DefaultValueSqlAttribute valueSql && context.Database.IsSqlServer() ) {
 						entityBuilder.Property(p.Name).HasDefaultValueSql(valueSql.Sql);
 					}
 					if ( p.GetCustomAttribute<IndexAttribute>() is IndexAttribute index ) {

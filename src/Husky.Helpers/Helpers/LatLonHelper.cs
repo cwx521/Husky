@@ -26,9 +26,9 @@ namespace Husky
 			return (int)Math.Round(s * 6378.137 * 1000);
 		}
 
-		public static Location ConvertToBaiduLatLon(this Location latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Baidu ) {
-				latlon.LatLonType = LatLonType.Baidu;
+		public static Location ConvertToBd09(this Location latlon) {
+			if ( (int)latlon.LatLonType == (int)LatLonType.Bd09 ) {
+				latlon.LatLonType = LatLonType.Bd09;
 				return latlon;
 			}
 			var z = Math.Sqrt(latlon.Lon * latlon.Lon + latlon.Lat * latlon.Lat) + 0.00002 * Math.Sin(latlon.Lat * xPI);
@@ -36,13 +36,13 @@ namespace Husky
 			return new Location {
 				Lat = z * Math.Sin(theta) + 0.006,
 				Lon = z * Math.Cos(theta) + 0.0065,
-				LatLonType = LatLonType.Baidu
+				LatLonType = LatLonType.Bd09
 			};
 		}
 
-		public static Location ConvertToTencentLatLon(this Location latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Tencent ) {
-				latlon.LatLonType = LatLonType.Tencent;
+		public static Location ConvertToGcj02(this Location latlon) {
+			if ( (int)latlon.LatLonType == (int)LatLonType.Gcj02 ) {
+				latlon.LatLonType = LatLonType.Gcj02;
 				return latlon;
 			}
 			var lat = latlon.Lat - 0.006;
@@ -52,7 +52,7 @@ namespace Husky
 			return new Location {
 				Lat = z * Math.Sin(theta),
 				Lon = z * Math.Cos(theta),
-				LatLonType = LatLonType.Tencent
+				LatLonType = LatLonType.Gcj02
 			};
 		}
 	}

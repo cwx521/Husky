@@ -26,7 +26,7 @@ namespace Husky.Lbs.QQLbs.Tests
 				Assert.IsTrue(actual.City.Contains("苏州"));
 				Assert.AreEqual(31, Math.Floor(actual.Location.Lat));
 				Assert.AreEqual(120, Math.Floor(actual.Location.Lon));
-				Assert.AreEqual(LatLonType.Tencent, actual.Location.LatLonType);
+				Assert.AreEqual(LatLonType.Gcj02, actual.Location.LatLonType);
 			};
 
 			var ip = "49.73.123.252";
@@ -59,8 +59,8 @@ namespace Husky.Lbs.QQLbs.Tests
 			}
 
 			var qqLbs = new QQLbsService(_key);
-			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
-			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
+			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Gcj02 };
+			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Gcj02 };
 
 			foreach ( DistanceMode i in Enum.GetValues(typeof(DistanceMode)) ) {
 				var distance = await qqLbs.GetDistanceAsync(latlon1, latlon2, i);
@@ -79,8 +79,8 @@ namespace Husky.Lbs.QQLbs.Tests
 			}
 
 			var qqLbs = new QQLbsService(_key);
-			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Tencent };
-			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Tencent };
+			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Gcj02 };
+			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Gcj02 };
 
 			var distances = await qqLbs.GetDistancesAsync(latlon1, new Location[] { latlon2 }, DistanceMode.Driving);
 			foreach ( var distance in distances ) {

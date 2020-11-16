@@ -11,7 +11,7 @@ namespace Husky.Lbs
 		public Location(double latitude, double longitude) {
 			Lat = latitude;
 			Lon = longitude;
-			LatLonType = LatLonType.Tencent;
+			LatLonType = LatLonType.Gcj02;
 		}
 
 		public Location(double latitude, double longitude, LatLonType type) {

@@ -12,11 +12,11 @@ namespace Husky.Tests
 			var given = new Location {
 				Lat = 31.316641f,
 				Lon = 120.678459f,
-				LatLonType = LatLonType.Tencent
+				LatLonType = LatLonType.Gcj02
 			};
-			var converted = given.ConvertToBaiduLatLon();
-			var convertedBack = converted.ConvertToTencentLatLon();
-			var convertedAgain = convertedBack.ConvertToBaiduLatLon();
+			var converted = given.ConvertToBd09();
+			var convertedBack = converted.ConvertToGcj02();
+			var convertedAgain = convertedBack.ConvertToBd09();
 
 			Assert.IsTrue(Math.Abs(given.Lat - convertedBack.Lat) < 0.0005);
 			Assert.IsTrue(Math.Abs(given.Lon - convertedBack.Lon) < 0.0005);

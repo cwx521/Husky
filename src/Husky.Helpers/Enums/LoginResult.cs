@@ -14,7 +14,7 @@
 		[Label("密码不正确")]
 		ErrorPassword,
 
-		[Label("图形验证码不正确")]
+		[Label("验证码不正确")]
 		ErrorCaptcha,
 
 		[Label("手机验证码不正确")]
