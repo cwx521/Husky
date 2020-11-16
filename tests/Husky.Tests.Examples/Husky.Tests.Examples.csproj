@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <UserSecretsId>eea901e7-12ef-4a25-95e4-e3262d87afff</UserSecretsId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

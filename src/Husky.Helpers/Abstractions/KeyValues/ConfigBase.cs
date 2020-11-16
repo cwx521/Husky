@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 using Husky.KeyValues;
 using Microsoft.Extensions.Configuration;
 
@@ -46,6 +47,7 @@ namespace Husky
 		public void Save(string key, string value) => KeyValues.Save(key, value);
 		public void Save<T>(string key, T value) where T : struct => KeyValues.Save(key, value);
 		public void SaveAll() => KeyValues.SaveAll();
+		public async Task SaveAllAsync() => await KeyValues.SaveAllAsync();
 
 
 		[NotMapped] public virtual bool IsTestEnv => Configuration?.GetValue<bool>("IsTestEnv") ?? false;

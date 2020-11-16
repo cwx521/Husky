@@ -18,8 +18,8 @@ namespace Husky.Tests.Examples.Pages
 		private readonly IPrincipalUser _me;
 		private readonly IDiagnosticsDbContext _db;
 
-		public string TellHim { get; private set; }
-		public List<RequestLog> RequestLogs { get; private set; }
+		public string? TellHim { get; private set; }
+		public List<RequestLog> RequestLogs { get; private set; } = null!;
 
 		public void OnGet() {
 			RequestLogs = _db.RequestLogs.AsNoTracking().ToList();
@@ -32,7 +32,7 @@ namespace Husky.Tests.Examples.Pages
 			if ( _me.IsAnonymous ) {
 				_me.Id = 1;
 				_me.DisplayName = "Weixing";
-				_me.IdentityManager.SaveIdentity(_me);
+				_me.IdentityManager!.SaveIdentity(_me);
 				return Redirect("/");
 			}
 			OnGet();

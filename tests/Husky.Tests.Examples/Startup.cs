@@ -48,6 +48,8 @@ namespace Husky.Tests.Examples
 				.AddDiagnostics<DiagnosticsDbContext>()
 				.AddKeyValueManager<KeyValueDbContext>();
 
+			services.AddSingleton<Config>();
+
 			/*
 			add-migration  Init_KeyValue  -context KeyValueDbContext -project Husky.KeyValues -o Data/Migrations
 			add-migration  Init_FileStore  -context FileStoreDbContext -project Husky.FileStore -o Data/Migrations
