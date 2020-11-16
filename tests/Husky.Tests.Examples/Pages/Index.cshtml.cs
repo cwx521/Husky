@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace Husky.Tests.Pages
+namespace Husky.Tests.Examples.Pages
 {
 	public class IndexPageModel : PageModel
 	{

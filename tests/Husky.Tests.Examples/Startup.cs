@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Husky.Tests
+namespace Husky.Tests.Examples
 {
 	public class Startup
 	{

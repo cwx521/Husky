@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Husky.Tests
+namespace Husky.Tests.Examples
 {
 	public class Program
 	{
