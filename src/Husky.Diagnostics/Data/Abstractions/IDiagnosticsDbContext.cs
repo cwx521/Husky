@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
-	public interface IDiagnosticsDbContext
+	public interface IDiagnosticsDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 

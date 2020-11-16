@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Administration.Data
 {
-	public interface IAdminsDbContext
+	public interface IAdminsDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 

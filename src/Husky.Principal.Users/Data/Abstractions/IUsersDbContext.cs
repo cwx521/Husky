@@ -1,12 +1,9 @@
-﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
-
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Principal.Users.Data
 {
-	public interface IUsersDbContext
+	public interface IUsersDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 
@@ -23,8 +20,5 @@ namespace Husky.Principal.Users.Data
 
 		DbSet<UserGroup> UserGroups { get; set; }
 		DbSet<UserInGroup> UserInGroups { get; set; }
-
-		//DbSet<UserMessage> UserMessage { get; set; }
-		//DbSet<UserMessagePublicContent> UserMessagePublicContents { get; set; }
 	}
 }

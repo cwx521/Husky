@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.FileStore.Data
 {
-	public interface IFileStoreDbContext
+	public interface IFileStoreDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 

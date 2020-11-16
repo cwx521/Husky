@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor.Data
 {
-	public interface ITwoFactorDbContext
+	public interface ITwoFactorDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 

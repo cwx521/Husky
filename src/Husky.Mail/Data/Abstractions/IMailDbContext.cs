@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Mail.Data
 {
-	public interface IMailDbContext
+	public interface IMailDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 

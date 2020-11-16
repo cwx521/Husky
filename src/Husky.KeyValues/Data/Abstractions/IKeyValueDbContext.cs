@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.KeyValues.Data
 {
-	public interface IKeyValueDbContext
+	public interface IKeyValueDbContext : IDisposable, IAsyncDisposable
 	{
 		DbContext Normalize();
 
