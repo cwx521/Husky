@@ -30,7 +30,7 @@ namespace Husky.FileStore.Data
 		public bool IsDeleted { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
-		public DateTime CreatedTime { get; set; } = DateTime.Now;
+		public DateTime CreatedTime { get; init; } = DateTime.Now;
 
 
 		// nav props

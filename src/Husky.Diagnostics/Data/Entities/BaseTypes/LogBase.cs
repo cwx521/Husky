@@ -13,6 +13,6 @@ namespace Husky.Diagnostics.Data
 		public string? UserName { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
-		public DateTime Time { get; set; } = DateTime.Now;
+		public DateTime Time { get; init; } = DateTime.Now;
 	}
 }

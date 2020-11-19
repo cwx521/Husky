@@ -22,7 +22,7 @@ namespace Husky.Principal.Administration.Data
 		public RowStatus Status { get; set; }
 
 		[DefaultValueSql("getdate()"), NeverUpdate]
-		public DateTime CreatedTime { get; set; } = DateTime.Now;
+		public DateTime CreatedTime { get; init; } = DateTime.Now;
 
 
 		// nav props
