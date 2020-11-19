@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Principal.Users.Data.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20201113160345_Init_Users")]
+    [Migration("20201119165902_Init_Users")]
     partial class Init_Users
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,7 @@ namespace Husky.Principal.Users.Data.Migrations
                         .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 

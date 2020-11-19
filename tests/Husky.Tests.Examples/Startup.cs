@@ -24,8 +24,8 @@ namespace Husky.Tests.Examples
 
 			//(localdb)\MSSQLLocalDB
 			var connstr = @"Data Source=.; Initial Catalog=HuskyTest; Integrated Security=True";
-			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
-			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
+			services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr));
+			services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr));
 			services.AddDbContextPool<FileStoreDbContext>(x => x.UseSqlServer(connstr));
 			services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
 			services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
@@ -35,20 +35,18 @@ namespace Husky.Tests.Examples
 
 			//AspNet
 			services.AddRazorPages().AddMvcOptions(mvc => {
-				mvc.Filters.Add<ExceptionLogHandlerFilter>();
-				mvc.Filters.Add<RequestLogHandlerFilter>();
-				mvc.Filters.Add<AntiViolenceFilter>();
+				//mvc.Filters.Add<ExceptionLogHandlerFilter>();
+				//mvc.Filters.Add<RequestLogHandlerFilter>();
+				//mvc.Filters.Add<AntiViolenceFilter>();
 			});
 			services.AddSession();
 			services.AddSingleton<IMemoryCache, MemoryCache>();
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			services.Husky()
-				.AddPrincipal()
-				.AddDiagnostics<DiagnosticsDbContext>()
-				.AddKeyValueManager<KeyValueDbContext>();
+				.AddPrincipal();
 
-			services.AddSingleton<Config>();
+			//services.AddSingleton<Config>();
 
 			/*
 			add-migration  Init_KeyValue  -context KeyValueDbContext -project Husky.KeyValues -o Data/Migrations

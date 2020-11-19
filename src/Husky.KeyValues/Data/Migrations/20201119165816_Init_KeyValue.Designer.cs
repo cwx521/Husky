@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.KeyValues.Data.Migrations
 {
     [DbContext(typeof(KeyValueDbContext))]
-    [Migration("20201113155211_Init_KeyValue")]
+    [Migration("20201119165816_Init_KeyValue")]
     partial class Init_KeyValue
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

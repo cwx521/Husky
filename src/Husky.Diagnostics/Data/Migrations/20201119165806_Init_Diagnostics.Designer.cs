@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20201113095841_Init_Diagnostics")]
+    [Migration("20201119165806_Init_Diagnostics")]
     partial class Init_Diagnostics
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,9 +60,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Referrer")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<string>("Referer")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
@@ -74,6 +74,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -82,8 +83,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("UserAgent")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -184,9 +185,9 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)");
 
-                    b.Property<string>("Referrer")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<string>("Referer")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("Repeated")
                         .HasColumnType("int");
@@ -201,8 +202,8 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("UserAgent")
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");

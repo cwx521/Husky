@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Principal.Administration.Data.Migrations
 {
     [DbContext(typeof(AdminsDbContext))]
-    [Migration("20201113162720_Init_Admins")]
+    [Migration("20201119165922_Init_Admins")]
     partial class Init_Admins
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

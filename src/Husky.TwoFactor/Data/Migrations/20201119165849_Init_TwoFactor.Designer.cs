@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.TwoFactor.Data.Migrations
 {
     [DbContext(typeof(TwoFactorDbContext))]
-    [Migration("20201113162101_Init_TwoFactor")]
+    [Migration("20201119165849_Init_TwoFactor")]
     partial class Init_TwoFactor
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

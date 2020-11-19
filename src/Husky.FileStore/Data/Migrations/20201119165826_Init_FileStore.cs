@@ -22,7 +22,7 @@ namespace Husky.FileStore.Data.Migrations
                     AccessControl = table.Column<int>(type: "int", nullable: false),
                     StoredAt = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -49,6 +49,12 @@ namespace Husky.FileStore.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoredFiles_FileName",
+                table: "StoredFiles",
+                column: "FileName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_StoredFileTag_StoredFileId",

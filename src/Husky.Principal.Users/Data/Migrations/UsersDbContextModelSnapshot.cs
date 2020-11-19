@@ -221,6 +221,7 @@ namespace Husky.Principal.Users.Data.Migrations
                         .UseIdentityColumn();
 
                     b.Property<DateTime>("CreatedTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 

@@ -33,7 +33,9 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<long>("FileContentLength")
                         .HasColumnType("bigint");
@@ -60,6 +62,9 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FileName")
+                        .IsUnique();
 
                     b.ToTable("StoredFiles");
                 });

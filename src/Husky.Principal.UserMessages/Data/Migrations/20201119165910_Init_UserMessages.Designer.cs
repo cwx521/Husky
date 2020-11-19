@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Principal.UserMessages.Data.Migrations
 {
     [DbContext(typeof(UserMessagesDbContext))]
-    [Migration("20201113162304_Init_UserMessages")]
+    [Migration("20201119165910_Init_UserMessages")]
     partial class Init_UserMessages
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

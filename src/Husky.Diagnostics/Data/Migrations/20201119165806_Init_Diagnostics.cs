@@ -26,9 +26,9 @@ namespace Husky.Diagnostics.Data.Migrations
                     Md5Comparison = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false),
                     HttpMethod = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true),
                     Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Referrer = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
+                    UserAgent = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(45)", nullable: true),
                     IsAjax = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -73,9 +73,9 @@ namespace Husky.Diagnostics.Data.Migrations
                     Md5Comparison = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: false),
                     HttpMethod = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true),
                     Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Referrer = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserAgent = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: true),
+                    UserAgent = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(45)", nullable: true),
                     IsAjax = table.Column<bool>(type: "bit", nullable: false)
                 },

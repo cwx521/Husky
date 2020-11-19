@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.FileStore.Data.Migrations
 {
     [DbContext(typeof(FileStoreDbContext))]
-    [Migration("20201115172359_Init_FileStore")]
+    [Migration("20201119165826_Init_FileStore")]
     partial class Init_FileStore
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,9 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<long>("FileContentLength")
                         .HasColumnType("bigint");
@@ -62,6 +64,9 @@ namespace Husky.FileStore.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FileName")
+                        .IsUnique();
 
                     b.ToTable("StoredFiles");
                 });
