@@ -12,20 +12,22 @@ namespace Husky.KeyValues
 	public class KeyValueManager : IKeyValueManager
 	{
 		public KeyValueManager(IServiceProvider services, IMemoryCache cache) {
-			_db = services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			_services = services;
 			_cache = cache;
 		}
 
 		private static readonly object _lock = new object();
 		private const string _cacheKey = nameof(KeyValueManager);
-
-		private readonly IKeyValueDbContext _db;
+		private readonly IServiceProvider _services;
 		private readonly IMemoryCache _cache;
 
 		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
 		public bool Exists(string key) => Items.Any(x => x.Key == key);
 
-		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => _db.KeyValues.AsNoTracking().ToList());
+		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
+			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			return db.KeyValues.AsNoTracking().ToList();
+		});
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
 		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As<T>(defaultValue);
@@ -81,24 +83,26 @@ namespace Husky.KeyValues
 		public void Save(string key, string? value) {
 			AddOrUpdate(key, value);
 
-			_db.Normalize().AddOrUpdate(new KeyValue {
+			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			db.Normalize().AddOrUpdate(new KeyValue {
 				Key = key,
 				Value = value
 			});
-			_db.Normalize().SaveChanges();
+			db.Normalize().SaveChanges();
 		}
 
 		public void SaveAll() => SaveAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		public async Task SaveAllAsync() {
-			var fromDb = _db.KeyValues.ToList();
+			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			var fromDb = db.KeyValues.ToList();
 			var adding = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
 
 			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
 			fromDb.ForEach(x => x.Value = Get(x.Key));
-			_db.KeyValues.AddRange(adding);
+			db.KeyValues.AddRange(adding);
 
-			await _db.Normalize().SaveChangesAsync();
+			await db.Normalize().SaveChangesAsync();
 		}
 	}
 }
