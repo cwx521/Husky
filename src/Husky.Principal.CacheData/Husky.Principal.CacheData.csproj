@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>5.0.0.41110</Version>
+    <Version>5.0.0.50102</Version>
     <Company></Company>
     <Authors>Weixing Chen</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cwx521/Husky</PackageProjectUrl>
+    <Description>Toolkit and extracted reusable parts for ASP.NET Core projects</Description>
     <RootNamespace>Husky.Principal</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>

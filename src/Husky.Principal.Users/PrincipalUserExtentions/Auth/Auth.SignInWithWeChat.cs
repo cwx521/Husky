@@ -36,16 +36,21 @@ namespace Husky.Principal.Users
 					return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 				}
 
-				//寻找用户，看该微信账号是否已经注册过
-				user = _db.Users
-					.Include(x => x.WeChat)
-					.Where(x => x.WeChat != null)
-					.Where(x => x.WeChat!.UnionId == wechatUser.Data.UnionId || x.WeChat.OpenIds.Any(y => y.OpenIdValue == wechatUser.Data.OpenId))
-					.SingleOrDefault();
+				//寻找用户，看该微信账号是否有相同UnionId
+				if ( wechatUser.Data.UnionId != null ) {
+					user = _db.Users
+						.Include(x => x.WeChat)
+						.ThenInclude(x => x!.OpenIds)
+						.Where(x => x.WeChat != null)
+						.Where(x => x.WeChat!.UnionId == wechatUser.Data.UnionId)
+						.SingleOrDefault();
+				}
 
-				//如果通过传入微信信息没找到已注册用户，判断用户当前是否已经通过其它方式登录，是的话直接使用该用户身份
+				//如果仍然没找到已注册用户，判断用户当前是否已经通过其它方式登录，是的话直接使用该用户身份
 				if ( user == null && _me.IsAuthenticated ) {
 					user = _db.Users
+						.Include(x => x.WeChat)
+						.ThenInclude(x => x!.OpenIds)
 						.Where(x => x.Id == _me.Id)
 						.SingleOrDefault();
 				}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Lbs
 {
@@ -20,12 +19,8 @@ namespace Husky.Lbs
 			LatLonType = type;
 		}
 
-		[Column(TypeName = "decimal(9, 6)")]
 		public double Lat { get; set; }
-
-		[Column(TypeName = "decimal(9, 6)")]
 		public double Lon { get; set; }
-
 		public LatLonType LatLonType { get; set; }
 
 		public override string ToString() => $"{Lat},{Lon}";
