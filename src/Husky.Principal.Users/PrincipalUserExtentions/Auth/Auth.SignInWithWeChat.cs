@@ -37,7 +37,7 @@ namespace Husky.Principal.Users
 				}
 
 				//寻找用户，看该微信账号是否有相同UnionId
-				if ( wechatUser.Data.UnionId != null ) {
+				if ( !string.IsNullOrEmpty(wechatUser.Data.UnionId) ) {
 					user = _db.Users
 						.Include(x => x.WeChat)
 						.ThenInclude(x => x!.OpenIds)
