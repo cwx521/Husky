@@ -12,7 +12,7 @@ namespace Husky.Html.Bootstrap
 			string? label = null,
 			string? additionalCssClass = null) {
 
-			return helper.RenderBootstrapCustomControl(expression, CustomControlType.Switch, label, additionalCssClass);
+			return helper.RenderBootstrapFormCheck(expression, FormCheckType.Switch, label, additionalCssClass);
 		}
 	}
 }

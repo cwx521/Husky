@@ -24,7 +24,7 @@ namespace Husky.Html.Bootstrap
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderBootstrapCustomControlGroup(expression, CustomControlType.Radio, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderBootstrapFormCheckGroup(expression, FormCheckType.Radio, selectListItems, layoutDirection, htmlAttributes);
 		}
 
 		public static IHtmlContent RadioButtonListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,

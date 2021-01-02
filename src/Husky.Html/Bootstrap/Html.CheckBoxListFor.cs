@@ -27,7 +27,7 @@ namespace Husky.Html.Bootstrap
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderBootstrapCustomControlGroup(expression, CustomControlType.CheckBox, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderBootstrapFormCheckGroup(expression, FormCheckType.CheckBox, selectListItems, layoutDirection, htmlAttributes);
 		}
 
 		public static IHtmlContent CheckBoxListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,

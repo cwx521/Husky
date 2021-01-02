@@ -1,6 +1,6 @@
 ﻿namespace Husky.Html
 {
-	public enum CustomControlType
+	public enum FormCheckType
 	{
 		CheckBox,
 		Radio,

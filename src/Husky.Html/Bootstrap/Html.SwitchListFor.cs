@@ -27,7 +27,7 @@ namespace Husky.Html.Bootstrap
 				catch ( NullReferenceException ) { }
 				catch { throw; }
 			}
-			return helper.RenderBootstrapCustomControlGroup(expression, CustomControlType.Switch, selectListItems, layoutDirection, htmlAttributes);
+			return helper.RenderBootstrapFormCheckGroup(expression, FormCheckType.Switch, selectListItems, layoutDirection, htmlAttributes);
 		}
 
 		public static IHtmlContent CustomSwitchListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,

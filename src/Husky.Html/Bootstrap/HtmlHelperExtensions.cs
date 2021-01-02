@@ -27,19 +27,20 @@ namespace Husky.Html.Bootstrap
 			return tagBuilder;
 		}
 
-		private static string BootstrapCustomControl(TagBuilder inputTag, CustomControlType customControlType, string? label, string? additionalCssClass = null) {
-			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass.Contains("custom-control-input") ) {
+		private static string BootstrapFormCheck(TagBuilder inputTag, FormCheckType formCheckType, string? label, string? additionalCssClass = null) {
+			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass.Contains("form-check-input") ) {
+				inputTag.AddCssClass("form-check-input");
 				inputTag.AddCssClass("custom-control-input");
 			}
-			return $@"<div class='custom-control custom-{customControlType.ToLower()} {additionalCssClass}'>
+			return $@"<div class='form-check {(formCheckType == FormCheckType.Switch ? "form-switch" : "")} custom-control custom-{formCheckType.ToLower()} {additionalCssClass}'>
 				{inputTag.ToHtml()}
-				<label class='custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
+				<label class='form-check-label custom-control-label' for='{inputTag.Attributes.GetValueOrDefault("id")}'>{label}</span>
 			</div>";
 		}
 
-		private static IHtmlContent RenderBootstrapCustomControl<TModel>(this IHtmlHelper<TModel> helper,
+		private static IHtmlContent RenderBootstrapFormCheck<TModel>(this IHtmlHelper<TModel> helper,
 			Expression<Func<TModel, bool>> expression,
-			CustomControlType customControlType = CustomControlType.CheckBox,
+			FormCheckType formCheckType = FormCheckType.CheckBox,
 			string? label = null,
 			string? additionalCssClass = null) {
 
@@ -47,7 +48,6 @@ namespace Husky.Html.Bootstrap
 				TagRenderMode = TagRenderMode.SelfClosing
 			};
 
-			inputTag.AddCssClass("custom-control-input");
 			inputTag.Attributes.Add("id", helper.IdFor(expression));
 			inputTag.Attributes.Add("name", helper.NameFor(expression));
 			inputTag.Attributes.Add("type", "checkbox");
@@ -64,13 +64,13 @@ namespace Husky.Html.Bootstrap
 				catch { throw; }
 			}
 
-			var customControl = BootstrapCustomControl(inputTag, customControlType, label ?? helper.DisplayNameFor(expression), additionalCssClass);
-			return new HtmlString(customControl);
+			var formCheck = BootstrapFormCheck(inputTag, formCheckType, label ?? helper.DisplayNameFor(expression), additionalCssClass);
+			return new HtmlString(formCheck);
 		}
 
-		private static IHtmlContent RenderBootstrapCustomControlGroup<TModel, TResult>(this IHtmlHelper<TModel> helper,
+		private static IHtmlContent RenderBootstrapFormCheckGroup<TModel, TResult>(this IHtmlHelper<TModel> helper,
 			Expression<Func<TModel, TResult>> expression,
-			CustomControlType customControlType,
+			FormCheckType formCheckType,
 			IEnumerable<SelectListItem> selectListItems,
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
 			object? htmlAttributes = null) {
@@ -82,22 +82,19 @@ namespace Husky.Html.Bootstrap
 					TagRenderMode = TagRenderMode.SelfClosing
 				};
 
-				inputTag.AddCssClass("custom-control-input");
 				inputTag.Attributes.Add("id", "_" + Crypto.RandomString());
 				inputTag.Attributes.Add("name", helper.NameFor(expression));
 				inputTag.Attributes.Add("value", item.Value);
-				inputTag.Attributes.Add("type", customControlType == CustomControlType.Switch ? "checkbox" : customControlType.ToLower());
+				inputTag.Attributes.Add("type", formCheckType == FormCheckType.Switch ? "checkbox" : formCheckType.ToLower());
 				if ( item.Selected ) {
 					inputTag.Attributes.Add("checked", "checked");
 				}
 				inputTag.MergeAttributes(htmlAttributes);
 
-				// output div.custom-control (bootstrap)
-				// custom-control-list-item is an additional cssclass which is just defined at this place, not from bootstrap
-				var additionalCssClass = (layoutDirection == LayoutDirection.Horizontal ? "custom-control-inline custom-control-list-item" : "custom-control-list-item");
-				var customControl = BootstrapCustomControl(inputTag, customControlType, item.Text, additionalCssClass);
+				var additionalCssClass = (layoutDirection == LayoutDirection.Horizontal ? "form-check-inline custom-control-inline" : "");
+				var formCheck = BootstrapFormCheck(inputTag, formCheckType, item.Text, additionalCssClass);
 
-				result.AppendHtml(customControl);
+				result.AppendHtml(formCheck);
 			}
 			return result;
 		}
