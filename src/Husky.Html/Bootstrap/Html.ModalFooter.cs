@@ -20,7 +20,7 @@ namespace Husky.Html.Bootstrap
 				var button = new TagBuilder("button");
 
 				button.Attributes.Add("type", "submit");
-				button.Attributes.Add("class", $"btn btn-lg {confirmationButtonScheme}");
+				button.Attributes.Add("class", $"btn {confirmationButtonScheme}");
 				button.InnerHtml.AppendHtml(confirmationButtonFace);
 
 				if ( confirmationButton == ButtonState.Disabled ) {
@@ -32,7 +32,7 @@ namespace Husky.Html.Bootstrap
 				result.AppendHtml(button);
 			}
 
-			result.AppendHtml("<button type='button' class='btn btn-light border btn-lg btn-close' data-dismiss='modal' data-bs-dismiss='modal'>关闭</button>");
+			result.AppendHtml("<button type='button' class='btn btn-light border' data-dismiss='modal' data-bs-dismiss='modal'>关闭</button>");
 
 			result.AppendHtml("	 </div>");
 			result.AppendHtml("</div>");
