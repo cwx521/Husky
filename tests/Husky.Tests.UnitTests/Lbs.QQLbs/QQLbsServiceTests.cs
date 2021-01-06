@@ -59,8 +59,8 @@ namespace Husky.Lbs.QQLbs.Tests
 			}
 
 			var qqLbs = new QQLbsService(_key);
-			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Gcj02 };
-			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Gcj02 };
+			var latlon1 = new Location { Lat = 31.317064m, Lon = 120.680137m, LatLonType = LatLonType.Gcj02 };
+			var latlon2 = new Location { Lat = 31.315506m, Lon = 120.670792m, LatLonType = LatLonType.Gcj02 };
 
 			foreach ( DistanceMode i in Enum.GetValues(typeof(DistanceMode)) ) {
 				var distance = await qqLbs.GetDistanceAsync(latlon1, latlon2, i);
@@ -79,8 +79,8 @@ namespace Husky.Lbs.QQLbs.Tests
 			}
 
 			var qqLbs = new QQLbsService(_key);
-			var latlon1 = new Location { Lat = 31.317064f, Lon = 120.680137f, LatLonType = LatLonType.Gcj02 };
-			var latlon2 = new Location { Lat = 31.315506f, Lon = 120.670792f, LatLonType = LatLonType.Gcj02 };
+			var latlon1 = new Location { Lat = 31.317064m, Lon = 120.680137m, LatLonType = LatLonType.Gcj02 };
+			var latlon2 = new Location { Lat = 31.315506m, Lon = 120.670792m, LatLonType = LatLonType.Gcj02 };
 
 			var distances = await qqLbs.GetDistancesAsync(latlon1, new Location[] { latlon2 }, DistanceMode.Driving);
 			foreach ( var distance in distances ) {

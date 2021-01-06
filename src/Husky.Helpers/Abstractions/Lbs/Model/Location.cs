@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Husky.Lbs
 {
@@ -8,19 +9,35 @@ namespace Husky.Lbs
 		}
 
 		public Location(double latitude, double longitude) {
+			Lat = (decimal)latitude;
+			Lon = (decimal)longitude;
+			LatLonType = LatLonType.Gcj02;
+		}
+
+		public Location(double latitude, double longitude, LatLonType type) {
+			Lat = (decimal)latitude;
+			Lon = (decimal)longitude;
+			LatLonType = type;
+		}
+
+		public Location(decimal latitude, decimal longitude) {
 			Lat = latitude;
 			Lon = longitude;
 			LatLonType = LatLonType.Gcj02;
 		}
 
-		public Location(double latitude, double longitude, LatLonType type) {
+		public Location(decimal latitude, decimal longitude, LatLonType type) {
 			Lat = latitude;
 			Lon = longitude;
 			LatLonType = type;
 		}
 
-		public double Lat { get; set; }
-		public double Lon { get; set; }
+		[Column(TypeName = "decimal(9,6)")]
+		public decimal Lat { get; set; }
+
+		[Column(TypeName = "decimal(9,6)")]
+		public decimal Lon { get; set; }
+
 		public LatLonType LatLonType { get; set; }
 
 		public override string ToString() => $"{Lat},{Lon}";
