@@ -37,7 +37,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
 
 					if ( !ok ) {
-						return new Failure<WeChatGeneralAccessToken>(d.errmsg);
+						return new Failure<WeChatGeneralAccessToken>((string)d.errmsg);
 					}
 					return new Success<WeChatGeneralAccessToken> {
 						Data = new WeChatGeneralAccessToken {
