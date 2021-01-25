@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -37,7 +39,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
 
 					if ( !ok ) {
-						return new Failure<WeChatGeneralAccessToken>((string)d.errmsg);
+						return new Failure<WeChatGeneralAccessToken>(d.errcode + ": " + d.errmsg);
 					}
 					return new Success<WeChatGeneralAccessToken> {
 						Data = new WeChatGeneralAccessToken {
@@ -126,6 +128,30 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 					setTimeout(configWeChatJsApi, 50);
 				</script>";
+		}
+
+		public async Task<Result> SendTemplateMessageAsync<T>(string openId, T data, string? url) where T : IWeChatTemplateMessage {
+			var message = new {
+				touser = openId,
+				template_id = data.TemplateId,
+				url = url,
+				topcolor = "#FF6600",
+				data = data
+			};
+			var serialized = System.Text.Json.JsonSerializer.Serialize((object)message, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+			var accessToken = await GetMobilePlatformGeneralAccessTokenAsync();
+			var api = "https://" + $"api.weixin.qq.com/cgi-bin/message/template/send?access_token={accessToken.Data.AccessToken}";
+
+			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
+			var json = await response.Content.ReadAsStringAsync();
+			var d = JsonConvert.DeserializeObject<dynamic>(json);
+
+			var ok = d.errcode == null || (int)d.errcode == 0;
+			if ( !ok ) {
+				return new Failure<WeChatGeneralAccessToken>(d.errcode + ": " + d.errmsg);
+			}
+			return new Success();
 		}
 	}
 }
