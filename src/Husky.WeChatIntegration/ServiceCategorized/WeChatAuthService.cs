@@ -67,7 +67,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
-					return new Failure<WeChatMiniProgramLoginResult>((string)d.errmsg);
+					return new Failure<WeChatMiniProgramLoginResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatMiniProgramLoginResult> {
 					Data = new WeChatMiniProgramLoginResult {

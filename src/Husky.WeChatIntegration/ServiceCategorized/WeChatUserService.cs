@@ -23,7 +23,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
-					return new Failure<WeChatUserResult>((string)d.errmsg);
+					return new Failure<WeChatUserResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserResult> {
 					Data = new WeChatUserResult {
@@ -107,7 +107,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
-					return new Failure<WeChatUserAccessToken>((string)d.errmsg);
+					return new Failure<WeChatUserAccessToken>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserAccessToken> {
 					Data = new WeChatUserAccessToken {

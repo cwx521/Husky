@@ -212,9 +212,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatPayNotifyResult>> ParseNotifyResultAsync(Stream stream) {
 			try {
-				var bytes = new byte[stream.Length];
-				await stream.ReadAsync(bytes);
-
+				var bytes = new byte[(int)stream.Length];
+				await stream.ReadAsync(bytes.AsMemory(0, bytes.Length));
 				var xml = Encoding.UTF8.GetString(bytes);
 
 				if ( !IsSuccess(xml) ) {
@@ -248,6 +247,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				{ "nonce_str", Crypto.RandomString(32) },
 			};
 		}
+
 
 		private static string? GetContent(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
 		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
