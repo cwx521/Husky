@@ -22,6 +22,31 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private readonly IMemoryCache _cache;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 
+		public async Task<Result<WeChatGeneralAccessToken>> GetGeneralAccessTokenFromManagedCentralAsync(string delegateHostUrl) {
+			_options.RequireMobilePlatformSettings();
+
+			var c = delegateHostUrl.TrimEnd('?', '&').Contains('?') ? '&' : '?';
+			var url = $"{delegateHostUrl}{c}appid={_options.MobilePlatformAppId}&secret={_options.MobilePlatformAppSecret}";
+			try {
+				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				var ok = d.errcode == null || (int)d.errcode == 0;
+
+				if ( !ok ) {
+					return new Failure<WeChatGeneralAccessToken>((int)d.errcode + ": " + d.errmsg);
+				}
+				return new Success<WeChatGeneralAccessToken> {
+					Data = new WeChatGeneralAccessToken {
+						AccessToken = d.access_token,
+						Expires = DateTime.Now.AddSeconds((int)d.expires_in)
+					}
+				};
+			}
+			catch ( Exception e ) {
+				return new Failure<WeChatGeneralAccessToken>(e.Message);
+			}
+		}
+
 		public async Task<Result<WeChatGeneralAccessToken>> GetGeneralAccessTokenAsync() {
 			_options.RequireMobilePlatformSettings();
 
@@ -44,7 +69,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					return new Success<WeChatGeneralAccessToken> {
 						Data = new WeChatGeneralAccessToken {
 							AccessToken = d.access_token,
-							ExpiresIn = d.expires_in
+							Expires = DateTime.Now.AddSeconds((int)d.expires_in)
 						}
 					};
 				}
