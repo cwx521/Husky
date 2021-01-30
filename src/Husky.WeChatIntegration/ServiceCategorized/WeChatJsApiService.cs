@@ -106,15 +106,16 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return config;
 		}
 
-		public const string JsSdkUrl = "https://res.wx.qq.com/open/js/jweixin-1.4.0.js";
-		public const string JsSdkUrlAlternate = "https://res2.wx.qq.com/open/js/jweixin-1.4.0.js";
+		public const string JsSdkUrl = "https://res.wx.qq.com/open/js/jweixin-1.6.0.js";
+		public const string JsSdkUrlAlternate = "https://res2.wx.qq.com/open/js/jweixin-1.6.0.js";
 
 		public string CreateJsSdkReferenceScript() {
 			return $"<script src=\"{JsSdkUrl}\"></script>";
 		}
 
 		private const string _defaultEnabledJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow";
-		public async Task<string> CreateJsApiConfigScriptAsync(WeChatGeneralAccessToken accessToken, bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames) {
+		private const string _defaultEnabledOpenTags = "wx-open-subscribe";
+		public async Task<string> CreateJsApiConfigScriptAsync(WeChatGeneralAccessToken accessToken, bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
 			var cfg = await CreateJsApiConfigAsync(accessToken);
 			var script = @"
 					function configWeChatJsApi() {
@@ -128,7 +129,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 								timestamp: " + cfg.Timestamp + @",
 								nonceStr: '" + cfg.NonceStr + @"',
 								signature: '" + cfg.Signature + @"',
-								jsApiList: [" + string.Join(',', enableJsApiNames.Split(',', '|').Select(x => $"'{x.Trim()}'")) + @"]
+								jsApiList: [" + string.Join(',', enableJsApiNames.Split(',', '|').Select(x => $"'{x.Trim()}'")) + @"],
+								openTagList: [" + string.Join(',', enableOpenTags.Split(',', '|').Select(x => $"'{x.Trim()}'")) + @"]
 							});
 						}
 					}
@@ -147,6 +149,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				touser = openId,
 				template_id = data.TemplateId,
 				url = url,
+				page = url,
 				topcolor = "#FF6600",
 				data = data
 			};
