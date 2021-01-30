@@ -210,12 +210,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		[SuppressMessage("Performance", "CA1822:Mark members as static")]
-		public async Task<Result<WeChatPayNotifyResult>> ParseNotifyResultAsync(Stream stream) {
+		public Result<WeChatPayNotifyResult> ParseNotifyResult(string xml) {
 			try {
-				var bytes = new byte[(int)stream.Length];
-				await stream.ReadAsync(bytes.AsMemory(0, bytes.Length));
-				var xml = Encoding.UTF8.GetString(bytes);
-
 				if ( !IsSuccess(xml) ) {
 					return new Failure<WeChatPayNotifyResult>(GetErrorDescription(xml));
 				}
