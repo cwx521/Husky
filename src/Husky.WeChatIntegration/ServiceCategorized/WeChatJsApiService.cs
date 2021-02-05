@@ -10,8 +10,7 @@ using Newtonsoft.Json;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
-	public class WeChatJsApiService
-	{
+	public class WeChatJsApiService {
 		public WeChatJsApiService(WeChatOptions options, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
 			_options = options;
 			_httpContextAccessor = httpContextAccessor;
@@ -59,10 +58,16 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
-		public void RemoveGeneralAccessTokenCache() {
+
+		public void RemoveGeneralAccessTokenLocalCache() {
 			_cache.Remove(_options.MobilePlatformAppId + nameof(GetGeneralAccessTokenAsync));
 		}
 
+
+		public async Task<string> GetJsApiTicketAsync() {
+			var accessToken = await GetGeneralAccessTokenAsync();
+			return await GetJsApiTicketAsync(accessToken.Data);
+		}
 		public async Task<string> GetJsApiTicketAsync(WeChatGeneralAccessToken accessToken) {
 			return await _cache.GetOrCreate(accessToken.AccessToken + nameof(GetJsApiTicketAsync), async entry => {
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
@@ -81,6 +86,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			});
 		}
 
+
+		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync() {
+			var accessToken = await GetGeneralAccessTokenAsync();
+			return await CreateJsApiConfigAsync(accessToken.Data);
+		}
 		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync(WeChatGeneralAccessToken accessToken) {
 			if ( _httpContextAccessor.HttpContext == null ) {
 				throw new InvalidProgramException("Can not call this method when IHttpContextAccessor.HttpContext is null.");
@@ -106,15 +116,19 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return config;
 		}
 
+
 		public const string JsSdkUrl = "https://res.wx.qq.com/open/js/jweixin-1.6.0.js";
 		public const string JsSdkUrlAlternate = "https://res2.wx.qq.com/open/js/jweixin-1.6.0.js";
+		public string CreateJsSdkReferenceScript() => $"<script src=\"{JsSdkUrl}\"></script>";
 
-		public string CreateJsSdkReferenceScript() {
-			return $"<script src=\"{JsSdkUrl}\"></script>";
-		}
 
 		private const string _defaultEnabledJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow";
 		private const string _defaultEnabledOpenTags = "wx-open-subscribe";
+
+		public async Task<string> CreateJsApiConfigScriptAsync<T>(bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
+			var accessToken = await GetGeneralAccessTokenAsync();
+			return await CreateJsApiConfigScriptAsync(accessToken.Data, withScriptTag, _defaultEnabledJsApiNames, _defaultEnabledOpenTags);
+		}
 		public async Task<string> CreateJsApiConfigScriptAsync(WeChatGeneralAccessToken accessToken, bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
 			var cfg = await CreateJsApiConfigAsync(accessToken);
 			var script = @"
@@ -142,6 +156,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return $"<script type='text/javascript'>\r\n{script}\r\n</script>";
 		}
 
+
+		public async Task<Result> SendTemplateMessageAsync<T>(string openId, T data, string? url) where T : IWeChatTemplateMessage {
+			try {
+				var accessToken = await GetGeneralAccessTokenAsync();
+				return await SendTemplateMessageAsync(accessToken.Data, openId, data, url);
+			}
+			catch {
+				RemoveGeneralAccessTokenLocalCache();
+				var accessToken = await GetGeneralAccessTokenAsync();
+				return await SendTemplateMessageAsync(accessToken.Data, openId, data, url);
+			}
+		}
 		public async Task<Result> SendTemplateMessageAsync<T>(WeChatGeneralAccessToken accessToken, string openId, T data, string? url) where T : IWeChatTemplateMessage {
 			var api = "https://" + $"api.weixin.qq.com/cgi-bin/message/template/send?access_token={accessToken.AccessToken}";
 
@@ -149,7 +175,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				touser = openId,
 				template_id = data.TemplateId,
 				url = url,
-				page = url,
 				topcolor = "#FF6600",
 				data = data
 			};
@@ -161,7 +186,34 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			var ok = d.errcode == null || (int)d.errcode == 0;
 			if ( !ok ) {
-				return new Failure<WeChatGeneralAccessToken>((int)d.errcode + ": " + d.errmsg);
+				return new Failure((int)d.errcode + ": " + d.errmsg);
+			}
+			return new Success();
+		}
+
+
+		public async Task<Result> SendSubscribedMessageAsync<T>(string openId, T data, string? url) where T : IWeChatTemplateMessage {
+			var accessToken = await GetGeneralAccessTokenAsync();
+			return await SendSubscribedMessageAsync(accessToken.Data, openId, data, url);
+		}
+		public async Task<Result> SendSubscribedMessageAsync<T>(WeChatGeneralAccessToken accessToken, string openId, T data, string? url) where T : IWeChatTemplateMessage {
+			var api = "https://" + $"api.weixin.qq.com/cgi-bin/message/subscribe/bizsend?access_token={accessToken.AccessToken}";
+
+			var message = new {
+				touser = openId,
+				template_id = data.TemplateId,
+				page = url,
+				data = data
+			};
+			var serialized = System.Text.Json.JsonSerializer.Serialize((object)message, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
+			var json = await response.Content.ReadAsStringAsync();
+			var d = JsonConvert.DeserializeObject<dynamic>(json);
+
+			var ok = d.errcode == null || (int)d.errcode == 0;
+			if ( !ok ) {
+				return new Failure((int)d.errcode + ": " + d.errmsg);
 			}
 			return new Success();
 		}
