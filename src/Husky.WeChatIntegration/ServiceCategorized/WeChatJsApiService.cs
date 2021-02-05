@@ -125,9 +125,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private const string _defaultEnabledJsApiNames = "updateAppMessageShareData,updateTimelineShareData,onMenuShareAppMessage,onMenuShareTimeline,openLocation,getLocation,scanQRCode,chooseWXPay,getNetworkType,chooseImage,previewImage,hideMenuItems,closWindow";
 		private const string _defaultEnabledOpenTags = "wx-open-subscribe";
 
-		public async Task<string> CreateJsApiConfigScriptAsync<T>(bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
+		public async Task<string> CreateJsApiConfigScriptAsync(bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
 			var accessToken = await GetGeneralAccessTokenAsync();
-			return await CreateJsApiConfigScriptAsync(accessToken.Data, withScriptTag, _defaultEnabledJsApiNames, _defaultEnabledOpenTags);
+			return await CreateJsApiConfigScriptAsync(accessToken.Data, withScriptTag, enableJsApiNames, enableOpenTags);
 		}
 		public async Task<string> CreateJsApiConfigScriptAsync(WeChatGeneralAccessToken accessToken, bool withScriptTag = true, string enableJsApiNames = _defaultEnabledJsApiNames, string enableOpenTags = _defaultEnabledOpenTags) {
 			var cfg = await CreateJsApiConfigAsync(accessToken);
