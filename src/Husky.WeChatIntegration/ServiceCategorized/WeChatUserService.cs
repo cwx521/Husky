@@ -27,6 +27,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				}
 				return new Success<WeChatUserResult> {
 					Data = new WeChatUserResult {
+						Subscribe = (int)d.subscribe == 1,
 						OpenId = d.openid,
 						UnionId = d.unionid,
 						NickName = d.nickname,

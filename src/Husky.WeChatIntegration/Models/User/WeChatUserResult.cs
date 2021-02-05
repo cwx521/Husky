@@ -2,6 +2,7 @@
 {
 	public record WeChatUserResult
 	{
+		public bool Subscribe { get; internal init; }
 		public string OpenId { get; internal init; } = null!;
 		public string? UnionId { get; internal init; }
 		public string NickName { get; internal init; } = null!;
