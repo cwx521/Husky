@@ -13,7 +13,7 @@ namespace Husky.Html.Bootstrap
 			var result = new HtmlContentBuilder();
 
 			result.AppendHtml("<div class='modal-footer inside-modal-body overflow-hidden d-flex'>");
-			result.AppendHtml("	 <div class='align-self-center'><span class='modal-footer-state'></span></div>");
+			result.AppendHtml("	 <div class='align-self-center me-auto mr-auto'><span class='modal-footer-state'></span></div>");
 			result.AppendHtml("	 <div class='align-self-center ms-auto ml-auto ps-3 pl-3'>");
 
 			if ( confirmationButton != ButtonState.NotHave ) {
