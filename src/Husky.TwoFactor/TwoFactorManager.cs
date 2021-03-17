@@ -12,6 +12,14 @@ namespace Husky.TwoFactor
 {
 	public sealed partial class TwoFactorManager : ITwoFactorManager
 	{
+		public TwoFactorManager(ITwoFactorDbContext twoFactorDb, IPrincipalUser principal, ISmsSender smsSender)
+			: this(twoFactorDb, principal, smsSender, null) {
+		}
+
+		public TwoFactorManager(ITwoFactorDbContext twoFactorDb, IPrincipalUser principal, IMailSender mailSender)
+			: this(twoFactorDb, principal, null, mailSender) {
+		}
+
 		public TwoFactorManager(ITwoFactorDbContext twoFactorDb, IPrincipalUser principal, ISmsSender? smsSender, IMailSender? mailSender) {
 			if ( smsSender == null && mailSender == null ) {
 				throw new ArgumentNullException(null, $"At least to configure one of {smsSender} or {mailSender}");
