@@ -58,10 +58,11 @@ namespace Husky.Principal.Users
 		}
 
 		private bool IsNeedToSuspendFurtherLoginAttemption(int userId, TimeSpan withinTime, int maxAllowedAttemptionTimes = 5) {
+			var time = DateTime.Now.Subtract(withinTime);
 			var list = _db.UserLoginRecords
 				.AsNoTracking()
 				.Where(x => x.UserId == userId)
-				.Where(x => x.CreatedTime >= DateTime.Now.Subtract(withinTime))
+				.Where(x => x.CreatedTime >= time)
 				.Where(x => x.LoginResult != LoginResult.RejectedContinuousAttemption)
 				.OrderByDescending(x => x.Id)
 				.Select(x => x.LoginResult)
