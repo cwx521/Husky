@@ -120,7 +120,7 @@ namespace Husky.Principal.Users.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     AttemptedAccount = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SickPassword = table.Column<string>(type: "varchar(88)", maxLength: 88, nullable: true),
                     LoginResult = table.Column<int>(type: "int", nullable: false),
@@ -136,7 +136,7 @@ namespace Husky.Principal.Users.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

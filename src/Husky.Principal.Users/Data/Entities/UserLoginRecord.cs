@@ -32,6 +32,6 @@ namespace Husky.Principal.Users.Data
 
 		// nav props
 
-		public User User { get; set; } = null!;
+		public User? User { get; set; }
 	}
 }

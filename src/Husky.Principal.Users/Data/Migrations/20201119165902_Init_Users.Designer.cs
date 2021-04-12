@@ -205,7 +205,6 @@ namespace Husky.Principal.Users.Data.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("UserId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -451,9 +450,7 @@ namespace Husky.Principal.Users.Data.Migrations
                 {
                     b.HasOne("Husky.Principal.Users.Data.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
