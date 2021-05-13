@@ -147,7 +147,7 @@ namespace Husky.GridQuery
 					return null;
 
 				case GridColumnTemplate.HyperLink:
-					return $"#if ({fieldName} {{# <a href='{attr.LinkUrl}'>#:{fieldName}#</a> #}} )#";
+					return $"#if ({fieldName}) {{# <a href='{attr.LinkUrl}'>#:{fieldName}#</a> #}} #";
 
 				case GridColumnTemplate.Modal:
 				case GridColumnTemplate.ModalLG:
@@ -162,7 +162,7 @@ namespace Husky.GridQuery
 						$"data-modal-size='modal-{size}'>" +
 						$"#:{fieldName}#" +
 					$"</a>";
-					return $"#if ({fieldName} {{# {fragment1} #}} )#";
+					return $"#if ({fieldName}) {{# {fragment1} #}} #";
 
 				case GridColumnTemplate.CheckBox:
 					var fragment2 = "<input " +
