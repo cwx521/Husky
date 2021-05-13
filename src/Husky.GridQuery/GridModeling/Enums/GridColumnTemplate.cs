@@ -2,6 +2,7 @@
 {
 	public enum GridColumnTemplate
 	{
+		None,
 		HyperLink,
 		Modal,
 		ModalLG,

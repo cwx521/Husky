@@ -30,12 +30,12 @@ namespace Husky.GridQuery
 		public virtual string? LinkUrl { get; set; }
 		public virtual string? Format { get; set; }
 		public virtual string? Template { get; set; }
-		public virtual GridColumnTemplate? KnownTemplate { get; set; }
+		public virtual GridColumnTemplate KnownTemplate { get; set; }
 
 		public virtual string? Category { get; set; }
 		public virtual string? DisplayAfter { get; set; }
 
-		public virtual GridColumnAggregates? Aggregates { get; set; }
+		public virtual GridColumnAggregates Aggregates { get; set; }
 
 	}
 }

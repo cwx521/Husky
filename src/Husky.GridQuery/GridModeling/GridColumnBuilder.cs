@@ -78,7 +78,7 @@ namespace Husky.GridQuery
 			Width = (attr == null || attr.Width == 0) ? DefaultGridColumnWidth : (attr.Width != -1 ? attr.Width : (int?)null),
 			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),
 			Format = attr?.Format,
-			Aggregates = attr?.Aggregates?.ToNameArray(),
+			Aggregates = attr?.Aggregates.ToNameArray(),
 			Filterable = property != null && (attr?.Filterable ?? true),
 			Sortable = property != null && (attr?.Sortable ?? true),
 			EditableFlag = property != null && (attr?.Editable ?? false),
@@ -139,7 +139,7 @@ namespace Husky.GridQuery
 			if ( attr == null || string.IsNullOrEmpty(fieldName) ) {
 				return null;
 			}
-			if ( !string.IsNullOrEmpty(attr.LinkUrl) && attr.KnownTemplate == null ) {
+			if ( !string.IsNullOrEmpty(attr.LinkUrl) && attr.KnownTemplate == GridColumnTemplate.None ) {
 				attr.KnownTemplate = GridColumnTemplate.HyperLink;
 			}
 			switch ( attr.KnownTemplate ) {
