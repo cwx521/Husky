@@ -156,6 +156,7 @@ namespace Husky.GridQuery
 					var size = attr.KnownTemplate.ToLower().Substring(5);
 					var fragment1 = $"<a " +
 						$"href='{attr.LinkUrl}' " +
+						$"data-ajax='husky' " +
 						$"data-toggle='modal' " +
 						$"data-target='\\#modal' " +
 						$"data-modal-title='#:{fieldName} || '{fieldName}'#'" +
