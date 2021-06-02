@@ -18,7 +18,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(string openId, string accessToken) {
 			try {
-				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh-CN";
+				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json);
 
@@ -27,7 +27,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				}
 				return new Success<WeChatUserResult> {
 					Data = new WeChatUserResult {
-						Subscribe = (int)d.subscribe == 1,
+						Subscribe = d.subscribe != null && (int)d.subscribe == 1,
 						OpenId = d.openid,
 						UnionId = d.unionid,
 						NickName = d.nickname,

@@ -33,7 +33,7 @@ namespace Husky.Principal.Users
 
 				var wechatUser = await wechat.GetUserInfoAsync(accessToken.Data);
 				if ( !wechatUser.Ok || wechatUser.Data == null ) {
-					return new Failure(LoginResult.FailureWeChatRequestUserInfo.ToLabel());
+					return new Failure( wechatUser.Message ?? LoginResult.FailureWeChatRequestUserInfo.ToLabel());
 				}
 
 				//寻找用户，看该微信账号是否有相同UnionId

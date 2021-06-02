@@ -129,7 +129,7 @@ namespace Husky.GridQuery
 			foreach ( var i in values ) {
 				result.Add(new SelectListItem {
 					Text = (i as Enum)!.ToLabel(),
-					Value = i!.ToString()
+					Value = i!.GetHashCode().ToString()
 				});
 			}
 			return result.ToArray();
