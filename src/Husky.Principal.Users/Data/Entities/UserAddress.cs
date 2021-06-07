@@ -5,15 +5,13 @@ using Husky.Lbs;
 
 namespace Husky.Principal.Users.Data
 {
-	public class UserAddress
+	public class UserAddress : Location
 	{
 		[Key]
 		public int Id { get; set; }
 
 		[NeverUpdate]
 		public int UserId { get; set; }
-
-		public Location? Location { get; set; }
 
 		[StringLength(100)]
 		public string? DisplayAddress { get; set; }

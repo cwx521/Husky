@@ -31,12 +31,6 @@ namespace Husky.Principal.Users.Data
 				user.HasMany(x => x.Addresses).WithOne(x => x.User).HasForeignKey(x => x.UserId);
 			});
 
-			//UserAddress
-			mb.Ignore<Location>();
-			mb.Entity<UserAddress>(address => {
-				address.OwnsOne(x => x.Location);
-			});
-
 			//UserWeChat
 			mb.Entity<UserWeChat>(wechat => {
 				wechat.HasMany(x => x.OpenIds).WithOne(x => x.WeChat).HasForeignKey(x => x.WeChatId);
