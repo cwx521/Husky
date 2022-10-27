@@ -13,11 +13,11 @@ namespace Husky
 
 			// Find key and Build query
 			var entityEntry = context.Entry(instance);
-			var keyProperties = entityEntry.Metadata.FindPrimaryKey().Properties;
+			var keyProperties = entityEntry.Metadata.FindPrimaryKey()!.Properties;
 
 			IQueryable<TEntity> query = context.Set<TEntity>();
 			foreach ( var key in keyProperties ) {
-				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue, Comparison.Equal);
+				query = query.Where(key.Name, entityEntry.Property(key.Name).CurrentValue!, Comparison.Equal);
 			}
 
 			// Add or Update
@@ -28,7 +28,7 @@ namespace Husky
 			else {
 				var properties = context.Entry(row).Properties;
 				foreach ( var p in properties ) {
-					if ( p.Metadata.PropertyInfo.IsDefined(typeof(NeverUpdateAttribute)) ) {
+					if ( p.Metadata.PropertyInfo!.IsDefined(typeof(NeverUpdateAttribute)) ) {
 						continue;
 					}
 					p.CurrentValue = entityEntry.Property(p.Metadata.Name).CurrentValue;

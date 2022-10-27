@@ -28,7 +28,7 @@ namespace Husky.Html.Bootstrap
 		}
 
 		private static string BootstrapFormCheck(TagBuilder inputTag, FormCheckType formCheckType, string? label, string? additionalCssClass = null) {
-			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass.Contains("form-check-input") ) {
+			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass!.Contains("form-check-input") ) {
 				inputTag.AddCssClass("form-check-input");
 				inputTag.AddCssClass("custom-control-input");
 			}
