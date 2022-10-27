@@ -10,6 +10,7 @@
     <Description>Toolkit and extracted reusable parts for ASP.NET Core projects</Description>
     <RootNamespace>Husky.Principal</RootNamespace>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
