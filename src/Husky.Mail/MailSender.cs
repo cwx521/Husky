@@ -57,10 +57,10 @@ namespace Husky.Mail
 			client.MessageSent += async (object? sender, MessageSentEventArgs? e) => {
 
 				mailRecord.IsSuccessful = true;
-				await _mailDb.Normalize().SaveChangesAsync();
+				_mailDb.Normalize().SaveChanges();
 
 				await Task.Run(() => {
-					onCompleted?.Invoke(new MailSentEventArgs { MailMessage = mailMessage });
+					onCompleted?.Invoke(new MailSentEventArgs { MailRecordId = mailRecord.Id, MailMessage = mailMessage });
 				});
 			};
 

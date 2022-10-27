@@ -11,7 +11,7 @@ namespace Husky.Diagnostics.Data
 		[DefaultValueSql("getdate()")]
 		public DateTime LastTime { get; set; } = DateTime.Now;
 
-		[StringLength(32), Column(TypeName = "varchar(32)"), Index(IsUnique = false)]
+		[StringLength(32), Column(TypeName = "varchar(32)"), EnableIndex(IsUnique = false)]
 		public string Md5Comparison { get; set; } = null!;
 
 

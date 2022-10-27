@@ -8,7 +8,7 @@ namespace Husky.Principal.UserMessages.Data
 		[Key]
 		public int Id { get; set; }
 
-		[Index(IsUnique = false)]
+		[EnableIndex(IsUnique = false)]
 		public int UserId { get; set; }
 
 		public int? PublicContentId { get; set; }

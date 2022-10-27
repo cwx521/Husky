@@ -19,7 +19,7 @@ namespace Husky
 					if ( p.GetCustomAttribute<DefaultValueSqlAttribute>() is DefaultValueSqlAttribute valueSql && context.Database.IsSqlServer() ) {
 						entityBuilder.Property(p.Name).HasDefaultValueSql(valueSql.Sql);
 					}
-					if ( p.GetCustomAttribute<IndexAttribute>() is IndexAttribute index ) {
+					if ( p.GetCustomAttribute<EnableIndexAttribute>() is EnableIndexAttribute index ) {
 						entityBuilder.HasIndex(p.Name).IsUnique(index.IsUnique).IsClustered(index.IsClustered);
 					}
 					if ( p.GetCustomAttribute<UniqueAttribute>() != null ) {
