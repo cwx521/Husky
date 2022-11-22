@@ -13,7 +13,7 @@ namespace Husky.GridQuery
 
 		public static string Json(this List<GridColumn> columns) {
 			return JsonSerializer.Serialize(columns, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+				DefaultIgnoreCondition = JsonIgnoreCondition.Never
 			});
 		}
 
