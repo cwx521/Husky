@@ -31,7 +31,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 				try {
 					var json = await DefaultHttpClient.Instance.GetStringAsync(url);
-					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 					var ok = d.errcode == null || (int)d.errcode == 0;
 					if ( !ok ) {
@@ -55,7 +55,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				catch ( Exception e ) {
 					return new Failure<WeChatGeneralAccessToken>(e.Message);
 				}
-			});
+			})!;
 		}
 
 
@@ -73,7 +73,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 				try {
 					var json = await DefaultHttpClient.Instance.GetStringAsync(url);
-					var d = JsonConvert.DeserializeObject<dynamic>(json);
+					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 					var ok = d.errcode == null || (int)d.errcode == 0;
 					entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(ok ? (int)d.expires_in : 1));
@@ -83,7 +83,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				catch ( Exception e ) {
 					return e.Message;
 				}
-			});
+			})!;
 		}
 
 
@@ -182,7 +182,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
 			var json = await response.Content.ReadAsStringAsync();
-			var d = JsonConvert.DeserializeObject<dynamic>(json);
+			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 			var ok = d.errcode == null || (int)d.errcode == 0;
 			if ( !ok ) {
@@ -209,7 +209,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
 			var json = await response.Content.ReadAsStringAsync();
-			var d = JsonConvert.DeserializeObject<dynamic>(json);
+			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 			var ok = d.errcode == null || (int)d.errcode == 0;
 			if ( !ok ) {

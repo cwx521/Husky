@@ -136,9 +136,9 @@ namespace Husky.Lbs.QQLbs
 		private static async Task<dynamic?> GetApiResultAsync(string url) {
 			try {
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if ( d.status == 0 && d.message == "query ok" ) {
+				if (d.status == 0 && d.message == "query ok" ) {
 					return d.result;
 				}
 			}

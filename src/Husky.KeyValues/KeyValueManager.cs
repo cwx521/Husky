@@ -27,7 +27,7 @@ namespace Husky.KeyValues
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
 			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			return db.KeyValues.AsNoTracking().ToList();
-		});
+		})!;
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
 		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As<T>(defaultValue);

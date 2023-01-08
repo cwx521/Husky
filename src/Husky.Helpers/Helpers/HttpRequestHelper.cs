@@ -27,7 +27,7 @@ namespace Husky
 		}
 
 		public static string UserAgent(this HttpRequest httpRequest) {
-			return httpRequest.Headers["User-Agent"];
+			return httpRequest.Headers["User-Agent"].ToString();
 		}
 
 		public static bool IsMobile(this HttpRequest httpRequest) {

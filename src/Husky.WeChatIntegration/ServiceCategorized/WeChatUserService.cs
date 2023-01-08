@@ -20,7 +20,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
 					return new Failure<WeChatUserResult>((int)d.errcode + ": " + d.errmsg);
@@ -105,7 +105,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenFromResolvedUrlAsync(string url) {
 			try {
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
-				var d = JsonConvert.DeserializeObject<dynamic>(json);
+				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if ( d.errcode != null && (int)d.errcode != 0 ) {
 					return new Failure<WeChatUserAccessToken>((int)d.errcode + ": " + d.errmsg);

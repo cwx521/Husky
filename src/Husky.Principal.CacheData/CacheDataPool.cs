@@ -84,13 +84,13 @@ namespace Husky.Principal
 			}
 		}
 
-		private ConcurrentDictionary<string, T> GetPool() => _memoryCache.Get<ConcurrentDictionary<string, T>>(_cacheKeyOfPool);
+		private ConcurrentDictionary<string, T>? GetPool() => _memoryCache.Get<ConcurrentDictionary<string, T>>(_cacheKeyOfPool);
 
 		private ConcurrentDictionary<string, T> EnsureGetPool() {
 			return _memoryCache.GetOrCreate(_cacheKeyOfPool, x => {
 				x.SetSlidingExpiration(Timeout);
 				return new ConcurrentDictionary<string, T>();
-			});
+			})!;
 		}
 	}
 }
