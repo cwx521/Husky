@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Husky.KeyValues.Data.Migrations
 {
-    public partial class Init_KeyValue : Migration
+    /// <inheritdoc />
+    public partial class InitKeyValue : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -19,6 +23,7 @@ namespace Husky.KeyValues.Data.Migrations
                 });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

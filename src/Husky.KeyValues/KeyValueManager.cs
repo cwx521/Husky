@@ -25,6 +25,7 @@ namespace Husky.KeyValues
 		public bool Exists(string key) => Items.Any(x => x.Key == key);
 
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
+			entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
 			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			return db.KeyValues.AsNoTracking().ToList();
 		})!;
@@ -35,12 +36,12 @@ namespace Husky.KeyValues
 
 		public T GetOrAdd<T>(string key, T fallback) where T : struct => GetOrAdd(key, fallback.ToString()).As<T>();
 		public string? GetOrAdd(string key, string? fallback) {
-			if ( key == null ) {
+			if (key == null) {
 				throw new ArgumentNullException(nameof(key));
 			}
 
 			var item = Find(key);
-			if ( item != null ) {
+			if (item != null) {
 				return item.Value;
 			}
 
@@ -48,7 +49,7 @@ namespace Husky.KeyValues
 				Key = key,
 				Value = fallback
 			};
-			lock ( _lock ) {
+			lock (_lock) {
 				Items.Add(item);
 			}
 			return fallback;
@@ -56,22 +57,22 @@ namespace Husky.KeyValues
 
 		public void AddOrUpdate<T>(string key, T value) where T : struct => AddOrUpdate(key, value.ToString());
 		public void AddOrUpdate(string key, string? value) {
-			if ( key == null ) {
+			if (key == null) {
 				throw new ArgumentNullException(nameof(key));
 			}
 
 			var item = Find(key);
-			if ( item == null ) {
+			if (item == null) {
 				item = new KeyValue {
 					Key = key,
 					Value = value
 				};
-				lock ( _lock ) {
+				lock (_lock) {
 					Items.Add(item);
 				}
 			}
 			else {
-				lock ( _lock ) {
+				lock (_lock) {
 					item.Value = value;
 				}
 			}
