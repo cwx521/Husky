@@ -48,7 +48,7 @@ namespace Husky.FileStore.AliyunOss
 
 		public void Tag(string fileName, IDictionary<string, string> tags) {
 			var taggingRequest = new SetObjectTaggingRequest(_bucketName, fileName);
-			foreach ( var i in tags ) taggingRequest.AddTag(new Tag { Key = i.Key, Value = i.Value });
+			foreach (var i in tags) taggingRequest.AddTag(new Tag { Key = i.Key, Value = i.Value });
 			_client.SetObjectTagging(taggingRequest);
 		}
 		public void Tag(string fileName, string tagKey, string tagValue) {

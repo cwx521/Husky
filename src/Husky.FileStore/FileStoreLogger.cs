@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Husky.FileStore.Data;
 using Husky.Principal;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.FileStore
 {
@@ -22,29 +24,35 @@ namespace Husky.FileStore
 				AnonymousId = byUser?.AnonymousId,
 				UserId = byUser?.Id,
 				UserName = byUser?.DisplayName,
-				AccessControl = StoredFileAccessControl.Default
+				AccessControl = StoredFileAccessControl.Default,
+				CreatedTime = DateTime.Now
 			};
-			if ( tags != null ) {
-				record.Tags.AddRange(tags.Select(x => new StoredFileTag { Key = x.Key, Value = x.Value }));
+			if (tags != null) {
+				record.Tags.AddRange(
+					tags.Select(x => new StoredFileTag {
+						Key = x.Key,
+						Value = x.Value
+					})
+				);
 			}
 			_db.StoredFiles.Add(record);
 			_db.Normalize().SaveChanges();
 		}
 
 		public void LogFileDelete(string fileName) {
-			var row = _db.StoredFiles.SingleOrDefault(x => x.FileName == fileName);
-			if ( row != null ) {
-				row.IsDeleted = true;
-				_db.Normalize().SaveChanges();
-			}
+			_db.StoredFiles
+				.Where(x => x.FileName == fileName)
+				.ExecuteUpdate(row =>
+					row.SetProperty(x => x.IsDeleted, true)
+				);
 		}
 
 		public void LogAccessControlChange(string fileName, StoredFileAccessControl accessControl) {
-			var row = _db.StoredFiles.SingleOrDefault(x => x.FileName == fileName);
-			if ( row != null ) {
-				row.AccessControl = accessControl;
-				_db.Normalize().SaveChanges();
-			}
+			_db.StoredFiles
+				.Where(x => x.FileName == fileName)
+				.ExecuteUpdate(row =>
+					row.SetProperty(x => x.AccessControl, accessControl)
+				);
 		}
 	}
 }

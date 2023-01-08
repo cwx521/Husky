@@ -1,10 +1,14 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Husky.FileStore.Data.Migrations
 {
-    public partial class Init_FileStore : Migration
+    /// <inheritdoc />
+    public partial class InitFileStore : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -30,7 +34,7 @@ namespace Husky.FileStore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoredFileTag",
+                name: "StoredFileTags",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -41,9 +45,9 @@ namespace Husky.FileStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoredFileTag", x => x.Id);
+                    table.PrimaryKey("PK_StoredFileTags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoredFileTag_StoredFiles_StoredFileId",
+                        name: "FK_StoredFileTags_StoredFiles_StoredFileId",
                         column: x => x.StoredFileId,
                         principalTable: "StoredFiles",
                         principalColumn: "Id",
@@ -57,15 +61,16 @@ namespace Husky.FileStore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoredFileTag_StoredFileId",
-                table: "StoredFileTag",
+                name: "IX_StoredFileTags_StoredFileId",
+                table: "StoredFileTags",
                 column: "StoredFileId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "StoredFileTag");
+                name: "StoredFileTags");
 
             migrationBuilder.DropTable(
                 name: "StoredFiles");

@@ -9,5 +9,6 @@ namespace Husky.Tests.Examples
 		}
 
 		public string JustConfigureYourSettingsInThisWay { get; set; } = "ConfiguredValue";
+		public int AnotherConfigItem { get; set; } = 123;
 	}
 }

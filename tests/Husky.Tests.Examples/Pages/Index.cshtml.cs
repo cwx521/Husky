@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Husky.Diagnostics.Data;
@@ -26,10 +27,10 @@ namespace Husky.Tests.Examples.Pages
 		}
 
 		public IActionResult OnPost() {
-			if ( !ModelState.IsValid ) {
+			if (!ModelState.IsValid) {
 				TellHim = ModelState.GetAllErrorMessages().First();
 			}
-			if ( _me.IsAnonymous ) {
+			if (_me.IsAnonymous) {
 				_me.Id = 1;
 				_me.DisplayName = "Weixing";
 				_me.IdentityManager!.SaveIdentity(_me);

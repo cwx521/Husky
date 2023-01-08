@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Husky.Principal;
 
 namespace Husky.FileStore.LocalStorage
 {
@@ -22,7 +19,7 @@ namespace Husky.FileStore.LocalStorage
 
 		public void Put(string fileName, Stream data) {
 			var type = StoredFileTypeHelper.Identify(fileName);
-			if ( type == StoredFileType.Else ) {
+			if (type == StoredFileType.Else) {
 				throw new InvalidDataException($"Not allowed to upload {Path.GetExtension(fileName)} files or files without any extension name.");
 			}
 
@@ -39,12 +36,12 @@ namespace Husky.FileStore.LocalStorage
 			try {
 				File.Delete(GetPhysicalPath(fileName));
 			}
-			catch ( DirectoryNotFoundException ) { }
+			catch (DirectoryNotFoundException) { }
 			catch { throw; }
 		}
 
 		public void Delete(string[] fileNames) {
-			foreach ( var fileName in fileNames ) {
+			foreach (var fileName in fileNames) {
 				Delete(fileName);
 			}
 		}
@@ -52,8 +49,8 @@ namespace Husky.FileStore.LocalStorage
 		private string GetPhysicalPath(string fileName) => Path.Combine(_rootPath, fileName.TrimStart('/', '\\'));
 
 		private static void ValidateRootPath(string rootPath) {
-			if ( !Path.IsPathRooted(rootPath) ) {
-				throw new InvalidProgramException($"{rootPath} is not a root path");
+			if (!Path.IsPathRooted(rootPath)) {
+				throw new ArgumentException($"{rootPath} is not a root path", nameof(rootPath));
 			}
 		}
 	}
