@@ -1,10 +1,14 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Husky.TwoFactor.Data.Migrations
 {
-    public partial class Init_TwoFactor : Migration
+    /// <inheritdoc />
+    public partial class InitTwoFactor : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -27,6 +31,7 @@ namespace Husky.TwoFactor.Data.Migrations
                 });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
