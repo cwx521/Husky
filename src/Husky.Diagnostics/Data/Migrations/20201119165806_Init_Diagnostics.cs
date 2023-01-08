@@ -1,10 +1,14 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Husky.Diagnostics.Data.Migrations
 {
-    public partial class Init_Diagnostics : Migration
+    /// <inheritdoc />
+    public partial class InitDiagnostics : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -103,6 +107,7 @@ namespace Husky.Diagnostics.Data.Migrations
                 .Annotation("SqlServer:Clustered", false);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

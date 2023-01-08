@@ -7,26 +7,31 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
     [Migration("20201119165806_Init_Diagnostics")]
-    partial class Init_Diagnostics
+    partial class InitDiagnostics
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Husky.Diagnostics.Data.ExceptionLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -98,8 +103,9 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsClustered(false);
+                    b.HasIndex("Md5Comparison");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -108,8 +114,9 @@ namespace Husky.Diagnostics.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -149,8 +156,9 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsClustered(false);
+                    b.HasIndex("Md5Comparison");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
 
                     b.ToTable("OperationLogs");
                 });
@@ -159,8 +167,9 @@ namespace Husky.Diagnostics.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
@@ -217,8 +226,9 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Md5Comparison")
-                        .IsClustered(false);
+                    b.HasIndex("Md5Comparison");
+
+                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
 
                     b.ToTable("RequestLogs");
                 });
