@@ -1,6 +1,6 @@
 ﻿namespace Husky.Alipay
 {
-	public class AlipayOrderModel
+	public class AlipayOrderPrecreationModel
 	{
 		public decimal Amount { get; set; }
 		public string OrderNo { get; set; } = null!;

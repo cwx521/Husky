@@ -29,8 +29,9 @@ namespace Husky.Alipay
 		private readonly DefaultAopClient _alipay;
 
 		public IAopClient OriginalClient => _alipay;
+		public AlipayOptions Options => _options;
 
-		public AlipayOrderCreationResult GenerateAlipayPaymentUrl(AlipayOrderModel payment) {
+		public AlipayOrderPrecreationResult GenerateAlipayPaymentUrl(AlipayOrderPrecreationModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
@@ -52,10 +53,44 @@ namespace Husky.Alipay
 			pagePayRequest.SetBizModel(payModel);
 			var pagePayResponse = _alipay.SdkExecute(pagePayRequest);
 
-			return new AlipayOrderCreationResult {
+			return new AlipayOrderPrecreationResult {
 				MobileWebPaymentUrl = _options.GatewayUrl + "?" + wapPayResponse.Body,
 				DesktopPagePaymentUrl = _options.GatewayUrl + "?" + pagePayResponse.Body
 			};
+		}
+
+		public Result<AlipayOrderF2FPayResult> F2FPay(AlipayOrderF2FPayModel payment) {
+			var payModel = new AlipayTradePayModel {
+				Subject = payment.Subject,
+				Body = payment.Body,
+				OutTradeNo = payment.OrderNo,
+				TotalAmount = payment.Amount.ToString("f2"),
+				DisablePayChannels = payment.AllowCreditCard ? null : "credit_group",
+				AuthCode = payment.AuthCode,
+				Scene = payment.Scene,
+			};
+			var request = new AlipayTradePayRequest();
+			request.SetBizModel(payModel);
+
+			try {
+				var response = _alipay.Execute(request);
+				var ok = response is { IsError: false, Msg: "Success", Code: "10000" };
+
+				return new Result<AlipayOrderF2FPayResult> {
+					Ok = ok,
+					Message = response.SubMsg ?? response.Msg,
+					Data = new AlipayOrderF2FPayResult {
+						AlipayTradeNo = response?.TradeNo,
+						AlipayBuyerId = response?.BuyerUserId,
+						Amount = response?.TotalAmount.AsDecimal() ?? 0,
+						OriginalResult = response,
+						AwaitConfirm = response?.Code == "10003"
+					}
+				};
+			}
+			catch (Exception e) {
+				return new Failure<AlipayOrderF2FPayResult>(e.Message);
+			}
 		}
 
 		public Result<AlipayOrderQueryResult> QueryOrder(string orderNo) {
@@ -69,20 +104,19 @@ namespace Husky.Alipay
 				var response = _alipay.Execute(request);
 				var ok = response is { IsError: false, Msg: "Success", TradeStatus: "TRADE_SUCCESS" };
 
-				if ( !ok ) {
+				if (!ok) {
 					return new Failure<AlipayOrderQueryResult>(response.SubMsg ?? response.Msg);
 				}
 				return new Success<AlipayOrderQueryResult> {
 					Data = new AlipayOrderQueryResult {
 						AlipayTradeNo = response.TradeNo,
-						AlipayBuyerUserId = response.BuyerUserId,
-						AlipayBuyerLogonId = response.BuyerLogonId,
+						AlipayBuyerId = response.BuyerUserId,
 						Amount = response.TotalAmount.AsDecimal(),
 						OriginalResult = response
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<AlipayOrderQueryResult>(e.Message);
 			}
 		}
@@ -101,7 +135,7 @@ namespace Husky.Alipay
 				var response = _alipay.Execute(request);
 				var ok = response is { IsError: false, Msg: "Success" };
 
-				if ( !ok ) {
+				if (!ok) {
 					return new Failure<AlipayRefundResult>(response.SubMsg ?? response.Msg);
 				}
 				return new Success<AlipayRefundResult> {
@@ -112,7 +146,7 @@ namespace Husky.Alipay
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<AlipayRefundResult>(e.Message);
 			}
 		}
@@ -129,7 +163,7 @@ namespace Husky.Alipay
 				var response = _alipay.Execute(request);
 				var ok = response is { IsError: false, Msg: "Success" };
 
-				if ( !ok ) {
+				if (!ok) {
 					return new Failure<AlipayRefundQueryResult>(response.SubMsg ?? response.Msg);
 				}
 				return new Success<AlipayRefundQueryResult> {
@@ -140,14 +174,14 @@ namespace Husky.Alipay
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<AlipayRefundQueryResult>(e.Message);
 			}
 		}
 
 		public async Task<Result<AlipayNotifyResult>> ParseNotifyResultAsync(HttpRequest request) {
 			var form = request.HasFormContentType ? await request.ReadFormAsync() : null;
-			if ( form == null || form.Count == 0 ) {
+			if (form == null || form.Count == 0) {
 				return new Failure<AlipayNotifyResult>("未收到任何参数");
 			}
 
@@ -156,10 +190,10 @@ namespace Husky.Alipay
 			var readAmount = dict.TryGetValue("total_amount", out var amount);
 			var validationOk = AlipaySignature.RSACheckV1(dict, _options.AlipayPublicKey, _options.CharSet, _options.SignType, false);
 
-			if ( !success ) {
+			if (!success) {
 				return new Failure<AlipayNotifyResult>("支付失败");
 			}
-			if ( !readAmount || !validationOk ) {
+			if (!readAmount || !validationOk) {
 				return new Failure<AlipayNotifyResult>("未通过数据加密验证");
 			}
 

@@ -22,7 +22,7 @@ namespace Husky.Alipay.Tests
 			}
 
 			var alipay = new AlipayService(_alipayOptions);
-			var tradeModel = new AlipayOrderModel {
+			var tradeModel = new AlipayOrderPrecreationModel {
 				Amount = 0.1m,
 				OrderNo = OrderIdGen.New(),
 				Subject = "UnitTest"
