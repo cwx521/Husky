@@ -14,15 +14,15 @@ namespace Husky.Mail.Data
 		[StringLength(100), Column(TypeName = "varchar(100)"), Required]
 		public string Host { get; set; } = null!;
 
-		[StringLength(50), Column(TypeName = "varchar(50)"), Required, Unique]
-		public string CredentialName { get; set; } = null!;
-
 		public int Port { get; set; } = 25;
 
 		public bool Ssl { get; set; }
 
-		[StringLength(64), Column(TypeName = "varchar(64)"), Required, EditorBrowsable(EditorBrowsableState.Never)]
-		public string PasswordEncrypted { get; set; } = null!;
+		[StringLength(50), Column(TypeName = "varchar(50)"), Unique]
+		public string? CredentialName { get; set; }
+
+		[StringLength(64), Column(TypeName = "varchar(64)"), EditorBrowsable(EditorBrowsableState.Never)]
+		public string? PasswordEncrypted { get; set; }
 
 		[StringLength(50), Column(TypeName = "varchar(50)"), Required]
 		public string SenderMailAddress { get; set; } = null!;
@@ -34,9 +34,9 @@ namespace Husky.Mail.Data
 
 
 		[NotMapped]
-		public string Password {
-			get => Crypto.Decrypt(PasswordEncrypted, Id.ToString());
-			set => PasswordEncrypted = Crypto.Encrypt(value, Id.ToString());
+		public string? Password {
+			get => PasswordEncrypted == null ? null : Crypto.Decrypt(PasswordEncrypted, Id.ToString());
+			set => PasswordEncrypted = value == null ? null : Crypto.Encrypt(value, Id.ToString());
 		}
 
 

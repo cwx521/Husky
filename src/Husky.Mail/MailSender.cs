@@ -26,7 +26,7 @@ namespace Husky.Mail
 		private readonly ISmtpProvider? _smtp;
 
 		public async Task SendAsync(string subject, string content, params string[] recipients) {
-			if ( recipients == null || recipients.Length == 0 ) {
+			if (recipients == null || recipients.Length == 0) {
 				throw new ArgumentNullException(nameof(recipients));
 			}
 			await SendAsync(new MailMessage {
@@ -38,14 +38,14 @@ namespace Husky.Mail
 		}
 
 		public async Task SendAsync(MailMessage mailMessage, Action<MailSentEventArgs>? onCompleted = null) {
-			if ( mailMessage == null ) {
+			if (mailMessage == null) {
 				throw new ArgumentNullException(nameof(mailMessage));
 			}
 
 			var smtp = _smtp ?? await GetPreconfiguredSmtpProviderAsync(_mailDb);
 			var mailRecord = await BuildMailRecordAsync(mailMessage);
 
-			if ( smtp is MailSmtpProvider internalSmtp ) {
+			if (smtp is MailSmtpProvider internalSmtp) {
 				mailRecord.SmtpId = internalSmtp.Id;
 			}
 
@@ -67,12 +67,12 @@ namespace Husky.Mail
 			try {
 				await client.ConnectAsync(smtp.Host, smtp.Port, smtp.Ssl);
 
-				if ( !string.IsNullOrEmpty(smtp.CredentialName) ) {
+				if (!string.IsNullOrEmpty(smtp.CredentialName)) {
 					await client.AuthenticateAsync(smtp.CredentialName, smtp.Password);
 				}
 				await client.SendAsync(BuildMimeMessage(smtp, mailMessage));
 			}
-			catch ( Exception ex ) {
+			catch (Exception ex) {
 				mailRecord.Exception = ex.Message.Left(500);
 				await _mailDb.Normalize().SaveChangesAsync();
 			}
@@ -82,7 +82,7 @@ namespace Husky.Mail
 
 		private static async Task<MailSmtpProvider> GetPreconfiguredSmtpProviderAsync(IMailDbContext mailDb) {
 			var available = mailDb.MailSmtpProviders.Count(x => x.IsInUse);
-			if ( available == 0 ) {
+			if (available == 0) {
 				throw new Exception("SMTP is not configured yet.");
 			}
 			var skip = _increment++ % available;
@@ -97,10 +97,10 @@ namespace Husky.Mail
 				To = string.Join(";", mail.To.Select(x => x.ToString())),
 				Cc = string.Join(";", mail.Cc.Select(x => x.ToString())),
 			};
-			foreach ( var item in mail.Attachments ) {
+			foreach (var item in mail.Attachments) {
 				mailRecord.Attachments.Add(new MailRecordAttachment {
 					Name = item.Name,
-					ContentStream = await ReadStreamAsync(item.ContentStream),
+					ContentBytes = await ReadStreamAsync(item.ContentStream),
 					ContentType = item.ContentType
 				});
 			}
@@ -119,7 +119,7 @@ namespace Husky.Mail
 				Text = mail.Body
 			};
 
-			if ( mail.Attachments.Count == 0 ) {
+			if (mail.Attachments.Count == 0) {
 				mimeMessage.Body = body;
 			}
 			else {

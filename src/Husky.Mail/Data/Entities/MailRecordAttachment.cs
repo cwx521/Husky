@@ -14,7 +14,7 @@ namespace Husky.Mail.Data
 		public string Name { get; set; } = null!;
 
 		[Required]
-		public byte[] ContentStream { get; set; } = null!;
+		public byte[] ContentBytes { get; set; } = null!;
 
 		[StringLength(32), Required]
 		public string ContentType { get; set; } = null!;

@@ -12,8 +12,9 @@ namespace Husky.Lbs.QQLbs
 	public class QQLbsService : ILbs
 	{
 		public QQLbsService(string key) {
-			_options = new QQLbsOptions();
-			_options.Key = key ?? throw new ArgumentNullException(nameof(key));
+			_options = new QQLbsOptions {
+				Key = key ?? throw new ArgumentNullException(nameof(key))
+			};
 		}
 
 		public QQLbsService(QQLbsOptions settings) {
@@ -78,7 +79,7 @@ namespace Husky.Lbs.QQLbs
 			from = from.ConvertToGcj02();
 			to = to.ConvertToGcj02();
 
-			if ( mode == DistanceMode.Straight ) {
+			if (mode == DistanceMode.Straight) {
 				return to.StraightDistanceTo(from);
 			}
 
@@ -102,7 +103,7 @@ namespace Husky.Lbs.QQLbs
 		public async Task<Distance[]?> GetDistancesAsync(Location from, IEnumerable<Location> toMany, DistanceMode mode = DistanceMode.Driving) {
 			from = from.ConvertToGcj02();
 
-			if ( mode == DistanceMode.Straight ) {
+			if (mode == DistanceMode.Straight) {
 				return toMany.Select(to => to.StraightDistanceTo(from)).ToArray();
 			}
 
@@ -113,14 +114,14 @@ namespace Husky.Lbs.QQLbs
 					  $"&to={string.Join(';', toMany.Select(x => x.ConvertToGcj02().ToString()))}";
 
 			var x = await GetApiResultAsync(url);
-			if ( x == null ) {
+			if (x == null) {
 				return null;
 			}
 
 			var n = toMany.Count();
 			var i = 0;
 			var results = new Distance[n];
-			foreach ( var to in toMany ) {
+			foreach (var to in toMany) {
 				results[i] = new Distance {
 					From = from,
 					To = to,
@@ -138,7 +139,7 @@ namespace Husky.Lbs.QQLbs
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if (d.status == 0 && d.message == "query ok" ) {
+				if (d.status == 0 && d.message == "query ok") {
 					return d.result;
 				}
 			}

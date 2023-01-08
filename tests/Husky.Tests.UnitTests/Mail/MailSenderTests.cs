@@ -20,12 +20,12 @@ namespace Husky.Mail.Tests
 
 			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),
-				Host = "smtp.live.com",
-				Port = 25,
-				Ssl = false,
+				Host = "smtp.exmail.qq.com",
+				Port = 465,
+				Ssl = true,
 				SenderDisplayName = "Weixing Chen",
-				SenderMailAddress = "chenwx521@hotmail.com",
-				CredentialName = "chenwx521@hotmail.com",
+				SenderMailAddress = "chenwx@xingyisoftware.com",
+				CredentialName = "chenwx@xingyisoftware.com",
 				Password = "",
 				IsInUse = true
 			};
@@ -77,7 +77,7 @@ namespace Husky.Mail.Tests
 			Assert.AreEqual(mailRecord.Cc, string.Join(";", mail.Cc.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Attachments.Count, mail.Attachments.Count);
 			Assert.AreEqual(mailRecord.Attachments.First().Name, mail.Attachments.First().Name);
-			Assert.AreEqual(mailRecord.Attachments.First().ContentStream.Length, mail.Attachments.First().ContentStream.Length);
+			Assert.AreEqual(mailRecord.Attachments.First().ContentBytes.Length, mail.Attachments.First().ContentStream.Length);
 
 			Assert.AreEqual(mailRecord.Body, strReadFromCallback);
 			Assert.AreEqual(mailRecord.IsSuccessful, true);
