@@ -4,9 +4,10 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Husky.WeChatIntegration
 {
-	public class CertifiedWebClient : WebClient
+	[Obsolete("Use HttpClient(WeChatPayCertifiedHttpClientHandler) instead.")]
+	public class WeChatPayCertifiedWebClient : WebClient
 	{
-		internal CertifiedWebClient(string subjectName) : base() {
+		internal WeChatPayCertifiedWebClient(string subjectName) : base() {
 			_subjectName = subjectName;
 		}
 
@@ -19,7 +20,7 @@ namespace Husky.WeChatIntegration
 			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
 			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, _subjectName, false);
-			if ( certs != null && certs.Count != 0 ) {
+			if (certs != null && certs.Count != 0) {
 				request.ClientCertificates.Add(certs[0]);
 			}
 			store.Close();

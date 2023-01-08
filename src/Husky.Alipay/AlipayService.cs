@@ -84,7 +84,7 @@ namespace Husky.Alipay
 						AlipayBuyerId = response?.BuyerUserId,
 						Amount = response?.TotalAmount.AsDecimal() ?? 0,
 						OriginalResult = response,
-						AwaitConfirm = response?.Code == "10003"
+						AwaitPaying = response?.Code == "10003"
 					}
 				};
 			}
@@ -176,6 +176,33 @@ namespace Husky.Alipay
 			}
 			catch (Exception e) {
 				return new Failure<AlipayRefundQueryResult>(e.Message);
+			}
+		}
+
+		public Result CancelOrder(string orderNo, bool allowToCancelAfterPaid = false) {
+			if (!allowToCancelAfterPaid) {
+				var queryResult = QueryOrder(orderNo);
+				if (queryResult.Ok) {
+					return new Failure("订单已完成付款，未能撤销");
+				}
+			}
+
+			var model = new AlipayTradeCancelModel {
+				OutTradeNo = orderNo
+			};
+			var request = new AlipayTradeCancelRequest();
+			request.SetBizModel(model);
+
+			try {
+				var response = _alipay.Execute(request);
+				var ok = response is { IsError: false, Msg: "Success" };
+				if (ok) {
+					return new Success();
+				}
+				return new Failure(response.SubMsg ?? response.Msg);
+			}
+			catch (Exception e) {
+				return new Failure(e.Message);
 			}
 		}
 

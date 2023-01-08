@@ -4,6 +4,7 @@
 	{
 		JsApi,
 		Native,
-		App
+		App,
+		MWeb
 	}
 }

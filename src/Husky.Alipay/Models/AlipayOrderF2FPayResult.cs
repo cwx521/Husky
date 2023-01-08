@@ -7,7 +7,7 @@ namespace Husky.Alipay
 		public string? AlipayTradeNo { get; internal init; }
 		public string? AlipayBuyerId { get; internal init; }
 		public decimal Amount { get; internal init; }
-		public bool AwaitConfirm { get; internal set; }
+		public bool AwaitPaying { get; internal set; }
 
 		public AlipayTradePayResponse? OriginalResult { get; internal init; }
 	}

@@ -15,14 +15,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
 
-		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if ( d.errcode != null && (int)d.errcode != 0 ) {
+				if (d.errcode != null && (int)d.errcode != 0) {
 					return new Failure<WeChatUserResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserResult> {
@@ -39,7 +38,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatUserResult>(e.Message);
 			}
 		}
@@ -107,7 +106,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if ( d.errcode != null && (int)d.errcode != 0 ) {
+				if (d.errcode != null && (int)d.errcode != 0) {
 					return new Failure<WeChatUserAccessToken>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserAccessToken> {
@@ -118,7 +117,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatUserAccessToken>(e.Message);
 			}
 		}

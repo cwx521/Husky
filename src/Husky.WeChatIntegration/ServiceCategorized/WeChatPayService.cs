@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -44,7 +42,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		public async Task<Result<WeChatPayOrderCreationResult>> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
-			var apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+			const string apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 			var now = DateTime.Now;
 			var parameters = GetCommonParameters(model.AppId);
@@ -60,20 +58,20 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				{ "total_fee", (model.Amount * 100).ToString("f0") },
 				{ "body", model.Body },
 			};
-			foreach ( var i in more ) {
+			foreach (var i in more) {
 				parameters.Add(i.Key, i.Value);
 			}
-			if ( !model.AllowCreditCard ) {
+			if (!model.AllowCreditCard) {
 				parameters.Add("limit_pay", "no_credit");
 			}
-			if ( !string.IsNullOrEmpty(model.Attach) ) {
+			if (!string.IsNullOrEmpty(model.Attach)) {
 				parameters.Add("attach", model.Attach);
 			}
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
-				if ( !IsSuccess(xml) ) {
+				if (!IsResultCodeSuccess(xml)) {
 					return new Failure<WeChatPayOrderCreationResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayOrderCreationResult> {
@@ -84,13 +82,56 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatPayOrderCreationResult>(e.Message);
 			};
 		}
 
+		public async Task<Result<WeChatPayOrderMicroPayResult>> MicroPay(WeChatPayOrderMicroPayModel model) {
+			const string apiUrl = "https://api.mch.weixin.qq.com/pay/micropay";
+
+			var now = DateTime.Now;
+			var parameters = GetCommonParameters(model.AppId);
+			var more = new Dictionary<string, string> {
+				{ "time_start", now.ToString("yyyyMMddHHmmss") },
+				{ "time_expire", now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
+				{ "spbill_create_ip", model.IPAddress },
+				{ "out_trade_no", model.OrderNo },
+				{ "total_fee", (model.Amount * 100).ToString("f0") },
+				{ "body", model.Body },
+				{ "auth_code", model.AuthCode },
+			};
+			foreach (var i in more) {
+				parameters.Add(i.Key, i.Value);
+			}
+			if (!model.AllowCreditCard) {
+				parameters.Add("limit_pay", "no_credit");
+			}
+			if (!string.IsNullOrEmpty(model.Attach)) {
+				parameters.Add("attach", model.Attach);
+			}
+
+			try {
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
+				return new Result<WeChatPayOrderMicroPayResult> {
+					Ok = IsResultCodeSuccess(xml) && GetContent(xml, "trade_state") == "SUCCESS" && GetContent(xml, "trade_type") == "MICROPAY",
+					Message = GetErrorDescription(xml),
+					Data = new WeChatPayOrderMicroPayResult {
+						OpenId = GetContent(xml, "openid"),
+						TransactionId = GetContent(xml, "transaction_id"),
+						Amount = GetValue<int>(xml, "total_fee") / 100m,
+						AwaitPaying = GetContent(xml, "err_code") == "USERPAYING",
+						OriginalResult = xml
+					}
+				};
+			}
+			catch (Exception e) {
+				return new Failure<WeChatPayOrderMicroPayResult>(e.Message);
+			};
+		}
+
 		public async Task<Result<WeChatPayOrderQueryResult>> QueryOrderAsync(string appId, string orderNo) {
-			var apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
+			const string apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
 			var parameters = GetCommonParameters(appId);
 			parameters.Add("out_trade_no", orderNo);
@@ -99,7 +140,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 				var tradeState = GetContent(xml, "trade_state");
 
-				if ( tradeState != "REFUND" && tradeState != "SUCCESS" ) {
+				if (tradeState != "REFUND" && tradeState != "SUCCESS") {
 					return new Failure<WeChatPayOrderQueryResult>(GetErrorDescription(xml));
 				}
 
@@ -113,13 +154,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatPayOrderQueryResult>(e.Message);
 			};
 		}
 
 		public async Task<Result<WeChatPayRefundResult>> RefundAsync(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
-			var apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+			const string apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 			var parameters = GetCommonParameters(appId);
 			var more = new Dictionary<string, string> {
@@ -129,14 +170,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				{ "refund_fee", (refundAmount * 100).ToString("f0") },
 				{ "refund_desc", refundReason },
 			};
-			foreach ( var i in more ) {
+			foreach (var i in more) {
 				parameters.Add(i.Key, i.Value);
 			}
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, true);
 
-				if ( !IsSuccess(xml) ) {
+				if (!IsResultCodeSuccess(xml)) {
 					return new Failure<WeChatPayRefundResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayRefundResult> {
@@ -146,13 +187,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatPayRefundResult>(e.Message);
 			};
 		}
 
 		public async Task<Result<WeChatPayRefundQueryResult>> QueryRefundAsync(string appId, string refundRequestNo) {
-			var apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
+			const string apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
 			var parameters = GetCommonParameters(appId);
 			parameters.Add("out_refund_no", refundRequestNo);
@@ -160,7 +201,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
-				if ( !IsSuccess(xml) || (GetContent(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING") ) {
+				if (!IsResultCodeSuccess(xml) || (GetContent(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING")) {
 					return new Failure<WeChatPayRefundQueryResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayRefundQueryResult> {
@@ -170,8 +211,33 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatPayRefundQueryResult>(e.Message);
+			};
+		}
+
+		public async Task<Result> CancelOrderAsync(string appId, string orderNo, bool allowToCancelAfterPaid = false) {
+			const string apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/reverse";
+
+			if (!allowToCancelAfterPaid) {
+				var queryResult = await QueryOrderAsync(appId, orderNo);
+				if (queryResult.Ok) {
+					return new Failure("订单已完成付款，未能撤销");
+				}
+			}
+
+			var parameters = GetCommonParameters(appId);
+			parameters.Add("out_trade_no", orderNo);
+
+			try {
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
+				if (IsResultCodeSuccess(xml)) {
+					return new Success();
+				}
+				return new Failure(GetErrorDescription(xml));
+			}
+			catch (Exception e) {
+				return new Failure(e.Message);
 			};
 		}
 
@@ -181,7 +247,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			//按Key排序，追加key=@MerchantSecret，合成FormData格式字符串
 			var orderedNames = apiParameters.Keys.OrderBy(x => x).ToArray();
-			foreach ( var name in orderedNames ) {
+			foreach (var name in orderedNames) {
 				sb.Append(name + "=" + apiParameters[name] + "&");
 			}
 			sb.Append("key=" + _options.MerchantSecret);
@@ -193,26 +259,28 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			//再转换成XML
 			sb.Clear();
 			sb.Append("<xml>");
-			foreach ( var item in apiParameters ) {
+			foreach (var item in apiParameters) {
 				sb.AppendFormat("<{0}>{1}</{0}>", item.Key, item.Value);
 			}
 			sb.Append("</xml>");
 			var xml = sb.ToString();
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
-			if ( useCert ) {
-				using var client = new CertifiedWebClient(_options.MerchantId!);
-				return await client.UploadStringTaskAsync(wechatApiUrl, xml);
+			HttpResponseMessage? response = null;
+			if (!useCert) {
+				response = await DefaultHttpClient.Instance.PostAsync(wechatApiUrl, new StringContent(xml));
 			}
-
-			var response = await DefaultHttpClient.Instance.PostAsync(wechatApiUrl, new StringContent(xml));
+			else {
+				var handler = new WeChatPayCertifiedHttpClientHandler(_options.MerchantId!);
+				using var client = new HttpClient(handler);
+				response = await client.PostAsync(wechatApiUrl, new StringContent(xml));
+			}
 			return await response.Content.ReadAsStringAsync();
 		}
 
-		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public Result<WeChatPayNotifyResult> ParseNotifyResult(string xml) {
 			try {
-				if ( !IsSuccess(xml) ) {
+				if (!IsResultCodeSuccess(xml)) {
 					return new Failure<WeChatPayNotifyResult>(GetErrorDescription(xml));
 				}
 				return new Success<WeChatPayNotifyResult> {
@@ -226,12 +294,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatPayNotifyResult>(e.Message);
 			}
 		}
 
-		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public string CreateNotifyRespondSuccessXml() {
 			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 		}
@@ -247,7 +314,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private static string? GetContent(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
 		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
-		private static bool IsSuccess(string fromXml) => GetContent(fromXml, "result_code") == "SUCCESS";
+		private static bool IsResultCodeSuccess(string fromXml) => GetContent(fromXml, "result_code") == "SUCCESS";
 		private static string? GetErrorDescription(string fromXml) => GetContent(fromXml, "err_code_des");
 	}
 }

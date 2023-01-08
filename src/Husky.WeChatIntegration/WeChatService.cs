@@ -18,9 +18,9 @@ namespace Husky.WeChatIntegration
 
 		public WeChatOptions Options { get; }
 
-		public WeChatJsApiService JsApi() => new WeChatJsApiService(Options, _http, _cache);
-		public WeChatUserService User() => new WeChatUserService(Options);
-		public WeChatAuthService Auth() => new WeChatAuthService(Options);
-		public WeChatPayService Pay() => new WeChatPayService(Options);
+		public WeChatJsApiService JsApi() => new(Options, _http, _cache);
+		public WeChatUserService User() => new(Options);
+		public WeChatAuthService Auth() => new(Options);
+		public WeChatPayService Pay() => new(Options);
 	}
 }
