@@ -7,8 +7,8 @@ namespace Husky.Diagnostics.Data
 	{
 		DbContext Normalize();
 
-		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-		public DbSet<RequestLog> RequestLogs { get; set; }
-		public DbSet<OperationLog> OperationLogs { get; set; }
+		DbSet<ExceptionLog> ExceptionLogs { get; set; }
+		DbSet<RequestLog> RequestLogs { get; set; }
+		DbSet<OperationLog> OperationLogs { get; set; }
 	}
 }

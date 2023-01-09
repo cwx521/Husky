@@ -7,8 +7,8 @@ namespace Husky.Mail.Data
 	{
 		DbContext Normalize();
 
-		DbSet<MailSmtpProvider> MailSmtpProviders { get; set; }
-		DbSet<MailRecord> MailRecords { get; set; }
-		DbSet<MailRecordAttachment> MailRecordAttachments { get; set; }
+		public DbSet<MailSmtpProvider> MailSmtpProviders { get; set; }
+		public DbSet<MailRecord> MailRecords { get; set; }
+		public DbSet<MailRecordAttachment> MailRecordAttachments { get; set; }
 	}
 }

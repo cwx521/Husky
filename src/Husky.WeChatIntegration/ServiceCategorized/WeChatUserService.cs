@@ -13,6 +13,33 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatOptions _options;
 
+
+		public async Task<Result<WeChatUserSubscriptionStatusResult>> GetUserSubscriptionStatus(WeChatUserAccessToken token) => await GetUserSubscriptionStatus(token.OpenId, token.AccessToken);
+
+		public async Task<Result<WeChatUserSubscriptionStatusResult>> GetUserSubscriptionStatus(string openId, string accessToken) {
+			try {
+				var url = $"https://api.weixin.qq.com/cgi-bin/user/info" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
+				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
+
+				if (d.errcode != null && (int)d.errcode != 0) {
+					return new Failure<WeChatUserSubscriptionStatusResult>((int)d.errcode + ": " + d.errmsg);
+				}
+				return new Success<WeChatUserSubscriptionStatusResult> {
+					Data = new WeChatUserSubscriptionStatusResult {
+						Subscribed = d.subscribe != null && (int)d.subscribe == 1,
+						SubscribeTime = d.subscribe == null || (int)d.subscribe != 1 ? null : new DateTime(1970, 1, 1).AddSeconds((int)d.subscribe_time),
+						SubscribeScene = d.subscribe_scene,
+						OpenId = d.openid,
+						UnionId = d.unionid,
+					}
+				};
+			}
+			catch (Exception e) {
+				return new Failure<WeChatUserSubscriptionStatusResult>(e.Message);
+			}
+		}
+
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
 
 		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(string openId, string accessToken) {
@@ -89,7 +116,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				AppSecret = _options.MobilePlatformAppSecret
 			});
 		}
-		[SuppressMessage("Performance", "CA1822:Mark members as static")]
 		public async Task<Result<WeChatUserAccessToken>> RefreshUserAccessTokenAsync(string refreshToken, WeChatAppIdSecret overrideIdSecret) {
 			overrideIdSecret.NotNull();
 
