@@ -22,20 +22,20 @@ namespace Husky.Diagnostics
 				Source = e.Source,
 				StackTrace = e.StackTrace,
 			};
-			if ( principal != null ) {
+			if (principal != null) {
 				log.ReadValuesFromPrincipal(principal);
 			}
-			if ( http != null ) {
+			if (http != null) {
 				log.ReadValuesFromHttpContext(http);
 			}
 			log.ComputeMd5Comparison();
 
 			var repeating = db.ExceptionLogs
-				.OrderByDescending(x => x.Id)
 				.Where(x => x.Md5Comparison == log.Md5Comparison)
+				.OrderByDescending(x => x.Id)
 				.FirstOrDefault();
 
-			if ( repeating == null ) {
+			if (repeating == null) {
 				db.ExceptionLogs.Add(log);
 			}
 			else {
@@ -46,14 +46,14 @@ namespace Husky.Diagnostics
 		}
 
 		internal static async Task LogRequestAsync(this IDiagnosticsDbContext db, HttpContext? http, IPrincipalUser? principal) {
-			if ( http == null ) {
+			if (http == null) {
 				return;
 			}
 
 			principal ??= http.RequestServices.GetService<IPrincipalUser>();
 
 			var log = new RequestLog();
-			if ( principal != null ) {
+			if (principal != null) {
 				log.ReadValuesFromPrincipal(principal);
 			}
 			log.ReadValuesFromHttpContext(http);
@@ -63,12 +63,11 @@ namespace Husky.Diagnostics
 			var seconds = keyValueManager?.LogRequestAsRepeatedIfSameWithinSeconds() ?? 60;
 
 			var repeating = db.RequestLogs
-				.OrderByDescending(x => x.Id)
 				.Where(x => x.Md5Comparison == log.Md5Comparison)
 				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
 				.FirstOrDefault();
 
-			if ( repeating == null ) {
+			if (repeating == null) {
 				db.RequestLogs.Add(log);
 			}
 			else {
@@ -83,7 +82,7 @@ namespace Husky.Diagnostics
 				LogLevel = logLevel,
 				Message = message
 			};
-			if ( principal != null ) {
+			if (principal != null) {
 				log.ReadValuesFromPrincipal(principal);
 			}
 			log.ComputeMd5Comparison();
@@ -94,9 +93,10 @@ namespace Husky.Diagnostics
 			var repeating = db.OperationLogs
 				.Where(x => x.Md5Comparison == log.Md5Comparison)
 				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
+				.OrderByDescending(x => x.Id)
 				.FirstOrDefault();
 
-			if ( repeating == null ) {
+			if (repeating == null) {
 				db.OperationLogs.Add(log);
 			}
 			else {

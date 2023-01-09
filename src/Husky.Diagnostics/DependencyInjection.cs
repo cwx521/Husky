@@ -14,9 +14,9 @@ namespace Husky
 			return husky;
 		}
 
-		public static HuskyServiceHub AddDiagnostics<TDbContext>(this HuskyServiceHub husky)
-			where TDbContext : DbContext, IDiagnosticsDbContext {
-			husky.Services.AddDbContext<IDiagnosticsDbContext, TDbContext>();
+		public static HuskyServiceHub AddDiagnostics<TInjectedDbContext>(this HuskyServiceHub husky)
+			where TInjectedDbContext : DbContext, IDiagnosticsDbContext {
+			husky.Services.AddDbContext<IDiagnosticsDbContext, TInjectedDbContext>();
 			husky.Services.AddScoped<IDiagnosticsLogger, DiagnosticsLogger>();
 			return husky;
 		}
