@@ -31,7 +31,14 @@ namespace Husky.Alipay
 		public IAopClient OriginalClient => _alipay;
 		public AlipayOptions Options => _options;
 
-		public AlipayOrderPrecreationResult GenerateAlipayPaymentUrl(AlipayOrderPrecreationModel payment) {
+		public bool IsAlipayAuthCode(string authCode) =>
+			authCode != null &&
+			authCode.Length >= 16 &&
+			authCode.Length <= 24 &&
+			authCode.IsInt64() &&
+			new[] { "25", "26", "27", "28", "29", "30" }.Contains(authCode.Substring(0, 2));
+
+		public async Task<AlipayOrderPrecreationResult> GenerateAlipayPaymentUrlAsync(AlipayOrderPrecreationModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
@@ -41,17 +48,20 @@ namespace Husky.Alipay
 				ProductCode = "FAST_INSTANT_TRADE_PAY"
 			};
 
-			var wapPayRequest = new AlipayTradeWapPayRequest();
-			wapPayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
-			wapPayRequest.SetReturnUrl(payment.ReturnUrl);
-			wapPayRequest.SetBizModel(payModel);
-			var wapPayResponse = _alipay.SdkExecute(wapPayRequest);
-
-			var pagePayRequest = new AlipayTradePagePayRequest();
-			pagePayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
-			pagePayRequest.SetReturnUrl(payment.ReturnUrl);
-			pagePayRequest.SetBizModel(payModel);
-			var pagePayResponse = _alipay.SdkExecute(pagePayRequest);
+			var wapPayResponse = await Task.Run(() => {
+				var wapPayRequest = new AlipayTradeWapPayRequest();
+				wapPayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
+				wapPayRequest.SetReturnUrl(payment.ReturnUrl);
+				wapPayRequest.SetBizModel(payModel);
+				return _alipay.SdkExecute(wapPayRequest);
+			});
+			var pagePayResponse = await Task.Run(() => {
+				var pagePayRequest = new AlipayTradePagePayRequest();
+				pagePayRequest.SetNotifyUrl(payment.NotifyUrl ?? _options.DefaultNotifyUrl);
+				pagePayRequest.SetReturnUrl(payment.ReturnUrl);
+				pagePayRequest.SetBizModel(payModel);
+				return _alipay.SdkExecute(pagePayRequest);
+			});
 
 			return new AlipayOrderPrecreationResult {
 				MobileWebPaymentUrl = _options.GatewayUrl + "?" + wapPayResponse.Body,
@@ -59,7 +69,7 @@ namespace Husky.Alipay
 			};
 		}
 
-		public Result<AlipayOrderF2FPayResult> F2FPay(AlipayOrderF2FPayModel payment) {
+		public async Task<Result<AlipayOrderF2FPayResult>> F2FPayAsync(AlipayOrderF2FPayModel payment) {
 			var payModel = new AlipayTradePayModel {
 				Subject = payment.Subject,
 				Body = payment.Body,
@@ -72,56 +82,60 @@ namespace Husky.Alipay
 			var request = new AlipayTradePayRequest();
 			request.SetBizModel(payModel);
 
-			try {
-				var response = _alipay.Execute(request);
-				var ok = response is { IsError: false, Msg: "Success", Code: "10000" };
+			return await Task.Run(() => {
+				try {
+					var response = _alipay.Execute(request);
+					var ok = response is { IsError: false, Msg: "Success", Code: "10000" };
 
-				return new Result<AlipayOrderF2FPayResult> {
-					Ok = ok,
-					Message = response.SubMsg ?? response.Msg,
-					Data = new AlipayOrderF2FPayResult {
-						AlipayTradeNo = response?.TradeNo,
-						AlipayBuyerId = response?.BuyerUserId,
-						Amount = response?.TotalAmount.AsDecimal() ?? 0,
-						OriginalResult = response,
-						AwaitPaying = response?.Code == "10003"
-					}
-				};
-			}
-			catch (Exception e) {
-				return new Failure<AlipayOrderF2FPayResult>(e.Message);
-			}
+					return new Result<AlipayOrderF2FPayResult> {
+						Ok = ok,
+						Message = response.SubMsg ?? response.Msg,
+						Data = new AlipayOrderF2FPayResult {
+							AlipayTradeNo = response?.TradeNo,
+							AlipayBuyerId = response?.BuyerUserId,
+							Amount = response?.TotalAmount.AsDecimal() ?? 0,
+							OriginalResult = response,
+							AwaitPaying = response?.Code == "10003"
+						}
+					};
+				}
+				catch (Exception e) {
+					return new Failure<AlipayOrderF2FPayResult>(e.Message);
+				}
+			});
 		}
 
-		public Result<AlipayOrderQueryResult> QueryOrder(string orderNo) {
+		public async Task<Result<AlipayOrderQueryResult>> QueryOrderAsync(string orderNo) {
 			var model = new AlipayTradeQueryModel {
 				OutTradeNo = orderNo
 			};
 			var request = new AlipayTradeQueryRequest();
 			request.SetBizModel(model);
 
-			try {
-				var response = _alipay.Execute(request);
-				var ok = response is { IsError: false, Msg: "Success", TradeStatus: "TRADE_SUCCESS" };
+			return await Task.Run<Result<AlipayOrderQueryResult>>(() => {
+				try {
+					var response = _alipay.Execute(request);
+					var ok = response is { IsError: false, Msg: "Success", TradeStatus: "TRADE_SUCCESS" };
 
-				if (!ok) {
-					return new Failure<AlipayOrderQueryResult>(response.SubMsg ?? response.Msg);
-				}
-				return new Success<AlipayOrderQueryResult> {
-					Data = new AlipayOrderQueryResult {
-						AlipayTradeNo = response.TradeNo,
-						AlipayBuyerId = response.BuyerUserId,
-						Amount = response.TotalAmount.AsDecimal(),
-						OriginalResult = response
+					if (!ok) {
+						return new Failure<AlipayOrderQueryResult>(response.SubMsg ?? response.Msg);
 					}
-				};
-			}
-			catch (Exception e) {
-				return new Failure<AlipayOrderQueryResult>(e.Message);
-			}
+					return new Success<AlipayOrderQueryResult> {
+						Data = new AlipayOrderQueryResult {
+							AlipayTradeNo = response.TradeNo,
+							AlipayBuyerId = response.BuyerUserId,
+							Amount = response.TotalAmount.AsDecimal(),
+							OriginalResult = response
+						}
+					};
+				}
+				catch (Exception e) {
+					return new Failure<AlipayOrderQueryResult>(e.Message);
+				}
+			});
 		}
 
-		public Result<AlipayRefundResult> Refund(string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
+		public async Task<Result<AlipayRefundResult>> RefundAsync(string originalOrderNo, string newRefundRequestNo, decimal refundAmount, string refundReason) {
 			var model = new AlipayTradeRefundModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = newRefundRequestNo,
@@ -131,27 +145,29 @@ namespace Husky.Alipay
 			var request = new AlipayTradeRefundRequest();
 			request.SetBizModel(model);
 
-			try {
-				var response = _alipay.Execute(request);
-				var ok = response is { IsError: false, Msg: "Success" };
+			return await Task.Run<Result<AlipayRefundResult>>(() => {
+				try {
+					var response = _alipay.Execute(request);
+					var ok = response is { IsError: false, Msg: "Success" };
 
-				if (!ok) {
-					return new Failure<AlipayRefundResult>(response.SubMsg ?? response.Msg);
-				}
-				return new Success<AlipayRefundResult> {
-					Data = new AlipayRefundResult {
-						RefundAmount = ok ? refundAmount : 0,
-						AggregatedRefundAmount = response.RefundFee.AsDecimal(),
-						OriginalResult = response
+					if (!ok) {
+						return new Failure<AlipayRefundResult>(response.SubMsg ?? response.Msg);
 					}
-				};
-			}
-			catch (Exception e) {
-				return new Failure<AlipayRefundResult>(e.Message);
-			}
+					return new Success<AlipayRefundResult> {
+						Data = new AlipayRefundResult {
+							RefundAmount = ok ? refundAmount : 0,
+							AggregatedRefundAmount = response.RefundFee.AsDecimal(),
+							OriginalResult = response
+						}
+					};
+				}
+				catch (Exception e) {
+					return new Failure<AlipayRefundResult>(e.Message);
+				}
+			});
 		}
 
-		public Result<AlipayRefundQueryResult> QueryRefund(string originalOrderNo, string refundRequestNo) {
+		public async Task<Result<AlipayRefundQueryResult>> QueryRefundAsync(string originalOrderNo, string refundRequestNo) {
 			var model = new AlipayTradeFastpayRefundQueryModel {
 				OutTradeNo = originalOrderNo,
 				OutRequestNo = refundRequestNo
@@ -159,29 +175,31 @@ namespace Husky.Alipay
 			var request = new AlipayTradeFastpayRefundQueryRequest();
 			request.SetBizModel(model);
 
-			try {
-				var response = _alipay.Execute(request);
-				var ok = response is { IsError: false, Msg: "Success" };
+			return await Task.Run<Result<AlipayRefundQueryResult>>(() => {
+				try {
+					var response = _alipay.Execute(request);
+					var ok = response is { IsError: false, Msg: "Success" };
 
-				if (!ok) {
-					return new Failure<AlipayRefundQueryResult>(response.SubMsg ?? response.Msg);
-				}
-				return new Success<AlipayRefundQueryResult> {
-					Data = new AlipayRefundQueryResult {
-						RefundReason = response.RefundReason,
-						RefundAmount = response.RefundAmount.AsDecimal(),
-						OriginalResult = response
+					if (!ok) {
+						return new Failure<AlipayRefundQueryResult>(response.SubMsg ?? response.Msg);
 					}
-				};
-			}
-			catch (Exception e) {
-				return new Failure<AlipayRefundQueryResult>(e.Message);
-			}
+					return new Success<AlipayRefundQueryResult> {
+						Data = new AlipayRefundQueryResult {
+							RefundReason = response.RefundReason,
+							RefundAmount = response.RefundAmount.AsDecimal(),
+							OriginalResult = response
+						}
+					};
+				}
+				catch (Exception e) {
+					return new Failure<AlipayRefundQueryResult>(e.Message);
+				}
+			});
 		}
 
-		public Result CancelOrder(string orderNo, bool allowToCancelAfterPaid = false) {
+		public async Task<Result> CancelOrderAsync(string orderNo, bool allowToCancelAfterPaid = false) {
 			if (!allowToCancelAfterPaid) {
-				var queryResult = QueryOrder(orderNo);
+				var queryResult = await QueryOrderAsync(orderNo);
 				if (queryResult.Ok) {
 					return new Failure("订单已完成付款，未能撤销");
 				}
@@ -193,17 +211,19 @@ namespace Husky.Alipay
 			var request = new AlipayTradeCancelRequest();
 			request.SetBizModel(model);
 
-			try {
-				var response = _alipay.Execute(request);
-				var ok = response is { IsError: false, Msg: "Success" };
-				if (ok) {
-					return new Success();
+			return await Task.Run<Result>(() => {
+				try {
+					var response = _alipay.Execute(request);
+					var ok = response is { IsError: false, Msg: "Success" };
+					if (ok) {
+						return new Success();
+					}
+					return new Failure(response.SubMsg ?? response.Msg);
 				}
-				return new Failure(response.SubMsg ?? response.Msg);
-			}
-			catch (Exception e) {
-				return new Failure(e.Message);
-			}
+				catch (Exception e) {
+					return new Failure(e.Message);
+				}
+			});
 		}
 
 		public async Task<Result<AlipayNotifyResult>> ParseNotifyResultAsync(HttpRequest request) {
