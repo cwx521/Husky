@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.GridQuery.GridModeling.Annotations
+namespace Husky.GridQuery
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public class EnableAggregatesAttribute : Attribute
@@ -12,6 +12,6 @@ namespace Husky.GridQuery.GridModeling.Annotations
 			Aggregates = aggregates;
 		}
 
-		public virtual GridColumnAggregates Aggregates { get; set; }
+		public GridColumnAggregates Aggregates { get; set; }
 	}
 }

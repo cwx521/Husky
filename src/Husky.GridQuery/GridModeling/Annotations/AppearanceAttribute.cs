@@ -14,7 +14,10 @@ namespace Husky.GridQuery
 
 		public string? Title { get; set; }
 		public int Width { get; set; }
+
 		public TextAlign TextAlign { get; set; }
+		public string? CssClass { get; set; }
+		public string? CssStyle { get; set; }
 
 		public bool Visible { get; set; } = true;
 		public bool Hidden { get; set; } = false;
@@ -23,7 +26,5 @@ namespace Husky.GridQuery
 		public string? Format { get; set; }
 		public string? Template { get; set; }
 		public GridColumnTemplate KnownTemplate { get; set; }
-		public string? CssClass { get; set; }
-		public string? CssStyle { get; set; }
 	}
 }

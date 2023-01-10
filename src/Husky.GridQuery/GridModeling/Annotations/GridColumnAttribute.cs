@@ -14,7 +14,6 @@ namespace Husky.GridQuery
 
 		public virtual string? Title { get; set; }
 		public virtual int Width { get; set; }
-		public virtual TextAlign TextAlign { get; set; }
 
 		public virtual bool Visible { get; set; } = true;
 
@@ -27,8 +26,10 @@ namespace Husky.GridQuery
 		public virtual bool Hidden { get; set; } = false;
 		public virtual bool Locked { get; set; } = false;
 
+		public virtual TextAlign TextAlign { get; set; }
 		public virtual string? CssClass { get; set; }
 		public virtual string? CssStyle { get; set; }
+
 		public virtual string? LinkUrl { get; set; }
 		public virtual string? Format { get; set; }
 		public virtual string? Template { get; set; }

@@ -20,16 +20,14 @@
 
 	public static class QueryFilterComparisonEquality
 	{
-		public static Comparison Equality(this QueryFilterComparison comparison) {
-			return comparison switch {
-				QueryFilterComparison.Neq => Comparison.NotEqual,
-				QueryFilterComparison.Contains => Comparison.HasKeyword,
-				QueryFilterComparison.Gt => Comparison.GreaterThan,
-				QueryFilterComparison.Gte => Comparison.GreaterThanOrEqual,
-				QueryFilterComparison.Lt => Comparison.LessThan,
-				QueryFilterComparison.Lte => Comparison.LessThanOrEqual,
-				_ => Comparison.Equal,
-			};
-		}
+		public static Comparison Equality(this QueryFilterComparison comparison) => comparison switch {
+			QueryFilterComparison.Neq => Comparison.NotEqual,
+			QueryFilterComparison.Contains => Comparison.HasKeyword,
+			QueryFilterComparison.Gt => Comparison.GreaterThan,
+			QueryFilterComparison.Gte => Comparison.GreaterThanOrEqual,
+			QueryFilterComparison.Lt => Comparison.LessThan,
+			QueryFilterComparison.Lte => Comparison.LessThanOrEqual,
+			_ => Comparison.Equal,
+		};
 	}
 }

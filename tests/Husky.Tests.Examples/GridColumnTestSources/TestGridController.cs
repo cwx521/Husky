@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Linq;
+using Husky.GridQuery;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Husky.Tests.Examples
@@ -6,14 +7,6 @@ namespace Husky.Tests.Examples
 	[IgnoreAntiforgeryToken]
 	public class TestGridController : Controller
 	{
-		public IActionResult TestGridDataRows() => new JsonResult(
-			new {
-				TotalCount = 3,
-				Data = TestGridModel.BuildTestDataSource()
-			},
-			new JsonSerializerOptions {
-				PropertyNamingPolicy = null
-			}
-		);
+		public IActionResult TestGridDataRows(QueryCriteria criteria) => TestGridModel.BuildTestDataSource().AsQueryable().Apply(criteria);
 	}
 }

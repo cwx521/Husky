@@ -14,7 +14,7 @@ namespace Husky.GridQuery
 
 		public static string Json(this List<GridColumn> columns) {
 			return JsonSerializer.Serialize(columns, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
-				DefaultIgnoreCondition = JsonIgnoreCondition.Never
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 			});
 		}
 
@@ -72,12 +72,12 @@ namespace Husky.GridQuery
 			return result;
 		}
 
-		private static GridColumn BuildGridColumn(PropertyInfo property, GridColumnAttribute? attr) => new GridColumn {
+		private static GridColumn BuildGridColumn(PropertyInfo property, GridColumnAttribute? attr) => new() {
 			Field = property?.Name.CamelCase(),
+			Template = attr?.Template ?? GetTemplateString(attr, property?.Name.CamelCase()),
 			Title = attr?.Title ?? property?.Name?.SplitWordsByCapital(),
 			Category = attr?.Category,
 			Width = (attr == null || attr.Width == 0) ? DefaultGridColumnWidth : (attr.Width != -1 ? attr.Width : (int?)null),
-			Template = attr?.Template ?? GetTemplateString(attr, property?.Name),
 			Format = attr?.Format,
 			Aggregates = attr?.Aggregates.ToNameArray(),
 			Filterable = property != null && (attr?.Filterable ?? true),
@@ -121,7 +121,7 @@ namespace Husky.GridQuery
 			if (string.IsNullOrEmpty(fieldName)) {
 				return fieldName;
 			}
-			return fieldName[0].ToString() + fieldName[1..];
+			return fieldName.Substring(0, 1).ToLower() + fieldName[1..];
 		}
 
 		private static string? TrimBracers(this string? format) {

@@ -8,7 +8,6 @@ namespace Husky.GridQuery
 		public EnableRowNumberAttribute() {
 		}
 
-
 		public int Width => 40;
 		public bool Filterable => false;
 		public bool Sortable => false;

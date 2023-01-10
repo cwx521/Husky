@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Husky.GridQuery;
-using Husky.GridQuery.GridModeling.Annotations;
 
 namespace Husky.Tests.Examples
 {
@@ -9,9 +8,7 @@ namespace Husky.Tests.Examples
 	{
 		public int Id { get; set; }
 
-		[EnableRowNumber]
-		public int RowNumber { get; set; }
-
+		[Behavior(Filterable = false)]
 		[Appearance(Title = "Change To Another Title")]
 		public string? SomeText { get; set; }
 
@@ -26,6 +23,7 @@ namespace Husky.Tests.Examples
 		[Appearance(Width = 200, KnownTemplate = GridColumnTemplate.ZeroAsEmpty, Format = "{0.00}", TextAlign = TextAlign.Center)]
 		public int ZeroAsEmpty { get; set; }
 
+		[Behavior(Filterable = false, Sortable = false)]
 		[GridColumn(Width = 240, KnownTemplate = GridColumnTemplate.TimeAgo, LinkUrl = "/", LinkTarget = GridColumLinkTarget.ModalLG, CssClass = "text-end")]
 		public DateTime DateTimeWithKnownFormatAndModalLink { get; set; }
 

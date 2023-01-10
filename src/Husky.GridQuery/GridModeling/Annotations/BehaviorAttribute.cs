@@ -8,10 +8,10 @@ namespace Husky.GridQuery
 		public BehaviorAttribute() {
 		}
 
-		public bool Groupable { get; set; } = false;
 		public bool Filterable { get; set; } = true;
 		public bool Sortable { get; set; } = true;
 		public bool Hidable { get; set; } = true;
+		public bool Groupable { get; set; } = false;
 		public bool Editable { get; set; } = false;
 	}
 }

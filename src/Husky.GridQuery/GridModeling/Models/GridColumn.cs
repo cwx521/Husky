@@ -17,13 +17,13 @@ namespace Husky.GridQuery
 		public int? Width { get; set; } = GridColumnBuilder.DefaultGridColumnWidth;
 		public string? Format { get; set; }
 		public string? Template { get; set; }
-		public bool Groupable { get; set; }
-		public bool Filterable { get; set; }
-		public bool Sortable { get; set; }
-		public bool Hidable { get; set; }
-		public bool Locked { get; set; }
-		public bool Hidden { get; set; }
-		public bool EditableFlag { get; set; }
+		public bool? Filterable { get; set; }
+		public bool? Sortable { get; set; }
+		public bool? Hidable { get; set; }
+		public bool? Groupable { get; set; }
+		public bool? Locked { get; set; }
+		public bool? Hidden { get; set; }
+		public bool? EditableFlag { get; set; }
 		public SelectListItem[]? Values { get; set; }
 		public List<GridColumn>? Columns { get; set; }
 		public GridColumnTdAttributes? Attributes { get; set; }

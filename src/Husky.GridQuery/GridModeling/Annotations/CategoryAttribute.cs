@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Husky.GridQuery.GridModeling.Annotations
+namespace Husky.GridQuery
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public class CategoryAttribute : Attribute
