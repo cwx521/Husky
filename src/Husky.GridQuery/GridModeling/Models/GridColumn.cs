@@ -15,7 +15,6 @@ namespace Husky.GridQuery
 		public string? Type { get; set; }
 		public string[]? Aggregates { get; set; }
 		public int? Width { get; set; } = GridColumnBuilder.DefaultGridColumnWidth;
-		public string? Attributes { get; set; }
 		public string? Format { get; set; }
 		public string? Template { get; set; }
 		public bool Groupable { get; set; }
@@ -27,6 +26,7 @@ namespace Husky.GridQuery
 		public bool EditableFlag { get; set; }
 		public SelectListItem[]? Values { get; set; }
 		public List<GridColumn>? Columns { get; set; }
+		public GridColumnTdAttributes? Attributes { get; set; }
 
 	}
 }

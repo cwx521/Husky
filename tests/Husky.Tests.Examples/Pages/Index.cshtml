@@ -1,5 +1,6 @@
 ﻿@page "~/"
 @model IndexPageModel
+@using Husky.GridQuery;
 
 <div>@_me.DisplayName</div>
 <p>AnonymousId: @_me.AnonymousId</p>
@@ -10,15 +11,21 @@
 <div>Config</div>
 <p>@nameof(_config.JustConfigureYourSettingsInThisWay): @_config.JustConfigureYourSettingsInThisWay</p>
 
-@foreach ( var item in Model.RequestLogs ) {
-	<p>@item.AnonymousId, @item.UserName, @item.HttpMethod, @item.Url, @item.Repeated, @item.LastTime, @item.Md5Comparison</p>
-}
+<div style="height: 20rem">
+	@(Html.Grid<TestGridModel>("/TestGrid/TestGridDataRows"))
+</div>
 
+<p></p>
 <form method="post" asp-page="@PageContext.ActionDescriptor.DisplayName">
 	<button type="submit">Submit</button>
 	<a href="/">Redirect</a>
-	@if ( Request.Method == "POST" ) {
+	@if (Request.Method == "POST") {
 		<p>Submitted</p>
 		<p>@Model.TellHim</p>
 	}
 </form>
+
+<p></p>
+@foreach (var item in Model.RequestLogs) {
+	<p>@item.AnonymousId, @item.UserName, @item.HttpMethod, @item.Url, @item.Repeated, @item.LastTime, @item.Md5Comparison</p>
+}

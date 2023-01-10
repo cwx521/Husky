@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -19,7 +20,7 @@ namespace Husky.GridQuery
 
 		public static List<GridColumn> GetGridColumns<TGridModel>() => typeof(TGridModel).GetGridColumns();
 		public static List<GridColumn> GetGridColumns(this Type typeOfGridModel) {
-			if ( typeOfGridModel == null ) {
+			if (typeOfGridModel == null) {
 				throw new ArgumentNullException(nameof(typeOfGridModel));
 			}
 
@@ -29,12 +30,12 @@ namespace Husky.GridQuery
 
 			// read the properties and create columns one by one
 			// when attribute.DisplayAfter is set, the columns will be added later on
-			foreach ( var p in properties ) {
-				var attribute = p.GetCustomAttribute<GridColumnAttribute>();
-				if ( attribute != null && !attribute.Visible ) {
+			foreach (var p in properties) {
+				var attribute = ResolveGridColumnAttribute(p);
+				if (attribute != null && !attribute.Visible) {
 					continue;
 				}
-				if ( attribute != null && !string.IsNullOrEmpty(attribute.DisplayAfter) ) {
+				if (attribute != null && !string.IsNullOrEmpty(attribute.DisplayAfter)) {
 					var tuple = new Tuple<GridColumn, GridColumnAttribute>(
 						BuildGridColumn(p, attribute),
 						attribute
@@ -45,20 +46,20 @@ namespace Husky.GridQuery
 			}
 
 			// now insert columns which have DisplayAfter
-			foreach ( var each in pending ) {
+			foreach (var each in pending) {
 				var insertAt = columns.FindIndex(x => x.Field == each.Item2.DisplayAfter) + 1;
 				columns.Insert(insertAt, each.Item1);
 			}
 
 			// grouping
 			var result = new List<GridColumn>();
-			foreach ( var col in columns ) {
-				if ( string.IsNullOrEmpty(col.Category) ) {
+			foreach (var col in columns) {
+				if (string.IsNullOrEmpty(col.Category)) {
 					result.Add(col);
 					continue;
 				}
 				var category = result.Find(x => x.Title == col.Category);
-				if ( category == null ) {
+				if (category == null) {
 					category = new GridColumn {
 						Title = col.Category,
 						Columns = new List<GridColumn>()
@@ -86,20 +87,60 @@ namespace Husky.GridQuery
 			Groupable = (attr?.Groupable ?? false),
 			Locked = (attr?.Locked ?? false),
 			Hidden = (attr?.Hidden ?? false),
-			Attributes = attr?.CssClass == null ? null : $" class='{attr.CssClass}'",
+			Attributes = new GridColumnTdAttributes { Class = attr?.CssClass, Style = attr?.MergeCssStyle() },
 			Type = property?.GetMappedJavaScriptType(),
 			Values = property?.GetEnumerableValues(),
 		};
 
+		private static GridColumnAttribute? ResolveGridColumnAttribute(PropertyInfo gridColumnProperty) {
+			var result = gridColumnProperty.GetCustomAttribute<GridColumnAttribute>();
+			var resultTypeProps = typeof(GridColumnAttribute).GetProperties();
+
+			var attributes = gridColumnProperty.GetCustomAttributes();
+			foreach (var dedicatedAttr in attributes) {
+				if (dedicatedAttr is GridColumnAttribute) {
+					continue;
+				}
+
+				var dedicatedAttrProperties = dedicatedAttr.GetType().GetProperties();
+				foreach (var each in dedicatedAttrProperties) {
+					if (each.Name == nameof(Attribute.TypeId)) {
+						continue;
+					}
+					var value = each.GetValue(dedicatedAttr);
+					if (value != default) {
+						result ??= new GridColumnAttribute();
+						resultTypeProps.SingleOrDefault(x => x.Name == each.Name)?.SetValue(result, value);
+					}
+				}
+			}
+			return result;
+		}
+
 		private static string? CamelCase(this string? fieldName) {
-			if ( string.IsNullOrEmpty(fieldName) ) {
+			if (string.IsNullOrEmpty(fieldName)) {
 				return fieldName;
 			}
 			return fieldName[0].ToString() + fieldName[1..];
 		}
 
+		private static string? TrimBracers(this string? format) {
+			return format?.Replace("{0:", "").TrimStart('{').TrimEnd('}');
+		}
+
 		private static string[]? ToNameArray(this Enum? values) {
 			return values?.ToString().Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+		}
+
+		private static string? MergeCssStyle(this GridColumnAttribute? attr) {
+			if (attr == null) {
+				return null;
+			}
+			if (attr.TextAlign != TextAlign.Start) {
+				var align = attr.TextAlign == TextAlign.End ? "right" : "center";
+				attr.CssStyle = $"text-align: {align};" + attr.CssStyle;
+			}
+			return attr.CssStyle;
 		}
 
 		private static string? GetMappedJavaScriptType(this PropertyInfo property) {
@@ -107,10 +148,10 @@ namespace Husky.GridQuery
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
 
-			if ( t == typeof(DateTime) ) {
+			if (t == typeof(DateTime)) {
 				return "date";
 			}
-			if ( t == typeof(int) || t == typeof(long) || t == typeof(uint) || t == typeof(decimal) || t == typeof(double) || t == typeof(float) ) {
+			if (t == typeof(int) || t == typeof(long) || t == typeof(uint) || t == typeof(decimal) || t == typeof(double) || t == typeof(float)) {
 				return "number";
 			}
 			return null;
@@ -121,12 +162,12 @@ namespace Husky.GridQuery
 				? property.PropertyType
 				: property.PropertyType.GenericTypeArguments[0];
 
-			if ( !t.IsEnum ) {
+			if (!t.IsEnum) {
 				return null;
 			}
 			var result = new List<SelectListItem>();
 			var values = Enum.GetValues(t);
-			foreach ( var i in values ) {
+			foreach (var i in values) {
 				result.Add(new SelectListItem {
 					Text = (i as Enum)!.ToLabel(),
 					Value = i!.GetHashCode().ToString()
@@ -136,42 +177,54 @@ namespace Husky.GridQuery
 		}
 
 		private static string? GetTemplateString(GridColumnAttribute? attr, string? fieldName) {
-			if ( attr == null || string.IsNullOrEmpty(fieldName) ) {
+			if (attr == null || string.IsNullOrEmpty(fieldName)) {
 				return null;
 			}
-			if ( !string.IsNullOrEmpty(attr.LinkUrl) && attr.KnownTemplate == GridColumnTemplate.None ) {
-				attr.KnownTemplate = GridColumnTemplate.HyperLink;
+
+			var nested = PrepareNestedTemplateString(attr, fieldName);
+
+			if (string.IsNullOrEmpty(attr.LinkUrl)) {
+				return nested;
 			}
-			switch ( attr.KnownTemplate ) {
+
+			nested ??= string.IsNullOrEmpty(attr.Format)
+				? $"#: {fieldName} #"
+				: $"#: kendo.toString({fieldName}, '{attr.Format.TrimBracers()}')#";
+
+			switch (attr.LinkTarget) {
 				default:
+				case GridColumLinkTarget.Self:
+					return $"#if ({fieldName}) {{# <a href='{attr.LinkUrl}'>{nested}</a> #}} #";
+
+				case GridColumLinkTarget.NewWindow:
+					return $"#if ({fieldName}) {{# <a href='{attr.LinkUrl}' target='_blank'>{nested}</a> #}} #";
+
+				case GridColumLinkTarget.Modal:
+				case GridColumLinkTarget.ModalLG:
+				case GridColumLinkTarget.ModalXL:
+				case GridColumLinkTarget.ModalFullScreen:
+					var size = attr.LinkTarget.ToLower().Substring(5);
+					var link = $"<a " +
+									$"href='{attr.LinkUrl}' " +
+									$"data-ajax='husky' " +
+									$"data-toggle='modal' " +
+									$"data-target='\\#modal' " +
+									$"data-modal-size='modal-{size}'>" +
+									$"{nested}" +
+								$"</a>";
+					return $"#if ({fieldName}) {{# {link} #}} #";
+			}
+		}
+
+		private static string? PrepareNestedTemplateString(GridColumnAttribute? attr, string? fieldName) {
+			if (attr == null || string.IsNullOrEmpty(fieldName)) {
+				return null;
+			}
+
+			switch (attr.KnownTemplate) {
+				default:
+				case GridColumnTemplate.None:
 					return null;
-
-				case GridColumnTemplate.HyperLink:
-					return $"#if ({fieldName}) {{# <a href='{attr.LinkUrl}'>#:{fieldName}#</a> #}} #";
-
-				case GridColumnTemplate.Modal:
-				case GridColumnTemplate.ModalLG:
-				case GridColumnTemplate.ModalXL:
-				case GridColumnTemplate.ModalFull:
-					var size = attr.KnownTemplate.ToLower().Substring(5);
-					var fragment1 = $"<a " +
-						$"href='{attr.LinkUrl}' " +
-						$"data-ajax='husky' " +
-						$"data-toggle='modal' " +
-						$"data-target='\\#modal' " +
-						$"data-modal-title='#:{fieldName} || '{fieldName}'#'" +
-						$"data-modal-size='modal-{size}'>" +
-						$"#:{fieldName}#" +
-					$"</a>";
-					return $"#if ({fieldName}) {{# {fragment1} #}} #";
-
-				case GridColumnTemplate.CheckBox:
-					var fragment2 = "<input " +
-						$"type='checkbox' name='idCollection' value='#:Id#' class='grid-row-checkbox' " +
-						$"# {fieldName} == {(int)CheckBoxState.Checked} ? 'checked' : '' # " +
-						$"# {fieldName} == {(int)CheckBoxState.Disabled} ? 'disabled' : '' # " +
-					"/>";
-					return $"#if ({fieldName} !== {(int)CheckBoxState.NoDisplay}) {{# {fragment2} #}} #";
 
 				case GridColumnTemplate.Date:
 					return $"#: $.toDateString({fieldName}) #";
@@ -188,7 +241,7 @@ namespace Husky.GridQuery
 				case GridColumnTemplate.ZeroAsEmpty:
 					return string.IsNullOrEmpty(attr.Format)
 						? $"#: {fieldName} == 0 ? '' : {fieldName} #"
-						: $"#: {fieldName} == 0 ? '' : kendo.toString({fieldName}, '{attr.Format}') #";
+						: $"#: {fieldName} == 0 ? '' : kendo.toString({fieldName}, '{attr.Format.TrimBracers()}') #";
 			}
 		}
 	}

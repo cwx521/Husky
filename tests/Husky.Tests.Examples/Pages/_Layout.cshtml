@@ -1,9 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@{
+	var libRoot = "https://lib.xingyisoftware.com";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Test</title>
+	<link rel="stylesheet" href="@libRoot/lib/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/font-awesome/css/all.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/select2/css/select2.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/cropper/cropper.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/kendo-ui/css/kendo.font.css" />
+	<link rel="stylesheet" href="@libRoot/lib/kendo-ui/css/kendo.common.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/kendo-ui/css/kendo.silver.min.css" />
+	<link rel="stylesheet" href="@libRoot/lib/husky/husky.min.css" />
+	<script src="@libRoot/lib/jquery/jquery.min.js"></script>
 </head>
 <body class="bg-light">
 	<div class="container">
@@ -11,5 +24,27 @@
 			@RenderBody()
 		</main>
 	</div>
+	<div id="modal" class="modal fade" data-bs-backdrop="static" role="dialog">
+		<div class="modal-dialog shadow">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body"></div>
+			</div>
+		</div>
+	</div>
+	<script src="@libRoot/lib/jquery-validate/jquery.validate.min.js"></script>
+	<script src="@libRoot/lib/jquery-validate/additional-methods.min.js"></script>
+	<script src="@libRoot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	<script src="@libRoot/lib/kendo-ui/scripts/kendo.selected-modules.min.js"></script>
+	<script src="@libRoot/lib/kendo-ui/scripts/jszip.min.js"></script>
+	<script src="@libRoot/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="@libRoot/lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+	<script src="@libRoot/lib/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+	<script src="@libRoot/lib/select2/js/select2.full.min.js"></script>
+	<script src="@libRoot/lib/cropper/cropper.min.js"></script>
+	<script src="@libRoot/lib/husky/husky.min.js"></script>
 </body>
 </html>
