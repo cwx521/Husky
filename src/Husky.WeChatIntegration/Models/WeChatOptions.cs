@@ -12,6 +12,7 @@ namespace Husky.WeChatIntegration
 		public string? MiniProgramAppSecret { get; set; }
 		public string? MerchantId { get; set; }
 		public string? MerchantSecret { get; set; }
+		public string? MerchantCertFile { get; set; }
 		public string? GeneralAccessTokenManagedCentral { get; set; }
 
 		internal void RequireOpenPlatformSettings() {

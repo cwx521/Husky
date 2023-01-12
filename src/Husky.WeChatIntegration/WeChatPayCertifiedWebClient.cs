@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
@@ -19,9 +20,9 @@ namespace Husky.WeChatIntegration
 			using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
 			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
-			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, _subjectName, false);
-			if (certs != null && certs.Count != 0) {
-				request.ClientCertificates.Add(certs[0]);
+			var cert = store.Certificates.Find(X509FindType.FindBySubjectName, _subjectName, false).FirstOrDefault();
+			if (cert != null) {
+				request.ClientCertificates.Add(cert);
 			}
 			store.Close();
 

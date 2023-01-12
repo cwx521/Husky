@@ -9,7 +9,6 @@ namespace Husky.WeChatIntegration
 	{
 		internal WeChatPayCertifiedHttpClientHandler(
 			string wechatPayMerchantIdAsCertSubjectName,
-			SslProtocols ssl = SslProtocols.Tls12,
 			StoreName certStoreName = StoreName.My,
 			StoreLocation certStoreLocation = StoreLocation.LocalMachine
 		) : base() {
@@ -17,15 +16,28 @@ namespace Husky.WeChatIntegration
 			using var store = new X509Store(certStoreName, certStoreLocation);
 			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
-			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, wechatPayMerchantIdAsCertSubjectName, false);
-			if (certs != null && certs.Count != 0) {
-
+			var cert = store.Certificates.Find(X509FindType.FindBySubjectName, wechatPayMerchantIdAsCertSubjectName, false).FirstOrDefault();
+			if (cert != null) {
 				ClientCertificateOptions = ClientCertificateOption.Manual;
-				SslProtocols = ssl;
+				SslProtocols =  SslProtocols.Tls12;
 				ServerCertificateCustomValidationCallback = (a, b, c, d) => true;
-				ClientCertificates.Add(certs.First());
+				ClientCertificates.Add(cert);
 			}
 			store.Close();
+		}
+
+		internal WeChatPayCertifiedHttpClientHandler(
+			string? wechatPayMerchantIdAsCertPassword,
+			string certFile
+		) : base() {
+
+			var cert = new X509Certificate2(certFile, wechatPayMerchantIdAsCertPassword, X509KeyStorageFlags.MachineKeySet);
+			if (cert != null) {
+				ClientCertificateOptions = ClientCertificateOption.Manual;
+				SslProtocols = SslProtocols.Tls12;
+				ServerCertificateCustomValidationCallback = (a, b, c, d) => true;
+				ClientCertificates.Add(cert);
+			}
 		}
 	}
 }

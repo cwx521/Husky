@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Husky.WeChatIntegration.ServiceCategorized;
+using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Aliyun.Net.SDK.Core;
 
 namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 {
@@ -9,7 +11,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 	{
 		//attention: fill the required values to run this test
 
-		private readonly string _openId = "ougf3wF_K0LLtG-sVrQELJ615kHk";
+		private readonly string _openId = "obrDG51cp7LfrJjXvEe8eFtdvq-4";
 
 		private readonly WeChatOptions _wechatConfig = new WeChatOptions {
 			OpenPlatformAppId = "",
@@ -22,7 +24,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			MiniProgramAppSecret = "",
 
 			MerchantId = "",
-			MerchantSecret = ""
+			MerchantSecret = "",
+			MerchantCertFile = @"E:\Documents\Certs\gth_cwxrjgzs_wxp.p12"
 		};
 
 		[TestMethod()]
@@ -40,8 +43,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 		}
 
 		[TestMethod()]
-		public async Task CreateUnifedOrderTestAsync() {
-			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+		public void CreateUnifedOrderTestAsync() {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
 				return;
 			}
 
@@ -52,14 +55,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				IPAddress = "127.0.0.1",
 				Body = "Test",
 				Amount = 0.01m,
-				NotifyUrl = "https://bigfridge.xingyisoftware.com/pay/callback/wechat",
+				NotifyUrl = "https://zags.xingyisoftware.com/activity/pay/wechat/notify",
 			};
 
 			//JsApi
 			model.TradeType = WeChatPayTradeType.JsApi;
 			model.OrderNo = OrderIdGen.New();
 
-			var result1 = await wechatPay.CreateUnifedOrderAsync(model);
+			var result1 =  wechatPay.CreateUnifedOrderAsync(model).Result;
 			Assert.IsTrue(result1.Ok);
 			Assert.IsNotNull(result1.Data.PrepayId);
 
@@ -67,54 +70,102 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			model.TradeType = WeChatPayTradeType.Native;
 			model.OrderNo = OrderIdGen.New();
 
-			var result2 = await wechatPay.CreateUnifedOrderAsync(model);
+			var result2 =  wechatPay.CreateUnifedOrderAsync(model).Result;
 			Assert.IsTrue(result2.Ok);
 			Assert.IsNotNull(result2.Data.PrepayId);
 		}
 
+
 		[TestMethod()]
-		public async Task QueryOrderTestAsync() {
-			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+		public void MicroPayTest() {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
+				return;
+			}
+			var wechatPay = new WeChatPayService(_wechatConfig);
+			var model = new WeChatPayOrderMicroPayModel {
+				AppId = _wechatConfig.MobilePlatformAppId,
+				Amount = 0.05m,
+				Body = "Test",
+				IPAddress = "127.0.0.1",
+				OrderNo = OrderIdGen.New(),
+				AuthCode = "132045584038097537"
+			};
+			var payResult = wechatPay.MicroPay(model).Result;
+			Assert.IsTrue(payResult.Ok);
+			Assert.IsFalse(payResult.Data.AwaitPaying);
+			Assert.AreEqual(model.Amount, payResult.Data.Amount);
+			Assert.AreEqual(_openId, payResult.Data.OpenId);
+
+			var payedAmount = model.Amount;
+			var payedOrderNo = model.OrderNo;
+			var refundAmount = 0.01m;
+			var refundRequestNo = "Refund_" + payedOrderNo;
+
+			var refundResult = wechatPay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, refundRequestNo, payedAmount, refundAmount, "UnitTest").Result;
+			Assert.IsTrue(refundResult.Ok);
+			Assert.AreEqual(refundAmount, refundResult.Data.RefundAmount);
+		}
+
+		[TestMethod()]
+		public void CancelOrderTest() {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
 				return;
 			}
 
-			var payedOrderNo = "DIB710795325592";   //DI4365967059199
+			var payedOrderNo = "DACJ13537218";
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var result = await wechatPay.QueryOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo);
+			var cancelOrderResult = wechatPay.CancelOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, true).Result;
+			Assert.IsTrue(cancelOrderResult.Ok);
+		}
+
+		[TestMethod()]
+		public void QueryOrderTestAsync() {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
+				return;
+			}
+
+			var payedAmount = 0.01m;
+			var payedOrderNo = "DACJ13537218";
+
+			var wechatPay = new WeChatPayService(_wechatConfig);
+			var result = wechatPay.QueryOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo).Result;
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.Data.Amount);
+			Assert.AreEqual(payedAmount, result.Data.Amount);
 			Assert.AreEqual(_openId, result.Data.OpenId);
 		}
 
 		[TestMethod()]
-		public async Task RefundTestAsync() {
-			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+		public void RefundTest() {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
 				return;
 			}
 
-			var payedOrderNo = "DIB710795325592";
-			var newRefundRequestNo = OrderIdGen.New();
+			var payedAmount = 0.01m;
+			var refundAmount = 0.01m;
+			var payedOrderNo = "DACJ13537218";
+			var refundRequestNo = "Refund_" + payedOrderNo;
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var result = await wechatPay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, newRefundRequestNo, 0.1m, 0.01m, "UnitTest");
+			var result = wechatPay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, refundRequestNo, payedAmount, refundAmount, "UnitTest").Result;
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.Data.RefundAmount);
+			Assert.AreEqual(refundAmount, result.Data.RefundAmount);
 		}
 
 		[TestMethod()]
 		public async Task QueryRefundTestAsync() {
-			if ( string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret) ) {
+			if (string.IsNullOrEmpty(_wechatConfig.MerchantId) || string.IsNullOrEmpty(_wechatConfig.MerchantSecret)) {
 				return;
 			}
 
-			var payedOrderNo = "DIB710795325592";
+			var refundAmount = 0.01m;
+			var payedOrderNo = "DACJ13537218";
 			var refundRequestNo = "Refund_" + payedOrderNo;
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
 			var result = await wechatPay.QueryRefundAsync(_wechatConfig.MobilePlatformAppId, refundRequestNo);
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(0.01m, result.Data.RefundAmount);
+			Assert.AreEqual(refundAmount, result.Data.RefundAmount);
 		}
 	}
 }

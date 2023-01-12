@@ -17,7 +17,7 @@ namespace Husky
 		public bool IsValid {
 			get {
 				if ( Value == null || Value.Length != 18 ) return false;
-				if ( Value.Substring(6, 4).AsInt() < 1900 ) return false;
+				if ( Value.Substring(6, 4).AsInt() < 1910 ) return false;
 				if ( Value.Substring(10, 2).AsInt() > 12 ) return false;
 				if ( Value.Substring(12, 2).AsInt() > 31 ) return false;
 				var times = new[] { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
@@ -31,7 +31,7 @@ namespace Husky
 		public static bool operator ==(SocialIdNumber one, SocialIdNumber other) => one.Value == other.Value;
 		public static bool operator !=(SocialIdNumber one, SocialIdNumber other) => one.Value != other.Value;
 
-		public bool Equals(SocialIdNumber other) => Value == other.Value;
+		public bool Equals(SocialIdNumber another) => Value == another.Value;
 		public override bool Equals(object? obj) => obj is SocialIdNumber socialIdNumber && Equals(socialIdNumber);
 		public override int GetHashCode() => base.GetHashCode();
 

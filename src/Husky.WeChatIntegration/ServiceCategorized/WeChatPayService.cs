@@ -19,6 +19,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatOptions _options;
 
+		public bool IsWeChatPayAuthCode(string authCode) =>
+			authCode != null &&
+			authCode.Length == 18 &&
+			authCode.IsInt64() &&
+			new[] { "10", "11", "12", "13", "14", "15" }.Contains(authCode.Substring(0, 2));
+
 		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Timestamp();
@@ -114,7 +120,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 				return new Result<WeChatPayOrderMicroPayResult> {
-					Ok = IsResultCodeSuccess(xml) && GetContent(xml, "trade_state") == "SUCCESS" && GetContent(xml, "trade_type") == "MICROPAY",
+					Ok = IsResultCodeSuccess(xml) && GetContent(xml, "trade_type") == "MICROPAY",
 					Message = GetErrorDescription(xml),
 					Data = new WeChatPayOrderMicroPayResult {
 						OpenId = GetContent(xml, "openid"),
@@ -175,7 +181,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 
 			try {
-				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, true);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, useCert: true);
 
 				if (!IsResultCodeSuccess(xml)) {
 					return new Failure<WeChatPayRefundResult>(GetErrorDescription(xml));
@@ -230,7 +236,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			parameters.Add("out_trade_no", orderNo);
 
 			try {
-				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
+				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, useCert: true);
 				if (IsResultCodeSuccess(xml)) {
 					return new Success();
 				}
@@ -271,7 +277,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				response = await DefaultHttpClient.Instance.PostAsync(wechatApiUrl, new StringContent(xml));
 			}
 			else {
-				var handler = new WeChatPayCertifiedHttpClientHandler(_options.MerchantId!);
+				using var handler = !string.IsNullOrEmpty(_options.MerchantCertFile)
+					? new WeChatPayCertifiedHttpClientHandler(_options.MerchantId, _options.MerchantCertFile)
+					: new WeChatPayCertifiedHttpClientHandler(_options.MerchantId!);
+
 				using var client = new HttpClient(handler);
 				response = await client.PostAsync(wechatApiUrl, new StringContent(xml));
 			}
@@ -315,6 +324,6 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		private static string? GetContent(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
 		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
 		private static bool IsResultCodeSuccess(string fromXml) => GetContent(fromXml, "result_code") == "SUCCESS";
-		private static string? GetErrorDescription(string fromXml) => GetContent(fromXml, "err_code_des");
+		private static string? GetErrorDescription(string fromXml) => GetContent(fromXml, "err_code_des") ?? GetContent(fromXml, "trade_state_desc") ?? GetContent(fromXml, "return_msg");
 	}
 }
