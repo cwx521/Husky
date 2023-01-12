@@ -10,7 +10,8 @@ using Newtonsoft.Json;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
-	public class WeChatJsApiService {
+	public class WeChatJsApiService
+	{
 		public WeChatJsApiService(WeChatOptions options, IHttpContextAccessor httpContextAccessor, IMemoryCache cache) {
 			_options = options;
 			_httpContextAccessor = httpContextAccessor;
@@ -18,8 +19,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 		private readonly WeChatOptions _options;
-		private readonly IMemoryCache _cache;
 		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly IMemoryCache _cache;
 
 		public async Task<Result<WeChatGeneralAccessToken>> GetGeneralAccessTokenAsync() {
 			_options.RequireMobilePlatformSettings();
@@ -34,7 +35,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 					var ok = d.errcode == null || (int)d.errcode == 0;
-					if ( !ok ) {
+					if (!ok) {
 						entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(1));
 						return new Failure<WeChatGeneralAccessToken>((int)d.errcode + ": " + d.errmsg);
 					}
@@ -46,23 +47,21 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					entry.SetAbsoluteExpiration(timeSpan);
 
 					return new Success<WeChatGeneralAccessToken> {
-						Data = new WeChatGeneralAccessToken {
+						Data = new() {
 							AccessToken = d.access_token,
 							Expires = DateTime.Now.Add(timeSpan)
 						}
 					};
 				}
-				catch ( Exception e ) {
+				catch (Exception e) {
 					return new Failure<WeChatGeneralAccessToken>(e.Message);
 				}
 			})!;
 		}
 
-
 		public void RemoveGeneralAccessTokenLocalCache() {
 			_cache.Remove(_options.MobilePlatformAppId + nameof(GetGeneralAccessTokenAsync));
 		}
-
 
 		public async Task<string> GetJsApiTicketAsync() {
 			var accessToken = await GetGeneralAccessTokenAsync();
@@ -80,19 +79,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 					return d.ticket ?? ((int)d.errcode + ": " + d.errmsg);
 				}
-				catch ( Exception e ) {
+				catch (Exception e) {
 					return e.Message;
 				}
 			})!;
 		}
-
 
 		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync() {
 			var accessToken = await GetGeneralAccessTokenAsync();
 			return await CreateJsApiConfigAsync(accessToken.Data);
 		}
 		public async Task<WeChatJsApiConfig> CreateJsApiConfigAsync(WeChatGeneralAccessToken accessToken) {
-			if ( _httpContextAccessor.HttpContext == null ) {
+			if (_httpContextAccessor.HttpContext == null) {
 				throw new InvalidProgramException("Can not call this method when IHttpContextAccessor.HttpContext is null.");
 			}
 
@@ -150,7 +148,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 					setTimeout(configWeChatJsApi, 50);";
 
-			if ( !withScriptTag ) {
+			if (!withScriptTag) {
 				return script;
 			}
 			return $"<script type='text/javascript'>\r\n{script}\r\n</script>";
@@ -185,7 +183,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 			var ok = d.errcode == null || (int)d.errcode == 0;
-			if ( !ok ) {
+			if (!ok) {
 				return new Failure((int)d.errcode + ": " + d.errmsg);
 			}
 			return new Success();
@@ -212,7 +210,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 			var ok = d.errcode == null || (int)d.errcode == 0;
-			if ( !ok ) {
+			if (!ok) {
 				return new Failure((int)d.errcode + ": " + d.errmsg);
 			}
 			return new Success();

@@ -278,8 +278,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 			else {
 				using var handler = !string.IsNullOrEmpty(_options.MerchantCertFile)
-					? new WeChatPayCertifiedHttpClientHandler(_options.MerchantId, _options.MerchantCertFile)
-					: new WeChatPayCertifiedHttpClientHandler(_options.MerchantId!);
+					? new CertifiedWxpayHttpClientHandler(_options.MerchantId, _options.MerchantCertFile)
+					: new CertifiedWxpayHttpClientHandler(_options.MerchantId!);
 
 				using var client = new HttpClient(handler);
 				response = await client.PostAsync(wechatApiUrl, new StringContent(xml));

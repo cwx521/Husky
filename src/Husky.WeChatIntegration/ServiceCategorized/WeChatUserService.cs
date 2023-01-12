@@ -26,7 +26,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					return new Failure<WeChatUserSubscriptionStatusResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserSubscriptionStatusResult> {
-					Data = new WeChatUserSubscriptionStatusResult {
+					Data = new() {
 						Subscribed = d.subscribe != null && (int)d.subscribe == 1,
 						SubscribeTime = d.subscribe == null || (int)d.subscribe != 1 ? null : new DateTime(1970, 1, 1).AddSeconds((int)d.subscribe_time),
 						SubscribeScene = d.subscribe_scene,
@@ -52,7 +52,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					return new Failure<WeChatUserResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserResult> {
-					Data = new WeChatUserResult {
+					Data = new() {
 						Subscribe = d.subscribe != null && (int)d.subscribe == 1,
 						OpenId = d.openid,
 						UnionId = d.unionid,
@@ -136,7 +136,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					return new Failure<WeChatUserAccessToken>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserAccessToken> {
-					Data = new WeChatUserAccessToken {
+					Data = new() {
 						AccessToken = d.access_token,
 						RefreshToken = d.refresh_token,
 						OpenId = d.openid

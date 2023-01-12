@@ -13,7 +13,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private readonly WeChatOptions _options;
 
-		public string CreateWebQrCodeLoginScript(string redirectUrl, string styleSheetUrl) {
+		public string CreateWebQrCodeLoginScript(string redirectUrl, string cssUrl) {
 			_options.RequireOpenPlatformSettings();
 
 			var elementId = "_" + Crypto.RandomString();
@@ -32,7 +32,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 								appid: '" + _options.OpenPlatformAppId + @"',
 								redirect_uri: '" + redirectUrl + @"',
 								state: '" + Crypto.Encrypt(DateTime.Now.ToString("yyyy-M-d H:mm:ss"), iv: _options.OpenPlatformAppId!) + @"',
-								href: '" + styleSheetUrl + @"',
+								href: '" + cssUrl + @"',
 								style: ''
 							});
 						}
@@ -66,7 +66,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if ( d.errcode != null && (int)d.errcode != 0 ) {
+				if (d.errcode != null && (int)d.errcode != 0) {
 					return new Failure<WeChatMiniProgramLoginResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatMiniProgramLoginResult> {
@@ -77,7 +77,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					}
 				};
 			}
-			catch ( Exception e ) {
+			catch (Exception e) {
 				return new Failure<WeChatMiniProgramLoginResult>(e.Message);
 			}
 		}
