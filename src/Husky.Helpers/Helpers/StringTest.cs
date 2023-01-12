@@ -18,7 +18,7 @@ namespace Husky
 		public static bool IsUrl(this string? str) => str != null && str.Length >= 6 && Uri.IsWellFormedUriString(str, UriKind.Absolute);
 		public static bool IsEmail(this string? str) => str != null && str.Length >= 6 && Regex.IsMatch(str, EmailRegexPattern);
 		public static bool IsCardNumber(this string? str) => str != null && (str.Length == 16 || str.Length == 19) && Regex.IsMatch(str, @"^\d+$");
-		public static bool IsMobileNumber(this string? str) => str != null && str.Length == 11 && Regex.IsMatch(str, MobileNumberRegexPattern);
+		public static bool IsCellphone(this string? str) => str != null && str.Length == 11 && Regex.IsMatch(str, MobileNumberRegexPattern);
 		public static bool IsSocialIdNumber(this string? str) => str != null && new SocialIdNumber(str).IsValid;
 	}
 }

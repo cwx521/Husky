@@ -12,7 +12,7 @@ namespace Husky.Principal.Users
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
 
-			var isMobile = mobileOrEmail.IsMobileNumber();
+			var isMobile = mobileOrEmail.IsCellphone();
 			var isEmail = mobileOrEmail.IsEmail();
 
 			if ( !isMobile && !isEmail ) {

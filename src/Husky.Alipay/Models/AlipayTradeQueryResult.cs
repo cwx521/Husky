@@ -2,7 +2,7 @@
 
 namespace Husky.Alipay
 {
-	public record AlipayOrderQueryResult
+	public record AlipayTradeQueryResult
 	{
 		public decimal Amount { get; internal init; }
 		public string? AlipayTradeNo { get; internal init; }

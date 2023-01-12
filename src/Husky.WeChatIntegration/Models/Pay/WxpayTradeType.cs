@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public enum WeChatPayTradeType
+	public enum WxpayTradeType
 	{
 		JsApi,
 		Native,

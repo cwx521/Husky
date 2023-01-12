@@ -17,14 +17,14 @@ namespace Husky.Sms.AliyunSms
 		private readonly AliyunSmsOptions _options;
 
 		public async Task<Result> SendAsync(ISmsBody sms, params string[] toMobileNumbers) {
-			if ( toMobileNumbers == null || toMobileNumbers.Length == 0 ) {
+			if (toMobileNumbers == null || toMobileNumbers.Length == 0) {
 				throw new ArgumentNullException(nameof(toMobileNumbers));
 			}
 
 			var request = new SendSmsRequest {
 				PhoneNumbers = string.Join(",", toMobileNumbers),
 				SignName = sms.SignName ?? _options.DefaultSignName,
-				TemplateCode = sms.TemplateAlias ?? _options.DefaultTemplateCode,
+				TemplateCode = sms.TemplateCode ?? _options.DefaultTemplateCode,
 				TemplateParam = JsonSerializer.Serialize(sms.Parameters)
 			};
 			var profile = DefaultProfile.GetProfile(_options.EndPointRegion, _options.AccessKeyId, _options.AccessKeySecret);
@@ -35,7 +35,7 @@ namespace Husky.Sms.AliyunSms
 					client.DoAction(request);
 					return new Success();
 				}
-				catch ( Exception e ) {
+				catch (Exception e) {
 					return new Failure(e.Message);
 				}
 			});

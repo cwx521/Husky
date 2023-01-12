@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public record WeChatPayNotifyResult
+	public record WxpayNotifyResult
 	{
 		public string OrderNo { get; internal init; } = null!;
 		public string TransactionId { get; internal init; } = null!;

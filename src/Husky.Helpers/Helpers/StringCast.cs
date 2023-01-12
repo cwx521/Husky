@@ -69,7 +69,7 @@ namespace Husky
 			if ( str.Length == 2 || str.Length == 3 ) {
 				return $"{str[0]}{new string('*', str.Length - 1)}";
 			}
-			if ( str.IsMobileNumber() ) {
+			if ( str.IsCellphone() ) {
 				return $"{str.Substring(0, 3)}****{str.Substring(7)}";
 			}
 			if ( str.IsEmail() ) {

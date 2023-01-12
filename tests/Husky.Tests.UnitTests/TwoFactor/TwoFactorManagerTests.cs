@@ -17,7 +17,7 @@ namespace Husky.TwoFactor.Tests
 		//attention: fill the required values to run this test
 
 		[TestMethod()]
-		public async Task SendCodeThroughAliyunSmsTest() {
+		public void SendCodeThroughAliyunSmsTest() {
 			var settings = new AliyunSmsOptions {
 				DefaultSignName = "星翼软件",
 				DefaultTemplateCode = "SMS_170155854",
@@ -25,7 +25,7 @@ namespace Husky.TwoFactor.Tests
 				AccessKeySecret = ""
 			};
 
-			if ( string.IsNullOrEmpty(settings.AccessKeySecret) ) {
+			if (string.IsNullOrEmpty(settings.AccessKeySecret)) {
 				return;
 			}
 
@@ -35,7 +35,7 @@ namespace Husky.TwoFactor.Tests
 			var twoFactorManager = new TwoFactorManager(testDb, principal, smsSender, null);
 
 			var sendTo = "17751283521";
-			var sentResult = await twoFactorManager.SendCodeThroughSmsAsync(sendTo);
+			var sentResult = twoFactorManager.SendCodeThroughSmsAsync(sendTo).Result;
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -43,7 +43,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = await twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true);
+			var verifyResult = twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true).Result;
 			row = testDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -53,24 +53,25 @@ namespace Husky.TwoFactor.Tests
 		}
 
 		[TestMethod()]
-		public async Task SendCodeThroughEmailTest() {
+		public void SendCodeThroughEmailTest() {
 			Crypto.SecretToken = Crypto.RandomString();
 
+			var senderAddress = "chenwx@xingyisoftware.com";
 			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),
-				Host = "smtp.live.com",
-				Port = 25,
-				Ssl = false,
+				Host = "smtp.exmail.qq.com",
+				Port = 465,
+				Ssl = true,
 				SenderDisplayName = "Weixing Chen",
-				SenderMailAddress = "chenwx521@hotmail.com",
-				CredentialName = "chenwx521@hotmail.com",
+				SenderMailAddress = senderAddress,
+				CredentialName = senderAddress,
 				Password = "",
 				IsInUse = true
 			};
 
 			//Config CredentialName & Password before running this test
 
-			if ( string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password) ) {
+			if (string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password)) {
 				return;
 			}
 
@@ -79,13 +80,13 @@ namespace Husky.TwoFactor.Tests
 			mailDb.Add(smtp);
 			mailDb.SaveChanges();
 
-			var sendTo = "chenwx521@hotmail.com";
+			var sendTo = senderAddress;
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 			var mailSender = new MailSender(mailDb);
 
 			var twoFactorManager = new TwoFactorManager(twoFactorDb, principal, null, mailSender);
 
-			var sentResult = await twoFactorManager.SendCodeThroughEmailAsync(sendTo);
+			var sentResult = twoFactorManager.SendCodeThroughEmailAsync(sendTo).Result;
 			var row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 
 			Assert.IsTrue(sentResult.Ok);
@@ -93,7 +94,7 @@ namespace Husky.TwoFactor.Tests
 			Assert.AreEqual(sendTo, row.SentTo);
 			Assert.IsFalse(row.IsUsed);
 
-			var verifyResult = await twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true);
+			var verifyResult = twoFactorManager.VerifyCodeAsync(sendTo, row.Code, true).Result;
 			row = twoFactorDb.TwoFactorCodes.FirstOrDefault();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.AreEqual(sendTo, row.SentTo);
@@ -104,7 +105,7 @@ namespace Husky.TwoFactor.Tests
 		}
 
 		[TestMethod()]
-		public async Task VerifyCodeTest() {
+		public void VerifyCodeTest() {
 			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 
@@ -118,8 +119,8 @@ namespace Husky.TwoFactor.Tests
 
 			Result verifyResult = null;
 			var twoFactorManager = new TwoFactorManager(testDb, principal, new AliyunSmsSender(new AliyunSmsOptions()), null);
-			for ( var i = 0; i < 12; i++ ) {
-				verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, "WRONG!", true);
+			for (var i = 0; i < 12; i++) {
+				verifyResult = twoFactorManager.VerifyCodeAsync(row.SentTo, "WRONG!", true).Result;
 				Assert.IsFalse(verifyResult.Ok);
 			}
 
@@ -128,20 +129,20 @@ namespace Husky.TwoFactor.Tests
 			Assert.IsTrue(row.ErrorTimes > 10);
 
 			//it still fails even the code is correct this time, because it has already failed for more than 10 times
-			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
+			verifyResult = twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true).Result;
 			Assert.IsFalse(verifyResult.Ok);
 
 			//reset then try a good one
 			row.ErrorTimes = 0;
 			testDb.SaveChanges();
 
-			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
+			verifyResult = twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true).Result;
 			row = testDb.TwoFactorCodes.First();
 			Assert.IsTrue(verifyResult.Ok);
 			Assert.IsTrue(row.IsUsed);
 
 			//if try one more time, it should fail because the code is used
-			verifyResult = await twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true);
+			verifyResult = twoFactorManager.VerifyCodeAsync(row.SentTo, row.Code, true).Result;
 			Assert.IsFalse(verifyResult.Ok);
 
 			testDb.Database.EnsureDeleted();

@@ -22,9 +22,9 @@ namespace Husky.Alipay.Tests
 				return;
 			}
 
-			var tradeModel = new AlipayOrderPrecreationModel {
+			var tradeModel = new AlipayTradeCreationModel {
 				Amount = 0.1m,
-				OrderNo = OrderIdGen.New(),
+				TradeNo = OrderIdGen.New(),
 				Subject = "UnitTest"
 			};
 			var alipay = new AlipayService(_alipayOptions);
@@ -39,47 +39,59 @@ namespace Husky.Alipay.Tests
 
 			//Open the url in browser
 			//Pay manually in the opened page, then continue
-			var queryResult = await alipay.QueryOrderAsync(tradeModel.OrderNo);
+			var queryResult = await alipay.QueryTradeAsync(tradeModel.TradeNo);
 			Assert.AreEqual(tradeModel.Amount, queryResult.Data.Amount);
 
+			var totalRefundedAmount = 0m;
 			var remainedAmount = tradeModel.Amount;
 
 			//Refund 0.01
-			var refundAmount = 0.01m;
-			var refundRequestNo = OrderIdGen.New();
-			var refundResult = await alipay.RefundAsync(tradeModel.OrderNo, refundRequestNo, refundAmount, "Test");
+			var refundModel = new AlipayRefundModel {
+				OriginalTradeNo = tradeModel.TradeNo,
+				RefundAmount = 0.01m,
+				RefundRequestNo = OrderIdGen.New(),
+				RefundReason = "RefundUnitTest"
+			};
+			totalRefundedAmount += refundModel.RefundAmount;
+			var refundResult = await alipay.RefundAsync(refundModel);
 			Assert.IsTrue(refundResult.Ok);
-			Assert.AreEqual(refundAmount, refundResult.Data.RefundAmount);
+			Assert.AreEqual(refundModel.RefundAmount, refundResult.Data.RefundAmount);
 
-			remainedAmount -= refundAmount;
+			remainedAmount -= refundModel.RefundAmount;
 
 			//Query refund 0.01
-			var queryRefundResult = await alipay.QueryRefundAsync(tradeModel.OrderNo, refundRequestNo);
-			Assert.AreEqual(refundAmount, queryRefundResult.Data.RefundAmount);
+			var queryRefundResult = await alipay.QueryRefundAsync(tradeModel.TradeNo, refundModel.RefundRequestNo);
+			Assert.AreEqual(refundModel.RefundAmount, queryRefundResult.Data.RefundAmount);
 
 			//Refund another 0.01
-			var refundAmount2 = 0.01m;
-			var refundRequestNo2 = OrderIdGen.New();
-			var refundResult2 = await alipay.RefundAsync(tradeModel.OrderNo, refundRequestNo2, refundAmount2, "Test");
+			refundModel.RefundAmount = 0.01m;
+			refundModel.RefundRequestNo = OrderIdGen.New();
+			totalRefundedAmount += refundModel.RefundAmount;
+			var refundResult2 = await alipay.RefundAsync(refundModel);
 			Assert.IsTrue(refundResult2.Ok);
-			Assert.AreEqual(refundAmount2, refundResult2.Data.RefundAmount);
-			Assert.AreEqual(refundAmount + refundAmount2, refundResult2.Data.AggregatedRefundAmount);
+			Assert.AreEqual(refundModel.RefundAmount, refundResult2.Data.RefundAmount);
+			Assert.AreEqual(totalRefundedAmount, refundResult2.Data.AggregatedRefundAmount);
 
-			remainedAmount -= refundAmount2;
+			remainedAmount -= refundModel.RefundAmount;
 
 			//Query another refund 0.01
-			var queryRefundResult2 = await alipay.QueryRefundAsync(tradeModel.OrderNo, refundRequestNo2);
-			Assert.AreEqual(refundAmount2, queryRefundResult2.Data.RefundAmount);
+			var queryRefundResult2 = await alipay.QueryRefundAsync(tradeModel.TradeNo, refundModel.RefundRequestNo);
+			Assert.AreEqual(refundModel.RefundAmount, queryRefundResult2.Data.RefundAmount);
 
 			//Expected failure refund
-			var refundAmount3 = tradeModel.Amount;
-			var refundResult3 = await alipay.RefundAsync(tradeModel.OrderNo, OrderIdGen.New(), refundAmount3, "Test");
+			refundModel.RefundAmount = tradeModel.Amount;
+			refundModel.RefundRequestNo = OrderIdGen.New();
+			var refundResult3 = await alipay.RefundAsync(refundModel);
 			Assert.IsFalse(refundResult3.Ok);
 			Assert.IsNotNull(refundResult3.Message);
 
 			//Refund all remained amount
-			var refundResult4 = await alipay.RefundAsync(tradeModel.OrderNo, OrderIdGen.New(), remainedAmount, "Test");
+			refundModel.RefundAmount = remainedAmount;
+			refundModel.RefundRequestNo = OrderIdGen.New();
+			totalRefundedAmount += refundModel.RefundAmount;
+			var refundResult4 = await alipay.RefundAsync(refundModel);
 			Assert.IsTrue(refundResult4.Ok);
+			Assert.AreEqual(tradeModel.Amount, totalRefundedAmount);
 			Assert.AreEqual(tradeModel.Amount, refundResult4.Data.AggregatedRefundAmount);
 		}
 
@@ -94,18 +106,18 @@ namespace Husky.Alipay.Tests
 				return;
 			}
 
-			var model = new AlipayOrderF2FPayModel {
+			var model = new AlipayTradeMicroPayModel {
 				Amount = 0.01m,
 				AuthCode = _oneoffAuthCode,
 				Subject = "UnitTest",
-				OrderNo = OrderIdGen.New()
+				TradeNo = OrderIdGen.New()
 			};
 			var alipay = new AlipayService(_alipayOptions);
 			var payResult = await alipay.F2FPayAsync(model);
 			Assert.IsTrue(payResult.Ok);
 			Assert.AreEqual(model.Amount, payResult.Data.Amount);
 
-			var cancelOrderResult = await alipay.CancelOrderAsync(model.OrderNo, true);
+			var cancelOrderResult = await alipay.CancelTradeAsync(model.TradeNo, true);
 			Assert.IsTrue(cancelOrderResult.Ok);
 		}
 	}

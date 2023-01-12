@@ -25,7 +25,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			authCode.IsInt64() &&
 			new[] { "10", "11", "12", "13", "14", "15" }.Contains(authCode.Substring(0, 2));
 
-		public WeChatPayJsApiParameter CreateJsApiPayParameter(string prepayId) {
+		public WxpayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
 			var timeStamp = DateTime.Now.Timestamp();
 
@@ -38,7 +38,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			sb.Append("&key=" + _options.MerchantSecret);
 			var paySign = Crypto.MD5(sb.ToString()).ToUpper();
 
-			return new WeChatPayJsApiParameter {
+			return new WxpayJsApiParameter {
 				timestamp = timeStamp,
 				nonceStr = nonceStr,
 				package = $"prepay_id={prepayId}",
@@ -47,7 +47,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public async Task<Result<WeChatPayOrderCreationResult>> CreateUnifedOrderAsync(WeChatPayOrderModel model) {
+		public async Task<Result<WxpayOrderCreationResult>> CreateUnifedOrderAsync(WxpayOrderCreationModel model) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 			var now = DateTime.Now;
@@ -78,10 +78,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
 				if (!IsResultCodeSuccess(xml)) {
-					return new Failure<WeChatPayOrderCreationResult>(GetErrorDescription(xml));
+					return new Failure<WxpayOrderCreationResult>(GetErrorDescription(xml));
 				}
-				return new Success<WeChatPayOrderCreationResult> {
-					Data = new WeChatPayOrderCreationResult {
+				return new Success<WxpayOrderCreationResult> {
+					Data = new WxpayOrderCreationResult {
 						PrepayId = GetContent(xml, "prepay_id"),
 						CodeUrl = GetContent(xml, "code_url"),
 						OriginalResult = xml
@@ -89,11 +89,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayOrderCreationResult>(e.Message);
+				return new Failure<WxpayOrderCreationResult>(e.Message);
 			};
 		}
 
-		public async Task<Result<WeChatPayOrderMicroPayResult>> MicroPay(WeChatPayOrderMicroPayModel model) {
+		public async Task<Result<WxpayOrderMicroPayResult>> MicroPay(WxpayOrderMicroPayModel model) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/micropay";
 
 			var now = DateTime.Now;
@@ -119,10 +119,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
-				return new Result<WeChatPayOrderMicroPayResult> {
+				return new Result<WxpayOrderMicroPayResult> {
 					Ok = IsResultCodeSuccess(xml) && GetContent(xml, "trade_type") == "MICROPAY",
 					Message = GetErrorDescription(xml),
-					Data = new WeChatPayOrderMicroPayResult {
+					Data = new WxpayOrderMicroPayResult {
 						OpenId = GetContent(xml, "openid"),
 						TransactionId = GetContent(xml, "transaction_id"),
 						Amount = GetValue<int>(xml, "total_fee") / 100m,
@@ -132,11 +132,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayOrderMicroPayResult>(e.Message);
+				return new Failure<WxpayOrderMicroPayResult>(e.Message);
 			};
 		}
 
-		public async Task<Result<WeChatPayOrderQueryResult>> QueryOrderAsync(string appId, string orderNo) {
+		public async Task<Result<WxpayOrderQueryResult>> QueryOrderAsync(string appId, string orderNo) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
 			var parameters = GetCommonParameters(appId);
@@ -147,11 +147,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var tradeState = GetContent(xml, "trade_state");
 
 				if (tradeState != "REFUND" && tradeState != "SUCCESS") {
-					return new Failure<WeChatPayOrderQueryResult>(GetErrorDescription(xml));
+					return new Failure<WxpayOrderQueryResult>(GetErrorDescription(xml));
 				}
 
-				return new Success<WeChatPayOrderQueryResult> {
-					Data = new WeChatPayOrderQueryResult {
+				return new Success<WxpayOrderQueryResult> {
+					Data = new WxpayOrderQueryResult {
 						HasRefund = tradeState == "REFUND",
 						OpenId = GetContent(xml, "openid"),
 						Amount = GetValue<int>(xml, "total_fee") / 100m,
@@ -161,11 +161,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayOrderQueryResult>(e.Message);
+				return new Failure<WxpayOrderQueryResult>(e.Message);
 			};
 		}
 
-		public async Task<Result<WeChatPayRefundResult>> RefundAsync(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
+		public async Task<Result<WxpayRefundResult>> RefundAsync(string appId, string orderNo, string newRefundRequestNo, decimal totalOrderAmount, decimal refundAmount, string refundReason) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 			var parameters = GetCommonParameters(appId);
@@ -184,21 +184,21 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, useCert: true);
 
 				if (!IsResultCodeSuccess(xml)) {
-					return new Failure<WeChatPayRefundResult>(GetErrorDescription(xml));
+					return new Failure<WxpayRefundResult>(GetErrorDescription(xml));
 				}
-				return new Success<WeChatPayRefundResult> {
-					Data = new WeChatPayRefundResult {
+				return new Success<WxpayRefundResult> {
+					Data = new WxpayRefundResult {
 						RefundAmount = GetValue<int>(xml, "refund_fee") / 100m,
 						OriginalResult = xml
 					}
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayRefundResult>(e.Message);
+				return new Failure<WxpayRefundResult>(e.Message);
 			};
 		}
 
-		public async Task<Result<WeChatPayRefundQueryResult>> QueryRefundAsync(string appId, string refundRequestNo) {
+		public async Task<Result<WxpayRefundQueryResult>> QueryRefundAsync(string appId, string refundRequestNo) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
 			var parameters = GetCommonParameters(appId);
@@ -208,17 +208,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
 				if (!IsResultCodeSuccess(xml) || (GetContent(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING")) {
-					return new Failure<WeChatPayRefundQueryResult>(GetErrorDescription(xml));
+					return new Failure<WxpayRefundQueryResult>(GetErrorDescription(xml));
 				}
-				return new Success<WeChatPayRefundQueryResult> {
-					Data = new WeChatPayRefundQueryResult {
+				return new Success<WxpayRefundQueryResult> {
+					Data = new WxpayRefundQueryResult {
 						RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100m,
 						OriginalResult = xml
 					}
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayRefundQueryResult>(e.Message);
+				return new Failure<WxpayRefundQueryResult>(e.Message);
 			};
 		}
 
@@ -287,13 +287,13 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await response.Content.ReadAsStringAsync();
 		}
 
-		public Result<WeChatPayNotifyResult> ParseNotifyResult(string xml) {
+		public Result<WxpayNotifyResult> ParseNotifyResult(string xml) {
 			try {
 				if (!IsResultCodeSuccess(xml)) {
-					return new Failure<WeChatPayNotifyResult>(GetErrorDescription(xml));
+					return new Failure<WxpayNotifyResult>(GetErrorDescription(xml));
 				}
-				return new Success<WeChatPayNotifyResult> {
-					Data = new WeChatPayNotifyResult {
+				return new Success<WxpayNotifyResult> {
+					Data = new WxpayNotifyResult {
 						Amount = GetValue<decimal>(xml, "total_fee") / 100m,
 						OpenId = GetContent(xml, "openid")!,
 						OrderNo = GetContent(xml, "out_trade_no")!,
@@ -304,7 +304,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatPayNotifyResult>(e.Message);
+				return new Failure<WxpayNotifyResult>(e.Message);
 			}
 		}
 

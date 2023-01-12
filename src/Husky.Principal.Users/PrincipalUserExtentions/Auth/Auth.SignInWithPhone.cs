@@ -13,7 +13,7 @@ namespace Husky.Principal.Users
 			if ( string.IsNullOrEmpty(mobile) || string.IsNullOrEmpty(verificationCode) ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
-			if ( !mobile.IsMobileNumber() ) {
+			if ( !mobile.IsCellphone() ) {
 				return new Failure(LoginResult.InvalidInput.ToLabel());
 			}
 

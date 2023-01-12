@@ -18,14 +18,15 @@ namespace Husky.Mail.Tests
 
 			//attention: fill the required values to run this test
 
+			var senderAddress = "chenwx@xingyisoftware.com";
 			var smtp = new MailSmtpProvider {
 				Id = Guid.NewGuid(),
 				Host = "smtp.exmail.qq.com",
 				Port = 465,
 				Ssl = true,
 				SenderDisplayName = "Weixing Chen",
-				SenderMailAddress = "chenwx@xingyisoftware.com",
-				CredentialName = "chenwx@xingyisoftware.com",
+				SenderMailAddress = senderAddress,
+				CredentialName = senderAddress,
 				Password = "",
 				IsInUse = true
 			};
@@ -44,10 +45,10 @@ namespace Husky.Mail.Tests
 				Body = "<div style='color:navy'>Greeting</div>",
 				IsHtml = true,
 				To = new List<MailAddress> {
-					new MailAddress { Name = "Weixing", Address = "chenwx521@hotmail.com" }
+					new MailAddress { Name = "Weixing", Address = "5607882@qq.com" }
 				},
 				Cc = new List<MailAddress> {
-					new MailAddress { Name = "Weixing", Address = "5607882@qq.com" }
+					new MailAddress { Name = "Weixing", Address = senderAddress }
 				},
 				Attachments = new List<MailAttachment> {
 					new MailAttachment {

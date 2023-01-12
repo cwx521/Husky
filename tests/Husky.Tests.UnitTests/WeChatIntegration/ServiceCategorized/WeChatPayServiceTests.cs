@@ -49,7 +49,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			}
 
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var model = new WeChatPayOrderModel {
+			var model = new WxpayOrderCreationModel {
 				OpenId = _openId,
 				AppId = _wechatConfig.MobilePlatformAppId,
 				IPAddress = "127.0.0.1",
@@ -59,7 +59,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			};
 
 			//JsApi
-			model.TradeType = WeChatPayTradeType.JsApi;
+			model.TradeType = WxpayTradeType.JsApi;
 			model.OrderNo = OrderIdGen.New();
 
 			var result1 =  wechatPay.CreateUnifedOrderAsync(model).Result;
@@ -67,7 +67,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			Assert.IsNotNull(result1.Data.PrepayId);
 
 			//Native
-			model.TradeType = WeChatPayTradeType.Native;
+			model.TradeType = WxpayTradeType.Native;
 			model.OrderNo = OrderIdGen.New();
 
 			var result2 =  wechatPay.CreateUnifedOrderAsync(model).Result;
@@ -82,7 +82,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 			var wechatPay = new WeChatPayService(_wechatConfig);
-			var model = new WeChatPayOrderMicroPayModel {
+			var model = new WxpayOrderMicroPayModel {
 				AppId = _wechatConfig.MobilePlatformAppId,
 				Amount = 0.05m,
 				Body = "Test",
