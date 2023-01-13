@@ -86,7 +86,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				Body = "Test",
 				IPAddress = "127.0.0.1",
 				TradeNo = OrderIdGen.New(),
-				AuthCode = "132045584038097537"
+				AuthCode = "133442835993650798"
 			};
 			var payResult = wxpay.MicroPay(model).Result;
 			Assert.IsTrue(payResult.Ok);
@@ -113,7 +113,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedTradeNo = "DACJ13537218";
+			var payedTradeNo = "DAEX94019335";
 
 			var wxpay = new WeChatPayService(_wechatConfig);
 			var cancelOrderResult = wxpay.CancelTradeAsync(_wechatConfig.MobilePlatformAppId, payedTradeNo, true).Result;
@@ -126,8 +126,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedAmount = 0.01m;
-			var payedTradeNo = "DACJ13537218";
+			var payedAmount = 0.05m;
+			var payedTradeNo = "DAEX94019335";
 
 			var wxpay = new WeChatPayService(_wechatConfig);
 			var result = wxpay.QueryTradeAsync(_wechatConfig.MobilePlatformAppId, payedTradeNo).Result;
@@ -142,12 +142,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var tradeNo = "DACJ13537218";
+			var tradeNo = "DAEX94019335";
 			var model = new WxpayRefundModel {
 				AppId = _wechatConfig.MobilePlatformAppId,
 				TradeNo = tradeNo,
 				NewRefundRequestNo = "Refund_" + tradeNo,
-				TotalPaidAmount = 0.01m,
+				TotalPaidAmount = 0.05m,
 				RefundAmount = 0.01m,
 				RefundReason = "UnitTest"
 			};
@@ -165,7 +165,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			}
 
 			var refundAmount = 0.01m;
-			var payedTradeNo = "DACJ13537218";
+			var payedTradeNo = "DAEX94019335";
 			var refundRequestNo = "Refund_" + payedTradeNo;
 
 			var wxpay = new WeChatPayService(_wechatConfig);
