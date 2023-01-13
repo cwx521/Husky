@@ -60,7 +60,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			model.TradeType = WxpayTradeType.JsApi;
 			model.TradeNo = OrderIdGen.New();
 
-			var result1 = wxpay.CreateUnifedOrderAsync(model).Result;
+			var result1 = wxpay.CreateUnifiedOrderAsync(model).Result;
 			Assert.IsTrue(result1.Ok);
 			Assert.IsNotNull(result1.Data.PrepayId);
 
@@ -68,7 +68,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			model.TradeType = WxpayTradeType.Native;
 			model.TradeNo = OrderIdGen.New();
 
-			var result2 = wxpay.CreateUnifedOrderAsync(model).Result;
+			var result2 = wxpay.CreateUnifiedOrderAsync(model).Result;
 			Assert.IsTrue(result2.Ok);
 			Assert.IsNotNull(result2.Data.PrepayId);
 		}

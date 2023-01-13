@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Husky.WeChatIntegration.Models.Pay;
+using Microsoft.AspNetCore.Http;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
 {
@@ -28,19 +29,19 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public WxpayJsApiParameter CreateJsApiPayParameter(string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
-			var timeStamp = DateTime.Now.Timestamp();
+			var timestamp = DateTime.Now.Timestamp();
 
 			var sb = new StringBuilder();
 			sb.Append("appId=" + _options.MobilePlatformAppId);
 			sb.Append("&nonceStr=" + nonceStr);
 			sb.Append("&package=prepay_id=" + prepayId);
 			sb.Append("&signType=MD5");
-			sb.Append("&timeStamp=" + timeStamp);
+			sb.Append("&timeStamp=" + timestamp);
 			sb.Append("&key=" + _options.MerchantSecret);
 			var paySign = Crypto.MD5(sb.ToString()).ToUpper();
 
 			return new WxpayJsApiParameter {
-				timestamp = timeStamp,
+				timestamp = timestamp,
 				nonceStr = nonceStr,
 				package = $"prepay_id={prepayId}",
 				signType = "MD5",
@@ -48,11 +49,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 		}
 
-		public async Task<Result<WxpayTradeCreationResult>> CreateUnifedOrderAsync(WxpayTradeCreationModel model) {
+		public async Task<Result<WxpayTradeCreationResult>> CreateUnifiedOrderAsync(WxpayTradeCreationModel model) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
 			var now = DateTime.Now;
-			var parameters = GetCommonParameters(model.AppId);
+			var parameters = GetCommonParams(model.AppId);
 			var more = new Dictionary<string, string> {
 				{ "time_start", now.ToString("yyyyMMddHHmmss") },
 				{ "time_expire", now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
@@ -76,12 +77,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
 				if (!IsResultCodeSuccess(xml)) {
-					return new Failure<WxpayTradeCreationResult>(GetErrorDescription(xml));
+					return new Failure<WxpayTradeCreationResult>(GetResultDescription(xml));
 				}
 				return new Success<WxpayTradeCreationResult> {
 					Data = new WxpayTradeCreationResult {
-						PrepayId = GetContent(xml, "prepay_id"),
-						CodeUrl = GetContent(xml, "code_url"),
+						PrepayId = GetValue(xml, "prepay_id"),
+						CodeUrl = GetValue(xml, "code_url"),
 						OriginalResult = xml
 					}
 				};
@@ -95,7 +96,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/micropay";
 
 			var now = DateTime.Now;
-			var parameters = GetCommonParameters(model.AppId);
+			var parameters = GetCommonParams(model.AppId);
 			var more = new Dictionary<string, string> {
 				{ "time_start", now.ToString("yyyyMMddHHmmss") },
 				{ "time_expire", now.Add(model.Expiration).ToString("yyyyMMddHHmmss") },
@@ -114,14 +115,15 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
+
 				return new Result<WxpayTradeMicroPayResult> {
-					Ok = IsResultCodeSuccess(xml) && GetContent(xml, "trade_type") == "MICROPAY",
-					Message = GetErrorDescription(xml),
+					Ok = IsResultCodeSuccess(xml) && GetValue(xml, "trade_type") == "MICROPAY",
+					Message = GetResultDescription(xml),
 					Data = new WxpayTradeMicroPayResult {
-						OpenId = GetContent(xml, "openid"),
-						TransactionId = GetContent(xml, "transaction_id"),
+						OpenId = GetValue(xml, "openid"),
+						TransactionId = GetValue(xml, "transaction_id"),
 						Amount = GetValue<int>(xml, "total_fee") / 100m,
-						AwaitPaying = GetContent(xml, "err_code") == "USERPAYING",
+						AwaitPaying = GetValue(xml, "err_code") == "USERPAYING",
 						OriginalResult = xml
 					}
 				};
@@ -134,23 +136,23 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WxpayTradeQueryResult>> QueryTradeAsync(string appId, string tradeNo) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
 
-			var parameters = GetCommonParameters(appId);
+			var parameters = GetCommonParams(appId);
 			parameters.Add("out_trade_no", tradeNo);
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
-				var tradeState = GetContent(xml, "trade_state");
+				var tradeState = GetValue(xml, "trade_state");
 
 				if (tradeState != "REFUND" && tradeState != "SUCCESS") {
-					return new Failure<WxpayTradeQueryResult>(GetErrorDescription(xml));
+					return new Failure<WxpayTradeQueryResult>(GetResultDescription(xml));
 				}
 
 				return new Success<WxpayTradeQueryResult> {
 					Data = new WxpayTradeQueryResult {
 						HasRefund = tradeState == "REFUND",
-						OpenId = GetContent(xml, "openid"),
+						OpenId = GetValue(xml, "openid"),
 						Amount = GetValue<int>(xml, "total_fee") / 100m,
-						TransactionId = GetContent(xml, "transaction_id"),
+						TransactionId = GetValue(xml, "transaction_id"),
 						OriginalResult = xml
 					}
 				};
@@ -163,7 +165,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WxpayRefundResult>> RefundAsync(WxpayRefundModel model) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
-			var parameters = GetCommonParameters(model.AppId);
+			var parameters = GetCommonParams(model.AppId);
 			var more = new Dictionary<string, string> {
 				{ "out_trade_no", model.TradeNo },
 				{ "out_refund_no", model.NewRefundRequestNo },
@@ -179,7 +181,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, useCert: true);
 
 				if (!IsResultCodeSuccess(xml)) {
-					return new Failure<WxpayRefundResult>(GetErrorDescription(xml));
+					return new Failure<WxpayRefundResult>(GetResultDescription(xml));
 				}
 				return new Success<WxpayRefundResult> {
 					Data = new WxpayRefundResult {
@@ -196,14 +198,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WxpayRefundQueryResult>> QueryRefundAsync(string appId, string refundRequestNo) {
 			const string apiUrl = "https://api.mch.weixin.qq.com/pay/refundquery";
 
-			var parameters = GetCommonParameters(appId);
+			var parameters = GetCommonParams(appId);
 			parameters.Add("out_refund_no", refundRequestNo);
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters);
 
-				if (!IsResultCodeSuccess(xml) || (GetContent(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING")) {
-					return new Failure<WxpayRefundQueryResult>(GetErrorDescription(xml));
+				if (!IsResultCodeSuccess(xml) || (GetValue(xml, "refund_status_0") is not "SUCCESS" and not "PROCESSING")) {
+					return new Failure<WxpayRefundQueryResult>(GetResultDescription(xml));
 				}
 				return new Success<WxpayRefundQueryResult> {
 					Data = new WxpayRefundQueryResult {
@@ -227,40 +229,37 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				}
 			}
 
-			var parameters = GetCommonParameters(appId);
+			var parameters = GetCommonParams(appId);
 			parameters.Add("out_trade_no", tradeNo);
 
 			try {
 				var xml = await PostThenGetResultXmlAsync(apiUrl, parameters, useCert: true);
-				if (IsResultCodeSuccess(xml)) {
-					return new Success();
-				}
-				return new Failure(GetErrorDescription(xml));
+				return new Result(IsResultCodeSuccess(xml), GetResultDescription(xml));
 			}
 			catch (Exception e) {
 				return new Failure(e.Message);
 			};
 		}
 
-		public async Task<string> PostThenGetResultXmlAsync(string wechatApiUrl, Dictionary<string, string> apiParameters, bool useCert = false) {
-			var sb = new StringBuilder();
-			apiParameters.Add("sign_type", "MD5");
+		public async Task<string> PostThenGetResultXmlAsync(string wechatApiUrl, Dictionary<string, string> apiParams, bool useCert = false) {
+			apiParams.Add("sign_type", "MD5");
 
 			//按Key排序，追加key=@MerchantSecret，合成FormData格式字符串
-			var sortedNames = apiParameters.Keys.OrderBy(x => x).ToArray();
+			var sortedNames = apiParams.Keys.OrderBy(x => x).ToArray();
+			var sb = new StringBuilder();
 			foreach (var name in sortedNames) {
-				sb.Append(name + "=" + apiParameters[name] + "&");
+				sb.Append(name + "=" + apiParams[name] + "&");
 			}
 			sb.Append("key=" + _options.MerchantSecret);
 
 			//对格式后的字符串进行加密，获得sign，把sign和值加入原Dictionary
-			var tobeSigned = sb.ToString();
-			apiParameters.Add("sign", Crypto.MD5(tobeSigned));
+			var toBeSigned = sb.ToString();
+			apiParams.Add("sign", Crypto.MD5(toBeSigned));
 
 			//再转换成XML
 			sb.Clear();
 			sb.Append("<xml>");
-			foreach (var item in apiParameters) {
+			foreach (var item in apiParams) {
 				sb.AppendFormat("<{0}>{1}</{0}>", item.Key, item.Value);
 			}
 			sb.Append("</xml>");
@@ -282,14 +281,22 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await response.Content.ReadAsStringAsync();
 		}
 
+		public async Task<Result<WxpayNotifyResult>> ParseNotifyResult(HttpRequest request) {
+			var bytes = new byte[(int)request.ContentLength!];
+			await request.Body.ReadAsync(bytes.AsMemory(0, bytes.Length));
+			var xml = Encoding.UTF8.GetString(bytes);
+			return ParseNotifyResult(xml);
+		}
+
 		public Result<WxpayNotifyResult> ParseNotifyResult(string xml) {
 			if (!IsResultCodeSuccess(xml)) {
-				return new Failure<WxpayNotifyResult>(GetErrorDescription(xml));
+				return new Failure<WxpayNotifyResult>(GetResultDescription(xml));
 			}
 
 			var dict = new Dictionary<string, string>();
 			var xmlDoc = new XmlDocument();
 			xmlDoc.LoadXml(xml);
+
 			foreach (XmlNode node in xmlDoc.ChildNodes) {
 				if (node.Name != "sign") {
 					var value = node.Value ?? node.InnerText;
@@ -305,17 +312,18 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 			sb.Append("key=" + _options.MerchantSecret);
 
-			var sign = Crypto.MD5(sb.ToString());
-			if (sign != GetContent(xml, "sign")) {
+			var toBeSigned = sb.ToString();
+			var sign = Crypto.MD5(toBeSigned);
+			if (sign != GetValue(xml, "sign")) {
 				return new Failure<WxpayNotifyResult>("验证签名失败");
 			}
 
 			return new Success<WxpayNotifyResult> {
 				Data = new WxpayNotifyResult {
 					Amount = GetValue<decimal>(xml, "total_fee") / 100m,
-					OpenId = GetContent(xml, "openid")!,
-					TradeNo = GetContent(xml, "out_trade_no")!,
-					TransactionId = GetContent(xml, "transaction_id")!,
+					OpenId = GetValue(xml, "openid")!,
+					TradeNo = GetValue(xml, "out_trade_no")!,
+					TransactionId = GetValue(xml, "transaction_id")!,
 					OriginalResult = xml
 				}
 			};
@@ -325,7 +333,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 		}
 
-		private Dictionary<string, string> GetCommonParameters(string wechatAppId) {
+		private Dictionary<string, string> GetCommonParams(string wechatAppId) {
 			return new Dictionary<string, string> {
 				{ "appid", wechatAppId },
 				{ "mch_id", _options.MerchantId! },
@@ -334,9 +342,9 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		}
 
 
-		private static string? GetContent(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
+		private static string? GetValue(string fromXml, string nodeName) => fromXml.MidBy($"<{nodeName}><![CDATA[", $"]]></{nodeName}>");
 		private static T GetValue<T>(string fromXml, string nodeName) where T : struct => fromXml.MidBy($"<{nodeName}>", $"</{nodeName}>").As<T>();
-		private static bool IsResultCodeSuccess(string fromXml) => GetContent(fromXml, "result_code") == "SUCCESS";
-		private static string? GetErrorDescription(string fromXml) => GetContent(fromXml, "err_code_des") ?? GetContent(fromXml, "trade_state_desc") ?? GetContent(fromXml, "return_msg");
+		private static bool IsResultCodeSuccess(string fromXml) => GetValue(fromXml, "result_code") == "SUCCESS";
+		private static string? GetResultDescription(string fromXml) => GetValue(fromXml, "err_code_des") ?? GetValue(fromXml, "trade_state_desc") ?? GetValue(fromXml, "return_msg");
 	}
 }
