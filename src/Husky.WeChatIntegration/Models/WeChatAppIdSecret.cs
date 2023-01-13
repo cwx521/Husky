@@ -2,11 +2,11 @@
 
 namespace Husky.WeChatIntegration
 {
-	public class WeChatAppIdSecret
+	public record WeChatAppIdSecret
 	{
-		public string? AppId { get; set; }
-		public string? AppSecret { get; set; }
-		public WeChatField? Type { get; set; }
+		public string? AppId { get; init; }
+		public string? AppSecret { get; init; }
+		public WeChatRegion? Region { get; init; }
 
 		internal void NotNull() {
 			_ = AppId ?? throw new ArgumentNullException(nameof(AppId));

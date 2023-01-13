@@ -63,7 +63,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					  $"&grant_type=authorization_code";
 
 			try {
-				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {

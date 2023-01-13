@@ -31,7 +31,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				url += $"appid={_options.MobilePlatformAppId}&secret={_options.MobilePlatformAppSecret}";
 
 				try {
-					var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+					var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 					var ok = d.errcode == null || (int)d.errcode == 0;
@@ -71,7 +71,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return await _cache.GetOrCreate(accessToken.AccessToken + nameof(GetJsApiTicketAsync), async entry => {
 				var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket" + $"?access_token={accessToken.AccessToken}&type=jsapi";
 				try {
-					var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+					var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 					var ok = d.errcode == null || (int)d.errcode == 0;
@@ -156,15 +156,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 
 		public async Task<Result> SendTemplateMessageAsync<T>(string openId, T data, string? url) where T : IWeChatTemplateMessage {
-			try {
-				var accessToken = await GetGeneralAccessTokenAsync();
-				return await SendTemplateMessageAsync(accessToken.Data, openId, data, url);
-			}
-			catch {
-				RemoveGeneralAccessTokenLocalCache();
-				var accessToken = await GetGeneralAccessTokenAsync();
-				return await SendTemplateMessageAsync(accessToken.Data, openId, data, url);
-			}
+			var accessToken = await GetGeneralAccessTokenAsync();
+			return await SendTemplateMessageAsync(accessToken.Data, openId, data, url);
 		}
 		public async Task<Result> SendTemplateMessageAsync<T>(WeChatGeneralAccessToken accessToken, string openId, T data, string? url) where T : IWeChatTemplateMessage {
 			var api = "https://" + $"api.weixin.qq.com/cgi-bin/message/template/send?access_token={accessToken.AccessToken}";
@@ -178,7 +171,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 			var serialized = System.Text.Json.JsonSerializer.Serialize((object)message, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
-			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
+			var response = await HttpClientSingleton.Instance.PostAsync(api, new StringContent(serialized));
 			var json = await response.Content.ReadAsStringAsync();
 			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
@@ -205,7 +198,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			};
 			var serialized = System.Text.Json.JsonSerializer.Serialize((object)message, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
-			var response = await DefaultHttpClient.Instance.PostAsync(api, new StringContent(serialized));
+			var response = await HttpClientSingleton.Instance.PostAsync(api, new StringContent(serialized));
 			var json = await response.Content.ReadAsStringAsync();
 			var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 

@@ -12,8 +12,8 @@ namespace Husky.Principal.Users
 	public partial class UserAuthFunctions
 	{
 		public async Task<Result> SignInWithWeChatAsync(string wechatCode, WeChatAppIdSecret idSecret) {
-			if ( idSecret.Type == null ) {
-				throw new ArgumentException($"Unknown {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Type)}");
+			if ( idSecret.Region == null ) {
+				throw new ArgumentException($"Unknown {nameof(WeChatAppIdSecret)}.{nameof(WeChatAppIdSecret.Region)}");
 			}
 
 			var wechat = _me.ServiceProvider.GetRequiredService<WeChatService>().User();
@@ -82,7 +82,7 @@ namespace Husky.Principal.Users
 
 				if ( !user.WeChat.OpenIds.Any(x => x.OpenIdValue == wechatUser.Data.OpenId) ) {
 					user.WeChat.OpenIds.Add(new UserWeChatOpenId {
-						OpenIdType = (WeChatField)(int)idSecret.Type,
+						OpenIdType = (WeChatRegion)(int)idSecret.Region,
 						OpenIdValue = wechatUser.Data.OpenId
 					});
 				}

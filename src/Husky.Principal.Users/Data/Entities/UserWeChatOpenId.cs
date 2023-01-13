@@ -12,7 +12,7 @@ namespace Husky.Principal.Users.Data
 		[NeverUpdate]
 		public int WeChatId { get; set; }
 
-		public WeChatField OpenIdType { get; set; }
+		public WeChatRegion OpenIdType { get; set; }
 
 		[StringLength(32), Column(TypeName = "varchar(32)"), Required, Unique]
 		public string OpenIdValue { get; set; } = null!;

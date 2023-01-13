@@ -19,14 +19,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WeChatUserSubscriptionStatusResult>> GetUserSubscriptionStatus(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/cgi-bin/user/info" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
-				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
 					return new Failure<WeChatUserSubscriptionStatusResult>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserSubscriptionStatusResult> {
-					Data = new() {
+					Data = new WeChatUserSubscriptionStatusResult {
 						Subscribed = d.subscribe != null && (int)d.subscribe == 1,
 						SubscribeTime = d.subscribe == null || (int)d.subscribe != 1 ? null : new DateTime(1970, 1, 1).AddSeconds((int)d.subscribe_time),
 						SubscribeScene = d.subscribe_scene,
@@ -40,20 +40,20 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 		}
 
-		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
+		public async Task<Result<WeChatUserInfoResult>> GetUserInfoAsync(WeChatUserAccessToken token) => await GetUserInfoAsync(token.OpenId, token.AccessToken);
 
-		public async Task<Result<WeChatUserResult>> GetUserInfoAsync(string openId, string accessToken) {
+		public async Task<Result<WeChatUserInfoResult>> GetUserInfoAsync(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
-				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
-					return new Failure<WeChatUserResult>((int)d.errcode + ": " + d.errmsg);
+					return new Failure<WeChatUserInfoResult>((int)d.errcode + ": " + d.errmsg);
 				}
-				return new Success<WeChatUserResult> {
-					Data = new() {
-						Subscribe = d.subscribe != null && (int)d.subscribe == 1,
+				return new Success<WeChatUserInfoResult> {
+					Data = new WeChatUserInfoResult {
+						Subscribed = d.subscribe != null && (int)d.subscribe == 1,
 						OpenId = d.openid,
 						UnionId = d.unionid,
 						NickName = d.nickname,
@@ -66,7 +66,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				};
 			}
 			catch (Exception e) {
-				return new Failure<WeChatUserResult>(e.Message);
+				return new Failure<WeChatUserInfoResult>(e.Message);
 			}
 		}
 
@@ -129,14 +129,14 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenFromResolvedUrlAsync(string url) {
 			try {
-				var json = await DefaultHttpClient.Instance.GetStringAsync(url);
+				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
 					return new Failure<WeChatUserAccessToken>((int)d.errcode + ": " + d.errmsg);
 				}
 				return new Success<WeChatUserAccessToken> {
-					Data = new() {
+					Data = new WeChatUserAccessToken {
 						AccessToken = d.access_token,
 						RefreshToken = d.refresh_token,
 						OpenId = d.openid

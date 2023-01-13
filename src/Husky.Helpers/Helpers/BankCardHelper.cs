@@ -10,7 +10,7 @@ namespace Husky
 		public static async Task<BandCardModel?> GetBandCardInfoAsync(string cardNumber) {
 			try {
 				var url = $"{"https"}://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo={cardNumber}&cardBinCheck=true";
-				var bytes = await DefaultHttpClient.Instance.GetByteArrayAsync(url);
+				var bytes = await HttpClientSingleton.Instance.GetByteArrayAsync(url);
 				var json = Encoding.UTF8.GetString(bytes);
 				var obj = JsonConvert.DeserializeObject<dynamic>(json);
 

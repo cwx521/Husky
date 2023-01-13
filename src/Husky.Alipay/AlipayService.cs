@@ -136,7 +136,7 @@ namespace Husky.Alipay
 		public async Task<Result<AlipayRefundResult>> RefundAsync(AlipayRefundModel refund) {
 			var model = new AlipayTradeRefundModel {
 				OutTradeNo = refund.OriginalTradeNo,
-				OutRequestNo = refund.RefundRequestNo,
+				OutRequestNo = refund.NewRefundRequestNo,
 				RefundAmount = refund.RefundAmount.ToString("f2"),
 				RefundReason = refund.RefundReason
 			};

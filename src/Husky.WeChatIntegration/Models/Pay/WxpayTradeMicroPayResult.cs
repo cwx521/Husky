@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public record WxpayOrderMicroPayResult
+	public record WxpayTradeMicroPayResult
 	{
 		public string? OpenId { get; internal init; }
 		public string? TransactionId { get; internal init; }

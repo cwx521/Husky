@@ -1,6 +1,6 @@
 ﻿namespace Husky.WeChatIntegration
 {
-	public record WxpayOrderQueryResult
+	public record WxpayTradeQueryResult
 	{
 		public string? OpenId { get; internal init; }
 		public decimal Amount { get; internal init; }

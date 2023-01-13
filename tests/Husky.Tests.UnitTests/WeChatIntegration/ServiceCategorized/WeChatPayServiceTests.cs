@@ -1,8 +1,6 @@
-﻿using Husky.WeChatIntegration.ServiceCategorized;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aliyun.Net.SDK.Core;
 
 namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 {
@@ -49,7 +47,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			}
 
 			var wxpay = new WeChatPayService(_wechatConfig);
-			var model = new WxpayOrderCreationModel {
+			var model = new WxpayTradeCreationModel {
 				OpenId = _openId,
 				AppId = _wechatConfig.MobilePlatformAppId,
 				IPAddress = "127.0.0.1",
@@ -60,17 +58,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 
 			//JsApi
 			model.TradeType = WxpayTradeType.JsApi;
-			model.OrderNo = OrderIdGen.New();
+			model.TradeNo = OrderIdGen.New();
 
-			var result1 =  wxpay.CreateUnifedOrderAsync(model).Result;
+			var result1 = wxpay.CreateUnifedOrderAsync(model).Result;
 			Assert.IsTrue(result1.Ok);
 			Assert.IsNotNull(result1.Data.PrepayId);
 
 			//Native
 			model.TradeType = WxpayTradeType.Native;
-			model.OrderNo = OrderIdGen.New();
+			model.TradeNo = OrderIdGen.New();
 
-			var result2 =  wxpay.CreateUnifedOrderAsync(model).Result;
+			var result2 = wxpay.CreateUnifedOrderAsync(model).Result;
 			Assert.IsTrue(result2.Ok);
 			Assert.IsNotNull(result2.Data.PrepayId);
 		}
@@ -82,12 +80,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 			var wxpay = new WeChatPayService(_wechatConfig);
-			var model = new WxpayOrderMicroPayModel {
+			var model = new WxpayTradeMicroPayModel {
 				AppId = _wechatConfig.MobilePlatformAppId,
 				Amount = 0.05m,
 				Body = "Test",
 				IPAddress = "127.0.0.1",
-				OrderNo = OrderIdGen.New(),
+				TradeNo = OrderIdGen.New(),
 				AuthCode = "132045584038097537"
 			};
 			var payResult = wxpay.MicroPay(model).Result;
@@ -96,14 +94,17 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			Assert.AreEqual(model.Amount, payResult.Data.Amount);
 			Assert.AreEqual(_openId, payResult.Data.OpenId);
 
-			var payedAmount = model.Amount;
-			var payedOrderNo = model.OrderNo;
-			var refundAmount = 0.01m;
-			var refundRequestNo = "Refund_" + payedOrderNo;
-
-			var refundResult = wxpay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, refundRequestNo, payedAmount, refundAmount, "UnitTest").Result;
+			var refundModel = new WxpayRefundModel {
+				AppId = _wechatConfig.MobilePlatformAppId,
+				TradeNo = model.TradeNo,
+				NewRefundRequestNo = "Refund_" + model.TradeNo,
+				TotalPaidAmount = model.Amount,
+				RefundAmount = 0.01m,
+				RefundReason = "UnitTest"
+			};
+			var refundResult = wxpay.RefundAsync(refundModel).Result;
 			Assert.IsTrue(refundResult.Ok);
-			Assert.AreEqual(refundAmount, refundResult.Data.RefundAmount);
+			Assert.AreEqual(refundModel.RefundAmount, refundResult.Data.RefundAmount);
 		}
 
 		[TestMethod()]
@@ -112,10 +113,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedOrderNo = "DACJ13537218";
+			var payedTradeNo = "DACJ13537218";
 
 			var wxpay = new WeChatPayService(_wechatConfig);
-			var cancelOrderResult = wxpay.CancelOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, true).Result;
+			var cancelOrderResult = wxpay.CancelTradeAsync(_wechatConfig.MobilePlatformAppId, payedTradeNo, true).Result;
 			Assert.IsTrue(cancelOrderResult.Ok);
 		}
 
@@ -126,10 +127,10 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			}
 
 			var payedAmount = 0.01m;
-			var payedOrderNo = "DACJ13537218";
+			var payedTradeNo = "DACJ13537218";
 
 			var wxpay = new WeChatPayService(_wechatConfig);
-			var result = wxpay.QueryOrderAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo).Result;
+			var result = wxpay.QueryTradeAsync(_wechatConfig.MobilePlatformAppId, payedTradeNo).Result;
 			Assert.IsTrue(result.Ok);
 			Assert.AreEqual(payedAmount, result.Data.Amount);
 			Assert.AreEqual(_openId, result.Data.OpenId);
@@ -141,15 +142,20 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 				return;
 			}
 
-			var payedAmount = 0.01m;
-			var refundAmount = 0.01m;
-			var payedOrderNo = "DACJ13537218";
-			var refundRequestNo = "Refund_" + payedOrderNo;
+			var tradeNo = "DACJ13537218";
+			var model = new WxpayRefundModel {
+				AppId = _wechatConfig.MobilePlatformAppId,
+				TradeNo = tradeNo,
+				NewRefundRequestNo = "Refund_" + tradeNo,
+				TotalPaidAmount = 0.01m,
+				RefundAmount = 0.01m,
+				RefundReason = "UnitTest"
+			};
 
 			var wxpay = new WeChatPayService(_wechatConfig);
-			var result = wxpay.RefundAsync(_wechatConfig.MobilePlatformAppId, payedOrderNo, refundRequestNo, payedAmount, refundAmount, "UnitTest").Result;
+			var result = wxpay.RefundAsync(model).Result;
 			Assert.IsTrue(result.Ok);
-			Assert.AreEqual(refundAmount, result.Data.RefundAmount);
+			Assert.AreEqual(model.RefundAmount, result.Data.RefundAmount);
 		}
 
 		[TestMethod()]
@@ -159,8 +165,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			}
 
 			var refundAmount = 0.01m;
-			var payedOrderNo = "DACJ13537218";
-			var refundRequestNo = "Refund_" + payedOrderNo;
+			var payedTradeNo = "DACJ13537218";
+			var refundRequestNo = "Refund_" + payedTradeNo;
 
 			var wxpay = new WeChatPayService(_wechatConfig);
 			var result = await wxpay.QueryRefundAsync(_wechatConfig.MobilePlatformAppId, refundRequestNo);

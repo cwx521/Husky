@@ -7,7 +7,7 @@ namespace Husky.WeChatIntegration
 {
 	public class CertifiedWxpayHttpClientHandler : HttpClientHandler
 	{
-		private X509Certificate2? _cert;
+		private readonly X509Certificate2? _cert;
 
 		internal CertifiedWxpayHttpClientHandler(
 			string? wxpayMerchantIdAsPassword,
