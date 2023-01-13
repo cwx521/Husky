@@ -17,14 +17,19 @@ namespace Husky.Principal
 		}
 
 		internal static string CacheKeyDroppable(this IPrincipalUser principal) {
+			// authenticated ?	then the anonymous data bag can be dropped
+			// anonymous?		then the id bag can be dropped
 			return principal.IsAuthenticated
 				? principal.AnonymousId.ToString()
 				: principal.Id.ToString();
 		}
 
 		public static CacheDictionaryBag Cache(this IPrincipalUser principal) {
-			_timeoutSeconds ??= principal.ServiceProvider.GetService<IKeyValueManager>()?.PrincipalCacheDataBagWillExpireAfterSeconds() ?? 3600;
-			_pool ??= new CacheDataPool<CacheDictionaryBag>(principal.ServiceProvider.GetRequiredService<IMemoryCache>()) {
+			var keyValues = principal.ServiceProvider.GetService<IKeyValueManager>();
+			var memoryCache = principal.ServiceProvider.GetRequiredService<IMemoryCache>();
+
+			_timeoutSeconds ??= keyValues?.PrincipalCacheDataBagWillExpireAfterSeconds() ?? (60 * 30);
+			_pool ??= new CacheDataPool<CacheDictionaryBag>(memoryCache) {
 				Timeout = TimeSpan.FromSeconds(_timeoutSeconds.Value)
 			};
 			_pool.Drop(principal.CacheKeyDroppable());
@@ -32,7 +37,7 @@ namespace Husky.Principal
 		}
 
 		public static void AbandonCache(this IPrincipalUser principal) {
-			if ( _pool != null ) {
+			if (_pool != null) {
 				_pool.Drop(principal.Id.ToString());
 				_pool.Drop(principal.AnonymousId.ToString());
 			}

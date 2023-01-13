@@ -113,7 +113,7 @@ namespace Husky.Alipay.Tests
 				TradeNo = OrderIdGen.New()
 			};
 			var alipay = new AlipayService(_alipayOptions);
-			var payResult = await alipay.F2FPayAsync(model);
+			var payResult = await alipay.MicroPayAsync(model);
 			Assert.IsTrue(payResult.Ok);
 			Assert.AreEqual(model.Amount, payResult.Data.Amount);
 

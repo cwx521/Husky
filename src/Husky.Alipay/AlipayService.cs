@@ -68,7 +68,7 @@ namespace Husky.Alipay
 			};
 		}
 
-		public async Task<Result<AlipayTradeMicroPayResult>> F2FPayAsync(AlipayTradeMicroPayModel trade) {
+		public async Task<Result<AlipayTradeMicroPayResult>> MicroPayAsync(AlipayTradeMicroPayModel trade) {
 			var payModel = new AlipayTradePayModel {
 				Subject = trade.Subject,
 				OutTradeNo = trade.TradeNo,
@@ -83,7 +83,7 @@ namespace Husky.Alipay
 			return await Task.Run(() => {
 				try {
 					var response = _alipay.Execute(request);
-					var ok = response is { IsError: false, Msg: "Success", Code: "10000" };
+					var ok = response is { IsError: false, Code: "10000" };
 
 					return new Result<AlipayTradeMicroPayResult> {
 						Ok = ok,
@@ -113,7 +113,7 @@ namespace Husky.Alipay
 			return await Task.Run<Result<AlipayTradeQueryResult>>(() => {
 				try {
 					var response = _alipay.Execute(request);
-					var ok = response is { IsError: false, Msg: "Success", TradeStatus: "TRADE_SUCCESS" };
+					var ok = response is { IsError: false, TradeStatus: "TRADE_SUCCESS" };
 
 					if (!ok) {
 						return new Failure<AlipayTradeQueryResult>(response.SubMsg ?? response.Msg);
@@ -146,7 +146,7 @@ namespace Husky.Alipay
 			return await Task.Run<Result<AlipayRefundResult>>(() => {
 				try {
 					var response = _alipay.Execute(request);
-					var ok = response is { IsError: false, Msg: "Success" };
+					var ok = response is { IsError: false, Code: "10000" };
 
 					if (!ok) {
 						return new Failure<AlipayRefundResult>(response.SubMsg ?? response.Msg);
@@ -176,7 +176,7 @@ namespace Husky.Alipay
 			return await Task.Run<Result<AlipayRefundQueryResult>>(() => {
 				try {
 					var response = _alipay.Execute(request);
-					var ok = response is { IsError: false, Msg: "Success" };
+					var ok = response is { IsError: false, RefundStatus: "REFUND_SUCCESS" };
 
 					if (!ok) {
 						return new Failure<AlipayRefundQueryResult>(response.SubMsg ?? response.Msg);
@@ -209,14 +209,11 @@ namespace Husky.Alipay
 			var request = new AlipayTradeCancelRequest();
 			request.SetBizModel(model);
 
-			return await Task.Run<Result>(() => {
+			return await Task.Run(() => {
 				try {
 					var response = _alipay.Execute(request);
-					var ok = response is { IsError: false, Msg: "Success" };
-					if (ok) {
-						return new Success();
-					}
-					return new Failure(response.SubMsg ?? response.Msg);
+					var ok = response is { IsError: false, Code: "10000" };
+					return new Result(ok, response.SubMsg ?? response.Msg);
 				}
 				catch (Exception e) {
 					return new Failure(e.Message);
@@ -243,7 +240,7 @@ namespace Husky.Alipay
 			}
 
 			return new Success<AlipayNotifyResult> {
-				Data = new() {
+				Data = new AlipayNotifyResult {
 					TradeNo = form["out_trade_no"],
 					AlipayTradeNo = form["trade_no"],
 					AlipayBuyerId = form["buyer_id"],

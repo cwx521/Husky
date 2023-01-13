@@ -12,7 +12,7 @@ namespace Husky
 			husky.Services.AddScoped<IIdentityManager>(svc => {
 				var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				if ( http == null ) {
-					throw new InvalidProgramException($"IHttpContextAccessor.HttpContext is null here.");
+					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null.");
 				}
 
 				return (options?.Carrier) switch {
@@ -37,7 +37,7 @@ namespace Husky
 				var key = nameof(IPrincipalUser);
 				var http = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 				if ( http == null ) {
-					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null here.");
+					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null.");
 				}
 
 				if ( http.Items[key] is not IPrincipalUser principal ) {

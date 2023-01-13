@@ -15,7 +15,7 @@ namespace Husky.Diagnostics
 				var principal = http.RequestServices.GetService<IPrincipalUser>();
 
 				var exception = context.Exception;
-				while ( exception.InnerException != null ) {
+				while (exception.InnerException != null) {
 					exception = exception.InnerException;
 				}
 

@@ -16,22 +16,23 @@ namespace Husky.KeyValues
 			_cache = cache;
 		}
 
-		private static readonly object _lock = new object();
+		private static readonly object _lock = new();
+		private const int _cacheSlidingExpirationMinutes = 5;
 		private const string _cacheKey = nameof(KeyValueManager);
 		private readonly IServiceProvider _services;
 		private readonly IMemoryCache _cache;
 
-		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
-		public bool Exists(string key) => Items.Any(x => x.Key == key);
-
 		public List<KeyValue> Items => _cache.GetOrCreate(_cacheKey, entry => {
-			entry.SetSlidingExpiration(TimeSpan.FromMinutes(5));
+			entry.SetSlidingExpiration(TimeSpan.FromMinutes(_cacheSlidingExpirationMinutes));
 			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			return db.KeyValues.AsNoTracking().ToList();
 		})!;
+
+		public IEnumerable<string> AllKeys => Items.Select(x => x.Key);
+		public bool Exists(string key) => Items.Any(x => x.Key == key);
 		public KeyValue? Find(string key) => Items.Find(x => x.Key == key);
 
-		public T Get<T>(string key, T defaultValue = default) where T : struct => Get(key).As<T>(defaultValue);
+		public T Get<T>(string key, T fallback = default) where T : struct => Get(key).As<T>(fallback);
 		public string? Get(string key) => Find(key)?.Value;
 
 		public T GetOrAdd<T>(string key, T fallback) where T : struct => GetOrAdd(key, fallback.ToString()).As<T>();
@@ -41,18 +42,16 @@ namespace Husky.KeyValues
 			}
 
 			var item = Find(key);
-			if (item != null) {
-				return item.Value;
+			if (item == null) {
+				item = new KeyValue {
+					Key = key,
+					Value = fallback
+				};
+				lock (_lock) {
+					Items.Add(item);
+				}
 			}
-
-			item = new KeyValue {
-				Key = key,
-				Value = fallback
-			};
-			lock (_lock) {
-				Items.Add(item);
-			}
-			return fallback;
+			return item.Value;
 		}
 
 		public void AddOrUpdate<T>(string key, T value) where T : struct => AddOrUpdate(key, value.ToString());
@@ -84,24 +83,26 @@ namespace Husky.KeyValues
 		public void Save(string key, string? value) {
 			AddOrUpdate(key, value);
 
-			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
-			db.Normalize().AddOrUpdate(new KeyValue {
+			using var scope = _services.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>().Normalize();
+			db.AddOrUpdate(new KeyValue {
 				Key = key,
 				Value = value
 			});
-			db.Normalize().SaveChanges();
+			db.SaveChanges();
 		}
 
 		public void SaveAll() => SaveAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		public async Task SaveAllAsync() {
-			var db = _services.CreateScope().ServiceProvider.GetRequiredService<IKeyValueDbContext>();
-			var fromDb = db.KeyValues.ToList();
-			var adding = Items.Where(x => !fromDb.Any(d => x.Key == d.Key)).ToList();
+			using var scope = _services.CreateScope();
+			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
+			var currentRows = db.KeyValues.ToList();
+			var addingRows = Items.Where(x => !currentRows.Any(d => x.Key == d.Key)).ToList();
 
-			fromDb.RemoveAll(x => !AllKeys.Contains(x.Key));
-			fromDb.ForEach(x => x.Value = Get(x.Key));
-			db.KeyValues.AddRange(adding);
+			currentRows.RemoveAll(x => !AllKeys.Contains(x.Key));
+			currentRows.ForEach(x => x.Value = Get(x.Key));
+			db.KeyValues.AddRange(addingRows);
 
 			await db.Normalize().SaveChangesAsync();
 		}

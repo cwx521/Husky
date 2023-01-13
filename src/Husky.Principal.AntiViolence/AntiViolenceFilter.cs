@@ -25,16 +25,16 @@ namespace Husky.Principal.AntiViolence
 		}
 
 		private static void OnExecuting(FilterContext context) {
-			if ( context.HttpContext.Request.Method == "GET" ) {
+			if (context.HttpContext.Request.Method == "GET") {
 				return;
 			}
 
 			var keyValueManager = context.HttpContext.RequestServices.GetService<IKeyValueManager>();
-			var ms = keyValueManager?.HttpPostsMinimumIntervalMilliseconds() ?? 300;
 			var principal = context.HttpContext.RequestServices.GetRequiredService<IPrincipalUser>();
+			var ms = keyValueManager?.HttpPostsMinimumIntervalMilliseconds() ?? 300;
 			var blocker = new AntiViolenceDefender(principal);
 
-			if ( blocker.GetTimer().AddMilliseconds(ms) < DateTime.Now ) {
+			if (blocker.GetTimer().AddMilliseconds(ms) < DateTime.Now) {
 				blocker.SetTimer();
 			}
 			else {
