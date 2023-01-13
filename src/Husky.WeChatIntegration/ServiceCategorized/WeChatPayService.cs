@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Husky.WeChatIntegration.Models.Pay;
 
 namespace Husky.WeChatIntegration.ServiceCategorized
@@ -284,6 +285,29 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public Result<WxpayNotifyResult> ParseNotifyResult(string xml) {
 			if (!IsResultCodeSuccess(xml)) {
 				return new Failure<WxpayNotifyResult>(GetErrorDescription(xml));
+			}
+
+			var dict = new Dictionary<string, string>();
+			var xmlDoc = new XmlDocument();
+			xmlDoc.LoadXml(xml);
+			foreach (XmlNode node in xmlDoc.ChildNodes) {
+				if (node.Name != "sign") {
+					var value = node.Value ?? node.InnerText;
+					if (!string.IsNullOrEmpty(value)) {
+						dict.Add(node.Name, value);
+					}
+				}
+			}
+			var sb = new StringBuilder();
+			var sortedNames = dict.Keys.OrderBy(x => x).ToArray();
+			foreach (var name in sortedNames) {
+				sb.Append(name + "=" + dict[name] + "&");
+			}
+			sb.Append("key=" + _options.MerchantSecret);
+
+			var sign = Crypto.MD5(sb.ToString());
+			if (sign != GetContent(xml, "sign")) {
+				return new Failure<WxpayNotifyResult>("验证签名失败");
 			}
 
 			return new Success<WxpayNotifyResult> {
