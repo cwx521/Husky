@@ -15,13 +15,13 @@ namespace Husky.Html.Bootstrap
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
 			object? htmlAttributes = null) {
 
-			if ( helper.ViewData.Model != null ) {
+			if (helper.ViewData.Model != null) {
 				try {
 					// when expression = {x.Aaa.Bbb}, NullReferenceException can happen
 					var value = expression.Compile().Invoke(helper.ViewData.Model);
 					selectListItems.Where(x => x.Value == value?.ToString()).AsParallel().ForAll(x => x.Selected = true);
 				}
-				catch ( NullReferenceException ) { }
+				catch (NullReferenceException) { }
 				catch { throw; }
 			}
 			return helper.RenderBootstrapFormCheckGroup(expression, FormCheckType.Radio, selectListItems, layoutDirection, htmlAttributes);
@@ -33,7 +33,7 @@ namespace Husky.Html.Bootstrap
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
 			object? htmlAttributes = null) {
 
-			if ( enumType == null ) {
+			if (enumType == null) {
 				throw new ArgumentNullException(nameof(enumType));
 			}
 			var selectListItems = EnumHelper.ToSelectListItems(enumType);

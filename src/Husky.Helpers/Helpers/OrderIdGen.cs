@@ -8,11 +8,11 @@ namespace Husky
 	{
 		public static string New() {
 			var str = string.Concat(Year, Month, Day, Hour, Time);
-			return str + Validation(str);
+			return str + Validate(str);
 		}
 
 		public static bool TryParse(string? str, out DateTime datetime) {
-			if ( str == null || str.Length != 12 || Validation(str[0..11]) != str[11] - '0' ) {
+			if ( str == null || str.Length != 12 || Validate(str[0..11]) != str[11] - '0' ) {
 				datetime = DateTime.MinValue;
 				return false;
 			}
@@ -46,7 +46,7 @@ namespace Husky
 		private static string Time => string.Join("", TimePart());
 
 		//append a validation digit number, which takes one char, from 0-9
-		private static int Validation(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
+		private static int Validate(string str) => str.Aggregate(0, (result, i) => result + i) * 9 % 10;
 
 
 		private static int _antiDup = 0;

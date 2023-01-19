@@ -4,31 +4,10 @@ namespace Husky
 {
 	public static class FormatHelper
 	{
-		public static string DateFormat { get; set; } = "yyyy-M-d";
-		public static string TimeFormat { get; set; } = "HH:mm:ss";
-		public static string DateTimeFormat { get; set; } = "yyyy-M-d HH:mm:ss";
-		public static string ShortDateFormat { get; set; } = "M-d";
-		public static string ShortTimeFormat { get; set; } = "HH:mm";
-		public static string ShortDateTimeFormat { get; set; } = "M-d HH:mm";
-
 		public static long Timestamp(this DateTime datetime) => (datetime.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
 		public static DateTime ToDateTime(this long timestamp) => new DateTime((timestamp * 10000000) + 621355968000000000).ToLocalTime();
 		public static bool IsToday(this DateTime datetime) => datetime.Date == DateTime.Today;
 		public static string ToString(this DateTime? datetime, string format) => datetime.HasValue ? datetime.Value.ToString(format) : string.Empty;
-
-		public static string ToDateString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? DateFormat);
-		public static string ToDateString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? DateFormat);
-		public static string ToTimeString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? TimeFormat);
-		public static string ToTimeString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? TimeFormat);
-		public static string ToDateTimeString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? DateTimeFormat);
-		public static string ToDateTimeString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? DateTimeFormat);
-
-		public static string ToShortDateString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? ShortDateFormat);
-		public static string ToShortDateString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? ShortDateFormat);
-		public static string ToShortTimeString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? ShortTimeFormat);
-		public static string ToShortTimeString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? ShortTimeFormat);
-		public static string ToShortDateTimeString(this DateTime datetime, string? format = null) => datetime.ToString(format ?? ShortDateTimeFormat);
-		public static string ToShortDateTimeString(this DateTime? datetime, string? format = null) => datetime.ToString(format ?? ShortDateTimeFormat);
 
 		public static string TrimEnd(this decimal d, string? format = null) => d.ToString(format).TrimEnd('0').TrimEnd('.');
 		public static string TrimEnd(this float f, string? format = null) => f.ToString(format).TrimEnd('0').TrimEnd('.');

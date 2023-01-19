@@ -23,10 +23,10 @@ namespace Husky.Tests
 
 		[TestMethod()]
 		public void IsMainlandMobileTest() {
-			Assert.IsTrue("18812345678".IsCellphone());
-			Assert.IsFalse("188123456788".IsCellphone());
-			Assert.IsFalse("1881234567".IsCellphone());
-			Assert.IsFalse("28812345678".IsCellphone());
+			Assert.IsTrue("18812345678".IsChinaMainlandCellphone());
+			Assert.IsFalse("188123456788".IsChinaMainlandCellphone());
+			Assert.IsFalse("1881234567".IsChinaMainlandCellphone());
+			Assert.IsFalse("28812345678".IsChinaMainlandCellphone());
 		}
 	}
 }

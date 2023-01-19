@@ -203,9 +203,7 @@ namespace Husky.Alipay
 				}
 			}
 
-			var model = new AlipayTradeCancelModel {
-				OutTradeNo = tradeNo
-			};
+			var model = new AlipayTradeCancelModel { OutTradeNo = tradeNo };
 			var request = new AlipayTradeCancelRequest();
 			request.SetBizModel(model);
 

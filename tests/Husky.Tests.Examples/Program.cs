@@ -4,10 +4,7 @@ using Husky.Diagnostics.Data;
 using Husky.FileStore.Data;
 using Husky.KeyValues.Data;
 using Husky.Mail.Data;
-using Husky.Principal.Administration.Data;
 using Husky.Principal.AntiViolence;
-using Husky.Principal.UserMessages.Data;
-using Husky.Principal.Users.Data;
 using Husky.Tests.Examples;
 using Husky.TwoFactor.Data;
 using Microsoft.AspNetCore.Builder;
@@ -25,9 +22,6 @@ builder.Services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(conn
 builder.Services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
 builder.Services.AddDbContextPool<FileStoreDbContext>(x => x.UseSqlServer(connstr).Migrate());
 builder.Services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
-builder.Services.AddDbContextPool<AdminsDbContext>(x => x.UseSqlServer(connstr));
-builder.Services.AddDbContextPool<UsersDbContext>(x => x.UseSqlServer(connstr));
-builder.Services.AddDbContextPool<UserMessagesDbContext>(x => x.UseSqlServer(connstr));
 builder.Services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
 
 //AspNet
@@ -53,9 +47,6 @@ add-migration  Init_FileStore  -context FileStoreDbContext -project Husky.FileSt
 add-migration  Init_Mail  -context MailDbContext -project Husky.Mail -o Data/Migrations
 add-migration  Init_Diagnostics  -context DiagnosticsDbContext -project Husky.Diagnostics -o Data/Migrations
 add-migration  Init_TwoFactor  -context TwoFactorDbContext -project Husky.TwoFactor -o Data/Migrations
-add-migration  Init_Admins  -context AdminsDbContext -project Husky.Principal.Administration -o Data/Migrations
-add-migration  Init_Users  -context UsersDbContext -project Husky.Principal.Users -o Data/Migrations
-add-migration  Init_UserMessages  -context UserMessagesDbContext -project Husky.Principal.UserMessages -o Data/Migrations
 */
 
 

@@ -10,21 +10,21 @@ namespace Husky.Html.Bootstrap
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent CustomSwitchListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
+		public static IHtmlContent SwitchListFor<TModel, TResult>(this IHtmlHelper<TModel> helper,
 			Expression<Func<TModel, TResult>> expression,
 			IEnumerable<SelectListItem> selectListItems,
 			LayoutDirection layoutDirection = LayoutDirection.Horizontal,
 			object? htmlAttributes = null)
 			where TResult : IEnumerable {
 
-			if ( helper.ViewData.Model != null ) {
+			if (helper.ViewData.Model != null) {
 				try {
 					var value = expression.Compile().Invoke(helper.ViewData.Model);
-					foreach ( var i in value ) {
+					foreach (var i in value) {
 						selectListItems.Where(x => x.Value == i?.ToString()).AsParallel().ForAll(x => x.Selected = true);
 					}
 				}
-				catch ( NullReferenceException ) { }
+				catch (NullReferenceException) { }
 				catch { throw; }
 			}
 			return helper.RenderBootstrapFormCheckGroup(expression, FormCheckType.Switch, selectListItems, layoutDirection, htmlAttributes);
@@ -37,11 +37,11 @@ namespace Husky.Html.Bootstrap
 			object? htmlAttributes = null)
 			where TResult : IEnumerable {
 
-			if ( enumType == null ) {
+			if (enumType == null) {
 				throw new ArgumentNullException(nameof(enumType));
 			}
 			var selectListItems = EnumHelper.ToSelectListItems(enumType, useIntValue: false);
-			return helper.CustomSwitchListFor(expression, selectListItems, layoutDirection, htmlAttributes);
+			return helper.SwitchListFor(expression, selectListItems, layoutDirection, htmlAttributes);
 		}
 	}
 }

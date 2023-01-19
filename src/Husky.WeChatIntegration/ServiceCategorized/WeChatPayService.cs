@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using Husky.WeChatIntegration.Models.Pay;
 using Microsoft.AspNetCore.Http;
 
@@ -297,33 +298,32 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var xmlDoc = new XmlDocument();
 			xmlDoc.LoadXml(xml);
 
-			foreach (XmlNode node in xmlDoc.ChildNodes) {
-				if (node.Name != "sign") {
-					var value = node.Value ?? node.InnerText;
-					if (!string.IsNullOrEmpty(value)) {
-						dict.Add(node.Name, value);
-					}
+			foreach (XmlNode node in xmlDoc.DocumentElement!.ChildNodes) {
+				if (!string.IsNullOrEmpty(node.InnerText)) {
+					dict.Add(node.Name, node.InnerText);
 				}
 			}
 			var sb = new StringBuilder();
 			var sortedNames = dict.Keys.OrderBy(x => x).ToArray();
 			foreach (var name in sortedNames) {
-				sb.Append(name + "=" + dict[name] + "&");
+				if (name != "sign") {
+					sb.Append(name + "=" + dict[name] + "&");
+				}
 			}
 			sb.Append("key=" + _options.MerchantSecret);
 
 			var toBeSigned = sb.ToString();
-			var sign = Crypto.MD5(toBeSigned).ToUpper();
-			if (sign != dict["sign"]) {
+			var sign = Crypto.MD5(toBeSigned);
+			if (string.Compare(sign, dict["sign"], true) == 0) {
 				return new Failure<WxpayNotifyResult>("验证签名失败");
 			}
 
 			return new Success<WxpayNotifyResult> {
 				Data = new WxpayNotifyResult {
-					Amount = GetValue<decimal>(xml, "total_fee") / 100m,
-					OpenId = GetValue(xml, "openid")!,
-					TradeNo = GetValue(xml, "out_trade_no")!,
-					TransactionId = GetValue(xml, "transaction_id")!,
+					Amount = dict["total_fee"].AsDecimal() / 100m,
+					OpenId = dict["openid"],
+					TradeNo = dict["out_trade_no"],
+					TransactionId = dict["transaction_id"],
 					OriginalResult = xml
 				}
 			};

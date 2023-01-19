@@ -98,10 +98,10 @@ namespace Husky.KeyValues
 			using var scope = _services.CreateScope();
 			var db = scope.ServiceProvider.GetRequiredService<IKeyValueDbContext>();
 			var currentRows = db.KeyValues.ToList();
-			var addingRows = Items.Where(x => !currentRows.Any(d => x.Key == d.Key)).ToList();
+			var addingRows = Items.Where(x => !currentRows.Any(d => x.Key == d.Key));
 
-			currentRows.RemoveAll(x => !AllKeys.Contains(x.Key));
 			currentRows.ForEach(x => x.Value = Get(x.Key));
+			db.KeyValues.RemoveRange(currentRows.Where(x => !AllKeys.Contains(x.Key)));
 			db.KeyValues.AddRange(addingRows);
 
 			await db.Normalize().SaveChangesAsync();

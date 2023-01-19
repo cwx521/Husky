@@ -1,12 +1,13 @@
 ﻿namespace Husky
 {
-	public enum Scheme
+	public enum ColorScheme
 	{
 		Auto,
 		Primary,
-		Info,
+		Light,
 		Muted,
 		Secondary,
+		Info,
 		Warning,
 		Danger,
 		Success

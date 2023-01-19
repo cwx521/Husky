@@ -14,10 +14,10 @@
 		[Label("密码不正确")]
 		ErrorPassword,
 
-		[Label("验证码不正确")]
+		[Label("图形验证码不正确")]
 		ErrorCaptcha,
 
-		[Label("手机验证码不正确")]
+		[Label("动态验证码不正确")]
 		ErrorTwoFactorCode,
 
 		[Label("请求微信接口失败")]

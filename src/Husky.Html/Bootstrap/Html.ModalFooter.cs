@@ -5,10 +5,10 @@ namespace Husky.Html.Bootstrap
 {
 	public static partial class HtmlHelperExtensions
 	{
-		public static IHtmlContent ModalFooter(this IHtmlHelper helper,
-			ButtonState confirmationButton = ButtonState.NotHave,
-			string confirmationButtonFace = "确认",
-			string confirmationButtonScheme = "btn-warning") {
+		public static IHtmlContent ModalFooter(this IHtmlHelper _,
+			ButtonState confirmButton = ButtonState.NotHave,
+			string confirmButtonFace = "确认",
+			string confirmButtonCssClass = "btn-warning") {
 
 			var result = new HtmlContentBuilder();
 
@@ -16,17 +16,17 @@ namespace Husky.Html.Bootstrap
 			result.AppendHtml("	 <div class='align-self-center me-auto mr-auto'><span class='modal-footer-state'></span></div>");
 			result.AppendHtml("	 <div class='align-self-center ms-auto ml-auto ps-3 pl-3'>");
 
-			if ( confirmationButton != ButtonState.NotHave ) {
+			if (confirmButton != ButtonState.NotHave) {
 				var button = new TagBuilder("button");
 
 				button.Attributes.Add("type", "submit");
-				button.Attributes.Add("class", $"btn {confirmationButtonScheme}");
-				button.InnerHtml.AppendHtml(confirmationButtonFace);
+				button.Attributes.Add("class", $"btn {confirmButtonCssClass}");
+				button.InnerHtml.AppendHtml(confirmButtonFace);
 
-				if ( confirmationButton == ButtonState.Disabled ) {
+				if (confirmButton == ButtonState.Disabled) {
 					button.Attributes.Add("disabled", "disabled");
 				}
-				else if ( confirmationButton == ButtonState.Hidden ) {
+				else if (confirmButton == ButtonState.Hidden) {
 					button.Attributes.Add("hidden", "hidden");
 				}
 				result.AppendHtml(button);

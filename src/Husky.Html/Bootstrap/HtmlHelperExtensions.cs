@@ -18,9 +18,9 @@ namespace Husky.Html.Bootstrap
 		}
 
 		private static TagBuilder MergeAttributes(this TagBuilder tagBuilder, object? htmlAttributes) {
-			if ( htmlAttributes != null ) {
+			if (htmlAttributes != null) {
 				var props = htmlAttributes.GetType().GetProperties();
-				foreach ( var p in props ) {
+				foreach (var p in props) {
 					tagBuilder.MergeAttribute(p.Name, p.GetValue(htmlAttributes) as string, true);
 				}
 			}
@@ -28,7 +28,7 @@ namespace Husky.Html.Bootstrap
 		}
 
 		private static string BootstrapFormCheck(TagBuilder inputTag, FormCheckType formCheckType, string? label, string? additionalCssClass = null) {
-			if ( !inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass!.Contains("form-check-input") ) {
+			if (!inputTag.Attributes.TryGetValue("class", out var cssClass) || !cssClass!.Contains("form-check-input")) {
 				inputTag.AddCssClass("form-check-input");
 				inputTag.AddCssClass("custom-control-input");
 			}
@@ -53,14 +53,14 @@ namespace Husky.Html.Bootstrap
 			inputTag.Attributes.Add("type", "checkbox");
 			inputTag.Attributes.Add("value", "true");
 
-			if ( helper.ViewData.Model != null ) {
+			if (helper.ViewData.Model != null) {
 				try {
 					var value = expression.Compile().Invoke(helper.ViewData.Model);
-					if ( value ) {
+					if (value) {
 						inputTag.Attributes.Add("checked", "checked");
 					}
 				}
-				catch ( NullReferenceException ) { }
+				catch (NullReferenceException) { }
 				catch { throw; }
 			}
 
@@ -77,7 +77,7 @@ namespace Husky.Html.Bootstrap
 
 			var result = new HtmlContentBuilder();
 
-			foreach ( var item in selectListItems ) {
+			foreach (var item in selectListItems) {
 				var inputTag = new TagBuilder("input") {
 					TagRenderMode = TagRenderMode.SelfClosing
 				};
@@ -86,7 +86,7 @@ namespace Husky.Html.Bootstrap
 				inputTag.Attributes.Add("name", helper.NameFor(expression));
 				inputTag.Attributes.Add("value", item.Value);
 				inputTag.Attributes.Add("type", formCheckType == FormCheckType.Switch ? "checkbox" : formCheckType.ToLower());
-				if ( item.Selected ) {
+				if (item.Selected) {
 					inputTag.Attributes.Add("checked", "checked");
 				}
 				inputTag.MergeAttributes(htmlAttributes);

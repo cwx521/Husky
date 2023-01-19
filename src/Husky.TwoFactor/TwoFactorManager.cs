@@ -41,7 +41,7 @@ namespace Husky.TwoFactor
 			}
 
 			var isEmail = cellphoneOrEmail.IsEmail();
-			var isCellphone = cellphoneOrEmail.IsCellphone();
+			var isCellphone = cellphoneOrEmail.IsChinaMainlandCellphone();
 
 			if (!isEmail && !isCellphone) {
 				return new Failure($"无法送达 '{cellphoneOrEmail}'");
@@ -93,7 +93,7 @@ namespace Husky.TwoFactor
 		}
 
 		public async Task<Result> SendCodeThroughSmsAsync(string cellphone, string? overrideContentTemplateWithArg0 = null, string? overrideTemplateCode = null, string? overrideSignName = null) {
-			if (!cellphone.IsCellphone()) {
+			if (!cellphone.IsChinaMainlandCellphone()) {
 				return new Failure($"无法送达 '{cellphone}'");
 			}
 			return await SendCodeAsync(cellphone, overrideContentTemplateWithArg0, overrideTemplateCode, overrideSignName);

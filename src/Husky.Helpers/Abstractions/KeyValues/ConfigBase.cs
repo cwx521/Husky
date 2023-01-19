@@ -42,8 +42,7 @@ namespace Husky
 
 		protected IKeyValueManager KeyValues { get; }
 		protected IConfiguration? Configuration { get; }
-
-		public void Reload() => KeyValues.Reload();
+		
 		public void Save(string key, string value) => KeyValues.Save(key, value);
 		public void Save<T>(string key, T value) where T : struct => KeyValues.Save(key, value);
 		public void SaveAll() => KeyValues.SaveAll();
