@@ -313,8 +313,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			sb.Append("key=" + _options.MerchantSecret);
 
 			var toBeSigned = sb.ToString();
-			var sign = Crypto.MD5(toBeSigned);
-			if (sign != GetValue(xml, "sign")) {
+			var sign = Crypto.MD5(toBeSigned).ToUpper();
+			if (sign != dict["sign"]) {
 				return new Failure<WxpayNotifyResult>("验证签名失败");
 			}
 
