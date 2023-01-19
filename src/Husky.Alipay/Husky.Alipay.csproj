@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AlipaySDKNet.Standard" Version="4.7.113" />
+    <PackageReference Include="AlipaySDKNet.Standard" Version="4.7.144" />
   </ItemGroup>
 
   <ItemGroup>
