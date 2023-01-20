@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Aliyun.OSS;
 using Husky.Principal;
 
@@ -39,6 +40,10 @@ namespace Husky.FileStore.AliyunOss
 		public void Put(string fileName, Stream data) {
 			_client.PutObject(_bucketName, fileName, data, _longTermCacheControlMetadata);
 		}
+		public async Task PutAsync(string fileName, Stream data) {
+			await Task.Run(() => Put(fileName, data));
+		}
+
 		public void Delete(string fileName) {
 			_client.DeleteObject(_bucketName, fileName);
 		}

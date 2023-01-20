@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Husky.Principal;
 
 namespace Husky.FileStore
 {
 	public interface IFileStoreLogger
 	{
-		void LogFilePut(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string> tags);
-		void LogFileDelete(string fileName);
-		void LogAccessControlChange(string fileName, StoredFileAccessControl accessControl);
+		Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string> tags);
+		Task LogFileDeleteAsync(string fileName);
+		Task LogAccessControlChangeAsync(string fileName, StoredFileAccessControl accessControl);
 	}
 }

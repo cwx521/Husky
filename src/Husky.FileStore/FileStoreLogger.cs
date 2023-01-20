@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Husky.FileStore.Data;
 using Husky.Principal;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace Husky.FileStore
 
 		private readonly IFileStoreDbContext _db;
 
-		public void LogFilePut(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string>? tags) {
+		public async Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string>? tags) {
 			var record = new StoredFile {
 				FileContentLength = contentLength,
 				FileName = fileName,
@@ -36,21 +37,21 @@ namespace Husky.FileStore
 				);
 			}
 			_db.StoredFiles.Add(record);
-			_db.Normalize().SaveChanges();
+			await _db.Normalize().SaveChangesAsync();
 		}
 
-		public void LogFileDelete(string fileName) {
-			_db.StoredFiles
+		public async Task LogFileDeleteAsync(string fileName) {
+			await _db.StoredFiles
 				.Where(x => x.FileName == fileName)
-				.ExecuteUpdate(row =>
+				.ExecuteUpdateAsync(row =>
 					row.SetProperty(x => x.IsDeleted, true)
 				);
 		}
 
-		public void LogAccessControlChange(string fileName, StoredFileAccessControl accessControl) {
-			_db.StoredFiles
+		public async Task LogAccessControlChangeAsync(string fileName, StoredFileAccessControl accessControl) {
+			await _db.StoredFiles
 				.Where(x => x.FileName == fileName)
-				.ExecuteUpdate(row =>
+				.ExecuteUpdateAsync(row =>
 					row.SetProperty(x => x.AccessControl, accessControl)
 				);
 		}

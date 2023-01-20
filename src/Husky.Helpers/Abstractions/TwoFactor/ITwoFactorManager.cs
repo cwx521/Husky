@@ -4,18 +4,31 @@ namespace Husky.TwoFactor
 {
 	public interface ITwoFactorManager
 	{
-		Task<Result> SendCodeThroughSmsAsync(string mobileNumber,
-			string? overrideMessageTemplateWithCodeArg0 = null,
-			string? overrideSmsTemplateAlias = null,
-			string? overrideSmsSignName = null);
+		Task<Result> SendCodeAsync(
+			string cellphoneOrEmail,
+			string? overrideContentTemplateWithArg0 = null,
+			string? overrideTemplateCode = null,
+			string? overrideSignName = null
+		);
 
-		Task<Result> SendCodeThroughEmailAsync(string emailAddress,
-			string? messageTemplateWithCodeArg0 = null,
-			string? overrideSmsSignName = null);
+		Task<Result> SendCodeThroughSmsAsync(
+			string cellphone,
+			string? overrideContentTemplateWithArg0 = null,
+			string? overrideTemplateCode = null,
+			string? overrideSignName = null
+		);
 
-		Task<Result> VerifyCodeAsync(string sentTo, 
-			string code, 
-			bool setIntoUsedIfSuccess, 
-			int codeUsableWithinMinutes = 15);
+		Task<Result> SendCodeThroughEmailAsync(
+			string emailAddress,
+			string? overrideContentTemplateWithArg0 = null,
+			string? overrideSignName = null
+		);
+
+		Task<Result> VerifyCodeAsync(
+			string sentTo,
+			string code,
+			bool setIntoUsedIfSuccess,
+			int codeExpirationMinutes = 15
+		);
 	}
 }
