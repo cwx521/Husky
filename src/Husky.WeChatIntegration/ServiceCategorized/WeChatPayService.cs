@@ -267,18 +267,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			var xml = sb.ToString();
 
 			//将XML内容作为参数Post到api地址，返回的也是XML
-			HttpResponseMessage? response = null;
-			if (!useCert) {
-				response = await HttpClientSingleton.Instance.PostAsync(wechatApiUrl, new StringContent(xml));
-			}
-			else {
-				using var handler = !string.IsNullOrEmpty(_options.MerchantCertFile)
-					? new CertifiedWxpayHttpClientHandler(_options.MerchantId, _options.MerchantCertFile)
-					: new CertifiedWxpayHttpClientHandler(_options.MerchantId!);
-
-				using var client = new HttpClient(handler);
-				response = await client.PostAsync(wechatApiUrl, new StringContent(xml));
-			}
+			var httpClient = !useCert ? WeChatService.HttpClient : WeChatService.CertifiedHttpClient(_options);
+			var response = await httpClient.PostAsync(wechatApiUrl, new StringContent(xml));
 			return await response.Content.ReadAsStringAsync();
 		}
 

@@ -19,7 +19,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WeChatUserSubscriptionStatusResult>> GetUserSubscriptionStatus(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/cgi-bin/user/info" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
-				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
+				var json = await WeChatService.HttpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
@@ -45,7 +45,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		public async Task<Result<WeChatUserInfoResult>> GetUserInfoAsync(string openId, string accessToken) {
 			try {
 				var url = $"https://api.weixin.qq.com/sns/userinfo" + $"?access_token={accessToken}&openid={openId}&lang=zh_CN";
-				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
+				var json = await WeChatService.HttpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
@@ -129,7 +129,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		private static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenFromResolvedUrlAsync(string url) {
 			try {
-				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
+				var json = await WeChatService.HttpClient.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
 				if (d.errcode != null && (int)d.errcode != 0) {
