@@ -2,7 +2,7 @@
 {
 	public static class KeyValueManagerExtensions
 	{
-		public static int PrincipalCacheDataBagWillExpireAfterSeconds(this IKeyValueManager keyValues, int fallback = 60 * 30) {
+		public static int PrincipalCacheDataBagWillExpireAfterSeconds(this IKeyValueManager keyValues, int fallback = 1800) {
 			return keyValues.GetOrAdd(nameof(PrincipalCacheDataBagWillExpireAfterSeconds), fallback);
 		}
 	}

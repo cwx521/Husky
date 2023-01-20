@@ -17,15 +17,21 @@ namespace Husky.Principal.Tests
 
 			var serviceProvider = services.BuildServiceProvider();
 
-			for ( var i = 1; i <= n; i++ ) {
+			for (var i = 1; i <= n; i++) {
 				await Task.Run(() => {
+					var key = "Test";
 					var principal = PrincipalUser.Personate(i, null, serviceProvider);
-					principal.Cache().GetOrAdd("Test", _ => new Result { Ok = false, Message = Crypto.SHA256(i.ToString()) });
-					if ( i % 11 == 0 ) {
+
+					principal.Cache().GetOrAdd(key, _ => new Result {
+						Ok = false,
+						Message = i.ToString()
+					});
+
+					if (i % 111 == 0) {
 						principal.AbandonCache();
 					}
-					else if ( i % 5 == 0 ) {
-						PrincipalUser.Personate(1, null, serviceProvider).Cache().TryGetValue("Test", out var val);
+					else if (i % 5 == 0) {
+						PrincipalUser.Personate(i, null, serviceProvider).Cache().TryGetValue(key, out var val);
 						var data = (Result)val;
 						data.Ok = true;
 						data.Message = "Changed" + i;
@@ -33,24 +39,24 @@ namespace Husky.Principal.Tests
 				});
 			}
 
-			for ( var i = 1; i <= n; i++ ) {
+			for (var i = 1; i <= n; i++) {
 				var principal = PrincipalUser.Personate(i, null, serviceProvider);
 				var found = principal.Cache().TryGetValue("Test", out var val);
 
-				if ( i % 11 == 0 ) {
+				if (i % 111 == 0) {
 					Assert.IsFalse(found);
 				}
 				else {
 					Assert.IsTrue(found);
 
 					var data = (Result)val;
-					if ( i != 1 ) {
-						Assert.AreEqual(false, data.Ok);
-						Assert.AreEqual(Crypto.SHA256(i.ToString()), data.Message);
+					if (i % 5 == 0) {
+						Assert.AreEqual(true, data.Ok);
+						Assert.AreEqual("Changed" + i, data.Message);
 					}
 					else {
-						Assert.AreEqual(true, data.Ok);
-						Assert.AreEqual("Changed" + n, data.Message);
+						Assert.AreEqual(false, data.Ok);
+						Assert.AreEqual(i.ToString(), data.Message);
 					}
 				}
 			}

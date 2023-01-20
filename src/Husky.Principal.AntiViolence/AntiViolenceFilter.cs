@@ -39,7 +39,7 @@ namespace Husky.Principal.AntiViolence
 			}
 			else {
 				blocker.SetTimer(DateTime.Now.AddMilliseconds(ms));
-				context.ModelState.AddModelError("", "太快了，慢一点儿");
+				context.ModelState.AddModelError("", "连续操作太快了，慢一点儿");
 			}
 		}
 	}

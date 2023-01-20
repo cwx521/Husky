@@ -5,13 +5,13 @@ namespace Husky.Principal
 {
 	public sealed class CacheDictionaryBag : ConcurrentDictionary<string, object>, ICacheDataBag
 	{
-		internal CacheDictionaryBag(IPrincipalUser principal) {
-			_principal = principal;
+		internal CacheDictionaryBag(string key) {
+			_key = key;
 		}
 
-		private readonly IPrincipalUser _principal;
+		private readonly string _key;
 
-		string ICacheDataBag.Key => _principal.CacheKey();
-		DateTime ICacheDataBag.ActiveTime { get; set; }
+		string ICacheDataBag.Key => _key;
+		DateTime ICacheDataBag.ActiveTime { get; set; } = DateTime.Now;
 	}
 }
