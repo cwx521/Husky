@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Alipay.Tests
@@ -7,12 +8,42 @@ namespace Husky.Alipay.Tests
 	[TestClass()]
 	public class AlipayServiceTests
 	{
-		private readonly AlipayOptions _alipayOptions = new AlipayOptions {
-			AppId = "",
-			PrivateKey = "",
-			AlipayPublicKey = "",
-		};
-		private readonly string _oneoffAuthCode = "";
+		public AlipayServiceTests() {
+			var config = new ConfigurationManager();
+			config.AddUserSecrets(GetType().Assembly);
+			_alipayOptions = config.GetSection("Alipay").Get<AlipayOptions>();
+		}
+
+		private readonly AlipayOptions _alipayOptions;
+
+		//Need manual input before running test
+		private readonly string _newAuthCode = "";
+
+		[TestMethod()]
+		public async Task MicroPayAndCancelOrderTestAsync() {
+			if (string.IsNullOrEmpty(_alipayOptions.AppId) ||
+				string.IsNullOrEmpty(_alipayOptions.PrivateKey) ||
+				string.IsNullOrEmpty(_alipayOptions.AlipayPublicKey)) {
+				return;
+			}
+			if (string.IsNullOrEmpty(_newAuthCode)) {
+				return;
+			}
+
+			var model = new AlipayTradeMicroPayModel {
+				Amount = 0.01m,
+				AuthCode = _newAuthCode,
+				Subject = "UnitTest",
+				TradeNo = OrderIdGen.New()
+			};
+			var alipay = new AlipayService(_alipayOptions);
+			var payResult = await alipay.MicroPayAsync(model);
+			Assert.IsTrue(payResult.Ok);
+			Assert.AreEqual(model.Amount, payResult.Data.Amount);
+
+			var cancelOrderResult = await alipay.CancelTradeAsync(model.TradeNo, true);
+			Assert.IsTrue(cancelOrderResult.Ok);
+		}
 
 		[TestMethod()]
 		public async Task PaymentTransactionTestAsync() {
@@ -28,7 +59,7 @@ namespace Husky.Alipay.Tests
 				Subject = "UnitTest"
 			};
 			var alipay = new AlipayService(_alipayOptions);
-			var paymentUrl = (await alipay.GenerateAlipayPaymentUrlAsync(tradeModel)).DesktopPagePaymentUrl;
+			var paymentUrl = (await alipay.GenerateAlipayPaymentUrlAsync(tradeModel)).MobileWebPaymentUrl;
 
 			//Payment url is opened up in the default browser
 			Process.Start(new ProcessStartInfo(paymentUrl) { UseShellExecute = true });
@@ -93,32 +124,6 @@ namespace Husky.Alipay.Tests
 			Assert.IsTrue(refundResult4.Ok);
 			Assert.AreEqual(tradeModel.Amount, totalRefundedAmount);
 			Assert.AreEqual(tradeModel.Amount, refundResult4.Data.AggregatedRefundAmount);
-		}
-
-		[TestMethod()]
-		public async Task F2FPayAndCancelOrderTestAsync() {
-			if (string.IsNullOrEmpty(_alipayOptions.AppId) ||
-				string.IsNullOrEmpty(_alipayOptions.PrivateKey) ||
-				string.IsNullOrEmpty(_alipayOptions.AlipayPublicKey)) {
-				return;
-			}
-			if (string.IsNullOrEmpty(_oneoffAuthCode)) {
-				return;
-			}
-
-			var model = new AlipayTradeMicroPayModel {
-				Amount = 0.01m,
-				AuthCode = _oneoffAuthCode,
-				Subject = "UnitTest",
-				TradeNo = OrderIdGen.New()
-			};
-			var alipay = new AlipayService(_alipayOptions);
-			var payResult = await alipay.MicroPayAsync(model);
-			Assert.IsTrue(payResult.Ok);
-			Assert.AreEqual(model.Amount, payResult.Data.Amount);
-
-			var cancelOrderResult = await alipay.CancelTradeAsync(model.TradeNo, true);
-			Assert.IsTrue(cancelOrderResult.Ok);
 		}
 	}
 }

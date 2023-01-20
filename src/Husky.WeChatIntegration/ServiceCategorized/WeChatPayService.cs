@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
 using Husky.WeChatIntegration.Models.Pay;
 using Microsoft.AspNetCore.Http;
 
@@ -211,6 +210,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 				return new Success<WxpayRefundQueryResult> {
 					Data = new WxpayRefundQueryResult {
 						RefundAmount = GetValue<int>(xml, "refund_fee_0") / 100m,
+						AggregatedRefundAmount = GetValue<int>(xml, "refund_fee") / 100m,
 						OriginalResult = xml
 					}
 				};
