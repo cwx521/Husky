@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Husky.Mail;
 using Husky.Mail.Data;
 using Husky.Principal;
 using Husky.Sms.AliyunSms;
 using Husky.TwoFactor.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.TwoFactor.Tests
@@ -14,27 +13,31 @@ namespace Husky.TwoFactor.Tests
 	[TestClass()]
 	public class TwoFactorManagerTests
 	{
-		//attention: fill the required values to run this test
+		public TwoFactorManagerTests() {
+			Crypto.SecretToken = Crypto.RandomString();
+
+			var config = new ConfigurationManager();
+			config.AddUserSecrets(GetType().Assembly);
+			_aliyunSmsOptions = config.GetSection("AliyunSms").Get<AliyunSmsOptions>();
+			_smtp = config.GetSection("Smtp").Get<MailSmtpProvider>();
+		}
+
+		private readonly AliyunSmsOptions _aliyunSmsOptions;
+		private readonly MailSmtpProvider _smtp;
+		private readonly string _givenCellphone = "17751283521";
 
 		[TestMethod()]
 		public void SendCodeThroughAliyunSmsTest() {
-			var settings = new AliyunSmsOptions {
-				DefaultSignName = "星翼软件",
-				DefaultTemplateCode = "SMS_170155854",
-				AccessKeyId = "",
-				AccessKeySecret = ""
-			};
-
-			if (string.IsNullOrEmpty(settings.AccessKeySecret)) {
+			if (string.IsNullOrEmpty(_aliyunSmsOptions.AccessKeySecret)) {
 				return;
 			}
 
 			using var testDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
-			var smsSender = new AliyunSmsSender(settings);
+			var smsSender = new AliyunSmsSender(_aliyunSmsOptions);
 			var twoFactorManager = new TwoFactorManager(testDb, principal, smsSender, null);
 
-			var sendTo = "17751283521";
+			var sendTo = _givenCellphone;
 			var sentResult = twoFactorManager.SendCodeThroughSmsAsync(sendTo).Result;
 			var row = testDb.TwoFactorCodes.FirstOrDefault();
 
@@ -54,33 +57,12 @@ namespace Husky.TwoFactor.Tests
 
 		[TestMethod()]
 		public void SendCodeThroughEmailTest() {
-			Crypto.SecretToken = Crypto.RandomString();
-
-			var senderAddress = "chenwx@xingyisoftware.com";
-			var smtp = new MailSmtpProvider {
-				Id = Guid.NewGuid(),
-				Host = "smtp.exmail.qq.com",
-				Port = 465,
-				Ssl = true,
-				SenderDisplayName = "Weixing Chen",
-				SenderMailAddress = senderAddress,
-				CredentialName = senderAddress,
-				Password = "",
-				IsInUse = true
-			};
-
-			//Config CredentialName & Password before running this test
-
-			if (string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password)) {
-				return;
-			}
-
 			using var mailDb = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
 			using var twoFactorDb = new DbContextOptionsBuilder<TwoFactorDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
-			mailDb.Add(smtp);
+			mailDb.Add(_smtp);
 			mailDb.SaveChanges();
 
-			var sendTo = senderAddress;
+			var sendTo = _smtp.SenderMailAddress;
 			var principal = PrincipalUser.Personate(1, "TestUser", null);
 			var mailSender = new MailSender(mailDb);
 
@@ -112,7 +94,7 @@ namespace Husky.TwoFactor.Tests
 			var row = new TwoFactorCode {
 				Code = "123456",
 				UserId = principal.Id,
-				SentTo = "17751283521"
+				SentTo = _givenCellphone
 			};
 			testDb.Add(row);
 			testDb.SaveChanges();

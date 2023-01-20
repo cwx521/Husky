@@ -139,7 +139,7 @@ namespace Husky.Lbs.QQLbs
 				var json = await HttpClientSingleton.Instance.GetStringAsync(url);
 				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
-				if (d.status == 0 && d.message == "query ok") {
+				if (d.status == 0) {
 					return d.result;
 				}
 			}

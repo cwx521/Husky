@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Husky.Mail.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.Mail.Tests
@@ -12,49 +13,40 @@ namespace Husky.Mail.Tests
 	[TestClass()]
 	public class MailSenderTests
 	{
-		[TestMethod()]
-		public async Task SendAsyncTest() {
+		public MailSenderTests() {
 			Crypto.SecretToken = Crypto.RandomString();
 
-			//attention: fill the required values to run this test
+			var config = new ConfigurationManager();
+			config.AddUserSecrets(GetType().Assembly);
+			_smtp = config.GetSection("Smtp").Get<MailSmtpProvider>();
+		}
 
-			var senderAddress = "chenwx@xingyisoftware.com";
-			var smtp = new MailSmtpProvider {
-				Id = Guid.NewGuid(),
-				Host = "smtp.exmail.qq.com",
-				Port = 465,
-				Ssl = true,
-				SenderDisplayName = "Weixing Chen",
-				SenderMailAddress = senderAddress,
-				CredentialName = senderAddress,
-				Password = "",
-				IsInUse = true
-			};
+		private readonly MailSmtpProvider _smtp;
+		private readonly string _givenEmailReceiver = "5607882@qq.com";
 
-			if ( string.IsNullOrEmpty(smtp.CredentialName) || string.IsNullOrEmpty(smtp.Password) ) {
-				return;
-			}
-
+		[TestMethod()]
+		public async Task SendAsyncTest() {
 			using var db = new DbContextOptionsBuilder<MailDbContext>().UseInMemoryDatabase("UnitTest").CreateDbContext();
-			db.Add(smtp);
+			db.Add(_smtp);
 			db.SaveChanges();
 
+			using var dummyAttachmentStream = new MemoryStream(Crypto.RandomBytes());
 			var sender = new MailSender(db);
 			var mail = new MailMessage {
 				Subject = $"Husky.Mail Unit Test - {DateTime.Now:yyyy-M-d H:mm}",
 				Body = "<div style='color:navy'>Greeting</div>",
 				IsHtml = true,
 				To = new List<MailAddress> {
-					new MailAddress { Name = "Weixing", Address = "5607882@qq.com" }
+					new MailAddress { Name = "Weixing", Address = _givenEmailReceiver }
 				},
 				Cc = new List<MailAddress> {
-					new MailAddress { Name = "Weixing", Address = senderAddress }
+					new MailAddress { Name = "Weixing", Address = _smtp.SenderMailAddress }
 				},
 				Attachments = new List<MailAttachment> {
 					new MailAttachment {
 						Name = "DummyAttachment.zip",
 						ContentType = "application/x-zip-compressed",
-						ContentStream = new MemoryStream(Crypto.RandomBytes())
+						ContentStream = dummyAttachmentStream
 					}
 				}
 			};
@@ -73,7 +65,7 @@ namespace Husky.Mail.Tests
 			Assert.AreEqual(mailRecord.Subject, mail.Subject);
 			Assert.AreEqual(mailRecord.Body, mail.Body);
 			Assert.AreEqual(mailRecord.IsHtml, mail.IsHtml);
-			Assert.AreEqual(mailRecord.Smtp.Id, smtp.Id);
+			Assert.AreEqual(mailRecord.Smtp.Id, _smtp.Id);
 			Assert.AreEqual(mailRecord.To, string.Join(";", mail.To.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Cc, string.Join(";", mail.Cc.Select(x => x.ToString())));
 			Assert.AreEqual(mailRecord.Attachments.Count, mail.Attachments.Count);

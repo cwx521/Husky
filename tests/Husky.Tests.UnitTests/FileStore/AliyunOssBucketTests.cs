@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Husky.FileStore.AliyunOss.Tests
@@ -7,32 +8,34 @@ namespace Husky.FileStore.AliyunOss.Tests
 	[TestClass()]
 	public class AliyunOssBucketTests
 	{
-		private static AliyunOssBucket BuildAliyunOssService() {
-			var options = new AliyunOssBucketOptions {
-				AccessKeyId = "",
-				AccessKeySecret = "",
-				DefaultBucketName = "",
-				Endpoint = "oss-cn-hangzhou.aliyuncs.com",
-			};
-			return string.IsNullOrEmpty(options.AccessKeyId) || string.IsNullOrEmpty(options.AccessKeySecret)
-				? null
-				: new AliyunOssBucket(options);
+		public AliyunOssBucketTests() {
+			var config = new ConfigurationManager();
+			config.AddUserSecrets(GetType().Assembly);
+			_options = config.GetSection("AliyunOssBucket").Get<AliyunOssBucketOptions>();
 		}
+
+		private readonly AliyunOssBucketOptions _options;
 
 		[TestMethod()]
 		public void MashalTest() {
-			var oss = BuildAliyunOssService();
-			if ( oss != null ) {
-				var fileName = $"UnitTest/{Guid.NewGuid()}.jpg";
+			var oss = new AliyunOssBucket(_options);
+			oss.OpenBucket(_options.DefaultBucketName);
 
-				var bytes = Crypto.RandomBytes();
-				using var stream = new MemoryStream(bytes);
-				oss.Put(fileName, stream);
+			var fileName = $"UnitTest/{Guid.NewGuid()}.jpg";
+			var bytes = Crypto.RandomBytes();
+			using var writeStream = new MemoryStream(bytes);
+			oss.Put(fileName, writeStream);
+			writeStream.Dispose();
 
-				var uri = oss.SignUri(fileName, TimeSpan.FromMinutes(1));
-				var read = oss.Get(fileName);
-				oss.Delete(fileName);
-			}
+			using var readStream = oss.Get(fileName);
+			Assert.AreEqual(bytes.Length, readStream.Length);
+			readStream.Dispose();
+
+			var uri = oss.SignUri(fileName, TimeSpan.FromMinutes(1));
+			Assert.IsNotNull(uri);
+
+			oss.SetAccessControl(fileName, StoredFileAccessControl.PublicRead);
+			oss.Delete(fileName);
 		}
 	}
 }
