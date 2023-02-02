@@ -2,14 +2,15 @@
 @model IndexPageModel
 @using Husky.GridQuery;
 
-<div>@_me.DisplayName</div>
+<p>@_me.DisplayName</p>
 <p>AnonymousId: @_me.AnonymousId</p>
 <p>Id: @_me.Id</p>
 <p>DisplayName: @_me.DisplayName</p>
 <p>IsConsolidated: @_me.IsConsolidated</p>
 
-<div>Config</div>
+<p>Config</p>
 <p>@nameof(_config.JustConfigureYourSettingsInThisWay): @_config.JustConfigureYourSettingsInThisWay</p>
+<p>@nameof(_config.AnotherConfigItem): @_config.AnotherConfigItem</p>
 
 <div style="height: 20rem">
 	@(Html.Grid<TestGridModel>("/TestGrid/TestGridDataRows"))

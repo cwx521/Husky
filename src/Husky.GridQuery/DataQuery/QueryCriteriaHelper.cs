@@ -60,8 +60,8 @@ namespace Husky.GridQuery
 		public static QueryResult<T> Apply<T>(this IQueryable<T> query, QueryCriteria criteria) {
 			var filteredQuery = query.ApplyPreFilters(criteria).ApplyPostFilters(criteria);
 			return new() {
-				TotalCount = filteredQuery.Count(),
-				Data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
+				totalCount = filteredQuery.Count(),
+				data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
 			};
 		}
 	}
