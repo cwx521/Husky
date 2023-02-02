@@ -12,7 +12,6 @@ namespace Husky.FileStore.Data
 		public DbContext Normalize() => this;
 
 		public DbSet<StoredFile> StoredFiles { get; set; }
-		public DbSet<StoredFileTag> StoredFileTags { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.OnFileStoreDbModelCreating();

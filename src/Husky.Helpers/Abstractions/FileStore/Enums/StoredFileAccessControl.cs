@@ -12,6 +12,6 @@
 		PublicReadWrite = 2,
 
 		[Label("继承库设定")]
-		Default = 3
+		Inherit = 3
 	}
 }

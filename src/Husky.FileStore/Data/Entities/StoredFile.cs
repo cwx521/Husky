@@ -31,10 +31,5 @@ namespace Husky.FileStore.Data
 
         [DefaultValueSql("getdate()"), NeverUpdate]
         public DateTime CreatedTime { get; init; } = DateTime.Now;
-
-
-        // nav props
-
-        public List<StoredFileTag> Tags { get; set; } = new List<StoredFileTag>();
     }
 }

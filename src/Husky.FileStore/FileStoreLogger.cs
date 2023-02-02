@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.FileStore.Data;
@@ -16,7 +15,7 @@ namespace Husky.FileStore
 
 		private readonly IFileStoreDbContext _db;
 
-		public async Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string>? tags) {
+		public async Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser) {
 			var record = new StoredFile {
 				FileContentLength = contentLength,
 				FileName = fileName,
@@ -25,17 +24,9 @@ namespace Husky.FileStore
 				AnonymousId = byUser?.AnonymousId,
 				UserId = byUser?.Id,
 				UserName = byUser?.DisplayName,
-				AccessControl = StoredFileAccessControl.Default,
+				AccessControl = StoredFileAccessControl.Inherit,
 				CreatedTime = DateTime.Now
 			};
-			if (tags != null) {
-				record.Tags.AddRange(
-					tags.Select(x => new StoredFileTag {
-						Key = x.Key,
-						Value = x.Value
-					})
-				);
-			}
 			_db.StoredFiles.Add(record);
 			await _db.Normalize().SaveChangesAsync();
 		}

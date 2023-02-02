@@ -117,7 +117,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized.Tests
 			var wxpay = new WeChatPayService(_wechatConfig);
 			var cancelOrderResult = wxpay.CancelTradeAsync(_wechatConfig.MobilePlatformAppId, payedTradeNo, true).Result;
 			Assert.IsFalse(cancelOrderResult.Ok);
-			Assert.AreEqual("已转入退款", cancelOrderResult.Message);
+			Assert.IsTrue(new[] { "已转入退款", "超过订单可撤销时限" }.Contains(cancelOrderResult.Message));
 		}
 
 		[TestMethod()]

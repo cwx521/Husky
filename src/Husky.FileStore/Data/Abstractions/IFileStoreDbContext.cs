@@ -8,6 +8,5 @@ namespace Husky.FileStore.Data
 		DbContext Normalize();
 
 		DbSet<StoredFile> StoredFiles { get; set; }
-		DbSet<StoredFileTag> StoredFileTags { get; set; }
 	}
 }

@@ -6,7 +6,7 @@ namespace Husky.FileStore
 {
 	public interface IFileStoreLogger
 	{
-		Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser, IDictionary<string, string> tags);
+		Task LogFilePutAsync(string fileName, OssProvider storedAt, long contentLength, IPrincipalUser? byUser);
 		Task LogFileDeleteAsync(string fileName);
 		Task LogAccessControlChangeAsync(string fileName, StoredFileAccessControl accessControl);
 	}

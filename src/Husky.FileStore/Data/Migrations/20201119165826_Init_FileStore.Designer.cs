@@ -75,48 +75,6 @@ namespace Husky.FileStore.Data.Migrations
 
                     b.ToTable("StoredFiles");
                 });
-
-            modelBuilder.Entity("Husky.FileStore.Data.StoredFileTag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("StoredFileId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoredFileId");
-
-                    b.ToTable("StoredFileTags");
-                });
-
-            modelBuilder.Entity("Husky.FileStore.Data.StoredFileTag", b =>
-                {
-                    b.HasOne("Husky.FileStore.Data.StoredFile", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("StoredFileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Husky.FileStore.Data.StoredFile", b =>
-                {
-                    b.Navigation("Tags");
-                });
 #pragma warning restore 612, 618
         }
     }

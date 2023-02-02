@@ -17,7 +17,7 @@ namespace Husky.FileStore.AliyunOss
 		private string _bucketName;
 		private readonly OssClient _client;
 
-		private readonly ObjectMetadata _longTermCacheControlMetadata = new ObjectMetadata {
+		private readonly ObjectMetadata _longTermCacheControlMetadata = new() {
 			CacheControl = $"max-age={_secondsInTenYears}"
 		};
 		private const int _secondsInTenYears = 10 * 365 * 24 * 60 * 60;
@@ -28,7 +28,7 @@ namespace Husky.FileStore.AliyunOss
 		public void OpenBucket(string bucketName) => _bucketName = bucketName;
 
 		public Stream Get(string fileName) {
-			return _client.GetObject(_bucketName, fileName).Content;
+			return _client.GetObject(_bucketName, fileName).ResponseStream;
 		}
 		public Uri SignUri(string fileName, TimeSpan expires) {
 			return _client.GeneratePresignedUri(_bucketName, fileName, DateTime.Now.Add(expires));
