@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Husky.GridQuery
 {
@@ -60,8 +59,8 @@ namespace Husky.GridQuery
 		public static QueryResult<T> Apply<T>(this IQueryable<T> query, QueryCriteria criteria) {
 			var filteredQuery = query.ApplyPreFilters(criteria).ApplyPostFilters(criteria);
 			return new() {
-				totalCount = filteredQuery.Count(),
-				data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
+				TotalCount = filteredQuery.Count(),
+				Data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
 			};
 		}
 	}

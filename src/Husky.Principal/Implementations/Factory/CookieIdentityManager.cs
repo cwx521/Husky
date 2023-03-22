@@ -5,30 +5,37 @@ namespace Husky.Principal.Implementations
 {
 	internal sealed class CookieIdentityManager : IIdentityManager
 	{
-		internal CookieIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
+		internal CookieIdentityManager(HttpContext httpContext, IIdentityOptions? options = null) {
 			_httpContext = httpContext;
 			_options = options ?? new IdentityOptions();
 		}
 
 		private readonly HttpContext _httpContext;
-		private readonly IdentityOptions _options;
+		private readonly IIdentityOptions _options;
+
+		IIdentityOptions IIdentityManager.Options => _options;
+
+		string? IIdentityManager.ReadRawToken() {
+			_httpContext.Request.Cookies.TryGetValue(_options.IdKey, out var raw);
+			return raw;
+		}
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			_httpContext.Request.Cookies.TryGetValue(_options.IdKey, out var primary);
 			_httpContext.Request.Cookies.TryGetValue(_options.AnonymousIdKey, out var secondary);
 
 			var identity = IdentityReader.GetIdentity(primary, secondary, _options);
-			if ( _options.SessionMode && IsLifeSessionLost() ) {
+			if (_options.SessionMode && IsLifeSessionLost()) {
 				identity.Id = 0;
 			}
 			return identity;
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
-			if ( identity == null ) {
+			if (identity == null) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( !_httpContext.Response.HasStarted ) {
+			if (!_httpContext.Response.HasStarted) {
 				_httpContext.Response.Cookies.Append(
 					key: _options.IdKey,
 					value: _options.Encryptor.Encrypt(identity, _options.Token),
@@ -36,7 +43,7 @@ namespace Husky.Principal.Implementations
 						Expires = _options.Expires
 					}
 				);
-				if ( _options.DedicateAnonymousIdStorage ) {
+				if (_options.DedicateAnonymousIdStorage) {
 					_httpContext.Response.Cookies.Append(
 						key: _options.AnonymousIdKey,
 						value: identity.AnonymousId.ToString(),
@@ -45,7 +52,7 @@ namespace Husky.Principal.Implementations
 						}
 					);
 				}
-				if ( _options.SessionMode ) {
+				if (_options.SessionMode) {
 					PlantLifeSession();
 				}
 			}

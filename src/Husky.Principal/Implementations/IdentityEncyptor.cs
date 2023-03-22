@@ -22,7 +22,7 @@ namespace Husky.Principal.Implementations
 				throw new ArgumentNullException(nameof(token));
 			}
 			if ( encrypted != null ) {
-				const int ivLength = 40;    //iv is a Crypto.SHA1 result
+				const int ivLength = 40;
 				const int guidLength = 36;
 
 				try {

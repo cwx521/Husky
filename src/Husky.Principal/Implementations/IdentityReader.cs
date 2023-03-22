@@ -2,7 +2,7 @@
 {
 	internal static class IdentityReader
 	{
-		internal static IIdentity GetIdentity(string? primaryStorage, string? secondaryStorage, IdentityOptions options) {
+		internal static IIdentity GetIdentity(string? primaryStorage, string? secondaryStorage, IIdentityOptions options) {
 			var identity = string.IsNullOrEmpty(primaryStorage)
 				? null
 				: options.Encryptor.Decrypt(primaryStorage, options.Token);

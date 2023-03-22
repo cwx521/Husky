@@ -17,7 +17,7 @@ namespace Husky.GridQuery
 		public List<QueryFilter> PostFilters { get; set; } = new List<QueryFilter>();
 
 
-		public string Json() => JsonSerializer.Serialize(this, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
+		public string Json(JsonSerializerOptions? options = null) => JsonSerializer.Serialize(this, options ?? new JsonSerializerOptions(JsonSerializerDefaults.Web) {
 			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
 		});
 

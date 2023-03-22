@@ -2,7 +2,7 @@
 
 namespace Husky.Principal.Implementations
 {
-	public sealed class IdentityOptions
+	public sealed class IdentityOptions : IIdentityOptions
 	{
 		public IdentityCarrier Carrier { get; set; } = IdentityCarrier.Cookie;
 		public string IdKey { get; set; } = "HUSKY_AUTH_IDENTITY";

@@ -5,13 +5,19 @@ namespace Husky.Principal.Implementations
 {
 	internal sealed class HeaderIdentityManager : IIdentityManager
 	{
-		internal HeaderIdentityManager(HttpContext httpContext, IdentityOptions? options = null) {
+		internal HeaderIdentityManager(HttpContext httpContext, IIdentityOptions? options = null) {
 			_httpContext = httpContext;
 			_options = options ?? new IdentityOptions();
 		}
 
 		private readonly HttpContext _httpContext;
-		private readonly IdentityOptions _options;
+		private readonly IIdentityOptions _options;
+
+		IIdentityOptions IIdentityManager.Options => _options;
+
+		string? IIdentityManager.ReadRawToken() {
+			return _httpContext.Request.Headers[_options.IdKey].ToString();
+		}
 
 		IIdentity IIdentityManager.ReadIdentity() {
 			var primary = _httpContext.Request.Headers[_options.IdKey];
