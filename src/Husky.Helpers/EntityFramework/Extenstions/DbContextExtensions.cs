@@ -31,6 +31,9 @@ namespace Husky
 					if (p.Metadata.PropertyInfo!.IsDefined(typeof(NeverUpdateAttribute))) {
 						continue;
 					}
+					if (p.Metadata.PropertyInfo!.CanWrite == false) {
+						continue;
+					}
 					p.CurrentValue = entityEntry.Property(p.Metadata.Name).CurrentValue;
 				}
 			}

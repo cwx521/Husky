@@ -1,6 +1,6 @@
 ﻿namespace Husky.Lbs
 {
-	public record Address
+	public record LbsAddress
 	{
 		public Location? Location { get; init; }
 
@@ -11,10 +11,10 @@
 		public string? City { get; init; }
 		public string? District { get; init; }
 		public string? Street { get; init; }
-		public string? AccuratePlace { get; init; }
+		public string? StreetAccurate { get; init; }
 
 		public override string ToString() => DisplayAddressAlternate
 			?? DisplayAddress
-			?? Province + City + District + (AccuratePlace ?? Street);
+			?? Province + City + District + Street + StreetAccurate;
 	}
 }

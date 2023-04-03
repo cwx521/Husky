@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Husky.GridQuery
 {
@@ -56,11 +58,33 @@ namespace Husky.GridQuery
 			return query.Skip(criteria.Offset).Take(criteria.Limit);
 		}
 
-		public static QueryResult<T> Apply<T>(this IQueryable<T> query, QueryCriteria criteria) {
-			var filteredQuery = query.ApplyPreFilters(criteria).ApplyPostFilters(criteria);
-			return new() {
-				TotalCount = filteredQuery.Count(),
-				Data = filteredQuery.ApplySort(criteria).ApplyPagination(criteria).ToList()
+		public static async Task<SuccessQueryResult<T>> ToResultAsync<T>(this IQueryable<T> query, QueryCriteria? criteria = null) {
+			var data = criteria == null
+				? await query.ToListAsync()
+				: await query.ApplyPreFilters(criteria)
+							 .ApplyPostFilters(criteria)
+							 .ApplySort(criteria)
+							 .ApplyPagination(criteria)
+							 .ToListAsync();
+
+			return new SuccessQueryResult<T> {
+				Data = data,
+				TotalCount = (criteria?.PaginationEnabled ?? false) ? await query.CountAsync() : data.Count,
+			};
+		}
+
+		public static SuccessQueryResult<T> ToResult<T>(this IQueryable<T> query, QueryCriteria? criteria = null) {
+			var data = criteria == null
+				? query.ToList()
+				: query.ApplyPreFilters(criteria)
+					   .ApplyPostFilters(criteria)
+					   .ApplySort(criteria)
+					   .ApplyPagination(criteria)
+					   .ToList();
+
+			return new SuccessQueryResult<T> {
+				Data = data,
+				TotalCount = (criteria?.PaginationEnabled ?? false) ? query.Count() : data.Count,
 			};
 		}
 	}

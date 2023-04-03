@@ -23,12 +23,12 @@ namespace Husky.Lbs.QQLbs
 
 		private readonly QQLbsOptions _options;
 
-		public async Task<Address?> GetAddressAsync(IPAddress ip) {
+		public async Task<LbsAddress?> GetAddressAsync(IPAddress ip) {
 			var ipString = ip.MapToIPv4().ToString();
 			var url = "https://apis.map.qq.com/ws/location/v1/ip" + $"?key={_options.Key}&ip={ipString}";
 			var x = await GetApiResultAsync(url);
 
-			return x == null ? null : new Address {
+			return x == null ? null : new LbsAddress {
 				Location = new Location {
 					Lat = x.location.lat,
 					Lon = x.location.lng,
@@ -40,13 +40,13 @@ namespace Husky.Lbs.QQLbs
 			};
 		}
 
-		public async Task<Address?> GetAddressAsync(Location latlon) {
+		public async Task<LbsAddress?> GetAddressAsync(Location latlon) {
 			latlon = latlon.ConvertToGcj02();
 
 			var url = "https://apis.map.qq.com/ws/geocoder/v1/" + $"?key={_options.Key}&location={latlon}";
 			var x = await GetApiResultAsync(url);
 
-			return x == null ? null : new Address {
+			return x == null ? null : new LbsAddress {
 				Location = new Location {
 					Lat = x.location.lat,
 					Lon = x.location.lng,
@@ -60,7 +60,7 @@ namespace Husky.Lbs.QQLbs
 				City = x.address_component.city,
 				District = x.address_component.district,
 				Street = x.address_component.street,
-				AccuratePlace = x.address_component.street_number
+				StreetAccurate = x.address_component.street_number
 			};
 		}
 

@@ -21,7 +21,7 @@ namespace Husky.Lbs.QQLbs.Tests
 		public void MarshalTest() {
 			var qqLbs = new QQLbsService(_key);
 
-			static void assert(Address actual) {
+			static void assert(LbsAddress actual) {
 				Assert.IsNotNull(actual);
 				Assert.IsTrue(actual.Province.Contains("江苏"));
 				Assert.IsTrue(actual.City.Contains("苏州"));

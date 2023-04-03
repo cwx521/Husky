@@ -6,8 +6,8 @@ namespace Husky.Lbs
 {
 	public interface ILbs
 	{
-		Task<Address?> GetAddressAsync(IPAddress ip);
-		Task<Address?> GetAddressAsync(Location latlon);
+		Task<LbsAddress?> GetAddressAsync(IPAddress ip);
+		Task<LbsAddress?> GetAddressAsync(Location latlon);
 
 		Task<Location?> GetLatLonAsync(string addressName);
 
