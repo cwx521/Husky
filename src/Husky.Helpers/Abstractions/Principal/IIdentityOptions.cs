@@ -7,7 +7,7 @@ namespace Husky.Principal
 		IdentityCarrier Carrier { get; set; }
 		string IdKey { get; set; }
 		string AnonymousIdKey { get; set; }
-		string Token { get; set; }
+		string Salt { get; set; }
 		bool SessionMode { get; set; }
 		bool DedicateAnonymousIdStorage { get; set; }
 		DateTimeOffset? Expires { get; set; }

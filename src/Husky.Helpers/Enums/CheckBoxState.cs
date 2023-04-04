@@ -12,6 +12,6 @@
 		Disabled,
 
 		[Label("hidden", Description = "不显示")]
-		NoDisplay
+		Hidden
 	}
 }

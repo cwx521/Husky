@@ -17,7 +17,6 @@ namespace Husky
 
 				return (options?.Carrier) switch {
 					IdentityCarrier.Header => new HeaderIdentityManager(http, options),
-					IdentityCarrier.Session => new SessionIdentityManager(http, options),
 					_ => new CookieIdentityManager(http, options),
 				};
 			});

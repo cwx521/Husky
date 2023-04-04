@@ -29,10 +29,12 @@ namespace Husky.Principal.Implementations
 			if ( identity == null ) {
 				throw new ArgumentNullException(nameof(identity));
 			}
+			if ( identity.IsAuthenticated ) {
+				_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Salt);
+			}
 			if ( _options.DedicateAnonymousIdStorage ) {
 				_httpContext.Response.Headers[_options.AnonymousIdKey] = identity.AnonymousId.ToString();
 			}
-			_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Token);
 		}
 
 		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.IdKey);

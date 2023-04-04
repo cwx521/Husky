@@ -18,9 +18,9 @@ namespace Husky
 			get {
 				if ( string.IsNullOrEmpty(_secretToken) ) {
 					throw new InvalidOperationException(
-						$"{nameof(Crypto)}.{nameof(SecretToken)} is not been assigned yet which must not be null or empty. " +
-						$"It is required to set this value for security purpose. \n" +
-						$"(Simply set this by '{nameof(Crypto)}.{nameof(SecretToken)} = yourValue;' in Startup.cs)"
+						$"{nameof(Crypto)}.{nameof(SecretToken)} has not been assigned yet. " +
+						$"It requires a non-empty string value for security purpose. \n" +
+						$"(Simply set this by '{nameof(Crypto)}.{nameof(SecretToken)} = yourValue;' in Program/Startup.cs)"
 					);
 				}
 				return _secretToken;
@@ -54,20 +54,9 @@ namespace Husky
 
 		#region MD5, SHA1, SHA256
 
-		public static string MD5(this string str) {
-			using var algorithm = MD5Algorithm.Create();
-			return algorithm.GetHashedResult(str);
-		}
-
-		public static string SHA1(this string str) {
-			using var algorithm = SHA1Algorithm.Create();
-			return algorithm.GetHashedResult(str);
-		}
-
-		public static string SHA256(this string str) {
-			using var algorithm = SHA256Algorithm.Create();
-			return algorithm.GetHashedResult(str);
-		}
+		public static string MD5(this string str) => MD5Algorithm.HashData(Encoding.UTF8.GetBytes(str)).ToResultString();
+		public static string SHA1(this string str) => SHA1Algorithm.HashData(Encoding.UTF8.GetBytes(str)).ToResultString();
+		public static string SHA256(this string str) => SHA256Algorithm.HashData(Encoding.UTF8.GetBytes(str)).ToResultString();
 
 		#endregion
 
@@ -81,9 +70,9 @@ namespace Husky
 				throw new ArgumentNullException(nameof(key));
 			}
 			using var hmac = new TAlgorithm {
-				Key = Hash(key)
+				Key = MD5Hash(key)
 			};
-			return hmac.GetHashedResult(str);
+			return hmac.ComputeHash(Encoding.UTF8.GetBytes(str)).ToResultString();
 		}
 
 		public static string HmacMD5(this string str, string key) => Hmac<HMACMD5>(str, key);
@@ -100,8 +89,8 @@ namespace Husky
 			}
 
 			using var aes = Aes.Create();
-			aes.IV = Hash(iv);
-			aes.Key = Hash(key ?? SecretToken);
+			aes.IV = MD5Hash(iv);
+			aes.Key = MD5Hash(key ?? SecretToken);
 
 			using var encryptor = aes.CreateEncryptor();
 			var original = Encoding.UTF8.GetBytes(str);
@@ -115,8 +104,8 @@ namespace Husky
 			}
 
 			using var aes = Aes.Create();
-			aes.IV = Hash(iv);
-			aes.Key = Hash(key ?? SecretToken);
+			aes.IV = MD5Hash(iv);
+			aes.Key = MD5Hash(key ?? SecretToken);
 
 			using var decryptor = aes.CreateDecryptor();
 			var base64 = Convert.FromBase64String(encrypted.Restore());
@@ -134,18 +123,12 @@ namespace Husky
 
 		#region Private Members
 
-		private static byte[] Hash(string givenKey) {
-			using var md5 = MD5Algorithm.Create();
-			return md5.ComputeHash(Encoding.UTF8.GetBytes(givenKey));
+		private static byte[] MD5Hash(string givenKey) {
+			return MD5Algorithm.HashData(Encoding.UTF8.GetBytes(givenKey));
 		}
 
-		private static string GetHashedResult(this HashAlgorithm algorithm, string str) {
-			if ( str == null ) {
-				throw new ArgumentNullException(nameof(str));
-			}
-			var original = Encoding.UTF8.GetBytes(str);
-			var encoded = algorithm.ComputeHash(original);
-			return encoded.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
+		private static string ToResultString(this byte[] hashResult) {
+			return hashResult.Aggregate(new StringBuilder(), (sb, i) => sb.Append(i.ToString("x2"))).ToString();
 		}
 
 		#endregion

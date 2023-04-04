@@ -23,7 +23,7 @@ namespace Husky
 				return new BandCardModel {
 					BankAbbr = obj.bank,
 					BankName = BankAbbrNameDictionary.TryGetValue((string)obj.bank, out var bankName) ? bankName : obj.bank,
-					BankCardType = obj.cardType == "CC" ? BankCardType.CreditCard : BankCardType.DebitCard,
+					BankCardType = obj.cardType == "CC" ? BankCardType.Credit : BankCardType.Debit,
 				};
 			}
 			catch {

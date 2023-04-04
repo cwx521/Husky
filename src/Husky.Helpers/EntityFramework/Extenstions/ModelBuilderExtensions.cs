@@ -6,7 +6,7 @@ namespace Husky
 {
 	public static class ModelBuilderExtensions
 	{
-		public static ModelBuilder ApplyAdditionalCustomAnnotations(this ModelBuilder modelBuilder, DbContext context) {
+		public static ModelBuilder ApplyHuskyAnnotations(this ModelBuilder modelBuilder, DbContext context) {
 			if ( !context.Database.IsRelational() ) {
 				return modelBuilder;
 			}

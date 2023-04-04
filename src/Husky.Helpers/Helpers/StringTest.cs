@@ -7,6 +7,7 @@ namespace Husky
 	public static class StringTest
 	{
 		public const string EmailRegexPattern = @"^[0-9a-zA-Z][-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$";
+		public const string ChinaMainlandSocialIdRegexPattern = @"^[1-9]\d{5}(19|20)\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$";
 		public const string ChinaMainlandCellphoneRegexPattern = @"^1[3456789]\d{9}$";
 
 		public static bool IsInt(this string? str) => int.TryParse(str, out _);

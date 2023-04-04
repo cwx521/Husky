@@ -8,27 +8,27 @@ namespace Husky
 {
 	public static class ValidatorHelper
 	{
-		public static Result Validate<T>(T instance) {
-			if ( instance == null ) {
-				throw new ArgumentNullException(nameof(instance));
+		public static Result Validate<T>(T dataModel) {
+			if ( dataModel == null ) {
+				throw new ArgumentNullException(nameof(dataModel));
 			}
 
 			var validationResults = new List<ValidationResult>();
 
-			if ( !Validator.TryValidateObject(instance, new ValidationContext(instance), validationResults, true) ) {
+			if ( !Validator.TryValidateObject(dataModel, new ValidationContext(dataModel), validationResults, true) ) {
 				return new Failure(validationResults.First().ErrorMessage);
 			}
 			return new Success();
 		}
 
-		public static Result ValidateProperty<T, TProperty>(T instance, Expression<Func<T, TProperty>> propertyToValidate) {
-			if ( instance == null ) {
-				throw new ArgumentNullException(nameof(instance));
+		public static Result ValidateProperty<T, TProperty>(T dataModel, Expression<Func<T, TProperty>> propertyToValidate) {
+			if ( dataModel == null ) {
+				throw new ArgumentNullException(nameof(dataModel));
 			}
 
 			var propertyName = propertyToValidate.Body.ToString().RightBy(".", true);
-			var propertyValue = propertyToValidate.Compile().Invoke(instance);
-			var validationContext = new ValidationContext(instance) { MemberName = propertyName };
+			var propertyValue = propertyToValidate.Compile().Invoke(dataModel);
+			var validationContext = new ValidationContext(dataModel) { MemberName = propertyName };
 			var validationResults = new List<ValidationResult>();
 
 			if ( !Validator.TryValidateProperty(propertyValue, validationContext, validationResults) ) {

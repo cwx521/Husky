@@ -36,13 +36,15 @@ namespace Husky.Principal.Implementations
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if (!_httpContext.Response.HasStarted) {
-				_httpContext.Response.Cookies.Append(
-					key: _options.IdKey,
-					value: _options.Encryptor.Encrypt(identity, _options.Token),
-					options: new CookieOptions {
-						Expires = _options.Expires
-					}
-				);
+				if ( identity.IsAuthenticated ) {
+					_httpContext.Response.Cookies.Append(
+						key: _options.IdKey,
+						value: _options.Encryptor.Encrypt(identity, _options.Salt),
+						options: new CookieOptions {
+							Expires = _options.Expires
+						}
+					);
+				}
 				if (_options.DedicateAnonymousIdStorage) {
 					_httpContext.Response.Cookies.Append(
 						key: _options.AnonymousIdKey,

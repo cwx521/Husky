@@ -3,9 +3,9 @@
 	public enum BankCardType
 	{
 		[Label("借记卡")]
-		DebitCard,
+		Debit,
 
 		[Label("信用卡")]
-		CreditCard
+		Credit
 	}
 }

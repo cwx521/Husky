@@ -2,7 +2,7 @@
 
 namespace Husky
 {
-	public struct SocialIdNumber : IEquatable<SocialIdNumber>
+	public class SocialIdNumber
 	{
 		public SocialIdNumber(string value) {
 			Value = value;
@@ -27,13 +27,6 @@ namespace Husky
 				return match[n % 11] == Value[17];
 			}
 		}
-
-		public static bool operator ==(SocialIdNumber one, SocialIdNumber other) => one.Value == other.Value;
-		public static bool operator !=(SocialIdNumber one, SocialIdNumber other) => one.Value != other.Value;
-
-		public bool Equals(SocialIdNumber another) => Value == another.Value;
-		public override bool Equals(object? obj) => obj is SocialIdNumber socialIdNumber && Equals(socialIdNumber);
-		public override int GetHashCode() => base.GetHashCode();
 
 		public override string ToString() => Value;
 	}

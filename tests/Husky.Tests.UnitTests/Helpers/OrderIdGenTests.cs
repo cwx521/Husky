@@ -14,8 +14,9 @@ namespace Husky.Tests
 			var list = new List<string>();
 			for ( var i = 0; i < n; i++ ) {
 				list.Add(OrderIdGen.New());
+				list.Add(OrderIdGen.NewLiteral());
 			}
-			Assert.AreEqual(n, list.Distinct().Count());
+			Assert.AreEqual(n * 2, list.Distinct().Count());
 		}
 
 		[TestMethod()]
@@ -34,7 +35,15 @@ namespace Husky.Tests
 			var shouldBeFalse = OrderIdGen.TryParse(invalidOrderNo, out _);
 			Assert.IsTrue(shouldBeTrue);
 			Assert.IsFalse(shouldBeFalse);
-			Assert.IsTrue(DateTime.Now.Subtract(t1).TotalSeconds < 5);
+			Assert.IsTrue(DateTime.UtcNow.Subtract(t1).TotalSeconds < 5);
+
+			var orderNo2 = OrderIdGen.NewLiteral();
+			invalidOrderNo = string.Join("", orderNo2.Reverse());
+			shouldBeTrue = OrderIdGen.TryParse(orderNo2, out var t2);
+			shouldBeFalse = OrderIdGen.TryParse(invalidOrderNo, out _);
+			Assert.IsTrue(shouldBeTrue);
+			Assert.IsFalse(shouldBeFalse);
+			Assert.IsTrue(DateTime.UtcNow.Subtract(t2).TotalSeconds < 5);
 		}
 	}
 }

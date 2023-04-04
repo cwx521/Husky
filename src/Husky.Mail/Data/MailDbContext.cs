@@ -18,7 +18,7 @@ namespace Husky.Mail.Data
 		public DbSet<MailRecordAttachment> MailRecordAttachments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
-			modelBuilder.ApplyAdditionalCustomAnnotations(this);
+			modelBuilder.ApplyHuskyAnnotations(this);
 			modelBuilder.OnMailDbModelCreating();
 		}
 	}

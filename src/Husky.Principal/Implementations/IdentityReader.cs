@@ -5,7 +5,7 @@
 		internal static IIdentity GetIdentity(string? primaryStorage, string? secondaryStorage, IIdentityOptions options) {
 			var identity = string.IsNullOrEmpty(primaryStorage)
 				? null
-				: options.Encryptor.Decrypt(primaryStorage, options.Token);
+				: options.Encryptor.Decrypt(primaryStorage, options.Salt);
 
 			identity ??= new Identity();
 
