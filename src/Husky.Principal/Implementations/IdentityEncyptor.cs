@@ -5,23 +5,23 @@ namespace Husky.Principal.Implementations
 	public sealed class IdentityEncryptor : IIdentityEncyptor
 	{
 		public string Encrypt(IIdentity identity, string token) {
-			if ( identity == null ) {
+			if (identity == null) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( token == null ) {
+			if (token == null) {
 				throw new ArgumentNullException(nameof(token));
 			}
 
 			var str = identity.ToString()!;
-			var iv = Crypto.SHA1(str + token);
+			var iv = (str + token).SHA1();
 			return Crypto.Encrypt(str, iv, token) + iv;
 		}
 
 		public IIdentity? Decrypt(string? encrypted, string token) {
-			if ( token == null ) {
+			if (token == null) {
 				throw new ArgumentNullException(nameof(token));
 			}
-			if ( encrypted != null ) {
+			if (encrypted != null) {
 				const int ivLength = 40;
 				const int guidLength = 36;
 

@@ -7,7 +7,7 @@ namespace Husky
 	{
 		private const double xPI = Math.PI * 3000 / 180;
 
-		public static Distance StraightDistanceTo(this Location one, Location another) => new Distance {
+		public static Distance StraightDistanceTo(this Location one, Location another) => new() {
 			From = one,
 			To = another,
 			Mode = DistanceMode.Straight,
@@ -15,7 +15,7 @@ namespace Husky
 		};
 
 		public static int StraightMetersTo(this Location one, Location another) {
-			if ( one.LatLonType != another.LatLonType ) {
+			if (one.LatLonType != another.LatLonType) {
 				throw new ArgumentException("These two locations are in different coordinate standards");
 			}
 			var radLat1 = (double)one.Lat * Math.PI / 180.0;
@@ -27,7 +27,7 @@ namespace Husky
 		}
 
 		public static Location ConvertToBd09(this Location latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Bd09 ) {
+			if ((int)latlon.LatLonType == (int)LatLonType.Bd09) {
 				latlon.LatLonType = LatLonType.Bd09;
 				return latlon;
 			}
@@ -41,7 +41,7 @@ namespace Husky
 		}
 
 		public static Location ConvertToGcj02(this Location latlon) {
-			if ( (int)latlon.LatLonType == (int)LatLonType.Gcj02 ) {
+			if ((int)latlon.LatLonType == (int)LatLonType.Gcj02) {
 				latlon.LatLonType = LatLonType.Gcj02;
 				return latlon;
 			}

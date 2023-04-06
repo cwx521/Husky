@@ -13,10 +13,8 @@ namespace Husky.Principal.Implementations
 		private readonly HttpContext _httpContext;
 		private readonly IIdentityOptions _options;
 
-		IIdentityOptions IIdentityManager.Options => _options;
-
 		string? IIdentityManager.ReadRawToken() {
-			return _httpContext.Request.Headers[_options.IdKey].ToString();
+			return _httpContext.Request.Headers[_options.IdKey];
 		}
 
 		IIdentity IIdentityManager.ReadIdentity() {
@@ -26,13 +24,13 @@ namespace Husky.Principal.Implementations
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
-			if ( identity == null ) {
+			if (identity == null) {
 				throw new ArgumentNullException(nameof(identity));
 			}
-			if ( identity.IsAuthenticated ) {
+			if (identity.IsAuthenticated) {
 				_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Salt);
 			}
-			if ( _options.DedicateAnonymousIdStorage ) {
+			if (_options.DedicateAnonymousIdStorage) {
 				_httpContext.Response.Headers[_options.AnonymousIdKey] = identity.AnonymousId.ToString();
 			}
 		}

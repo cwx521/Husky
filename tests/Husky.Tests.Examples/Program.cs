@@ -36,7 +36,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<Config>();
 
 var husky = builder.Services.Husky();
-husky.AddPrincipal();
+husky.AddPrincipal(x => x.Carrier = IdentityCarrier.Cookie);
 husky.AddDiagnostics<DiagnosticsDbContext>();
 husky.AddKeyValueManager<KeyValueDbContext>();
 

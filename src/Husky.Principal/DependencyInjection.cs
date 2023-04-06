@@ -8,51 +8,54 @@ namespace Husky
 {
 	public static class DependencyInjection
 	{
-		public static HuskyServiceHub AddIdentityManager(this HuskyServiceHub husky, IIdentityOptions? options = null) {
-			husky.Services.AddScoped<IIdentityManager>(svc => {
-				var http = svc.GetRequiredService<IHttpContextAccessor>().HttpContext;
-				if (http == null) {
-					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null.");
-				}
+		public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, Action<IdentityOptions> optionBuilder) {
+			var options = new IdentityOptions();
+			optionBuilder(options);
 
+			husky.Services.AddScoped<IIdentityManager>(svc => {
+				var httpContext = svc.GetRequiredService<IHttpContextAccessor>().HttpContext!;
 				return (options?.Carrier) switch {
-					IdentityCarrier.Header => new HeaderIdentityManager(http, options),
-					_ => new CookieIdentityManager(http, options),
+					IdentityCarrier.HeaderAndCookie => new HybridIdentityManager(httpContext, options),
+					IdentityCarrier.Header => new HeaderIdentityManager(httpContext, options),
+					_ => new CookieIdentityManager(httpContext, options),
 				};
 			});
+			husky.Services.AddScoped<IPrincipalUser, PrincipalUser>();
+
 			return husky;
 		}
 
-		public static HuskyServiceHub AddIdentityManager(this HuskyServiceHub husky, Action<IIdentityOptions> setupAction) {
-			var options = new IdentityOptions();
-			setupAction(options);
-			return husky.AddIdentityManager(options);
-		}
+		//public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, Action<IdentityManagerSelector> setupAction) {
+		//	var builder = new IdentityManagerSelector(husky.Services);
+		//	setupAction(builder);
+		//	husky.Services.AddScoped<IPrincipalUser, PrincipalUser>();
+		//	return husky;
+		//}
 
-		public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, IIdentityOptions? options = null) {
-			husky.AddIdentityManager(options);
+		//public class IdentityManagerSelector
+		//{
+		//	internal IdentityManagerSelector(IServiceCollection services) {
+		//		_services = services;
+		//	}
 
-			husky.Services.AddScoped(serviceProvider => {
-				var key = nameof(IPrincipalUser);
-				var http = serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-				if (http == null) {
-					throw new InvalidProgramException("IHttpContextAccessor.HttpContext is null.");
-				}
+		//	private readonly IServiceCollection _services;
 
-				if (http.Items[key] is not IPrincipalUser principal) {
-					var identityManager = serviceProvider.GetRequiredService<IIdentityManager>();
-					principal = new PrincipalUser(identityManager, serviceProvider);
-					http.Items.Add(key, principal);
-				}
-				return principal;
-			});
-			return husky;
-		}
+		//	public void Use<T>(IdentityOptions? options) where T : class, IIdentityManager {
+		//		if (options != null) {
+		//			_services.AddSingleton(options);
+		//		}
+		//		_services.AddScoped<IIdentityManager, T>();
+		//	}
 
-		public static HuskyServiceHub AddPrincipal(this HuskyServiceHub husky, Action<IIdentityOptions> setupAction) {
-			var options = new IdentityOptions();
-			setupAction(options);
-			return husky.AddPrincipal(options);
-		}
+		//	public void Use<T>(Action<IdentityOptions> optionBuilder) where T : class, IIdentityManager {
+		//		var options = new IdentityOptions();
+		//		optionBuilder(options);
+		//		Use<T>(options);
+		//	}
+
+		//	public void Use<T>(Func<IServiceProvider, T> implementationFactory) where T : class, IIdentityManager {
+		//		_services.AddScoped<IIdentityManager, T>(implementationFactory);
+		//	}
+		//}
 	}
 }

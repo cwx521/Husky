@@ -9,7 +9,7 @@
 
 			identity ??= new Identity();
 
-			if ( options.DedicateAnonymousIdStorage && secondaryStorage != null ) {
+			if (options.DedicateAnonymousIdStorage && secondaryStorage != null) {
 				identity.AnonymousId = secondaryStorage.AsGuid(identity.AnonymousId);
 			}
 

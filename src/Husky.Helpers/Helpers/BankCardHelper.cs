@@ -31,7 +31,7 @@ namespace Husky
 			}
 		}
 
-		public static Dictionary<string, string> BankAbbrNameDictionary => new Dictionary<string, string> {
+		public static Dictionary<string, string> BankAbbrNameDictionary => new() {
 			{ "SRCB", "深圳农村商业银行" },
 			{ "BGB", "广西北部湾银行" },
 			{ "SHRCB", "上海农村商业银行" },

@@ -3,6 +3,7 @@
 	public enum IdentityCarrier
 	{
 		Cookie,
-		Header
+		Header,
+		HeaderAndCookie
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
+using Husky.Principal.Implementations;
 
-namespace Husky.Principal.Implementations
+namespace Husky.Principal
 {
 	public sealed class IdentityOptions : IIdentityOptions
 	{

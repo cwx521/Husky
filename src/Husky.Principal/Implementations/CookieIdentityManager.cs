@@ -13,8 +13,6 @@ namespace Husky.Principal.Implementations
 		private readonly HttpContext _httpContext;
 		private readonly IIdentityOptions _options;
 
-		IIdentityOptions IIdentityManager.Options => _options;
-
 		string? IIdentityManager.ReadRawToken() {
 			_httpContext.Request.Cookies.TryGetValue(_options.IdKey, out var raw);
 			return raw;
@@ -36,7 +34,7 @@ namespace Husky.Principal.Implementations
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if (!_httpContext.Response.HasStarted) {
-				if ( identity.IsAuthenticated ) {
+				if (identity.IsAuthenticated) {
 					_httpContext.Response.Cookies.Append(
 						key: _options.IdKey,
 						value: _options.Encryptor.Encrypt(identity, _options.Salt),

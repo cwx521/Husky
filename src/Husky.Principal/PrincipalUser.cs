@@ -4,21 +4,19 @@ namespace Husky.Principal
 {
 	public class PrincipalUser : Identity, IIdentity, IIdentityAnonymous, IPrincipalUser
 	{
-		public PrincipalUser(IIdentityManager identityManager, IServiceProvider serviceProvider) {
-			var identity = identityManager.ReadIdentity();
-
-			Id = identity.Id;
-			DisplayName = identity.DisplayName;
-			IsConsolidated = identity.IsConsolidated;
-			AnonymousId = identity.AnonymousId;
-
+		internal PrincipalUser(IServiceProvider serviceProvider) {
 			ServiceProvider = serviceProvider;
-			IdentityManager = identityManager;
+		}
 
-			// always overwrite identity cookie to postpone the expiration
-			if ( identityManager.Options.Carrier == IdentityCarrier.Cookie ) {
-				identityManager.SaveIdentity(identity);
-			}
+		public PrincipalUser(IServiceProvider serviceProvider, IIdentityManager identityManager) : this(serviceProvider) {
+			var read = identityManager.ReadIdentity();
+			Id = read.Id;
+			DisplayName = read.DisplayName;
+			IsConsolidated = read.IsConsolidated;
+			AnonymousId = read.AnonymousId;
+
+			IdentityManager = identityManager;
+			IdentityManager.SaveIdentity(read);
 		}
 
 		public IServiceProvider ServiceProvider { get; }
@@ -26,10 +24,6 @@ namespace Husky.Principal
 
 
 		// Personate
-
-		private PrincipalUser(IServiceProvider serviceProvider) {
-			ServiceProvider = serviceProvider;
-		}
 
 		public static IPrincipalUser Personate(Identity identity, IServiceProvider serviceProvider) {
 			return new PrincipalUser(serviceProvider) {
