@@ -10,6 +10,7 @@ namespace Husky.Principal
 
 		public PrincipalUser(IServiceProvider serviceProvider, IIdentityManager identityManager) : this(serviceProvider) {
 			var read = identityManager.ReadIdentity();
+
 			Id = read.Id;
 			DisplayName = read.DisplayName;
 			IsConsolidated = read.IsConsolidated;
