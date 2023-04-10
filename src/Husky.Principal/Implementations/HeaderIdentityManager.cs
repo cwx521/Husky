@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Husky.Principal.Implementations
 {
@@ -13,6 +12,8 @@ namespace Husky.Principal.Implementations
 		private readonly HttpContext _httpContext;
 		private readonly IIdentityOptions _options;
 
+		IIdentityOptions IIdentityManager.Options => _options;
+
 		string? IIdentityManager.ReadRawToken() {
 			return _httpContext.Request.Headers[_options.IdKey];
 		}
@@ -24,17 +25,9 @@ namespace Husky.Principal.Implementations
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
-			if (identity == null) {
-				throw new ArgumentNullException(nameof(identity));
-			}
-			if (identity.IsAuthenticated) {
-				_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Token);
-			}
-			if (_options.DedicateAnonymousIdStorage) {
-				_httpContext.Response.Headers[_options.AnonymousIdKey] = identity.AnonymousId.ToString();
-			}
 		}
 
-		void IIdentityManager.DeleteIdentity() => _httpContext.Response.Headers.Remove(_options.IdKey);
+		void IIdentityManager.DeleteIdentity() {
+		}
 	}
 }

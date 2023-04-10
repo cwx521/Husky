@@ -13,6 +13,8 @@ namespace Husky.Principal.Implementations
 		private readonly HttpContext _httpContext;
 		private readonly IIdentityOptions _options;
 
+		IIdentityOptions IIdentityManager.Options => _options;
+
 		string? IIdentityManager.ReadRawToken() {
 			_httpContext.Request.Cookies.TryGetValue(_options.IdKey, out var raw);
 			return raw;
