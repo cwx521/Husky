@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.KeyValues.Data
 {
-	public interface IKeyValueDbContext : IDisposable, IAsyncDisposable
+	public interface IKeyValueDbContext : IDbContext, IDisposable, IAsyncDisposable
 	{
-		DbContext Normalize();
-
 		DbSet<KeyValue> KeyValues { get; set; }
 	}
 }

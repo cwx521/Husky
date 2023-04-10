@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor.Data
 {
-	public interface ITwoFactorDbContext : IDisposable, IAsyncDisposable
+	public interface ITwoFactorDbContext : IDbContext, IDisposable, IAsyncDisposable
 	{
-		DbContext Normalize();
-
 		DbSet<TwoFactorCode> TwoFactorCodes { get; set; }
 	}
 }

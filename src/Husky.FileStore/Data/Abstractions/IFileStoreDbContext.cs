@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.FileStore.Data
 {
-	public interface IFileStoreDbContext : IDisposable, IAsyncDisposable
+	public interface IFileStoreDbContext : IDbContext, IDisposable, IAsyncDisposable
 	{
-		DbContext Normalize();
-
 		DbSet<StoredFile> StoredFiles { get; set; }
 	}
 }
