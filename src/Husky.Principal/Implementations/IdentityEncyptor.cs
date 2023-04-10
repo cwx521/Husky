@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Husky.Principal.Implementations
 {
@@ -32,18 +31,13 @@ namespace Husky.Principal.Implementations
 					var anonymousId = decrypted[^guidLength..];
 					var remained = decrypted[0..(decrypted.Length - guidLength - 1)];
 					var arr = remained.Split('|');
-					var timestamp = arr.Last().As<long>();
-					var time = FormatHelper.FromTimestamp(timestamp);
 
-					return timestamp == 0 || time < DateTime.Now
-						? null
-						: new Identity {
-							AnonymousId = anonymousId.AsGuid(Guid.NewGuid()),
-							Id = arr[0].AsInt(),
-							DisplayName = arr[1],
-							Expires = time,
-							IsConsolidated = arr[2].AsBool()
-						};
+					return new Identity {
+						AnonymousId = anonymousId.AsGuid(Guid.NewGuid()),
+						Id = arr[0].AsInt(),
+						DisplayName = arr[1],
+						IsConsolidated = arr[2].AsBool()
+					};
 				}
 				catch { }
 			}

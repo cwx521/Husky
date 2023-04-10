@@ -27,7 +27,7 @@ namespace Husky.TwoFactor
 		Task<Result> VerifyCodeAsync(
 			string sentTo,
 			string code,
-			bool setIntoUsedIfSuccess,
+			bool setIntoUsedWhenSuccess,
 			int codeExpirationMinutes = 15
 		);
 	}

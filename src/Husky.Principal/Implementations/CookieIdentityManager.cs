@@ -37,9 +37,9 @@ namespace Husky.Principal.Implementations
 				if (identity.IsAuthenticated) {
 					_httpContext.Response.Cookies.Append(
 						key: _options.IdKey,
-						value: _options.Encryptor.Encrypt(identity, _options.Salt),
+						value: _options.Encryptor.Encrypt(identity, _options.Token),
 						options: new CookieOptions {
-							Expires = _options.Expires
+							Expires = _options.Expires.HasValue ? DateTimeOffset.Now.Add(_options.Expires.Value) : null,
 						}
 					);
 				}

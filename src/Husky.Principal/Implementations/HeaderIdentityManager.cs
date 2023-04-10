@@ -28,7 +28,7 @@ namespace Husky.Principal.Implementations
 				throw new ArgumentNullException(nameof(identity));
 			}
 			if (identity.IsAuthenticated) {
-				_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Salt);
+				_httpContext.Response.Headers[_options.IdKey] = _options.Encryptor.Encrypt(identity, _options.Token);
 			}
 			if (_options.DedicateAnonymousIdStorage) {
 				_httpContext.Response.Headers[_options.AnonymousIdKey] = identity.AnonymousId.ToString();

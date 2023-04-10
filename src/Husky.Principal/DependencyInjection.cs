@@ -41,9 +41,7 @@ namespace Husky
 		//	private readonly IServiceCollection _services;
 
 		//	public void Use<T>(IdentityOptions? options) where T : class, IIdentityManager {
-		//		if (options != null) {
-		//			_services.AddSingleton(options);
-		//		}
+		//		_services.AddSingleton(options ?? new IdentityOptions());
 		//		_services.AddScoped<IIdentityManager, T>();
 		//	}
 

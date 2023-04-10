@@ -106,7 +106,7 @@ namespace Husky.TwoFactor
 			return await SendCodeAsync(emailAddress, overrideContentTemplateWithArg0, null, overrideSignName);
 		}
 
-		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedIfSuccess, int codeExpirationMinutes = 15) {
+		public async Task<Result> VerifyCodeAsync(string sentTo, string code, bool setIntoUsedWhenSuccess, int codeExpirationMinutes = 15) {
 			if (sentTo == null) {
 				throw new ArgumentNullException(nameof(sentTo));
 			}
@@ -130,7 +130,7 @@ namespace Husky.TwoFactor
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 				return new Failure("验证码错误");
 			}
-			if (setIntoUsedIfSuccess) {
+			if (setIntoUsedWhenSuccess) {
 				record.IsUsed = true;
 				await _twoFactorDb.Normalize().SaveChangesAsync();
 				_twoFactorDb.Normalize().ChangeTracker.Clear();
