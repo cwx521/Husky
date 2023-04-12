@@ -4,7 +4,6 @@ using Husky.NotificationTasks;
 using Husky.NotificationTasks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using INotificationTaskManager = Husky.NotificationTasks.INotificationTaskManager;
 
 namespace Husky
 {

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Husky.GridQuery;
 
 namespace Husky.NotificationTasks
 {
