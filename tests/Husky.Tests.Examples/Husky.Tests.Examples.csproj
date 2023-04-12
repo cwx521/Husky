@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\Husky.GridQuery\Husky.GridQuery.csproj" />
     <ProjectReference Include="..\..\src\Husky.KeyValues\Husky.KeyValues.csproj" />
     <ProjectReference Include="..\..\src\Husky.Mail\Husky.Mail.csproj" />
+    <ProjectReference Include="..\..\src\Husky.NotificationTasks\Husky.NotificationTasks.csproj" />
     <ProjectReference Include="..\..\src\Husky.Principal.AntiViolence\Husky.Principal.AntiViolence.csproj" />
     <ProjectReference Include="..\..\src\Husky.Principal\Husky.Principal.csproj" />
     <ProjectReference Include="..\..\src\Husky.TwoFactor\Husky.TwoFactor.csproj" />

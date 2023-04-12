@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Principal", "3. Principal", "{14400BFD-E250-4AA7-BCD3-3EE988A63E29}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Husky.NotificationTasks", "src\Husky.NotificationTasks\Husky.NotificationTasks.csproj", "{5DA069A8-AE2A-4B86-BE38-5551978B4B11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,6 +121,10 @@ Global
 		{8FE01918-7893-4DE0-B484-D8BC01D3DA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FE01918-7893-4DE0-B484-D8BC01D3DA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FE01918-7893-4DE0-B484-D8BC01D3DA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DA069A8-AE2A-4B86-BE38-5551978B4B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DA069A8-AE2A-4B86-BE38-5551978B4B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DA069A8-AE2A-4B86-BE38-5551978B4B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DA069A8-AE2A-4B86-BE38-5551978B4B11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +147,7 @@ Global
 		{4F71B26E-518C-491E-97A4-84314401B81E} = {C94DCD3B-A801-4150-970C-2ED2D9DED090}
 		{6A05CE82-DD40-4EC4-ADFD-2738B6C7CEB4} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
 		{8FE01918-7893-4DE0-B484-D8BC01D3DA69} = {FF52C040-869B-47F4-B5FF-C0DF5070D4ED}
+		{5DA069A8-AE2A-4B86-BE38-5551978B4B11} = {C94DCD3B-A801-4150-970C-2ED2D9DED090}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68F86E70-EE36-411F-91AC-C355F0DB2934}

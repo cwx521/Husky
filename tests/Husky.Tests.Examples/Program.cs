@@ -18,11 +18,12 @@ var connstr = @"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=HuskyTest; I
 Crypto.SecretToken = "DevTest";
 
 //(localdb)\MSSQLLocalDB
-builder.Services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
-builder.Services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
-builder.Services.AddDbContextPool<FileStoreDbContext>(x => x.UseSqlServer(connstr).Migrate());
-builder.Services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr));
-builder.Services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr));
+//builder.Services.AddDbContextPool<DiagnosticsDbContext>(x => x.UseSqlServer(connstr).Migrate());
+//builder.Services.AddDbContextPool<KeyValueDbContext>(x => x.UseSqlServer(connstr).Migrate());
+//builder.Services.AddDbContextPool<FileStoreDbContext>(x => x.UseSqlServer(connstr).Migrate());
+//builder.Services.AddDbContextPool<TwoFactorDbContext>(x => x.UseSqlServer(connstr).Migrate());
+//builder.Services.AddDbContextPool<MailDbContext>(x => x.UseSqlServer(connstr).Migrate());
+builder.Services.AddDbContextPool<NotificationTaskDbContext>(x => x.UseSqlServer(connstr));
 
 //AspNet
 builder.Services.AddRazorPages().AddMvcOptions(mvc => {
@@ -39,6 +40,7 @@ var husky = builder.Services.Husky();
 husky.AddPrincipal(x => x.Carrier = IdentityCarrier.Cookie);
 husky.AddDiagnostics<DiagnosticsDbContext>();
 husky.AddKeyValueManager<KeyValueDbContext>();
+husky.AddNotificationTasks<NotificationTaskDbContext>();
 
 
 /*
@@ -47,6 +49,7 @@ add-migration  Init_FileStore  -context FileStoreDbContext -project Husky.FileSt
 add-migration  Init_Mail  -context MailDbContext -project Husky.Mail -o Data/Migrations
 add-migration  Init_Diagnostics  -context DiagnosticsDbContext -project Husky.Diagnostics -o Data/Migrations
 add-migration  Init_TwoFactor  -context TwoFactorDbContext -project Husky.TwoFactor -o Data/Migrations
+add-migration  Init_NotificationTasks  -context NotificationTaskDbContext -project Husky.NotificationTasks -o Data/Migrations
 */
 
 
