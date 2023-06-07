@@ -8,7 +8,6 @@ namespace Husky.NotificationTasks
 {
 	public interface INotificationTaskManager
 	{
-		Task<SuccessQueryResult<NotificationTask>> ListAsync(QueryCriteria criteria);
 		Task AddNewAsync(string apiUrl, string contentBody, PostContentType contentType = PostContentType.Json);
 		Task ExecuteManuallyAsync(int taskId);
 		Task AbortAsync(int taskId);

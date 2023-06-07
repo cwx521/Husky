@@ -17,10 +17,11 @@ namespace Husky.WeChatIntegration
 		private readonly IMemoryCache _cache;
 		private readonly WeChatOptions _options;
 
+
 		public WeChatOptions Options => _options;
-		public WeChatJsApiService JsApi() => new(_options, _http, _cache);
-		public WeChatUserService User() => new(_options);
-		public WeChatAuthService Auth() => new(_options);
+		public WeChatMobilePlatformService MobilePlatform() => new(_options, _http, _cache);
+		public WeChatMiniProgramService MiniProgram() => new();
+		public WeChatOpenPlatformService OpenPlatform() => new();
 		public WeChatPayService Pay() => new(_options);
 
 

@@ -4,7 +4,6 @@
 	{
 		public string OpenId { get; internal init; } = null!;
 		public string? UnionId { get; internal init; }
-		public bool Subscribed { get; internal init; }
 		public string NickName { get; internal init; } = null!;
 		public Sex Sex { get; internal init; }
 		public string? Province { get; internal init; }
