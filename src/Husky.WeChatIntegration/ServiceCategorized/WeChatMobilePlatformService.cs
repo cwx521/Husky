@@ -39,7 +39,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 		#endregion
 
 		#region 获取 UserAccessToken (code 换取 OpenId)
-		public static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(WeChatAppIdSecret appIdSecret, string code) {
+		public async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(WeChatAppIdSecret appIdSecret, string code) {
 			appIdSecret.NotNull();
 			appIdSecret.MustHaveSecret();
 			appIdSecret.MustBe(WeChatAppRegion.MobilePlatform);

@@ -35,7 +35,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			return html;
 		}
 
-		public static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(WeChatAppIdSecret appIdSecret, string code) {
+		public async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(WeChatAppIdSecret appIdSecret, string code) {
 			appIdSecret.NotNull();
 			appIdSecret.MustHaveSecret();
 			appIdSecret.MustBe(WeChatAppRegion.OpenPlatform);
