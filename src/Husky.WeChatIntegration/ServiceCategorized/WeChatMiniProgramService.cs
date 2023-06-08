@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -34,6 +35,35 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			}
 			catch (Exception e) {
 				return new Failure<WeChatMiniProgramLoginResult>(e.Message);
+			}
+		}
+
+		public async Task<Result<WeChatUserPhoneResult>> GetUserPhoneAsync(WeChatGeneralAccessToken accessToken, string code) {
+			var url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken.AccessToken;
+			var parameters = new {
+				code = code
+			};
+
+			try {
+				var response = await WeChatService.HttpClient.PostAsJsonAsync(url, parameters);
+				var json = await response.Content.ReadAsStringAsync();
+				var d = JsonConvert.DeserializeObject<dynamic>(json)!;
+
+				var ok = d.errcode == null || (int)d.errcode == 0;
+				if (!ok) {
+					return new Failure<WeChatUserPhoneResult>((int)d.errcode + ": " + d.errmsg);
+				}
+
+				return new Success<WeChatUserPhoneResult> {
+					Data = new() {
+						PhoneNumber = d.phone_info.phoneNumber,
+						PurePhoneNumber = d.phone_info.purePhoneNumber,
+						CountryCode = d.phone_info.countryCode,
+					}
+				};
+			}
+			catch (Exception e) {
+				return new Failure<WeChatUserPhoneResult>(e.Message);
 			}
 		}
 	}
