@@ -37,6 +37,7 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 
 		public static async Task<Result<WeChatUserAccessToken>> GetUserAccessTokenAsync(WeChatAppIdSecret appIdSecret, string code) {
 			appIdSecret.NotNull();
+			appIdSecret.MustHaveSecret();
 			appIdSecret.MustBe(WeChatAppRegion.OpenPlatform);
 
 			var url = $"https://api.weixin.qq.com/sns/oauth2/access_token" +
@@ -56,7 +57,8 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 					Data = new WeChatUserAccessToken {
 						AccessToken = d.access_token,
 						RefreshToken = d.refresh_token,
-						OpenId = d.openid
+						OpenId = d.openid,
+						UnionId = d.unionid,
 					}
 				};
 			}

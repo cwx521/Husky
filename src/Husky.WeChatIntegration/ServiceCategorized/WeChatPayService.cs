@@ -14,12 +14,11 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 {
 	public class WeChatPayService
 	{
-		public WeChatPayService(WeChatOptions options) {
+		public WeChatPayService(WxPayOptions options) {
 			_options = options;
-			_options.RequireMerchantSettings();
 		}
 
-		private readonly WeChatOptions _options;
+		private readonly WxPayOptions _options;
 
 		public bool IsWeChatPayAuthCode(string authCode) =>
 			authCode != null &&
@@ -27,12 +26,12 @@ namespace Husky.WeChatIntegration.ServiceCategorized
 			authCode.IsInt64() &&
 			new[] { "10", "11", "12", "13", "14", "15" }.Contains(authCode.Substring(0, 2));
 
-		public WxpayJsApiParameter CreateJsApiPayParameter(string prepayId) {
+		public WxpayJsApiParameter CreateJsApiPayParameter(string appId, string prepayId) {
 			var nonceStr = Crypto.RandomString(32);
 			var timestamp = DateTime.Now.Timestamp();
 
 			var sb = new StringBuilder();
-			sb.Append("appId=" + _options.MobilePlatformAppId);
+			sb.Append("appId=" + appId);
 			sb.Append("&nonceStr=" + nonceStr);
 			sb.Append("&package=prepay_id=" + prepayId);
 			sb.Append("&signType=MD5");

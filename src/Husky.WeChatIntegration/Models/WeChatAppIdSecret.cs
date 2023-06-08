@@ -7,6 +7,7 @@ namespace Husky.WeChatIntegration
 		public string AppId { get; init; } = null!;
 		public string? AppSecret { get; init; }
 		public WeChatAppRegion? Region { get; init; }
+		public string? Alias { get; set; }
 
 		internal void NotNull() {
 			_ = AppId ?? throw new ArgumentNullException(nameof(AppId));
