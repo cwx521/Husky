@@ -97,7 +97,7 @@ namespace Husky.WeChatIntegration
 				};
 
 				try {
-					var response = await WeChatService.HttpClient.PostAsJsonAsync(url, parameters);
+					var response = await WeChatService.HttpClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(parameters)));
 					var json = await response.Content.ReadAsStringAsync();
 					var d = JsonConvert.DeserializeObject<dynamic>(json)!;
 
