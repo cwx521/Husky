@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
-	public abstract class HttpLevelLogBase : RepeatedLogBase
+	public abstract class HttpLevelLogBase : LogBase
 	{
 		[StringLength(6), Unicode(false)]
 		public string? HttpMethod { get; set; }

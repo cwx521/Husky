@@ -111,25 +111,39 @@ namespace Husky.Diagnostics.Tests
 			var findRow = db.OperationLogs.FirstOrDefault(x => x.Message == "UnitTest");
 			var rowId = findRow.Id;
 			Assert.IsNotNull(findRow);
-			Assert.AreEqual(1, findRow.Repeated);
 			Assert.AreEqual(LogLevel.Trace, findRow.LogLevel);
 			Assert.AreEqual(principal.Id, findRow.UserId);
 			Assert.AreEqual(principal.AnonymousId, findRow.AnonymousId);
 			Assert.AreEqual(principal.DisplayName, findRow.UserName);
-
-			//log the same message one more time, should be still only 1 row
-			await logger.LogOperationAsync(LogLevel.Trace, "UnitTest");
-			Assert.AreEqual(1, db.OperationLogs.Count());
-
-			//find back the row, the Repeated value should be 2 now
-			findRow = db.OperationLogs.Find(rowId);
-			Assert.AreEqual(2, findRow.Repeated);
 
 			//log some different operations
 			await logger.LogOperationAsync(LogLevel.Warning, "Make a difference");
 			await logger.LogOperationAsync(LogLevel.Warning, "Again");
 			await logger.LogOperationAsync(LogLevel.Warning, "One more time");
 			Assert.AreEqual(4, db.OperationLogs.Count());
+
+			db.Normalize().Database.EnsureDeleted();
+		}
+
+		[TestMethod()]
+		public async Task LogPageViewAsyncTestAsync() {
+			var serviceProvider = BuildServiceProvider();
+			var db = serviceProvider.GetRequiredService<IDiagnosticsDbContext>();
+			var http = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+			var principal = PrincipalUser.Personate(1, "Someone", serviceProvider);
+
+			var logger = new DiagnosticsLogger(db, http, principal);
+
+			//log an operation
+			await logger.LogPageViewAsync("UnitTest");
+			Assert.AreEqual(1, db.PageViewLogs.Count());
+
+			var findRow = db.PageViewLogs.FirstOrDefault(x => x.PageId == "UnitTest");
+			var rowId = findRow.Id;
+			Assert.IsNotNull(findRow);
+			Assert.AreEqual(principal.Id, findRow.UserId);
+			Assert.AreEqual(principal.AnonymousId, findRow.AnonymousId);
+			Assert.AreEqual(principal.DisplayName, findRow.UserName);
 
 			db.Normalize().Database.EnsureDeleted();
 		}

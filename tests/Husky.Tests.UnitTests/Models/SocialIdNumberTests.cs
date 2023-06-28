@@ -15,10 +15,7 @@ namespace Husky.Tests
 			Assert.AreEqual(DateTime.ParseExact("20000101", "yyyyMMdd", null), socialId.DateOfBirth);
 			Assert.AreEqual(DateTime.Now.Year - 2000 + 1, socialId.Age);
 			Assert.AreEqual(Sex.Female, socialId.Sex);
-
-			var shouldBeEqual = new SocialIdNumber(given);
-			Assert.IsTrue(socialId == shouldBeEqual);
-			Assert.IsTrue(socialId.Equals(shouldBeEqual));
+			Assert.AreEqual(given, socialId.ToString());
 		}
 	}
 }

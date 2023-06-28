@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Husky.Diagnostics.Data;
-using Husky.KeyValues;
 using Husky.Principal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,23 +56,8 @@ namespace Husky.Diagnostics
 				log.ReadValuesFromPrincipal(principal);
 			}
 			log.ReadValuesFromHttpContext(http);
-			log.ComputeMd5Comparison();
 
-			var keyValueManager = http.RequestServices.GetService<IKeyValueManager>();
-			var seconds = keyValueManager?.LogRequestAsRepeatedIfSameWithinSeconds() ?? 60;
-
-			var repeating = db.RequestLogs
-				.Where(x => x.Md5Comparison == log.Md5Comparison)
-				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
-				.FirstOrDefault();
-
-			if (repeating == null) {
-				db.RequestLogs.Add(log);
-			}
-			else {
-				repeating.Repeated++;
-				repeating.LastTime = DateTime.Now;
-			}
+			db.RequestLogs.Add(log);
 			await db.Normalize().SaveChangesAsync();
 		}
 
@@ -85,24 +69,20 @@ namespace Husky.Diagnostics
 			if (principal != null) {
 				log.ReadValuesFromPrincipal(principal);
 			}
-			log.ComputeMd5Comparison();
 
-			var keyValueManager = principal?.ServiceProvider?.GetService<IKeyValueManager>();
-			var seconds = keyValueManager?.LogOperationAsRepeatedIfSameWithinSeconds() ?? 60;
+			db.OperationLogs.Add(log);
+			await db.Normalize().SaveChangesAsync();
+		}
 
-			var repeating = db.OperationLogs
-				.Where(x => x.Md5Comparison == log.Md5Comparison)
-				.Where(x => x.LastTime > DateTime.Now.AddSeconds(-seconds))
-				.OrderByDescending(x => x.Id)
-				.FirstOrDefault();
-
-			if (repeating == null) {
-				db.OperationLogs.Add(log);
+		internal static async Task LogPageViewAsync(this IDiagnosticsDbContext db, string pageId, IPrincipalUser? principal) {
+			var log = new PageViewLog {
+				PageId = pageId
+			};
+			if (principal != null) {
+				log.ReadValuesFromPrincipal(principal);
 			}
-			else {
-				repeating.Repeated++;
-				repeating.LastTime = DateTime.Now;
-			}
+
+			db.PageViewLogs.Add(log);
 			await db.Normalize().SaveChangesAsync();
 		}
 	}

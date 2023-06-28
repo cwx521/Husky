@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20230628071816_Diagnostics_Init")]
+    [Migration("20230628075237_Diagnostics_Init")]
     partial class Diagnostics_Init
     {
         /// <inheritdoc />
@@ -125,27 +125,13 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("LastTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
                     b.Property<int>("LogLevel")
                         .HasColumnType("int");
-
-                    b.Property<string>("Md5Comparison")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("Repeated")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
@@ -160,8 +146,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Md5Comparison");
 
                     b.ToTable("OperationLogs");
                 });
@@ -182,27 +166,13 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Referer")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("UserAgent")
-                        .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UserIp")
-                        .HasMaxLength(45)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(50)
@@ -235,26 +205,11 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<bool>("IsAjax")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("Md5Comparison")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(32)");
-
                     b.Property<string>("Referer")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("Repeated")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Time")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -280,8 +235,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Md5Comparison");
 
                     b.ToTable("RequestLogs");
                 });

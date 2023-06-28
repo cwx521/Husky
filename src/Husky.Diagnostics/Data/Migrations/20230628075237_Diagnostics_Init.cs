@@ -25,16 +25,16 @@ namespace Husky.Diagnostics.Data.Migrations
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Repeated = table.Column<int>(type: "int", nullable: false),
-                    LastTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Md5Comparison = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false),
                     HttpMethod = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: true),
                     Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserAgent = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: true),
                     UserIp = table.Column<string>(type: "varchar(45)", unicode: false, maxLength: 45, nullable: true),
-                    IsAjax = table.Column<bool>(type: "bit", nullable: false)
+                    IsAjax = table.Column<bool>(type: "bit", nullable: false),
+                    Repeated = table.Column<int>(type: "int", nullable: false),
+                    LastTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
+                    Md5Comparison = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,10 +52,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     AnonymousId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Repeated = table.Column<int>(type: "int", nullable: false),
-                    LastTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Md5Comparison = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false)
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
@@ -69,9 +66,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PageId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    UserAgent = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: true),
-                    UserIp = table.Column<string>(type: "varchar(45)", unicode: false, maxLength: 45, nullable: true),
                     AnonymousId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -92,9 +86,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Repeated = table.Column<int>(type: "int", nullable: false),
-                    LastTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    Md5Comparison = table.Column<string>(type: "varchar(32)", unicode: false, maxLength: 32, nullable: false),
                     HttpMethod = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: true),
                     Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -111,16 +102,6 @@ namespace Husky.Diagnostics.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ExceptionLogs_Md5Comparison",
                 table: "ExceptionLogs",
-                column: "Md5Comparison");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OperationLogs_Md5Comparison",
-                table: "OperationLogs",
-                column: "Md5Comparison");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RequestLogs_Md5Comparison",
-                table: "RequestLogs",
                 column: "Md5Comparison");
         }
 

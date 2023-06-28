@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Husky.Diagnostics.Data
 {
 	[Index(nameof(Md5Comparison), IsUnique = false)]
-	public class ExceptionLog : HttpLevelLogBase
+	public class ExceptionLog : RepeatedHttpLevelLogBase
 	{
 		[Key]
 		public int Id { get; set; }
