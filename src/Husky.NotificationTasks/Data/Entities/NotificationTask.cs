@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.NotificationTasks.Data
 {
@@ -9,10 +10,10 @@ namespace Husky.NotificationTasks.Data
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(200), Column(TypeName = "varchar(200)")]
+		[StringLength(200), Unicode(false)]
 		public string ApiUrl { get; set; } = null!;
 
-		[StringLength(4000), Column(TypeName = "varchar(4000)")]
+		[StringLength(4000)]
 		public string? ContentBody { get; set; }
 
 		public PostContentType ContentType { get; set; }

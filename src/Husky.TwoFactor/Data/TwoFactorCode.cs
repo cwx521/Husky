@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.TwoFactor.Data
 {
@@ -16,11 +16,11 @@ namespace Husky.TwoFactor.Data
 		public int UserId { get; set; }
 
 		[NeverUpdate]
-		[StringLength(50), Column(TypeName = "varchar(50)"), Required]
+		[StringLength(50), Unicode(false), Required]
 		public string SentTo { get; set; } = null!;
 
 		[NeverUpdate]
-		[StringLength(8), Column(TypeName = "varchar(8)"), Required]
+		[StringLength(8), Unicode(false), Required]
 		public string Code { get; set; } = null!;
 
 		public int ErrorTimes { get; set; }

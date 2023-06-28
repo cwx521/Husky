@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Lbs
 {
@@ -32,10 +33,10 @@ namespace Husky.Lbs
 			LatLonType = type;
 		}
 
-		[Column(TypeName = "decimal(9,6)")]
+		[Precision(9, 6)]
 		public decimal Lat { get; set; }
 
-		[Column(TypeName = "decimal(9,6)")]
+		[Precision(9, 6)]
 		public decimal Lon { get; set; }
 
 		public LatLonType LatLonType { get; set; }

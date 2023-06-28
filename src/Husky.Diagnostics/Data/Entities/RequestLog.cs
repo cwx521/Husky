@@ -1,5 +1,8 @@
-﻿namespace Husky.Diagnostics.Data
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Husky.Diagnostics.Data
 {
+	[Index(nameof(Md5Comparison), IsUnique = false)]
 	public class RequestLog : HttpLevelLogBase
 	{
 		public int Id { get; set; }

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.KeyValues.Data
 {
 	public class KeyValue
 	{
-		[Key, StringLength(50), Column(TypeName = "varchar(50)"), Required]
+		[Key, StringLength(50), Unicode(false), Required]
 		public string Key { get; init; } = null!;
 
 		[StringLength(2000)]

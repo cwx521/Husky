@@ -14,6 +14,7 @@ namespace Husky.Diagnostics.Data
 		public DbSet<ExceptionLog> ExceptionLogs { get; set; }
 		public DbSet<RequestLog> RequestLogs { get; set; }
 		public DbSet<OperationLog> OperationLogs { get; set; }
+		public DbSet<PageViewLog> PageViewLogs { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.ApplyHuskyAnnotations(this);

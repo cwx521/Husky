@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Husky.Diagnostics.Data
 {
+	[Index(nameof(Md5Comparison), IsUnique = false)]
 	public class ExceptionLog : HttpLevelLogBase
 	{
 		[Key]
 		public int Id { get; set; }
 
-		[StringLength(50), Column(TypeName = "varchar(50)"), Required]
+		[StringLength(50), Unicode(false), Required]
 		public string ExceptionType { get; set; } = null!;
 
 		[StringLength(1000)]
