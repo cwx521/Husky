@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Diagnostics.Data.Migrations
 {
     [DbContext(typeof(DiagnosticsDbContext))]
-    [Migration("20230628075237_Diagnostics_Init")]
+    [Migration("20230628093917_Diagnostics_Init")]
     partial class Diagnostics_Init
     {
         /// <inheritdoc />
@@ -134,7 +134,6 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Time")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
@@ -161,18 +160,51 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<Guid?>("AnonymousId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PageId")
+                    b.Property<string>("Data")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("HttpMethod")
+                        .HasMaxLength(6)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<bool>("IsAjax")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PageName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Referer")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("Time")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 
+                    b.Property<string>("Url")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(500)");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserIp")
+                        .HasMaxLength(45)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(50)
@@ -210,6 +242,7 @@ namespace Husky.Diagnostics.Data.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("getdate()");
 

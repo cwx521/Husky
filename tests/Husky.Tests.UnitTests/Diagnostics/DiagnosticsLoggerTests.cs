@@ -138,7 +138,7 @@ namespace Husky.Diagnostics.Tests
 			await logger.LogPageViewAsync("UnitTest");
 			Assert.AreEqual(1, db.PageViewLogs.Count());
 
-			var findRow = db.PageViewLogs.FirstOrDefault(x => x.PageId == "UnitTest");
+			var findRow = db.PageViewLogs.FirstOrDefault(x => x.PageName == "UnitTest");
 			var rowId = findRow.Id;
 			Assert.IsNotNull(findRow);
 			Assert.AreEqual(principal.Id, findRow.UserId);

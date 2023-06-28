@@ -65,11 +65,19 @@ namespace Husky.Diagnostics.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PageId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PageName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     AnonymousId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()")
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
+                    HttpMethod = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Referer = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserAgent = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: true),
+                    UserIp = table.Column<string>(type: "varchar(45)", unicode: false, maxLength: 45, nullable: true),
+                    IsAjax = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

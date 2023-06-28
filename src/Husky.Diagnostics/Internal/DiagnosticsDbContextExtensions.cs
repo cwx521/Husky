@@ -74,12 +74,19 @@ namespace Husky.Diagnostics
 			await db.Normalize().SaveChangesAsync();
 		}
 
-		internal static async Task LogPageViewAsync(this IDiagnosticsDbContext db, string pageId, IPrincipalUser? principal) {
+		internal static async Task LogPageViewAsync(this IDiagnosticsDbContext db, string pageName, string? description, HttpContext? http, IPrincipalUser? principal) {
+			principal ??= http?.RequestServices?.GetService<IPrincipalUser>();
+			http ??= principal?.ServiceProvider?.GetService<IHttpContextAccessor>()?.HttpContext;
+
 			var log = new PageViewLog {
-				PageId = pageId
+				PageName = pageName,
+				Description = description
 			};
 			if (principal != null) {
 				log.ReadValuesFromPrincipal(principal);
+			}
+			if (http != null) {
+				log.ReadValuesFromHttpContext(http);
 			}
 
 			db.PageViewLogs.Add(log);

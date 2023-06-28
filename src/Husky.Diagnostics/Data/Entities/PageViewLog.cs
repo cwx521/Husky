@@ -2,11 +2,14 @@
 
 namespace Husky.Diagnostics.Data
 {
-	public class PageViewLog : LogBase
+	public class PageViewLog : HttpLevelLogBase
 	{
 		public int Id { get; set; }
 
 		[StringLength(50)]
-		public string PageId { get; set; } = null!;
+		public string PageName { get; set; } = null!;
+
+		[StringLength(200)]
+		public string? Description { get; set; }
 	}
 }
