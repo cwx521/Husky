@@ -17,7 +17,7 @@ namespace Husky.NotificationTasks.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -33,6 +33,7 @@ namespace Husky.NotificationTasks.Data.Migrations
                     b.Property<string>("ApiUrl")
                         .IsRequired()
                         .HasMaxLength(200)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(200)");
 
                     b.Property<int>("AutomatedCount")
@@ -40,7 +41,7 @@ namespace Husky.NotificationTasks.Data.Migrations
 
                     b.Property<string>("ContentBody")
                         .HasMaxLength(4000)
-                        .HasColumnType("varchar(4000)");
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<int>("ContentType")
                         .HasColumnType("int");

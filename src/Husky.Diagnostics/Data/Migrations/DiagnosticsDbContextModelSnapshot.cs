@@ -17,7 +17,7 @@ namespace Husky.Diagnostics.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -39,10 +39,12 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("ExceptionType")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("HttpMethod")
                         .HasMaxLength(6)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(6)");
 
                     b.Property<bool>("IsAjax")
@@ -56,6 +58,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
                         .HasMaxLength(32)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
@@ -86,12 +89,15 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("UserAgent")
                         .HasMaxLength(500)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(500)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserIp")
+                        .HasMaxLength(45)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
@@ -101,8 +107,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -129,6 +133,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
                         .HasMaxLength(32)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(32)");
 
                     b.Property<string>("Message")
@@ -155,9 +160,54 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.HasIndex("Md5Comparison");
 
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
-
                     b.ToTable("OperationLogs");
+                });
+
+            modelBuilder.Entity("Husky.Diagnostics.Data.PageViewLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("AnonymousId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PageId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Referer")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserIp")
+                        .HasMaxLength(45)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(45)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PageViewLogs");
                 });
 
             modelBuilder.Entity("Husky.Diagnostics.Data.RequestLog", b =>
@@ -176,6 +226,7 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("HttpMethod")
                         .HasMaxLength(6)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(6)");
 
                     b.Property<bool>("IsAjax")
@@ -189,6 +240,7 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.Property<string>("Md5Comparison")
                         .IsRequired()
                         .HasMaxLength(32)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(32)");
 
                     b.Property<string>("Referer")
@@ -209,12 +261,15 @@ namespace Husky.Diagnostics.Data.Migrations
 
                     b.Property<string>("UserAgent")
                         .HasMaxLength(500)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(500)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserIp")
+                        .HasMaxLength(45)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(45)");
 
                     b.Property<string>("UserName")
@@ -224,8 +279,6 @@ namespace Husky.Diagnostics.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Md5Comparison");
-
-                    SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("Md5Comparison"), false);
 
                     b.ToTable("RequestLogs");
                 });

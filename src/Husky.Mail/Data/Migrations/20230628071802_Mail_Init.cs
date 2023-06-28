@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Husky.Mail.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMail : Migration
+    public partial class Mail_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,13 +16,13 @@ namespace Husky.Mail.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Host = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Host = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     Port = table.Column<int>(type: "int", nullable: false),
                     Ssl = table.Column<bool>(type: "bit", nullable: false),
-                    CredentialName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: true),
-                    SenderMailAddress = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    SenderDisplayName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    CredentialName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    PasswordEncrypted = table.Column<string>(type: "varchar(64)", unicode: false, maxLength: 64, nullable: true),
+                    SenderMailAddress = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    SenderDisplayName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     IsInUse = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>

@@ -5,7 +5,7 @@
 namespace Husky.KeyValues.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitKeyValue : Migration
+    public partial class KeyValue_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,7 +14,7 @@ namespace Husky.KeyValues.Data.Migrations
                 name: "KeyValues",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
+                    Key = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
                 },
                 constraints: table =>

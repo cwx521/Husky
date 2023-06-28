@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Husky.NotificationTasks.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_NotificationTasks : Migration
+    public partial class NotificationTasks_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,8 @@ namespace Husky.NotificationTasks.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ApiUrl = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
-                    ContentBody = table.Column<string>(type: "varchar(4000)", maxLength: 4000, nullable: true),
+                    ApiUrl = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    ContentBody = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     ContentType = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     AutomatedCount = table.Column<int>(type: "int", nullable: false),

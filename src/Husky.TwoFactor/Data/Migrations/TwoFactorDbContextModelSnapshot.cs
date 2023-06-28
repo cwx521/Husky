@@ -17,7 +17,7 @@ namespace Husky.TwoFactor.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,6 +36,7 @@ namespace Husky.TwoFactor.Data.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(8)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(8)");
 
                     b.Property<DateTime>("CreatedTime")
@@ -52,6 +53,7 @@ namespace Husky.TwoFactor.Data.Migrations
                     b.Property<string>("SentTo")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
                     b.Property<int>("UserId")

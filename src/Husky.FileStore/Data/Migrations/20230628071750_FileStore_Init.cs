@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Husky.FileStore.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitFileStore : Migration
+    public partial class FileStore_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,12 +32,6 @@ namespace Husky.FileStore.Data.Migrations
                 {
                     table.PrimaryKey("PK_StoredFiles", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StoredFiles_FileName",
-                table: "StoredFiles",
-                column: "FileName",
-                unique: true);
         }
 
         /// <inheritdoc />

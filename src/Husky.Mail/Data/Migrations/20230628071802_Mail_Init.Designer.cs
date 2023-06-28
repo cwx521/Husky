@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Husky.Mail.Data.Migrations
 {
     [DbContext(typeof(MailDbContext))]
-    [Migration("20230108151900_Init_Mail")]
-    partial class InitMail
+    [Migration("20230628071802_Mail_Init")]
+    partial class Mail_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -121,11 +121,13 @@ namespace Husky.Mail.Data.Migrations
 
                     b.Property<string>("CredentialName")
                         .HasMaxLength(50)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("Host")
                         .IsRequired()
                         .HasMaxLength(100)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsInUse")
@@ -133,6 +135,7 @@ namespace Husky.Mail.Data.Migrations
 
                     b.Property<string>("PasswordEncrypted")
                         .HasMaxLength(64)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(64)");
 
                     b.Property<int>("Port")
@@ -141,11 +144,13 @@ namespace Husky.Mail.Data.Migrations
                     b.Property<string>("SenderDisplayName")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("SenderMailAddress")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
                     b.Property<bool>("Ssl")
