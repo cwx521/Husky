@@ -17,11 +17,19 @@ namespace Husky.Principal.Implementations
 		IIdentityOptions IIdentityManager.Options => _options;
 
 		string? IIdentityManager.ReadRawToken() {
-			return _onHeader.ReadRawToken() ?? _onCookie.ReadRawToken();
+			var token = _onHeader.ReadRawToken();
+			if ( string.IsNullOrEmpty(token) ) {
+				token = _onCookie.ReadRawToken();
+			}
+			return token;
 		}
 
 		IIdentity IIdentityManager.ReadIdentity() {
-			return _onHeader.ReadIdentity() ?? _onCookie.ReadIdentity();
+			var identity = _onHeader.ReadIdentity();
+			if ( identity.IsAnonymous ) {
+				identity = _onCookie.ReadIdentity();
+			}
+			return identity;
 		}
 
 		void IIdentityManager.SaveIdentity(IIdentity identity) {
